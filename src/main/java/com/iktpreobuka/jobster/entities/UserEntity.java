@@ -16,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -29,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table (name = "users", uniqueConstraints=@UniqueConstraint(columnNames= {"mobile_phone_number", "e_mail"}))
+@Table (name = "users"/*, uniqueConstraints=@UniqueConstraint(columnNames= {"phone", "e_mail"})*/)
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorOptions(force = true)
@@ -60,7 +59,7 @@ public class UserEntity {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
-	private List<JobOfferEntity> jobSeeks = new ArrayList<>(); 
+	private List<JobSeekEntity> jobSeeks = new ArrayList<>(); 
 
 	
 	@Id
@@ -69,17 +68,17 @@ public class UserEntity {
 	@Column(name="user_id")
 	protected Integer id;
 	//@JsonView(Views.Admin.class)
-	@Column(name="mobile_phone_number", unique=true)
+	@Column(name="mobile_phone")
 	@NotNull (message = "Phone number must be provided.")
 	@Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message="Mobile phone number is not valid.")
-	private String mobilePhoneNumber;
+	private String mobilePhone;
 	//@JsonView(Views.Teacher.class)
 	@Column(name="e_mail", unique=true, length=50)
 	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message="Email is not valid.")
 	@NotNull (message = "E-mail must be provided.")
 	private String email;
 	//@JsonView(Views.Teacher.class)
-	@Column(name="details_link", unique=true)
+	@Column(name="details_link")
 	@NotNull (message = "Details must be provided.")
 	private String detailsLink;
 	//@JsonView(Views.Admin.class)
@@ -109,7 +108,7 @@ public class UserEntity {
 			Integer createdById) {
 		super();
 		this.city = city;
-		this.mobilePhoneNumber = mobilePhoneNumber;
+		this.mobilePhone = mobilePhoneNumber;
 		this.email = email;
 		this.detailsLink = detailsLink;
 		this.status = getStatusActive();
@@ -137,11 +136,11 @@ public class UserEntity {
 		this.jobOffers = jobOffers;
 	}
 
-	public List<JobOfferEntity> getJobSeeks() {
+	public List<JobSeekEntity> getJobSeeks() {
 		return jobSeeks;
 	}
 
-	public void setJobSeeks(List<JobOfferEntity> jobSeeks) {
+	public void setJobSeeks(List<JobSeekEntity> jobSeeks) {
 		this.jobSeeks = jobSeeks;
 	}
 
@@ -157,12 +156,12 @@ public class UserEntity {
 		this.id = id;
 	}
 
-	public String getMobilePhoneNumber() {
-		return mobilePhoneNumber;
+	public String getMobilePhone() {
+		return mobilePhone;
 	}
 
-	public void setMobilePhoneNumber(String mobilePhoneNumber) {
-		this.mobilePhoneNumber = mobilePhoneNumber;
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
 	}
 
 	public String getEmail() {

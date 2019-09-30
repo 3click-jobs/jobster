@@ -50,11 +50,11 @@ public class CityEntity {
 	private CountryRegionEntity region;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "to", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	@OneToMany(mappedBy = "toCity", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH}, orphanRemoval = true)
 	private List<CityDistanceEntity> toDistances = new ArrayList<>();
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "from", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	@OneToMany(mappedBy = "fromCity", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH}, orphanRemoval = true)
 	private List<CityDistanceEntity> fromDistances = new ArrayList<>();
 
 	
