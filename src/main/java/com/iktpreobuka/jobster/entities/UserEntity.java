@@ -40,14 +40,27 @@ public class UserEntity {
 	private static final Integer STATUS_ARCHIVED = -1;
     
 	//@JsonView(Views.Admin.class)
-	@JsonIgnore
+	/*@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
-	private List<UserAccountEntity> accounts = new ArrayList<>();
+	private List<UserAccountEntity> accounts = new ArrayList<>();*/
+	
+	//@JsonView(Views.Admin.class)
+	/*@OneToOne
+	@JoinColumn(name="user_account")
+    protected UserAccountEntity userAccount;*/
 	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "city")
 	@NotNull (message = "City must be provided.")
 	private CityEntity city;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "employer", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<JobOfferEntity> jobOffers = new ArrayList<>(); 
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<JobOfferEntity> jobSeeks = new ArrayList<>(); 
 
 	
 	@Id
@@ -104,16 +117,32 @@ public class UserEntity {
 		}
 
 
-	public List<UserAccountEntity> getAccounts() {
-		return accounts;
+/*	public UserAccountEntity getAccount() {
+		return userAccount;
 	}
 
-	public void setAccounts(List<UserAccountEntity> accounts) {
-		this.accounts = accounts;
-	}
+	public void setAccount(UserAccountEntity userAccount) {
+		this.userAccount = userAccount;
+	}*/
 
 	public CityEntity getCity() {
 		return city;
+	}
+
+	public List<JobOfferEntity> getJobOffers() {
+		return jobOffers;
+	}
+
+	public void setJobOffers(List<JobOfferEntity> jobOffers) {
+		this.jobOffers = jobOffers;
+	}
+
+	public List<JobOfferEntity> getJobSeeks() {
+		return jobSeeks;
+	}
+
+	public void setJobSeeks(List<JobOfferEntity> jobSeeks) {
+		this.jobSeeks = jobSeeks;
 	}
 
 	public void setCity(CityEntity city) {

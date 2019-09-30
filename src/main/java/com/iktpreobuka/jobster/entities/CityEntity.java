@@ -36,10 +36,26 @@ public class CityEntity {
 	@OneToMany(mappedBy = "city", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
 	private List<UserEntity> users = new ArrayList<>(); 
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "city", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<JobOfferEntity> jobOffers = new ArrayList<>(); 
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "city", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<JobOfferEntity> jobSeeks = new ArrayList<>(); 
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "region")
 	@NotNull (message = "Country region must be provided.")
 	private CountryRegionEntity region;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "to", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<CityDistanceEntity> toDistances = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "from", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<CityDistanceEntity> fromDistances = new ArrayList<>();
 
 	
 	@Id
@@ -169,6 +185,22 @@ public class CityEntity {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	public List<CityDistanceEntity> getToDistances() {
+		return toDistances;
+	}
+
+	public void setToDistances(List<CityDistanceEntity> toDistances) {
+		this.toDistances = toDistances;
+	}
+
+	public List<CityDistanceEntity> getFromDistances() {
+		return fromDistances;
+	}
+
+	public void setFromDistances(List<CityDistanceEntity> fromDistances) {
+		this.fromDistances = fromDistances;
 	}
 
 	public Integer getStatus() {

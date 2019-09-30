@@ -1,16 +1,14 @@
 package com.iktpreobuka.jobster.entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Max;
@@ -33,10 +31,15 @@ public class UserAccountEntity {
 	private static final Integer STATUS_ARCHIVED = -1;
 	
 	//@JsonView(Views.Admin.class)
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	/*@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user")
 	@NotNull (message = "User must be provided.")
-	private UserEntity user;
+	private UserEntity user;*/
+	
+	//@JsonView(Views.Admin.class)
+	@OneToOne
+	@JoinColumn(name="user")
+    protected UserEntity user;
 	
 	
 	//@JsonView(Views.Admin.class)
