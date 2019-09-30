@@ -2,36 +2,44 @@ package com.iktpreobuka.jobster.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@Entity
+@Table(name = "city_distances")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class CityDistanceEntity {
-
+	
 	
 	private static final Integer STATUS_INACTIVE = 0;
 	private static final Integer STATUS_ACTIVE = 1;
 	private static final Integer STATUS_ARCHIVED = -1;
 
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "from")
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	@JoinColumn(name = "fromCity", referencedColumnName = "city_id", nullable=false)
+	//@OneToOne(mappedBy = "fromCity")
 	@NotNull (message = "From city must be provided.")
-	private CityEntity from;
+	private CityEntity fromCity;
 	
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "to")
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	@JoinColumn(name = "toCity", referencedColumnName = "city_id", nullable=false)
+	//@OneToOne(mappedBy = "toCity")
 	@NotNull (message = "To city must be provided.")
-	private CityEntity to;
+	private CityEntity toCity;
 
 	
 	@Id
@@ -75,8 +83,8 @@ public class CityDistanceEntity {
 			@NotNull(message = "Distance in miles must be provided.") @Min(value = 0, message = "Distance in miles  must be {value} or higher!") Double miDistance,
 			Integer createdById) {
 		super();
-		this.from = fromCity;
-		this.to = toCity;
+		this.fromCity = fromCity;
+		this.toCity = toCity;
 		this.kmDistance = kmDistance;
 		this.miDistance = miDistance;
 		this.status = getStatusActive();
@@ -89,19 +97,19 @@ public class CityDistanceEntity {
 	}
 
 	public CityEntity getFrom() {
-		return from;
+		return fromCity;
 	}
 
 	public void setFrom(CityEntity fromCity) {
-		this.from = fromCity;
+		this.fromCity = fromCity;
 	}
 
 	public CityEntity getTo() {
-		return to;
+		return toCity;
 	}
 
 	public void setTo(CityEntity toCity) {
-		this.to = toCity;
+		this.toCity = toCity;
 	}
 
 	public Double getKmDistance() {
