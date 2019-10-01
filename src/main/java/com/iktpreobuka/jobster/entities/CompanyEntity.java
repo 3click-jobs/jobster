@@ -16,8 +16,8 @@ public class CompanyEntity extends UserEntity {
 
 	//@JsonView(Views.Student.class)
 	@Column(name="company_name")
-	@Pattern(regexp = "^[A-Za-z]{2,}$", message="First name is not valid.")
-	@NotNull (message = "First name must be provided.")
+	@Pattern(regexp = "^[A-Za-z]{2,}$", message="Company name is not valid.")
+	@NotNull (message = "Company name must be provided.")
 	protected String companyName;
 	//@JsonView(Views.Admin.class)
 	@Column(name="company_id", unique=true, length=13, nullable=false)

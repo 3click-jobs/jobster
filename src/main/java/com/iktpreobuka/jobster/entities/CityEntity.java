@@ -42,7 +42,7 @@ public class CityEntity {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "city", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
-	private List<JobOfferEntity> jobSeeks = new ArrayList<>(); 
+	private List<JobSeekEntity> jobSeeks = new ArrayList<>(); 
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "region")
