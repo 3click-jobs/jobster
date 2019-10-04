@@ -79,7 +79,7 @@ public class CommentController {
 	}
 	//@Secured("ROLE_ADMIN")
 	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}") // get by ID from all
+	@RequestMapping(method = RequestMethod.GET, value = "/all/{id}") // get by ID from all
 	public ResponseEntity<?> getByIdAll(@PathVariable Integer id) {
 		try {
 			CommentEntity comment = commentRepository.findById(id).orElse(null);
