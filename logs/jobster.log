@@ -1,0 +1,140 @@
+2019-10-05 10:06:19.475  INFO 5992 --- [restartedMain] c.i.j.JobsterApplication                 : Starting JobsterApplication on DESKTOP-SUE0IVS with PID 5992 (started by draku in D:\Java kurs\backend\Projects\workspaceIKTPreobuka\jobster)
+2019-10-05 10:06:19.496  INFO 5992 --- [restartedMain] c.i.j.JobsterApplication                 : No active profile set, falling back to default profiles: default
+2019-10-05 10:06:19.558  INFO 5992 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-10-05 10:06:19.558  INFO 5992 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-10-05 10:06:20.292  INFO 5992 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-10-05 10:06:20.386  INFO 5992 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 78ms. Found 3 repository interfaces.
+2019-10-05 10:06:20.792  INFO 5992 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$b7c9c909] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-10-05 10:06:21.198  INFO 5992 --- [restartedMain] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+2019-10-05 10:06:21.230  INFO 5992 --- [restartedMain] o.a.c.c.StandardService                  : Starting service [Tomcat]
+2019-10-05 10:06:21.230  INFO 5992 --- [restartedMain] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/9.0.17]
+2019-10-05 10:06:21.386  INFO 5992 --- [restartedMain] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+2019-10-05 10:06:21.402  INFO 5992 --- [restartedMain] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 1844 ms
+2019-10-05 10:06:21.586  INFO 5992 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2019-10-05 10:06:21.586  WARN 5992 --- [restartedMain] c.z.h.u.DriverDataSource                 : Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.
+2019-10-05 10:06:22.320  INFO 5992 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2019-10-05 10:06:40.387  INFO 5992 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-10-05 10:06:40.444  INFO 5992 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2019-10-05 10:06:41.309  INFO 5992 --- [restartedMain] o.s.s.c.ThreadPoolTaskExecutor           : Initializing ExecutorService 'applicationTaskExecutor'
+2019-10-05 10:06:41.340  WARN 5992 --- [restartedMain] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2019-10-05 10:06:41.758  WARN 5992 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2019-10-05 10:06:41.954  INFO 5992 --- [restartedMain] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8080 (http) with context path ''
+2019-10-05 10:06:41.970  INFO 5992 --- [restartedMain] c.i.j.JobsterApplication                 : Started JobsterApplication in 23.225 seconds (JVM running for 24.709)
+2019-10-05 10:07:34.933  INFO 5992 --- [RMI TCP Connection(12)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2019-10-05 10:07:34.938  INFO 5992 --- [RMI TCP Connection(12)-127.0.0.1] o.s.s.c.ThreadPoolTaskExecutor           : Shutting down ExecutorService 'applicationTaskExecutor'
+2019-10-05 10:07:34.938  INFO 5992 --- [RMI TCP Connection(12)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2019-10-05 10:07:34.938  INFO 5992 --- [RMI TCP Connection(12)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+2019-10-05 10:07:34.953  INFO 5992 --- [RMI TCP Connection(12)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+2019-10-05 12:57:32.935  INFO 12972 --- [restartedMain] c.i.j.JobsterApplication                 : Starting JobsterApplication on DESKTOP-SUE0IVS with PID 12972 (started by draku in D:\Java kurs\backend\Projects\workspaceIKTPreobuka\jobster)
+2019-10-05 12:57:32.951  INFO 12972 --- [restartedMain] c.i.j.JobsterApplication                 : No active profile set, falling back to default profiles: default
+2019-10-05 12:57:33.076  INFO 12972 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-10-05 12:57:33.076  INFO 12972 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-10-05 12:57:34.048  INFO 12972 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-10-05 12:57:34.438  INFO 12972 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 360ms. Found 8 repository interfaces.
+2019-10-05 12:57:35.074  INFO 12972 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$ffedb7e0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-10-05 12:57:35.509  INFO 12972 --- [restartedMain] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+2019-10-05 12:57:35.530  INFO 12972 --- [restartedMain] o.a.c.c.StandardService                  : Starting service [Tomcat]
+2019-10-05 12:57:35.530  INFO 12972 --- [restartedMain] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/9.0.17]
+2019-10-05 12:57:35.671  INFO 12972 --- [restartedMain] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+2019-10-05 12:57:35.671  INFO 12972 --- [restartedMain] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 2595 ms
+2019-10-05 12:57:35.993  INFO 12972 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2019-10-05 12:57:35.998  WARN 12972 --- [restartedMain] c.z.h.u.DriverDataSource                 : Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.
+2019-10-05 12:57:36.732  INFO 12972 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2019-10-05 12:57:55.200  INFO 12972 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-10-05 12:57:55.249  INFO 12972 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2019-10-05 12:57:55.655  WARN 12972 --- [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'companyController': Unsatisfied dependency expressed through field 'userAccountDao'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.iktpreobuka.jobster.services.UserAccountDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+2019-10-05 12:57:55.655  INFO 12972 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2019-10-05 12:57:55.671  INFO 12972 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+2019-10-05 12:57:55.671  INFO 12972 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+2019-10-05 12:57:55.671  INFO 12972 --- [restartedMain] o.a.c.c.StandardService                  : Stopping service [Tomcat]
+2019-10-05 12:57:55.686  INFO 12972 --- [restartedMain] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2019-10-05 12:57:55.983 ERROR 12972 --- [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field userAccountDao in com.iktpreobuka.jobster.controllers.CompanyController required a bean of type 'com.iktpreobuka.jobster.services.UserAccountDao' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=true)
+
+
+Action:
+
+Consider defining a bean of type 'com.iktpreobuka.jobster.services.UserAccountDao' in your configuration.
+
+2019-10-05 13:01:03.770  INFO 3048 --- [restartedMain] c.i.j.JobsterApplication                 : Starting JobsterApplication on DESKTOP-SUE0IVS with PID 3048 (started by draku in D:\Java kurs\backend\Projects\workspaceIKTPreobuka\jobster)
+2019-10-05 13:01:03.770  INFO 3048 --- [restartedMain] c.i.j.JobsterApplication                 : No active profile set, falling back to default profiles: default
+2019-10-05 13:01:03.879  INFO 3048 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-10-05 13:01:03.879  INFO 3048 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-10-05 13:01:04.638  INFO 3048 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-10-05 13:01:04.779  INFO 3048 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 125ms. Found 8 repository interfaces.
+2019-10-05 13:01:05.172  INFO 3048 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$89b44e59] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-10-05 13:01:05.592  INFO 3048 --- [restartedMain] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+2019-10-05 13:01:05.608  INFO 3048 --- [restartedMain] o.a.c.c.StandardService                  : Starting service [Tomcat]
+2019-10-05 13:01:05.608  INFO 3048 --- [restartedMain] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/9.0.17]
+2019-10-05 13:01:05.749  INFO 3048 --- [restartedMain] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+2019-10-05 13:01:05.749  INFO 3048 --- [restartedMain] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 1870 ms
+2019-10-05 13:01:06.075  INFO 3048 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2019-10-05 13:01:06.080  WARN 3048 --- [restartedMain] c.z.h.u.DriverDataSource                 : Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.
+2019-10-05 13:01:06.702  INFO 3048 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2019-10-05 13:01:27.919  INFO 3048 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-10-05 13:01:27.983  INFO 3048 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2019-10-05 13:01:28.575  WARN 3048 --- [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'companyController': Unsatisfied dependency expressed through field 'userValidator'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.iktpreobuka.jobster.controllers.util.UserCustomValidator' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+2019-10-05 13:01:28.575  INFO 3048 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2019-10-05 13:01:28.575  INFO 3048 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+2019-10-05 13:01:28.591  INFO 3048 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.
+2019-10-05 13:01:28.591  INFO 3048 --- [restartedMain] o.a.c.c.StandardService                  : Stopping service [Tomcat]
+2019-10-05 13:01:28.606  INFO 3048 --- [restartedMain] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2019-10-05 13:01:28.809 ERROR 3048 --- [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field userValidator in com.iktpreobuka.jobster.controllers.CompanyController required a bean of type 'com.iktpreobuka.jobster.controllers.util.UserCustomValidator' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=true)
+
+
+Action:
+
+Consider defining a bean of type 'com.iktpreobuka.jobster.controllers.util.UserCustomValidator' in your configuration.
+
+2019-10-05 13:02:38.404  INFO 13064 --- [restartedMain] c.i.j.JobsterApplication                 : Starting JobsterApplication on DESKTOP-SUE0IVS with PID 13064 (started by draku in D:\Java kurs\backend\Projects\workspaceIKTPreobuka\jobster)
+2019-10-05 13:02:38.404  INFO 13064 --- [restartedMain] c.i.j.JobsterApplication                 : No active profile set, falling back to default profiles: default
+2019-10-05 13:02:38.523  INFO 13064 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-10-05 13:02:38.524  INFO 13064 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-10-05 13:02:39.279  INFO 13064 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-10-05 13:02:39.404  INFO 13064 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 109ms. Found 8 repository interfaces.
+2019-10-05 13:02:39.795  INFO 13064 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$78751d2b] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-10-05 13:02:40.216  INFO 13064 --- [restartedMain] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8080 (http)
+2019-10-05 13:02:40.248  INFO 13064 --- [restartedMain] o.a.c.c.StandardService                  : Starting service [Tomcat]
+2019-10-05 13:02:40.248  INFO 13064 --- [restartedMain] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/9.0.17]
+2019-10-05 13:02:40.388  INFO 13064 --- [restartedMain] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+2019-10-05 13:02:40.388  INFO 13064 --- [restartedMain] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 1864 ms
+2019-10-05 13:02:40.684  INFO 13064 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2019-10-05 13:02:40.700  WARN 13064 --- [restartedMain] c.z.h.u.DriverDataSource                 : Registered driver with driverClassName=com.mysql.jdbc.Driver was not found, trying direct instantiation.
+2019-10-05 13:02:41.357  INFO 13064 --- [restartedMain] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2019-10-05 13:03:02.998  INFO 13064 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-10-05 13:03:03.043  INFO 13064 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2019-10-05 13:03:03.930  INFO 13064 --- [restartedMain] o.s.s.c.ThreadPoolTaskExecutor           : Initializing ExecutorService 'applicationTaskExecutor'
+2019-10-05 13:03:04.329  WARN 13064 --- [restartedMain] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2019-10-05 13:03:04.417  WARN 13064 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2019-10-05 13:03:04.640  INFO 13064 --- [restartedMain] o.s.b.w.e.t.TomcatWebServer              : Tomcat started on port(s): 8080 (http) with context path ''
+2019-10-05 13:03:04.656  INFO 13064 --- [restartedMain] c.i.j.JobsterApplication                 : Started JobsterApplication in 26.659 seconds (JVM running for 28.044)
+2019-10-05 13:03:11.032  INFO 13064 --- [RMI TCP Connection(8)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2019-10-05 13:03:11.045  INFO 13064 --- [RMI TCP Connection(8)-127.0.0.1] o.s.s.c.ThreadPoolTaskExecutor           : Shutting down ExecutorService 'applicationTaskExecutor'
+2019-10-05 13:03:11.045  INFO 13064 --- [RMI TCP Connection(8)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2019-10-05 13:03:11.045  INFO 13064 --- [RMI TCP Connection(8)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+2019-10-05 13:03:11.060  INFO 13064 --- [RMI TCP Connection(8)-127.0.0.1] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.

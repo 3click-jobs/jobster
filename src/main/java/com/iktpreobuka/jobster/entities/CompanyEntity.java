@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.jobster.security.Views;
 
 @Entity
 @Table(name = "companies")
@@ -14,12 +16,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class CompanyEntity extends UserEntity {
 	
 
-	//@JsonView(Views.Student.class)
+	@JsonView(Views.User.class)
 	@Column(name="company_name")
 	@Pattern(regexp = "^[A-Za-z]{2,}$", message="Company name is not valid.")
 	@NotNull (message = "Company name must be provided.")
 	protected String companyName;
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@Column(name="company_id", unique=true, length=13, nullable=false)
 	@Pattern(regexp = "^[0-9]{13,13}$", message="Company ID is not valid, can contain only numbers and must be exactly 13 numbers long.")
 	@NotNull (message = "Company ID must be provided.")

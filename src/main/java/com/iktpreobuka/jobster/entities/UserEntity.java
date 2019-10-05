@@ -26,6 +26,8 @@ import org.hibernate.annotations.DiscriminatorOptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.jobster.security.Views;
 
 @Entity
 @Table (name = "users"/*, uniqueConstraints=@UniqueConstraint(columnNames= {"phone", "e_mail"})*/)
@@ -64,32 +66,41 @@ public class UserEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	//@JsonView(Views.Parent.class)
+	@JsonView(Views.User.class)
 	@Column(name="user_id")
 	protected Integer id;
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@Column(name="mobile_phone")
 	@NotNull (message = "Phone number must be provided.")
 	@Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message="Mobile phone number is not valid.")
 	private String mobilePhone;
-	//@JsonView(Views.Teacher.class)
+	@JsonView(Views.User.class)
 	@Column(name="e_mail", unique=true, length=50)
 	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message="Email is not valid.")
 	@NotNull (message = "E-mail must be provided.")
 	private String email;
-	//@JsonView(Views.Teacher.class)
+	@JsonView(Views.User.class)
 	@Column(name="details_link")
 	@NotNull (message = "Details must be provided.")
 	private String detailsLink;
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
+	@Max(5)
+    @Min(0)
+    @Column(name = "rating", nullable = false)
+	private Double rating;
+	@JsonView(Views.User.class)
+    @Min(0)
+    @Column(name = "number_of_ratings", nullable = false)
+	private Integer numberOfRatings;
+	@JsonView(Views.User.class)
 	@Max(1)
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
     @Column(name = "created_by", nullable = false, updatable = false)
 	private Integer createdById;
-    //@JsonView(Views.Admin.class)
+    @JsonView(Views.Admin.class)
     @Column(name = "updated_by")
     private Integer updatedById;
 	@JsonIgnore
@@ -112,6 +123,8 @@ public class UserEntity {
 		this.email = email;
 		this.detailsLink = detailsLink;
 		this.status = getStatusActive();
+		this.rating = 0.0;
+		this.numberOfRatings = 0;
 		this.createdById = createdById;
 		}
 
@@ -126,6 +139,22 @@ public class UserEntity {
 
 	public CityEntity getCity() {
 		return city;
+	}
+
+	public Double getRating() {
+		return rating;
+	}
+
+	public void setRating(Double rating) {
+		this.rating = rating;
+	}
+
+	public Integer getNumberOfRatings() {
+		return numberOfRatings;
+	}
+
+	public void setNumberOfRatings(Integer numberOfRatings) {
+		this.numberOfRatings = numberOfRatings;
 	}
 
 	public List<JobOfferEntity> getJobOffers() {
