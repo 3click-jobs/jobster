@@ -19,7 +19,9 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.jobster.enumerations.EUserRole;
+import com.iktpreobuka.jobster.security.Views;
 
 @Entity
 @Table (name = "user_accounts")
@@ -36,39 +38,39 @@ public class UserAccountEntity {
 	@NotNull (message = "User must be provided.")
 	private UserEntity user;*/
 	
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
 	@OneToOne
 	@JoinColumn(name="user")
     protected UserEntity user;
 	
 	
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="account_id")
 	private Integer id;
 	@Column(name="access_role")
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
 	@Enumerated(EnumType.STRING)
 	@NotNull (message = "User role must be provided.")
 	private EUserRole accessRole;
 	@Column(name="username", unique=true, length=50)
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
 	@NotNull (message = "Username must be provided.")
 	@Size(min=5, max=20, message = "Username must be between {min} and {max} characters long.")
 	private String username;
 	@Column(name="password")
 	@NotNull (message = "Password must be provided.")
 	private String password;
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
     @Column(name = "created_by", nullable = false, updatable = false)
 	private Integer createdById;
-    //@JsonView(Views.Admin.class)
+    @JsonView(Views.Admin.class)
     @Column(name = "updated_by")
     private Integer updatedById;
 	@JsonIgnore
