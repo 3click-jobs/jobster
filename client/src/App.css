@@ -1,0 +1,73 @@
+
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700&display=swap');
+
+body {
+  overflow-x: hidden; /*--All content at browser window, not going outside of it--*/
+  font-family: 'Roboto', sans-serif;
+  color: #505962;
+}
+.offset:before {
+  display: block;
+  content: "";
+  height: 4rem;
+  margin-top: -4rem;
+}
+
+/*---Navigation---*/
+.navbar {
+  text-transform: uppercase;
+  font-size: .9rem; /*--1 rem = 16px--*/
+  letter-spacing: .1rem;
+  opacity: 0.7;           /*0.5 determines transparency value*/   
+ }
+.navbar-brand img {
+  height: 5rem;
+}
+.navbar-nav li {
+  padding-right: .7rem;
+}
+.navbar-dark .navbar-nav .nav-link {
+  color: white;
+  padding-top: .8rem;
+}
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #1ebba3;
+}
+
+/*---Landing pade--*/
+.home-inner {
+  background: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) ), url('img/header.jpg');
+  background-position:center top;
+  background-size: cover;
+  width: 100%;
+  height: 600px;
+}
+.caption {
+  width: 100%;
+  max-width: 100%; /*--not going outside browser--*/
+  position: absolute; /*--places on the specific place of screen--*/
+  top: 30%;
+  z-index: 1; /*--always display on top of the image--*/
+  color: white;
+  text-transform: uppercase;
+}
+.caption h1 {
+  font-size: 3.8rem; /*--60px--*/
+  font-weight: 700;
+  letter-spacing: .3rem;
+  text-shadow: .1rem .1rem .8rem black;
+  padding-bottom: 1rem;
+}
+.caption h3 {
+  font-size: 2rem;
+  text-shadow: .1rem .1rem .5rem black;
+  padding-bottom: 1.6rem;
+}
+/*--bootstrap BUTTONS has by default rounded radius--*/
+.btn-lg {
+  border-radius: 0!important;
+  background-color: #0BAD7B;
+  color: white;
+  font-size: 1.1rem;
+}
