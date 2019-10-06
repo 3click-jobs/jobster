@@ -28,6 +28,9 @@ public class PersonDaoImpl implements PersonDao {
 	private CityRepository cityRepository;
 	
 	@Autowired
+	private CityDao cityDao;
+	
+	@Autowired
 	private JobSeekRepository jobSeekRepository;
 
 	@Autowired
@@ -39,21 +42,24 @@ public class PersonDaoImpl implements PersonDao {
 
 	@Override
 	public UserEntity addNewPerson(UserEntity loggedUser, PersonDTO newPerson) throws Exception {
-			if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null ) {
+			if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getCountryRegion() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null ) {
 				throw new Exception("Some data is null.");
 			}
-			UserEntity temporaryUser = new PersonEntity();
-			try {
+			//UserEntity temporaryUser = new PersonEntity();
+			/*try {
 				temporaryUser = personRepository.getByEmail(newPerson.getEmail());
 			} catch (Exception e1) {
 				throw new Exception("addNewPerson Exist user check failed.");
-			}
-			if (temporaryUser != null && (!((PersonEntity) temporaryUser).getFirstName().equals(newPerson.getFirstName()) || !((PersonEntity) temporaryUser).getLastName().equals(newPerson.getLastName()) || !((PersonEntity) temporaryUser).getGender().toString().equals(newPerson.getGender()) || !((PersonEntity) temporaryUser).getBirthDate().equals(formatter.parse(newPerson.getBirthDate())) || !temporaryUser.getEmail().equals(newPerson.getEmail()) || !temporaryUser.getMobilePhone().equals(newPerson.getMobilePhone()) || !temporaryUser.getCity().equals(cityRepository.getByCityName(newPerson.getCity())) )) {
+			}*/
+			/*if (temporaryUser != null && (!((PersonEntity) temporaryUser).getFirstName().equals(newPerson.getFirstName()) || !((PersonEntity) temporaryUser).getLastName().equals(newPerson.getLastName()) || !((PersonEntity) temporaryUser).getGender().toString().equals(newPerson.getGender()) || !((PersonEntity) temporaryUser).getBirthDate().equals(formatter.parse(newPerson.getBirthDate())) || !temporaryUser.getEmail().equals(newPerson.getEmail()) || !temporaryUser.getMobilePhone().equals(newPerson.getMobilePhone()) || !temporaryUser.getCity().equals(cityRepository.getByCityName(newPerson.getCity()) || !temporaryUser.getCountry().equals(cityRepository.getByCityName(newPerson.getCity())) )) {
 				throw new Exception("User exists, but import data not same as exist user data.");
-			}
+			}*/
 			UserEntity user = new PersonEntity();
 		try {
 			try {
+				if(cityRepository.getByCityName(newPerson.getCity()) == null) {
+					cityDao.addNewCity(newPerson.getCity(), newPerson.getLongitude(), newPerson.getLatitude(), newPerson.getCountryRegion(), newPerson.getCountry());
+				}
 				((PersonEntity) user).setFirstName(newPerson.getFirstName());
 				((PersonEntity) user).setLastName(newPerson.getLastName());
 				((PersonEntity) user).setGender(EGender.valueOf(newPerson.getGender()));
@@ -68,11 +74,11 @@ public class PersonDaoImpl implements PersonDao {
 				user.setStatusActive();
 				user.setCreatedById(loggedUser.getId());
 				personRepository.save(user);
-				temporaryUser = user;
+				//temporaryUser = user;
 			} catch (Exception e) {
 				throw new Exception("addNewPerson save failed.");
 			}
-			return temporaryUser;
+			return user;
 		} catch (Exception e) {
 			throw new Exception("addNewPerson save failed.");
 		}
@@ -80,7 +86,7 @@ public class PersonDaoImpl implements PersonDao {
 
 	@Override
 	public void modifyPerson(UserEntity loggedUser, PersonEntity person, PersonDTO updatePerson) throws Exception {
-		if (updatePerson.getFirstName() == null && updatePerson.getLastName() == null && updatePerson.getGender() == null && updatePerson.getBirthDate() == null && updatePerson.getEmail() == null && updatePerson.getMobilePhone() == null && updatePerson.getCity() == null ) {
+		if (updatePerson.getFirstName() == null && updatePerson.getLastName() == null && updatePerson.getGender() == null && updatePerson.getBirthDate() == null && updatePerson.getEmail() == null && updatePerson.getMobilePhone() == null && ( updatePerson.getCity() == null || updatePerson.getCountry() == null || updatePerson.getCountryRegion() == null || updatePerson.getLatitude() == null || updatePerson.getLongitude() == null) ) {
 			throw new Exception("All data is null.");
 		}
 		try {
@@ -110,7 +116,10 @@ public class PersonDaoImpl implements PersonDao {
 				person.setMobilePhone(updatePerson.getMobilePhone());
 				i++;
 			}
-			if (updatePerson.getCity() != null && !cityRepository.getByCityName(updatePerson.getCity()).equals(person.getCity()) && !updatePerson.getCity().equals(" ") && !updatePerson.getMobilePhone().equals("")) {
+			if (updatePerson.getCity() != null && !cityRepository.getByCityName(updatePerson.getCity()).equals(person.getCity()) && !updatePerson.getCity().equals(" ") && !updatePerson.getCity().equals("")) {
+				if(cityRepository.getByCityName(updatePerson.getCity()) == null) {
+					cityDao.addNewCity(updatePerson.getCity(), updatePerson.getLongitude(), updatePerson.getLatitude(), updatePerson.getCountryRegion(), updatePerson.getCountry());
+				}
 				person.setCity(cityRepository.getByCityName(updatePerson.getCity()));
 				i++;
 			}

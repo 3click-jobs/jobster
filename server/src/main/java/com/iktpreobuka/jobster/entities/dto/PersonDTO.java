@@ -32,8 +32,18 @@ public class PersonDTO {
 	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message="Email is not valid.")
 	private String email;
 	@JsonView(Views.User.class)
-	@Pattern(regexp = "^[0-9]+$", message="City Id is not valid, can contain only numbers and minimum 1 number.")
+	@Pattern(regexp = "^[A-Za-z]+$", message="City name is not valid, can contain only letters and minimum 1 number.")
 	private String city;
+	@JsonView(Views.User.class)
+	@Pattern(regexp = "^[A-Za-z]+$", message="City name is not valid, can contain only letters and minimum 1 number.")
+	private String country;
+	@JsonView(Views.User.class)
+	@Pattern(regexp = "^[A-Za-z]+$", message="City name is not valid, can contain only letters and minimum 1 number.")
+	private String countryRegion;
+	@JsonView(Views.User.class)
+	private Double longitude;
+	@JsonView(Views.User.class)
+	private Double latitude;
 	@JsonView(Views.User.class)
 	private String detailsLink;
 	@JsonView(Views.User.class)
@@ -66,17 +76,20 @@ public class PersonDTO {
 	
 	public PersonDTO() {
 		super();
-	}
-	
+	}	
+
 	public PersonDTO(
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "First name is not valid, can contain only letters and minimum is 2 letter.") String firstName,
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Last name is not valid, can contain only letters and minimum is 2 letter.") String lastName,
+			@Pattern(regexp = "^(GENDER_MALE|GENDER_FEMALE)$", message = "Gender is not valid, must be GENDER_MALE or GENDER_FEMALE") String gender,
 			String birthDate,
 			@Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message = "Mobile phone number is not valid.") String mobilePhone,
 			@Size(max = 50, message = "E-mail must be maximum {max} characters long.") @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") String email,
-			@Pattern(regexp = "^[0-9]+$", message = "City Id is not valid, can contain only numbers and minimum 1 number.") String city,
-			String detailsLink, @Max(5) @Min(0) Double rating, @Min(0) Integer numberOfRatings, List<String> jobOffers,
-			List<String> jobSeeks,
+			@Pattern(regexp = "^[A-Za-z]+$", message = "City name is not valid, can contain only letters and minimum 1 number.") String city,
+			@Pattern(regexp = "^[A-Za-z]+$", message = "City name is not valid, can contain only letters and minimum 1 number.") String country,
+			@Pattern(regexp = "^[A-Za-z]+$", message = "City name is not valid, can contain only letters and minimum 1 number.") String countryRegion,
+			Double longitude, Double latitude, String detailsLink, @Max(5) @Min(0) Double rating,
+			@Min(0) Integer numberOfRatings, List<String> jobOffers, List<String> jobSeeks,
 			@Size(min = 5, max = 20, message = "Username must be between {min} and {max} characters long.") String username,
 			@Pattern(regexp = "^(ROLE_ADMIN|ROLE_TEACHER|ROLE_PARENT|ROLE_STUDENT)$", message = "Role is not valid, must be ROLE_ADMIN, ROLE_TEACHER, ROLE_PARENT or ROLE_STUDENT") String accessRole,
 			@Size(min = 5, message = "Password must be {min} characters long or higher.") @Pattern(regexp = "^[A-Za-z0-9]*$", message = "Password is not valid, must contin only letters and numbers.") String password,
@@ -84,10 +97,15 @@ public class PersonDTO {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.gender = gender;
 		this.birthDate = birthDate;
 		this.mobilePhone = mobilePhone;
 		this.email = email;
 		this.city = city;
+		this.country = country;
+		this.countryRegion = countryRegion;
+		this.longitude = longitude;
+		this.latitude = latitude;
 		this.detailsLink = detailsLink;
 		this.rating = rating;
 		this.numberOfRatings = numberOfRatings;
@@ -98,8 +116,40 @@ public class PersonDTO {
 		this.password = password;
 		this.confirmedPassword = confirmedPassword;
 	}
-	
-	
+
+
+	public String getCountryRegion() {
+		return countryRegion;
+	}
+
+	public void setCountryRegion(String countryRegion) {
+		this.countryRegion = countryRegion;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
 	public String getFirstName() {
 		return firstName;
 	}

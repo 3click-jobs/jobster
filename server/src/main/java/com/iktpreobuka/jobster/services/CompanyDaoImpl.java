@@ -26,6 +26,9 @@ public class CompanyDaoImpl implements CompanyDao {
 	private CityRepository cityRepository;
 	
 	@Autowired
+	private CityDao cityDao;
+	
+	@Autowired
 	private JobSeekRepository jobSeekRepository;
 
 	@Autowired
@@ -37,10 +40,10 @@ public class CompanyDaoImpl implements CompanyDao {
 
 	@Override
 	public UserEntity addNewCompany(UserEntity loggedUser, CompanyDTO newCompany) throws Exception {
-		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null ) {
+		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getCountryRegion() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null ) {
 			throw new Exception("Some data is null.");
 		}
-		UserEntity temporaryUser = new CompanyEntity();
+		/*UserEntity temporaryUser = new CompanyEntity();
 		try {
 			temporaryUser = companyRepository.getByEmail(newCompany.getEmail());
 		} catch (Exception e1) {
@@ -48,10 +51,13 @@ public class CompanyDaoImpl implements CompanyDao {
 		}
 		if (temporaryUser != null && (!((CompanyEntity) temporaryUser).getCompanyName().equals(newCompany.getCompanyName()) || !((CompanyEntity) temporaryUser).getCompanyId().equals(newCompany.getCompanyId()) || !temporaryUser.getEmail().equals(newCompany.getEmail()) || !temporaryUser.getMobilePhone().equals(newCompany.getMobilePhone()) || !temporaryUser.getCity().equals(cityRepository.getByCityName(newCompany.getCity())) )) {
 			throw new Exception("Company exists, but import data not same as exist user data.");
-		}
+		}*/
 		UserEntity user = new CompanyEntity();
 		try {
 			try {
+				if(cityRepository.getByCityName(newCompany.getCity()) == null) {
+					cityDao.addNewCity(newCompany.getCity(), newCompany.getLongitude(), newCompany.getLatitude(), newCompany.getCountryRegion(), newCompany.getCountry());
+				}
 				((CompanyEntity) user).setCompanyName(newCompany.getCompanyName());
 				((CompanyEntity) user).setCompanyId(newCompany.getCompanyId());
 			    user.setCity(cityRepository.getByCityName(newCompany.getCity()));
@@ -63,18 +69,18 @@ public class CompanyDaoImpl implements CompanyDao {
 				user.setStatusActive();
 				user.setCreatedById(loggedUser.getId());
 				companyRepository.save(user);
-				temporaryUser = user;
+				//temporaryUser = user;
 			} catch (Exception e) {
 				throw new Exception("addNewCompany save failed.");
 			}
-			return temporaryUser;
+			return user;
 		} catch (Exception e) {
 			throw new Exception("addNewCompany save failed.");
 		}
 	}
 	
 	public void modifyCompany(UserEntity loggedUser, CompanyEntity company, CompanyDTO updateCompany) throws Exception {
-		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyId() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && updateCompany.getCity() == null ) {
+		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyId() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getCountryRegion() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) ) {
 			throw new Exception("All data is null.");
 		}
 		try {
@@ -96,6 +102,9 @@ public class CompanyDaoImpl implements CompanyDao {
 				i++;
 			}
 			if (updateCompany.getCity() != null && !cityRepository.getByCityName(updateCompany.getCity()).equals(company.getCity()) && !updateCompany.getCity().equals(" ") && !updateCompany.getMobilePhone().equals("")) {
+				if(cityRepository.getByCityName(updateCompany.getCity()) == null) {
+					cityDao.addNewCity(updateCompany.getCity(), updateCompany.getLongitude(), updateCompany.getLatitude(), updateCompany.getCountryRegion(), updateCompany.getCountry());
+				}
 				company.setCity(cityRepository.getByCityName(updateCompany.getCity()));
 				i++;
 			}
