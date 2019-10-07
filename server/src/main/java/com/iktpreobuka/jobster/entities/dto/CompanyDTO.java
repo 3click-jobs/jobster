@@ -32,6 +32,9 @@ public class CompanyDTO {
 	@Pattern(regexp = "^[A-Za-z]+$", message="City name is not valid, can contain only letters and minimum 1 number.")
 	private String country;
 	@JsonView(Views.User.class)
+	@Pattern(regexp = "^[A-Za-z]{2,3}$", message="ISO2 code is not valid.")
+	protected String iso2Code;
+	@JsonView(Views.User.class)
 	@Pattern(regexp = "^[A-Za-z]+$", message="City name is not valid, can contain only letters and minimum 1 number.")
 	private String countryRegion;
 	@JsonView(Views.User.class)
@@ -79,6 +82,7 @@ public class CompanyDTO {
 			@Size(max = 50, message = "E-mail must be maximum {max} characters long.") @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") String email,
 			@Pattern(regexp = "^[A-Za-z]+$", message = "City name is not valid, can contain only letters and minimum 1 number.") String city,
 			@Pattern(regexp = "^[A-Za-z]+$", message = "City name is not valid, can contain only letters and minimum 1 number.") String country,
+			@Pattern(regexp = "^[A-Za-z]{2,3}$", message = "ISO2 code is not valid.") String iso2Code,
 			@Pattern(regexp = "^[A-Za-z]+$", message = "City name is not valid, can contain only letters and minimum 1 number.") String countryRegion,
 			Double longitude, Double latitude, String detailsLink, @Max(5) @Min(0) Double rating,
 			@Min(0) Integer numberOfRatings, List<String> jobOffers, List<String> jobSeeks,
@@ -93,6 +97,7 @@ public class CompanyDTO {
 		this.email = email;
 		this.city = city;
 		this.country = country;
+		this.iso2Code = iso2Code;
 		this.countryRegion = countryRegion;
 		this.longitude = longitude;
 		this.latitude = latitude;
@@ -107,6 +112,14 @@ public class CompanyDTO {
 		this.confirmedPassword = confirmedPassword;
 	}
 
+
+	public String getIso2Code() {
+		return iso2Code;
+	}
+
+	public void setIso2Code(String iso2Code) {
+		this.iso2Code = iso2Code;
+	}
 
 	public String getCountryRegion() {
 		return countryRegion;
