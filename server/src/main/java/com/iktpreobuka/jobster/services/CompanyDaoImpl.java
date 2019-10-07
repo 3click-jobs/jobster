@@ -61,7 +61,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			if(country != null) {
 				CountryRegionEntity countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newCompany.getCountryRegion(), country);
 				if (countryRegion != null) {
-					city = cityRepository.getByCityNameAndCountryRegion(newCompany.getCity(), countryRegion);
+					city = cityRepository.getByCityNameAndRegion(newCompany.getCity(), countryRegion);
 				}
 			}
 			if( city == null) {
@@ -113,7 +113,7 @@ public class CompanyDaoImpl implements CompanyDao {
 				if(country != null) {
 					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(updateCompany.getCountryRegion(), country);
 					if (countryRegion != null) {
-						city = cityRepository.getByCityNameAndCountryRegion(updateCompany.getCity(), countryRegion);
+						city = cityRepository.getByCityNameAndRegion(updateCompany.getCity(), countryRegion);
 					}
 				}
 				if( city == null) {

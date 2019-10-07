@@ -64,7 +64,7 @@ public class PersonDaoImpl implements PersonDao {
 				if(country != null) {
 					CountryRegionEntity countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
 					if (countryRegion != null) {
-						city = cityRepository.getByCityNameAndCountryRegion(newPerson.getCity(), countryRegion);
+						city = cityRepository.getByCityNameAndRegion(newPerson.getCity(), countryRegion);
 					}
 				}
 				if( city == null) {
@@ -129,7 +129,7 @@ public class PersonDaoImpl implements PersonDao {
 				if(country != null) {
 					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(updatePerson.getCountryRegion(), country);
 					if (countryRegion != null) {
-						city = cityRepository.getByCityNameAndCountryRegion(updatePerson.getCity(), countryRegion);
+						city = cityRepository.getByCityNameAndRegion(updatePerson.getCity(), countryRegion);
 					}
 				}
 				if( city == null) {
