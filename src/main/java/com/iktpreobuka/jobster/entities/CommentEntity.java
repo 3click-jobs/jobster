@@ -42,24 +42,20 @@ public class CommentEntity {
 	
 	@Column(name="comment_title")
 	@NotNull (message = "Please add a title to the comment")
-	protected String commentTitle;
+	private String commentTitle;
 	
 	@Column(name="comment_content")
-	protected String commentContent;
+	private String commentContent;
 	
 	@Max(1)
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
 	
-	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@NotNull (message = "Comment date must be provided.")
 	@Column(name="comment_date")
-	private Date commentDate;
-	
-
-	
+	private Date commentDate;	
 	
 	@Max(value=5,message ="Maximum rating is 5 stars")
     @Min(value=1,message ="Minimum rating is 1 stars")
@@ -75,6 +71,9 @@ public class CommentEntity {
 	@JsonIgnore
 	@Version
 	private Integer version;
+	
+	
+	
 	public ApplyContactEntity getApplication() {
 		return application;
 	}

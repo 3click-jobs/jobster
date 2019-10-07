@@ -5,7 +5,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class AddCommentDTO {
+public class CommentInputDTO {
 	
 	@Column(name="comment_title")
 	@NotNull (message = "Please add a title to the comment")
@@ -45,7 +45,7 @@ public class AddCommentDTO {
 
 	
 
-	public AddCommentDTO(@NotNull(message = "Please add a title to the comment") String commentTitle,
+	public CommentInputDTO(@NotNull(message = "Please add a title to the comment") String commentTitle,
 			String commentContent,
 			@Max(value = 5, message = "Maximum rating is 5 stars") @Min(value = 1, message = "Minimum rating is 1 stars") Integer rating) {
 		super();
@@ -54,7 +54,7 @@ public class AddCommentDTO {
 		this.rating = rating;
 	}
 
-	public AddCommentDTO() {
+	public CommentInputDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
