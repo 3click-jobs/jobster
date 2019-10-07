@@ -1,5 +1,7 @@
 package com.iktpreobuka.jobster.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +20,27 @@ public class UserAccountDaoImpl implements UserAccountDao {
 	@Autowired
 	private UserAccountRepository userAccountRepository;
 	
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+
 	
 	@Override
 	public UserAccountEntity addNewUserAccount(UserEntity loggedUser, UserEntity user, String username, EUserRole role, String password) throws Exception {
 		if (username != null && userAccountRepository.getByUsername(username) != null) {
 	         throw new Exception("Username already exists.");
 	      }
+		logger.info("addNewUserAccount validation Ok.");
 		UserAccountEntity account = new UserAccountEntity();
 		try {
 			account.setAccessRole(role);
 			account.setUsername(username);
-			account.setPassword(Encryption.getPassEncoded(password));
+			//account.setPassword(Encryption.getPassEncoded(password));
+			account.setPassword(password);
 			account.setCreatedById(loggedUser.getId());
 			account.setStatusActive();
 			account.setUser(user);
+			logger.info("Atributes added.");
 			userAccountRepository.save(account);
+			logger.info("addNewUserAccount finished.");
 		} catch (Exception e) {
 			throw new Exception("AddNewUserAccount failed on saving.");
 		}
@@ -54,7 +62,8 @@ public class UserAccountDaoImpl implements UserAccountDao {
 				i++;
 			}
 			if (updatePerson.getPassword() != null && !Encryption.getPassEncoded(updatePerson.getPassword()).equals(account.getPassword()) && !updatePerson.getPassword().equals(" ") && !updatePerson.getPassword().equals("")) {
-				account.setPassword(Encryption.getPassEncoded(updatePerson.getPassword()));
+				//account.setPassword(Encryption.getPassEncoded(updatePerson.getPassword()));
+				account.setPassword(updatePerson.getPassword());
 				i++;
 			}
 			if (i>0) {

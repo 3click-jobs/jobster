@@ -46,6 +46,8 @@ public class CountryDaoImpl implements CountryDao {
 				country = new CountryEntity();
 				country.setCountryName(countryName);
 				country.setIso2Code(iso2Code);
+				country.setStatusActive();
+				country.setCreatedById(loggedUser.getId());
 				countryRepository.save(country);
 			}
 		} catch (Exception e) {

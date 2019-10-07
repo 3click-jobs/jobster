@@ -31,6 +31,7 @@ import com.iktpreobuka.jobster.entities.dto.CompanyDTO;
 import com.iktpreobuka.jobster.enumerations.EUserRole;
 import com.iktpreobuka.jobster.repositories.CompanyRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
+import com.iktpreobuka.jobster.repositories.UserRepository;
 import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.CompanyDao;
 import com.iktpreobuka.jobster.services.UserAccountDao;
@@ -51,6 +52,9 @@ public class CompanyController {
 	
 	@Autowired
 	private UserAccountRepository userAccountRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	/*@Autowired
 	private JobOfferRepository jobOfferRepository;*/
@@ -170,9 +174,9 @@ public class CompanyController {
 	//@Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> addNewCompany(@Valid @RequestBody CompanyDTO newCompany, Principal principal, BindingResult result) {
+	public ResponseEntity<?> addNewCompany(@Valid @RequestBody CompanyDTO newCompany, /*Principal principal,*/ BindingResult result) {
 		logger.info("################ /jobster/users/companies/addNewCompany started.");
-		logger.info("Logged user: " + principal.getName());
+		//logger.info("Logged user: " + principal.getName());
 		if (result.hasErrors()) { 
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
@@ -195,6 +199,10 @@ public class CompanyController {
 				logger.info("---------------- Mobile phone number already exists.");
 		        return new ResponseEntity<>("Mobile phone number already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
+			if (newCompany.getCompanyId() != null && companyRepository.getByCompanyId(newCompany.getCompanyId()) != null) {
+				logger.info("---------------- Company Id already exists.");
+		        return new ResponseEntity<>("Company Id already exists.", HttpStatus.NOT_ACCEPTABLE);
+			}
 			if (newCompany.getAccessRole() != null && !newCompany.getAccessRole().equals("ROLE_USER")) {
 				logger.info("---------------- Access role must be ROLE_USER.");
 		        return new ResponseEntity<>("Access role must be ROLE_USER.", HttpStatus.NOT_ACCEPTABLE);
@@ -203,7 +211,8 @@ public class CompanyController {
 				logger.info("---------------- Username already exists.");
 		        return new ResponseEntity<>("Username already exists.", HttpStatus.NOT_ACCEPTABLE);
 		      }
-			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+			UserEntity loggedUser = userRepository.getByIdAndStatusLike(1, 1);
 			logger.info("Logged user identified.");
 			user = companyDao.addNewCompany(loggedUser, newCompany);
 			logger.info("Company created.");
@@ -250,6 +259,10 @@ public class CompanyController {
 			if (updateCompany.getMobilePhone() != null && companyRepository.getByMobilePhone(updateCompany.getMobilePhone()) != null) {
 				logger.info("---------------- Mobile phone number already exists.");
 		        return new ResponseEntity<>("Mobile phone number already exists.", HttpStatus.NOT_ACCEPTABLE);
+			}
+			if (updateCompany.getCompanyId() != null && companyRepository.getByCompanyId(updateCompany.getCompanyId()) != null) {
+				logger.info("---------------- Company Id already exists.");
+		        return new ResponseEntity<>("Company Id already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
 			if (updateCompany.getAccessRole() != null && !updateCompany.getAccessRole().equals("ROLE_USER")) {
 				logger.info("---------------- Access role must be ROLE_USER.");

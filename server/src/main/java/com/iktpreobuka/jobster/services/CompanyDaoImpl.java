@@ -2,6 +2,8 @@ package com.iktpreobuka.jobster.services;
 
 import java.text.SimpleDateFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,24 +50,35 @@ public class CompanyDaoImpl implements CompanyDao {
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
+	
 	@Override
 	public UserEntity addNewCompany(UserEntity loggedUser, CompanyDTO newCompany) throws Exception {
 		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null ) {
 			throw new Exception("Some data is null.");
 		}
+		logger.info("addNewCompany validation Ok.");
 		UserEntity user = new CompanyEntity();
 		CityEntity city = new CityEntity();
+		CountryEntity country = new CountryEntity();
+		CountryRegionEntity countryRegion = new CountryRegionEntity();
 		try {
-			CountryEntity country = countryRepository.getByCountryNameAndIso2Code(newCompany.getCountry(), newCompany.getIso2Code());
+			country = countryRepository.findByCountryNameAndIso2Code(newCompany.getCountry(), newCompany.getIso2Code());
 			if(country != null) {
-				CountryRegionEntity countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newCompany.getCountryRegion(), country);
+				countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newCompany.getCountryRegion(), country);
 				if (countryRegion != null) {
 					city = cityRepository.getByCityNameAndRegion(newCompany.getCity(), countryRegion);
+					logger.info("City founded.");
+				} else {
+					city = null;
 				}
+			} else {
+				city = null;
 			}
 			if( city == null) {
 				city = cityDao.addNewCity(newCompany.getCity(), newCompany.getLongitude(), newCompany.getLatitude(), newCompany.getCountryRegion(), newCompany.getCountry(), newCompany.getIso2Code(), loggedUser);
+				logger.info("City created.");
 			}
 			((CompanyEntity) user).setCompanyName(newCompany.getCompanyName());
 			((CompanyEntity) user).setCompanyId(newCompany.getCompanyId());
@@ -78,6 +91,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			user.setStatusActive();
 			user.setCreatedById(loggedUser.getId());
 			companyRepository.save(user);
+			logger.info("addNewCompany finished.");
 		} catch (Exception e) {
 			throw new Exception("addNewCompany save failed.");
 		}
@@ -114,7 +128,11 @@ public class CompanyDaoImpl implements CompanyDao {
 					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(updateCompany.getCountryRegion(), country);
 					if (countryRegion != null) {
 						city = cityRepository.getByCityNameAndRegion(updateCompany.getCity(), countryRegion);
+					} else {
+						city = null;
 					}
+				} else {
+					city = null;
 				}
 				if( city == null) {
 					city = cityDao.addNewCity(updateCompany.getCity(), updateCompany.getLongitude(), updateCompany.getLatitude(), updateCompany.getCountryRegion(), updateCompany.getCountry(), updateCompany.getIso2Code(), loggedUser);

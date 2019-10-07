@@ -12,4 +12,6 @@ public interface CountryRepository extends CrudRepository<CountryEntity, Integer
 	
 	public CountryEntity getByIso2Code(String iso2Code);
 
+	public CountryEntity findByCountryNameAndIso2Code(String country, String iso2Code);
+
 }
