@@ -23,5 +23,6 @@ public interface CompanyRepository extends CrudRepository<CompanyEntity, Integer
 	public CompanyEntity getByMobilePhoneAndStatusLike(String mobilePhone, Integer status);
 	public CompanyEntity getByMobilePhone(String mobilePhone);
 	public CompanyEntity getByIdAndStatusLike(Integer userId, Integer status);
+	public CompanyEntity getByCompanyId(String companyId);
 
 }

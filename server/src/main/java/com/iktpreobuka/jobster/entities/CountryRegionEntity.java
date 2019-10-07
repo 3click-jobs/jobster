@@ -50,8 +50,8 @@ public class CountryRegionEntity {
 	protected Integer id;
 	//@JsonView(Views.Student.class)
 	@Column(name="coutry_region_name")
-	@Pattern(regexp = "^[A-Za-z]{2,}$", message="Country region name is not valid.")
-	@NotNull (message = "Country region name must be provided.")
+	@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid.")
+	//@NotNull (message = "Country region name must be provided.")
 	protected String countryRegionName;
 	//@JsonView(Views.Admin.class)
 	@Max(1)

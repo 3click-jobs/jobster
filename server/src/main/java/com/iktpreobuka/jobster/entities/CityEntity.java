@@ -65,7 +65,7 @@ public class CityEntity {
 	protected Integer id;
 	//@JsonView(Views.Student.class)
 	@Column(name="city_name")
-	@Pattern(regexp = "^[A-Za-z]{2,}$", message="City name is not valid.")
+	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="City name is not valid.")
 	@NotNull (message = "City name must be provided.")
 	protected String cityName;
 	//@JsonView(Views.Student.class)
