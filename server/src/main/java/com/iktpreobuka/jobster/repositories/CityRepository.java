@@ -11,9 +11,9 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	public CityEntity getByCityName(String cityName);
 	
-	public CityEntity getByCityNameAndCountryRegionId(String cityName, String countryRegion);
+	public CityEntity getByCityNameAndRegionId(String cityName, String countryRegion);
 
 	public List<CityEntity> getByIdIsNot(Integer id);
 
-	public CityEntity getByCityNameAndCountryRegion(String city, CountryRegionEntity countryRegion);
+	public CityEntity getByCityNameAndRegion(String city, CountryRegionEntity countryRegion);
 }
