@@ -181,7 +181,7 @@ public class CompanyController {
 			logger.info("---------------- New Company is null.");
 	        return new ResponseEntity<>("New Company is null.", HttpStatus.BAD_REQUEST);
 	      }
-		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getCountryRegion() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
+		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getCountryRegion() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
 			logger.info("---------------- Some atributes is null.");
 			return new ResponseEntity<>("Some atributes is null", HttpStatus.BAD_REQUEST);
 		}
@@ -267,7 +267,7 @@ public class CompanyController {
 			logger.info("Company identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
-			if (updateCompany.getCompanyName() != null || updateCompany.getCompanyId() != null || updateCompany.getEmail() != null || updateCompany.getMobilePhone() != null || (updateCompany.getCity() != null && updateCompany.getCountry() != null && updateCompany.getCountryRegion() != null && updateCompany.getLatitude() != null && updateCompany.getLongitude() != null) || updateCompany.getDetailsLink() != null ) {
+			if (updateCompany.getCompanyName() != null || updateCompany.getCompanyId() != null || updateCompany.getEmail() != null || updateCompany.getMobilePhone() != null || (updateCompany.getCity() != null && updateCompany.getCountry() != null && updateCompany.getIso2Code() != null && updateCompany.getCountryRegion() != null && updateCompany.getLatitude() != null && updateCompany.getLongitude() != null) || updateCompany.getDetailsLink() != null ) {
 				companyDao.modifyCompany(loggedUser, user, updateCompany);
 				logger.info("Company modified.");
 			}

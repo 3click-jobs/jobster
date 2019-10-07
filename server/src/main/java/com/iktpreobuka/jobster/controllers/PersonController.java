@@ -181,7 +181,7 @@ public class PersonController {
 			logger.info("---------------- New person is null.");
 	        return new ResponseEntity<>("New person is null.", HttpStatus.BAD_REQUEST);
 	      }
-		if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getAccessRole() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getCountryRegion() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null || newPerson.getUsername() == null || newPerson.getPassword() == null || newPerson.getConfirmedPassword() == null ) {
+		if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getAccessRole() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getIso2Code() == null || newPerson.getCountryRegion() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null || newPerson.getUsername() == null || newPerson.getPassword() == null || newPerson.getConfirmedPassword() == null ) {
 			logger.info("---------------- Some atributes is null.");
 			return new ResponseEntity<>("Some atributes is null", HttpStatus.BAD_REQUEST);
 		}
@@ -267,7 +267,7 @@ public class PersonController {
 			logger.info("Person identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
-			if (updatePerson.getFirstName() != null || updatePerson.getLastName() != null || updatePerson.getGender() != null || updatePerson.getBirthDate() != null|| updatePerson.getEmail() != null || updatePerson.getMobilePhone() != null || (updatePerson.getCity() != null && updatePerson.getCountry() != null && updatePerson.getCountryRegion() != null && updatePerson.getLatitude() != null && updatePerson.getLongitude() != null) || updatePerson.getDetailsLink() != null ) {
+			if (updatePerson.getFirstName() != null || updatePerson.getLastName() != null || updatePerson.getGender() != null || updatePerson.getBirthDate() != null|| updatePerson.getEmail() != null || updatePerson.getMobilePhone() != null || (updatePerson.getCity() != null && updatePerson.getCountry() != null && updatePerson.getIso2Code() != null && updatePerson.getCountryRegion() != null && updatePerson.getLatitude() != null && updatePerson.getLongitude() != null) || updatePerson.getDetailsLink() != null ) {
 				personDao.modifyPerson(loggedUser, user, updatePerson);
 				logger.info("Person modified.");
 			}

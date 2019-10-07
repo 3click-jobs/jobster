@@ -5,13 +5,18 @@ import java.text.SimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.CompanyEntity;
+import com.iktpreobuka.jobster.entities.CountryEntity;
+import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.CompanyDTO;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.repositories.CompanyRepository;
+import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
+import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.JobOfferRepository;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 
@@ -24,6 +29,12 @@ public class CompanyDaoImpl implements CompanyDao {
 
 	@Autowired
 	private CityRepository cityRepository;
+	
+	@Autowired
+	private CountryRepository countryRepository;
+	
+	@Autowired
+	private CountryRegionRepository countryRegionRepository;
 	
 	@Autowired
 	private CityDao cityDao;
@@ -40,47 +51,41 @@ public class CompanyDaoImpl implements CompanyDao {
 
 	@Override
 	public UserEntity addNewCompany(UserEntity loggedUser, CompanyDTO newCompany) throws Exception {
-		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getCountryRegion() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null ) {
+		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null ) {
 			throw new Exception("Some data is null.");
 		}
-		/*UserEntity temporaryUser = new CompanyEntity();
-		try {
-			temporaryUser = companyRepository.getByEmail(newCompany.getEmail());
-		} catch (Exception e1) {
-			throw new Exception("addNewCompany Exist user check failed.");
-		}
-		if (temporaryUser != null && (!((CompanyEntity) temporaryUser).getCompanyName().equals(newCompany.getCompanyName()) || !((CompanyEntity) temporaryUser).getCompanyId().equals(newCompany.getCompanyId()) || !temporaryUser.getEmail().equals(newCompany.getEmail()) || !temporaryUser.getMobilePhone().equals(newCompany.getMobilePhone()) || !temporaryUser.getCity().equals(cityRepository.getByCityName(newCompany.getCity())) )) {
-			throw new Exception("Company exists, but import data not same as exist user data.");
-		}*/
 		UserEntity user = new CompanyEntity();
+		CityEntity city = new CityEntity();
 		try {
-			try {
-				if(cityRepository.getByCityName(newCompany.getCity()) == null) {
-					cityDao.addNewCity(newCompany.getCity(), newCompany.getLongitude(), newCompany.getLatitude(), newCompany.getCountryRegion(), newCompany.getCountry());
+			CountryEntity country = countryRepository.getByCountryNameAndIso2Code(newCompany.getCountry(), newCompany.getIso2Code());
+			if(country != null) {
+				CountryRegionEntity countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newCompany.getCountryRegion(), country);
+				if (countryRegion != null) {
+					city = cityRepository.getByCityNameAndCountryRegion(newCompany.getCity(), countryRegion);
 				}
-				((CompanyEntity) user).setCompanyName(newCompany.getCompanyName());
-				((CompanyEntity) user).setCompanyId(newCompany.getCompanyId());
-			    user.setCity(cityRepository.getByCityName(newCompany.getCity()));
-			    user.setEmail(newCompany.getEmail());
-			    user.setMobilePhone(newCompany.getMobilePhone());
-			    user.setDetailsLink(newCompany.getDetailsLink());
-			    user.setNumberOfRatings(0);
-			    user.setRating(0.0);
-				user.setStatusActive();
-				user.setCreatedById(loggedUser.getId());
-				companyRepository.save(user);
-				//temporaryUser = user;
-			} catch (Exception e) {
-				throw new Exception("addNewCompany save failed.");
 			}
-			return user;
+			if( city == null) {
+				city = cityDao.addNewCity(newCompany.getCity(), newCompany.getLongitude(), newCompany.getLatitude(), newCompany.getCountryRegion(), newCompany.getCountry(), newCompany.getIso2Code(), loggedUser);
+			}
+			((CompanyEntity) user).setCompanyName(newCompany.getCompanyName());
+			((CompanyEntity) user).setCompanyId(newCompany.getCompanyId());
+		    user.setCity(city);
+		    user.setEmail(newCompany.getEmail());
+		    user.setMobilePhone(newCompany.getMobilePhone());
+		    user.setDetailsLink(newCompany.getDetailsLink());
+		    user.setNumberOfRatings(0);
+		    user.setRating(0.0);
+			user.setStatusActive();
+			user.setCreatedById(loggedUser.getId());
+			companyRepository.save(user);
 		} catch (Exception e) {
 			throw new Exception("addNewCompany save failed.");
 		}
+		return user;
 	}
 	
 	public void modifyCompany(UserEntity loggedUser, CompanyEntity company, CompanyDTO updateCompany) throws Exception {
-		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyId() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getCountryRegion() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) ) {
+		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyId() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getIso2Code() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) ) {
 			throw new Exception("All data is null.");
 		}
 		try {
@@ -101,12 +106,23 @@ public class CompanyDaoImpl implements CompanyDao {
 				company.setMobilePhone(updateCompany.getMobilePhone());
 				i++;
 			}
-			if (updateCompany.getCity() != null && !cityRepository.getByCityName(updateCompany.getCity()).equals(company.getCity()) && !updateCompany.getCity().equals(" ") && !updateCompany.getMobilePhone().equals("")) {
-				if(cityRepository.getByCityName(updateCompany.getCity()) == null) {
-					cityDao.addNewCity(updateCompany.getCity(), updateCompany.getLongitude(), updateCompany.getLatitude(), updateCompany.getCountryRegion(), updateCompany.getCountry());
+			if (updateCompany.getCity() != null && !updateCompany.getCity().equals(" ") && !updateCompany.getCity().equals("") && updateCompany.getCountry() != null && !updateCompany.getCountry().equals(" ") && !updateCompany.getCountry().equals("") && updateCompany.getIso2Code() != null && !updateCompany.getIso2Code().equals(" ") && !updateCompany.getIso2Code().equals("") ) {
+				CityEntity city = new CityEntity();
+				CountryRegionEntity countryRegion = new CountryRegionEntity();
+				CountryEntity country = countryRepository.getByCountryNameAndIso2Code(updateCompany.getCountry(), updateCompany.getIso2Code());
+				if(country != null) {
+					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(updateCompany.getCountryRegion(), country);
+					if (countryRegion != null) {
+						city = cityRepository.getByCityNameAndCountryRegion(updateCompany.getCity(), countryRegion);
+					}
 				}
-				company.setCity(cityRepository.getByCityName(updateCompany.getCity()));
-				i++;
+				if( city == null) {
+					city = cityDao.addNewCity(updateCompany.getCity(), updateCompany.getLongitude(), updateCompany.getLatitude(), updateCompany.getCountryRegion(), updateCompany.getCountry(), updateCompany.getIso2Code(), loggedUser);
+				}
+				if(!city.equals(company.getCity())) {
+					company.setCity(city);
+					i++;
+				}
 			}
 			if (i>0) {
 				company.setUpdatedById(loggedUser.getId());
