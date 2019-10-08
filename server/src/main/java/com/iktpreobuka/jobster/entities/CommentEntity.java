@@ -20,6 +20,8 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.jobster.security.Views;
 
 @Entity
 @Table(name = "apply_comments")
@@ -51,30 +53,39 @@ public class CommentEntity {
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
-	
-	
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@NotNull (message = "Comment date must be provided.")
 	@Column(name="comment_date")
 	private Date commentDate;
-	
 
-	
 	
 	@Max(value=5,message ="Maximum rating is 5 stars")
     @Min(value=1,message ="Minimum rating is 1 stars")
     @Column(name = "rating", nullable = false)
 	private Integer rating;
 	
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
+    @Column(name = "comment_receiver", nullable = false, updatable = false)
+	private Integer commentReceiver;
+	
+	@Column(name="edited")
+	private Boolean edited;
+	
+	@JsonView(Views.Admin.class)
     @Column(name = "created_by", nullable = false, updatable = false)
 	private Integer createdById;
-    //@JsonView(Views.Admin.class)
+    
+    @JsonView(Views.Admin.class)
     @Column(name = "updated_by")
     private Integer updatedById;
+    
 	@JsonIgnore
 	@Version
 	private Integer version;
+	
+	
+	
 	public ApplyContactEntity getApplication() {
 		return application;
 	}
