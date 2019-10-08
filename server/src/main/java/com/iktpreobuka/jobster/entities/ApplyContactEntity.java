@@ -72,12 +72,13 @@ public class ApplyContactEntity {
 	private Boolean areConnected;
 	//@JsonView(Views.Student.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-	@NotNull (message = "Connection date must be provided.")
 	@Column(name="connection_date")
 	private Date connectionDate;
 	@Column(name="rejected")
 	//@JsonView(Views.Admin.class)
 	private Boolean rejected;
+	//@JsonView(Views.Admin.class)
+	private Boolean commentable;
 	//@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(-1)
@@ -99,20 +100,31 @@ public class ApplyContactEntity {
 	}
 
 	public ApplyContactEntity(@NotNull(message = "Job Offer must be provided.") JobOfferEntity offer,
-			@NotNull(message = "Job Seek must be provided.") JobSeekEntity seek,
-			@NotNull(message = "Contact date must be provided.") Date contactDate,
-			@NotNull(message = "First step must be provided.") EUserType firstStep, @Max(1) @Min(-1) Integer status,
-			Integer createdById) {
+			@NotNull(message = "Job Seek must be provided.") JobSeekEntity seek, List<CommentEntity> comments,
+			Integer id, @NotNull(message = "Contact date must be provided.") Date contactDate,
+			@NotNull(message = "First step must be provided.") EUserType firstStep, Boolean areConnected,
+			Date connectionDate, Boolean rejected, Boolean commentable, @Max(1) @Min(-1) Integer status,
+			Integer createdById, Integer updatedById, Integer version) {
 		super();
 		this.offer = offer;
 		this.seek = seek;
+		this.comments = comments;
+		this.id = id;
 		this.contactDate = contactDate;
 		this.firstStep = firstStep;
+		this.areConnected = areConnected;
+		this.connectionDate = connectionDate;
+		this.rejected = rejected;
+		this.commentable = commentable;
 		this.status = status;
 		this.createdById = createdById;
+		this.updatedById = updatedById;
+		this.version = version;
 	}
 
-	
+
+
+
 	public JobOfferEntity getOffer() {
 		return offer;
 	}
@@ -228,5 +240,27 @@ public class ApplyContactEntity {
 	public static Integer getStatusArchived() {
 		return STATUS_ARCHIVED;
 	}
+
+	public List<CommentEntity> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<CommentEntity> comments) {
+		this.comments = comments;
+	}
+
+	public Boolean getCommentable() {
+		return commentable;
+	}
+
+	public void setCommentable(Boolean commentable) {
+		this.commentable = commentable;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
+	
 	
 }
