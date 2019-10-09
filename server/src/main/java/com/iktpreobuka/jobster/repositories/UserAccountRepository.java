@@ -26,5 +26,6 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	public UserAccountEntity findByUserAndAccessRoleLike(UserEntity user, EUserRole role);
 	public UserAccountEntity findByUserAndAccessRoleLike(CompanyEntity user, EUserRole role);
 	public UserAccountEntity findByUserAndAccessRoleLike(PersonEntity user, EUserRole role);
+	public void deleteByUser(Integer id);
 
 }
