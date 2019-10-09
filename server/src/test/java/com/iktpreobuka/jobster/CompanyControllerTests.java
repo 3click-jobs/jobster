@@ -46,7 +46,7 @@ import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 @WebAppConfiguration 
 @FixMethodOrder(MethodSorters.DEFAULT)
 public class CompanyControllerTests {
-
+ 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(), 
 			MediaType.APPLICATION_JSON.getSubtype(), 
 			Charset.forName("utf8"));
