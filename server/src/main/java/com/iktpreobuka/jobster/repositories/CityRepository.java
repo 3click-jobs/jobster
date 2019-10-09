@@ -16,4 +16,7 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 	public List<CityEntity> getByIdIsNot(Integer id);
 
 	public CityEntity getByCityNameAndRegion(String city, CountryRegionEntity countryRegion);
+
+	@SuppressWarnings("unchecked")
+	public CityEntity save(CityEntity cityEntity);
 }

@@ -14,4 +14,7 @@ public interface CountryRepository extends CrudRepository<CountryEntity, Integer
 
 	public CountryEntity findByCountryNameAndIso2Code(String country, String iso2Code);
 
+	@SuppressWarnings("unchecked")
+	public CountryEntity save(CountryEntity countryEntity);
+
 }

@@ -11,4 +11,6 @@ public interface CountryRegionRepository extends CrudRepository<CountryRegionEnt
 	
 	CountryRegionEntity getByCountryRegionNameAndCountry(String countryRegionName, CountryEntity country);
 
+	@SuppressWarnings("unchecked")
+	public CountryRegionEntity save(CountryRegionEntity countryRegionEntity);
 }
