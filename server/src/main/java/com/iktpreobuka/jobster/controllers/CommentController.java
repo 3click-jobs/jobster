@@ -1,6 +1,7 @@
 package com.iktpreobuka.jobster.controllers;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -24,11 +25,13 @@ import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CommentEntity;
 import com.iktpreobuka.jobster.entities.dto.AddCommentDTO;
+import com.iktpreobuka.jobster.entities.dto.ShowCommentDTO;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
 import com.iktpreobuka.jobster.repositories.CommentRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.ApplyContactDao;
+import com.iktpreobuka.jobster.services.CommentDao;
 
 @RestController
 @RequestMapping(path = "/jobster/comment")
@@ -46,6 +49,9 @@ public class CommentController {
 	@Autowired
 	ApplyContactDao applyContactDao;
 	
+	@Autowired 
+	CommentDao commentDao;
+	
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 	
 	private String createErrorMessage(BindingResult result) { 
@@ -60,9 +66,11 @@ public class CommentController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<CommentEntity> comments = commentRepository.findAll();
+			logger.info("---------------- Found comments - OK.");
+			logger.info("---------------- Comments to DTOs service starting ");
+			ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<Iterable<CommentEntity>>(comments, HttpStatus.OK);
-
+			return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,9 +85,11 @@ public class CommentController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<CommentEntity> comments = commentRepository.findByStatusLike(1);
+			logger.info("---------------- Found comments - OK.");
+			logger.info("---------------- Comments to DTOs service starting ");
+			ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<Iterable<CommentEntity>>(comments, HttpStatus.OK);
-
+			return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -93,8 +103,11 @@ public class CommentController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<CommentEntity> comments = commentRepository.findByStatusLike(0);
+			logger.info("---------------- Found comments - OK.");
+			logger.info("---------------- Comments to DTOs service starting ");
+			ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<Iterable<CommentEntity>>(comments, HttpStatus.OK);
+			return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
 
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -109,8 +122,11 @@ public class CommentController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<CommentEntity> comments = commentRepository.findByStatusLike(-1);
+			logger.info("---------------- Found comments - OK.");
+			logger.info("---------------- Comments to DTOs service starting ");
+			ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<Iterable<CommentEntity>>(comments, HttpStatus.OK);
+			return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
 
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -119,9 +135,9 @@ public class CommentController {
 	}
 	//@Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}") // get active by ID
+	@RequestMapping(method = RequestMethod.GET, value = "{id}") // get active by ID
 	public ResponseEntity<?> getById(@PathVariable Integer id,Principal principal) {
-		logger.info("################ /jobster/comment/{id}/getById started.");
+		logger.info("################ /jobster/comment/getById started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			CommentEntity comment = commentRepository.findByIdAndStatusLike(id, 1);
@@ -129,8 +145,11 @@ public class CommentController {
 				logger.info("++++++++++++++++ Active comment not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
+			logger.info("---------------- Found comment - OK.");
+			logger.info("---------------- Comment to DTO service starting ");
+			ShowCommentDTO commentDTO = commentDao.fromCommentToDTO(comment);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<>(comment, HttpStatus.OK);
+			return new ResponseEntity<>(commentDTO, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -148,8 +167,11 @@ public class CommentController {
 				logger.info("++++++++++++++++ Comment not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
+			logger.info("---------------- Found comment - OK.");
+			logger.info("---------------- Comment to DTO service starting ");
+			ShowCommentDTO commentDTO = commentDao.fromCommentToDTO(comment);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<CommentEntity>(comment, HttpStatus.OK);
+			return new ResponseEntity<>(commentDTO, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -220,9 +242,7 @@ public class CommentController {
 			comment.setUpdatedById(null);
 			comment.setCommentReceiver(commReceiverId);
 			comment.setEdited(false);
-			
 			logger.info("---------------- Comment created!!!");
-			
 			commentRepository.save(comment);
 			logger.info("---------------- Comment saved in DB!!!");
 
