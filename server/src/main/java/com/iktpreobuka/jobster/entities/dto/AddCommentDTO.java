@@ -1,6 +1,5 @@
 package com.iktpreobuka.jobster.entities.dto;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -12,7 +11,6 @@ public class AddCommentDTO {
 
 	@Max(value = 5, message = "Maximum rating is 5 stars")
 	@Min(value = 1, message = "Minimum rating is 1 stars")
-	@Column(name = "rating", nullable = false)
 	private Integer rating;
 
 	private Integer applyId;

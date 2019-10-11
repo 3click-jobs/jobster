@@ -16,7 +16,7 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 		logger.info("get other party's ID from apply started");
 		if(apply.getOffer().getEmployer().getId()==idIn) {
 			return apply.getSeek().getEmployee().getId();}
-		if(apply.getSeek().getEmployee().getId()==idIn) {
+		else if(apply.getSeek().getEmployee().getId()==idIn) {
 			return apply.getOffer().getEmployer().getId();}
 		else {return null;}
 	}

@@ -28,3 +28,4 @@ public interface PersonRepository extends CrudRepository<PersonEntity, Integer> 
 	public PersonEntity getByIdAndStatusLike(Integer userId, Integer status);
 
 }
+
