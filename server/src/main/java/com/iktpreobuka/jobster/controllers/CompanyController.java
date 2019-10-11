@@ -82,6 +82,10 @@ public class CompanyController {
 		try {
 			Iterable<CompanyEntity> users= companyRepository.findByStatusLike(1);
 			logger.info("---------------- Finished OK.");
+			if (users == null) {
+				logger.info("---------------- Companies not found.");
+		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+		      }
 			return new ResponseEntity<Iterable<CompanyEntity>>(users, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -98,6 +102,10 @@ public class CompanyController {
 		try {
 			CompanyEntity user= companyRepository.findByIdAndStatusLike(id, 1);
 			logger.info("---------------- Finished OK.");
+			if (user == null) {
+				logger.info("---------------- Company not found.");
+		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+		      }
 			return new ResponseEntity<CompanyEntity>(user, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -115,6 +123,10 @@ public class CompanyController {
 		try {
 			Iterable<CompanyEntity> users= companyRepository.findByStatusLike(0);
 			logger.info("---------------- Finished OK.");
+			if (users == null) {
+				logger.info("---------------- Deleted companies not found.");
+		        return new ResponseEntity<>("Deleted companies not found.", HttpStatus.NOT_FOUND);
+		      }
 			return new ResponseEntity<Iterable<CompanyEntity>>(users, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -131,6 +143,10 @@ public class CompanyController {
 		try {
 			CompanyEntity user= companyRepository.findByIdAndStatusLike(id, 0);
 			logger.info("---------------- Finished OK.");
+			if (user == null) {
+				logger.info("---------------- Company not found in deleted.");
+		        return new ResponseEntity<>("Company not found in deleted.", HttpStatus.NOT_FOUND);
+		      }
 			return new ResponseEntity<CompanyEntity>(user, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -147,6 +163,10 @@ public class CompanyController {
 		try {
 			Iterable<CompanyEntity> users= companyRepository.findByStatusLike(-1);
 			logger.info("---------------- Finished OK.");
+			if (users == null) {
+				logger.info("---------------- Archived companies not found.");
+		        return new ResponseEntity<>("Archived companies not found.", HttpStatus.NOT_FOUND);
+		      }
 			return new ResponseEntity<Iterable<CompanyEntity>>(users, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -163,6 +183,10 @@ public class CompanyController {
 		try {
 			CompanyEntity user= companyRepository.findByIdAndStatusLike(id, -1);
 			logger.info("---------------- Finished OK.");
+			if (user == null) {
+				logger.info("---------------- Company not found in archived.");
+		        return new ResponseEntity<>("Company not found in archived.", HttpStatus.NOT_FOUND);
+		      }
 			return new ResponseEntity<CompanyEntity>(user, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -180,11 +204,11 @@ public class CompanyController {
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
 			}
-		if (newCompany == null) {
+		if (newCompany.equals(null)) {
 			logger.info("---------------- New Company is null.");
 	        return new ResponseEntity<>("New Company is null.", HttpStatus.BAD_REQUEST);
 	      }
-		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getCountryRegion() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
+		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
 			logger.info("---------------- Some atributes is null.");
 			return new ResponseEntity<>("Some atributes is null", HttpStatus.BAD_REQUEST);
 		}
