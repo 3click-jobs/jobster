@@ -25,7 +25,7 @@ public class CityDistanceDaoImpl implements CityDistanceDao {
 	
 	public void addNewDistancesForCity(CityEntity city, UserEntity loggedUser) throws Exception {
 		if ( city == null || loggedUser == null ) {
-			throw new Exception("Country name and/or logged user is null.");
+			throw new Exception("City and/or logged user is null.");
 		}
 		List<CityDistanceEntity> distances = new ArrayList<>();
 		try {
