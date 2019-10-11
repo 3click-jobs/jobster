@@ -18,7 +18,7 @@ body {
   text-transform: uppercase;
   font-size: .9rem; /*--1 rem = 16px--*/
   letter-spacing: .1rem;
-  opacity: 0.7;           /*0.5 determines transparency value*/   
+  /*opacity: 0.7;           /*0.5 determines transparency value*/   
  }
 .navbar-brand img {
   height: 5rem;
@@ -70,4 +70,32 @@ body {
   background-color: #0BAD7B;
   color: white;
   font-size: 1.1rem;
+  
 }
+
+/* Login form */
+.note
+{
+    text-align: center;
+    height: 80px;
+    background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+    color: #fff;
+    font-weight: bold;
+    line-height: 80px;
+}
+.form {
+  width: 50%;
+  margin: 0 auto;
+}
+.form-content
+{
+    padding: 5%;
+    border: 1px solid #ced4da;
+    margin-bottom: 2%;
+}
+.form-control{
+    border-radius:1.5rem;
+}
+
+
+

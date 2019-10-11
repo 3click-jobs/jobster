@@ -141,6 +141,10 @@ public class UserEntity {
 		return city;
 	}
 
+	protected void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public Double getRating() {
 		return rating;
 	}
@@ -237,15 +241,15 @@ public class UserEntity {
 		return status;
 	}
 	
-	private static Integer getStatusInactive() {
+	protected static Integer getStatusInactive() {
 		return STATUS_INACTIVE;
 	}
 
-	private static Integer getStatusActive() {
+	protected static Integer getStatusActive() {
 		return STATUS_ACTIVE;
 	}
 
-	private static Integer getStatusArchived() {
+	protected static Integer getStatusArchived() {
 		return STATUS_ARCHIVED;
 	}
 	

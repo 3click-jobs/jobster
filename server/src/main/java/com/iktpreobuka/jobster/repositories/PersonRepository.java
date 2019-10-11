@@ -11,6 +11,7 @@ import com.iktpreobuka.jobster.entities.PersonEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.PersonDTO;
 
+
 @Repository
 public interface PersonRepository extends CrudRepository<PersonEntity, Integer> {
 
@@ -27,3 +28,4 @@ public interface PersonRepository extends CrudRepository<PersonEntity, Integer> 
 	public PersonEntity getByIdAndStatusLike(Integer userId, Integer status);
 
 }
+

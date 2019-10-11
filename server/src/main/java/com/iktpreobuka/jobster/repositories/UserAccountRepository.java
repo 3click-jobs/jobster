@@ -2,6 +2,7 @@ package com.iktpreobuka.jobster.repositories;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.iktpreobuka.jobster.entities.CompanyEntity;
 import com.iktpreobuka.jobster.entities.PersonEntity;
@@ -10,6 +11,7 @@ import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.enumerations.EUserRole;
 
 
+@Repository
 public interface UserAccountRepository extends CrudRepository<UserAccountEntity, Integer> {
 
 	public UserAccountEntity getById(Integer id);
@@ -26,5 +28,8 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	public UserAccountEntity findByUserAndAccessRoleLike(UserEntity user, EUserRole role);
 	public UserAccountEntity findByUserAndAccessRoleLike(CompanyEntity user, EUserRole role);
 	public UserAccountEntity findByUserAndAccessRoleLike(PersonEntity user, EUserRole role);
+	public void deleteByUser(Integer id);
+	@SuppressWarnings("unchecked")
+	public UserAccountEntity save(UserAccountEntity userAccountEntity);
 
 }
