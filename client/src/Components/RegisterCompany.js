@@ -1,6 +1,39 @@
 import React, { Component } from 'react';
 
 class RegisterCompany extends Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+
+        }
+    }
+
+    handleRegisterCompany = () => {
+        fetch('http://localhost:8080/jobster/users/companies', {
+            method: 'post',
+            mode: 'no-cors',
+            headers: {'Content-Type':'application/json'},
+            body: {
+                "companyName": "tester",
+                "companyId": 1014090891254,
+                "mobilePhone": "+38169010015",
+                "email": "saqo0s0s@gmail.com",
+                "city": "Novi Sad",
+                "country" : "Serbia",
+                "accessRole": "ROLE_USER",
+                "iso2Code": "SER",
+                "countryRegion": "Vojvodina",
+                "longitude" : 38.0,
+                "latitude": 39.1,
+                "detailsLink" : "Aaaaaaa",
+                "username": "Test123456789012",
+                "password" : "Test12345678901",
+                "confirmedPassword": "Test12345678901"
+    }
+           }).then(response => console.log(response));
+    }
+
   render() {
     return (
         <div>
@@ -39,7 +72,7 @@ class RegisterCompany extends Component {
                                 <input type="password" className="form-control" placeholder="Confirm Password *"/>
                             </div>                    
                    
-                            <button type="button" className="btn btn-danger btn-lg">Login</button>
+                            <button type="button" onClick={this.handleRegisterCompany()} className="btn btn-danger btn-lg">Login</button>
                      </div>
                 </div>
             </div>
