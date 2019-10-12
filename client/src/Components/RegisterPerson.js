@@ -14,12 +14,6 @@ class RegisterPerson extends Component {
             method: 'post',
             headers: {'Content-Type':'application/json'},
             body: {
-             "firstName": "test",
-             "lastName": "test",
-             "gender": "test",
-             "firstName": "test",
-             "firstName": "test",
-             "firstName": "test",
              
             }
            });
