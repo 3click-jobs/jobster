@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 class Login extends Component {
   render() {
     return (
-        <div>
+        
          <div className='jumbotron'>
           <div className="container register-form">
             <div className="form">
@@ -34,7 +34,7 @@ class Login extends Component {
         </div>
       </div>
   </div> 
-</div>
+
     );
   }
 }
