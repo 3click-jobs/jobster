@@ -1,29 +1,63 @@
 import React, { Component } from 'react';
 import '../App.css';
+import { Carousel } from "react-bootstrap";
 
 class Home extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      index: 0,
+      direction: null,
+    }
+  }
+
+  handleSelect(selectedIndex, e) {
+    this.setState({
+      index: selectedIndex,
+      direction: e.direction
+    });
+  }
+
+
   render() {
     return (
-    //     <div >
-    //        <div className="landing">
-    //     <div className="home-wrap">
-    //     <div className="home-inner">            
-    //     </div>      
-    //  </div>  
-    // </div>
-
-    // <div className="caption text-center">
-    //     <h1>3clickjobs</h1>
-    //     <h3>Find best job offers with 3clickjobs</h3>
-    //     <button type="button" className="btn btn-primary btn-lg">Search Available Jobs</button>
-    //     <button type="button" classNamee="btn btn-primary btn-lg">Search Available Employees</button><br></br>
-    //     <button type="button" className="btn btn-secondary btn-lg">Offer/Seek Job</button>
-    //     </div>
-        
-    //     </div>
-
 
 <>
+<Carousel  className="intro carousel slide bg-overlay-light h-auto" id="carouselExampleCaptions">
+  <Carousel.Item className="carousel-item">
+    <img
+      className="d-block w-100 img-fluid"
+      src="https://images.pexels.com/photos/838413/pexels-photo-838413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+      alt="First slide"
+    />
+    <Carousel.Caption>
+      <h3 className="display-4 text-white mb-2 mt-4">First slide label</h3>
+      <p className="text-white mb-3 px-5 lead">Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+      <a href="/" className="btn btn-primary btn-capsul px-4 py-2">Search Available Jobs</a>
+    </Carousel.Caption>
+  </Carousel.Item>
+  <Carousel.Item>
+    <img
+      className="d-block w-100"
+      src="https://images.pexels.com/photos/838413/pexels-photo-838413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+      alt="Second slide"
+    />
+
+    <Carousel.Caption>
+      <h3>Second slide label</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <a href="/" className="btn btn-primary btn-capsul px-4 py-2">Search Available Jobs</a>
+    </Carousel.Caption>
+  </Carousel.Item>
+  
+</Carousel>
+
+
+<div className="jumbotron">
+  <p> text</p>
+  </div>
+    
+{/* 
 <section className="intro carousel slide bg-overlay-light h-auto" id="carouselExampleCaptions">
     <ol className="carousel-indicators">
       <li data-target="#carouselExampleCaptions" data-slide-to="0" className="active"></li>
@@ -59,7 +93,7 @@ class Home extends Component {
 
 <div className="jumbotron">
   <p> text</p>
-  </div>
+  </div> */}
   </>
     
 
