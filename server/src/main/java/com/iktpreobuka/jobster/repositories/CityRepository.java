@@ -18,4 +18,12 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 	public CityEntity getByCityNameAndRegion(String city, CountryRegionEntity countryRegion);
 
 	public Iterable<CityEntity> findByCityNameIgnoreCase();
+
+	public boolean existsByCityNameIgnoreCase(String cityName);
+
+	public boolean existsByLongitude(Double longitude);
+
+	public boolean existsByLatitude(Double latitude);
+
+	public boolean existsByRegion(CountryRegionEntity region);
 }
