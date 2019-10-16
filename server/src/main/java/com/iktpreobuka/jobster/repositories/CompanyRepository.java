@@ -5,11 +5,13 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.iktpreobuka.jobster.entities.CompanyEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.CompanyDTO;
 
+@Repository
 public interface CompanyRepository extends CrudRepository<CompanyEntity, Integer> {
 	
 	public CompanyEntity getById(Integer id);

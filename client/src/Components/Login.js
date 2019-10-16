@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import '../App.css';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 class Login extends Component {
   render() {
     return (
-        <div>
+        
          <div className='jumbotron'>
           <div className="container register-form">
             <div className="form">
@@ -19,10 +19,10 @@ class Login extends Component {
                       
                         <div className="col-md-12">
                             <div className="form-group">
-                                <input type="text" className="form-control" placeholder="Username *" value=""/>
+                                <input type="text" className="form-control" placeholder="Username *"/>
                             </div>
                             <div className="form-group">
-                                <input type="text" className="form-control" placeholder="Password *" value=""/>
+                                <input type="text" className="form-control" placeholder="Password *"/>
                             </div>                                                 
                             <button type="button" className="btn btn-danger btn-lg">Login</button>                            
                             <div className="form-group">
@@ -34,7 +34,7 @@ class Login extends Component {
         </div>
       </div>
   </div> 
-</div>
+
     );
   }
 }

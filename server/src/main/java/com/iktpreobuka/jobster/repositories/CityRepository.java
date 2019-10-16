@@ -3,10 +3,12 @@ package com.iktpreobuka.jobster.repositories;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 
+@Repository
 public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	public CityEntity getByCityNameIgnoreCase(String cityName);
