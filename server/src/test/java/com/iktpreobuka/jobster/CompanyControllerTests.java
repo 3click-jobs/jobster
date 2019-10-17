@@ -76,6 +76,8 @@ public class CompanyControllerTests {
 	
 	private static List<CompanyEntity> companies = new ArrayList<>();
 	
+	private static List<UserAccountEntity> userAccounts = new ArrayList<>();
+	
 	@Autowired 
 	private CompanyRepository companyRepository;
 	
@@ -103,21 +105,29 @@ public class CompanyControllerTests {
 	@Before
 	public void setUp() throws Exception { 
 		if(!dbInit) { mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build(); 
-			country = countryRepository.save(new CountryEntity("World Union", "XXX", 1));
-			region = countryRegionRepository.save(new CountryRegionEntity(country, "World region", 1));	
-			regionNoName = countryRegionRepository.save(new CountryRegionEntity(country, null, 1));	
-			cityWhitoutRegion = cityRepository.save(new CityEntity(regionNoName, "World city without", 33.3, 34.5, 1)); 
-			city = cityRepository.save(new CityEntity(region, "World city", 33.3, 34.5, 1));
-			CompanyControllerTests.companies.add(companyRepository.save(new CompanyEntity(city, "0642345678", "Jobster@mail.com", "About Jobster", 1, "Jobster", "11231231231231")));
-			CompanyControllerTests.companies.add(companyRepository.save(new CompanyEntity(city, "0643456789", "Jobsters@mail.com", "About Jobsters", 1, "Jobsters", "11231231231232")));
-			CompanyControllerTests.companies.add(companyRepository.save(new CompanyEntity(city, "0644567890", "Jobstery@mail.com", "About Jobstery", 1, "Jobstery", "11231231231233")));
-			company = new CompanyEntity(city, "0644567899", "Jobstery1@mail.com", "About Jobstery", 1, "Jobsterya", "11231231231235");
+			country = countryRepository.save(new CountryEntity("World Union", "XXX"));
+			region = countryRegionRepository.save(new CountryRegionEntity(country, "World region"));	
+			regionNoName = countryRegionRepository.save(new CountryRegionEntity(country, null));	
+			cityWhitoutRegion = cityRepository.save(new CityEntity(regionNoName, "World city without", 33.3, 34.5)); 
+			city = cityRepository.save(new CityEntity(region, "World city", 33.3, 34.5));
+			CompanyControllerTests.companies.add(companyRepository.save(new CompanyEntity(city, "0642345678", "Jobster@mail.com", "About Jobster", "Jobster", "11231231231231")));
+			CompanyControllerTests.companies.add(companyRepository.save(new CompanyEntity(city, "0643456789", "Jobsters@mail.com", "About Jobsters", "Jobsters", "11231231231232")));
+			CompanyControllerTests.companies.add(companyRepository.save(new CompanyEntity(city, "0644567890", "Jobstery@mail.com", "About Jobstery", "Jobstery", "11231231231233")));
+			company = new CompanyEntity(city, "0644567899", "Jobstery1@mail.com", "About Jobstery", "Jobsterya", "11231231231235");
 			company.setStatusInactive();
 			CompanyControllerTests.companies.add(companyRepository.save(company));
-			company = new CompanyEntity(city, "0644567898", "Jobstery2@mail.com", "About Jobstery", 1, "Jobsteryb", "11231231231234");
+			company = new CompanyEntity(city, "0644567898", "Jobstery2@mail.com", "About Jobstery", "Jobsteryb", "11231231231234");
 			company.setStatusArchived();
 			CompanyControllerTests.companies.add(companyRepository.save(company));
-			userAccount = userAccountRepository.save(new UserAccountEntity(CompanyControllerTests.companies.get(1), EUserRole.ROLE_USER, "Test1234", "Test1234", CompanyControllerTests.companies.get(0).getId()));
+			CompanyControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(CompanyControllerTests.companies.get(0), EUserRole.ROLE_USER, "Test1234", "Test1234", CompanyControllerTests.companies.get(0).getId())));
+			CompanyControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(CompanyControllerTests.companies.get(1), EUserRole.ROLE_USER, "Test1235", "Test1234", CompanyControllerTests.companies.get(0).getId())));
+			CompanyControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(CompanyControllerTests.companies.get(2), EUserRole.ROLE_USER, "Test1236", "Test1234", CompanyControllerTests.companies.get(0).getId())));
+			userAccount = new UserAccountEntity(CompanyControllerTests.companies.get(3), EUserRole.ROLE_USER, "Test1237", "Test1234", CompanyControllerTests.companies.get(0).getId());
+			userAccount.setStatusInactive();
+			CompanyControllerTests.userAccounts.add(userAccountRepository.save(userAccount));
+			userAccount = new UserAccountEntity(CompanyControllerTests.companies.get(4), EUserRole.ROLE_USER, "Test1238", "Test1234", CompanyControllerTests.companies.get(0).getId());
+			userAccount.setStatusArchived();
+			CompanyControllerTests.userAccounts.add(userAccountRepository.save(userAccount));
 			dbInit = true;
 		} 
 	}
@@ -125,8 +135,12 @@ public class CompanyControllerTests {
 	@After
 	public void tearDown() throws Exception {
 		if(dbInit) {
-			if (userAccount != null)
-				userAccountRepository.delete(userAccount);
+			/*if (userAccount != null)
+				userAccountRepository.delete(userAccount);*/
+			for (UserAccountEntity acc : CompanyControllerTests.userAccounts) {
+				userAccountRepository.delete(acc);
+			}
+			CompanyControllerTests.userAccounts.clear();
 			for (CompanyEntity cmpny : CompanyControllerTests.companies) {
 				companyRepository.delete(cmpny);
 			}
@@ -164,14 +178,19 @@ public class CompanyControllerTests {
 	@Test 
 	public void readAllCompaniesNotFound() throws Exception { 
 		
-		userAccountRepository.delete(userAccount);
-		userAccount = null;
+		/*userAccountRepository.delete(userAccount);
+		userAccount = null;*/
+		for (UserAccountEntity acc : CompanyControllerTests.userAccounts) {
+			userAccountRepository.delete(acc);
+		}
+		CompanyControllerTests.userAccounts.clear();
 		for (CompanyEntity cmpny : CompanyControllerTests.companies) {
 			companyRepository.delete(cmpny);
 		}
 		CompanyControllerTests.companies.clear();
 
 		mockMvc.perform(get("/jobster/users/companies/"))
+			//.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isNotFound()); 
 		}
 
@@ -180,6 +199,7 @@ public class CompanyControllerTests {
 	public void readSingleCompany() throws Exception { 
 		mockMvc.perform(get("/jobster/users/companies/" + CompanyControllerTests.companies.get(0).getId()))
 			.andExpect(status().isOk())
+			//.andDo(MockMvcResultHandlers.print())
 			.andExpect(jsonPath("$.id",
 				is(CompanyControllerTests.companies.get(0).getId().intValue()))); }
 
@@ -205,8 +225,12 @@ public class CompanyControllerTests {
 		
 		//when(companyDao.findCompanyByStatusLike(0)).thenReturn(null);
 
-		userAccountRepository.delete(userAccount);
-		userAccount = null;
+		/*userAccountRepository.delete(userAccount);
+		userAccount = null;*/
+		for (UserAccountEntity acc : CompanyControllerTests.userAccounts) {
+			userAccountRepository.delete(acc);
+		}
+		CompanyControllerTests.userAccounts.clear();
 		for (CompanyEntity cmpny : CompanyControllerTests.companies) {
 			companyRepository.delete(cmpny);
 		}
@@ -221,6 +245,7 @@ public class CompanyControllerTests {
 	public void readSingleDeletedCompany() throws Exception { 
 		mockMvc.perform(get("/jobster/users/companies/deleted/" + CompanyControllerTests.companies.get(3).getId()))
 			.andExpect(status().isOk())
+			//.andDo(MockMvcResultHandlers.print())
 			.andExpect(jsonPath("$.id",
 				is(CompanyControllerTests.companies.get(3).getId().intValue()))); }
 
@@ -241,8 +266,12 @@ public class CompanyControllerTests {
 	@Test 
 	public void readAllArchivedCompaniesNotFound() throws Exception { 
 		
-		userAccountRepository.delete(userAccount);
-		userAccount = null;
+		/*userAccountRepository.delete(userAccount);
+		userAccount = null;*/
+		for (UserAccountEntity acc : CompanyControllerTests.userAccounts) {
+			userAccountRepository.delete(acc);
+		}
+		CompanyControllerTests.userAccounts.clear();
 		for (CompanyEntity cmpny : CompanyControllerTests.companies) {
 			companyRepository.delete(cmpny);
 		}
@@ -257,6 +286,7 @@ public class CompanyControllerTests {
 	public void readSingleArchivedCompany() throws Exception { 
 		mockMvc.perform(get("/jobster/users/companies/archived/" + CompanyControllerTests.companies.get(4).getId()))
 			.andExpect(status().isOk())
+			//.andDo(MockMvcResultHandlers.print())
 			.andExpect(jsonPath("$.id",
 				is(CompanyControllerTests.companies.get(4).getId().intValue()))); }
 
@@ -290,9 +320,10 @@ public class CompanyControllerTests {
 
         mockMvc.perform(post("/jobster/users/companies/").contentType(
                     MediaType.APPLICATION_JSON).content(json))
-	        .andExpect(status().isOk())
+        	//.andDo(MockMvcResultHandlers.print())
+        	.andExpect(status().isOk())
 			.andExpect(content().contentType(contentType)) 
-			.andExpect(jsonPath("$.username", is("Test123")));
+			.andExpect(jsonPath("$.user.mobilePhone", is("0645678901")));
 		CompanyControllerTests.companies.add(companyRepository.getByEmailAndStatusLike(companyDTO.getEmail(), 1)/*.save(new CompanyEntity(/*CompanyControllerTests.cities.get(0)*//*city, "0638795858", "lidlo@mail.com", "About Lidlo", 1, "Lidlo", "9988776655443"))*/);
 		userAccountRepository.delete(userAccountRepository.getByUser(companyRepository.getByEmailAndStatusLike(companyDTO.getEmail(), 1)));
 		}
@@ -320,20 +351,183 @@ public class CompanyControllerTests {
 
         mockMvc.perform(post("/jobster/users/companies/").contentType(
                     MediaType.APPLICATION_JSON).content(json))
-	        .andExpect(status().isOk())
+        	//.andDo(MockMvcResultHandlers.print())
+        	.andExpect(status().isOk())
 			.andExpect(content().contentType(contentType)) 
-			.andExpect(jsonPath("$.username", is("Test123")));
+			.andExpect(jsonPath("$.user.companyName", is("Jobsteries")));
 		CompanyControllerTests.companies.add(companyRepository.getByEmailAndStatusLike(companyDTO.getEmail(), 1)/*.save(new CompanyEntity(/*CompanyControllerTests.cities.get(0)*//*city, "0638795858", "lidlo@mail.com", "About Lidlo", 1, "Lidlo", "9988776655443"))*/);
 		userAccountRepository.delete(userAccountRepository.getByUser(companyRepository.getByEmailAndStatusLike(companyDTO.getEmail(), 1)));
 		}
 
 	@Test 
-	public void createCompanyValidationError() throws Exception {
+	public void createCompanyValidationErrorEmail() throws Exception {
         CompanyDTO companyDTO = new CompanyDTO();
         companyDTO.setMobilePhone("0645678901");
         companyDTO.setEmail("Jobsteries@mail");
         companyDTO.setAbout("About Jobsteries");
         companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+	
+	@Test 
+	public void createCompanyValidationErrorPhone() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("064gf56789--01");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyValidationErrorRegistrationNumberSmal() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("112312331236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyValidationErrorRegistrationNumberLarge() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("1123123123123656");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyValidationErrorRole() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("AAAA");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyValidationErrorRegistrationNumberLetter() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("112f1231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyValidationErrorCompanyNameOneChar() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("J");
         companyDTO.setCompanyRegistrationNumber("11231231231236");
         companyDTO.setCity("World city");
         companyDTO.setCountry("World Union");
@@ -392,6 +586,318 @@ public class CompanyControllerTests {
 	        .andExpect(status().isBadRequest());
 		}
 
+	@Test 
+	public void createCompanyNullPhone() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullCompanyName() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullRegistrtionNumber() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullCity() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullLongitude() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullLatitude() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullCountry() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullRole() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullIso2Code() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullUsername() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setPassword("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullPassword() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setConfirmedPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+
+	@Test 
+	public void createCompanyNullConfirmedPassword() throws Exception {
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setMobilePhone("0645678901");
+        companyDTO.setEmail("Jobsteries@mail.com");
+        companyDTO.setAbout("About Jobsteries");
+        companyDTO.setCompanyName("Jobsteries");
+        companyDTO.setCompanyRegistrationNumber("11231231231236");
+        companyDTO.setCity("World city");
+        companyDTO.setCountry("World Union");
+        companyDTO.setAccessRole("ROLE_USER");
+        companyDTO.setIso2Code("XXX");
+        companyDTO.setCountryRegion("World region");
+        companyDTO.setLongitude(43.1);
+        companyDTO.setLatitude(43.1);
+        companyDTO.setUsername("Test123");
+        companyDTO.setPassword("Test123");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(companyDTO);
+
+        mockMvc.perform(post("/jobster/users/companies/").contentType(
+                    MediaType.APPLICATION_JSON).content(json))
+	        .andExpect(status().isBadRequest());
+		}
+	
 	@Test 
 	public void createCompanyMobilePhoneAlreadyExists() throws Exception {
         CompanyDTO companyDTO = new CompanyDTO();
@@ -541,14 +1047,15 @@ public class CompanyControllerTests {
         		.contentType(MediaType.APPLICATION_JSON).content(json))
 	        .andExpect(status().isOk())
 			.andExpect(content().contentType(contentType)) 
-			.andExpect(jsonPath("$.companyName", is("Jobsty"))) 
-			.andExpect(jsonPath("$.email", is("Jobsty@mail.com")));
+			//.andDo(MockMvcResultHandlers.print())
+			.andExpect(jsonPath("$.user.companyName", is("Jobsty"))) 
+			.andExpect(jsonPath("$.user.email", is("Jobsty@mail.com")));
 		CompanyControllerTests.companies.remove(0);
 		CompanyControllerTests.companies.add(companyRepository.getByEmailAndStatusLike(companyDTO.getEmail(), 1));
 		}
 
 	@Test 
-	public void shouldReturn404WhenTryPartialUpdateCompanyWhichNotExists() throws Exception {
+	public void updateCompanyWhichNotExists() throws Exception {
 		
         CompanyDTO companyDTO = new CompanyDTO();
         companyDTO.setCompanyName("Jobsty");
@@ -658,47 +1165,43 @@ public class CompanyControllerTests {
         mockMvc.perform(put("/jobster/users/companies/archive/" + CompanyControllerTests.companies.get(0).getId()))
 	 		.andExpect(status().isOk())
 			.andExpect(content().contentType(contentType)) 
-			.andExpect(jsonPath("$.id", 
+			.andExpect(jsonPath("$.user.id", 
 				is(CompanyControllerTests.companies.get(0).getId().intValue())))
-			.andExpect(jsonPath("$.status", is(-1)));
+			.andExpect(jsonPath("$.user.status", is(-1)));
+        CompanyControllerTests.userAccounts.get(0).setStatusArchived();
+        userAccountRepository.deleteById(CompanyControllerTests.userAccounts.get(0).getId());
+		CompanyControllerTests.userAccounts.remove(CompanyControllerTests.userAccounts.get(0));
 		CompanyControllerTests.companies.get(0).setStatusArchived();
 		companyRepository.deleteById(CompanyControllerTests.companies.get(0).getId());
 		CompanyControllerTests.companies.remove(CompanyControllerTests.companies.get(0));
 		}
 
 	@Test 
-	public void shouldReturn404WhenTryArchiveCompanyWhichNotExists() throws Exception {
+	public void archiveCompanyWhichNotExists() throws Exception {
 		
         mockMvc.perform(put("/jobster/users/companies/archive/" + (CompanyControllerTests.companies.get(4).getId()+1)))
         	.andExpect(status().isNotFound());
 		}	
 
-	/*@Test 
-	public void shouldReturnForbiddenWhenCompanyTryToArchiveItself() throws Exception {
-		output.append("f");
-		
-		CompanyEntity mockCompany = CompanyControllerTests.companies.get(0);
-		when(mockUserRepository.getByIdAndStatusLike(CompanyControllerTests.companies.get(0).getId(), 1).thenReturn(Optional.of(mockCompany)));
-
-        mockMvc.perform(put("/jobster/users/companies/archive/" + CompanyControllerTests.companies.get(0).getId()))
-        	.andExpect(status().isForbidden());
-		}	*/
-
 	@Test 
 	public void undeleteCompany() throws Exception {
         mockMvc.perform(put("/jobster/users/companies/undelete/" + CompanyControllerTests.companies.get(3).getId()))
-	 		.andExpect(status().isOk())
+        	//.andDo(MockMvcResultHandlers.print())
+        	.andExpect(status().isOk())
 			.andExpect(content().contentType(contentType)) 
-			.andExpect(jsonPath("$.id", 
-				is(CompanyControllerTests.companies.get(3).getId().intValue())))
+			.andExpect(jsonPath("$.companyName", 
+				is(CompanyControllerTests.companies.get(3).getCompanyName())))
 			.andExpect(jsonPath("$.status", is(1)));
+        CompanyControllerTests.userAccounts.get(3).setStatusActive();
+        userAccountRepository.deleteById(CompanyControllerTests.userAccounts.get(3).getId());
+		CompanyControllerTests.userAccounts.remove(CompanyControllerTests.userAccounts.get(3));
 		CompanyControllerTests.companies.get(3).setStatusActive();
 		companyRepository.deleteById(CompanyControllerTests.companies.get(3).getId());
 		CompanyControllerTests.companies.remove(CompanyControllerTests.companies.get(3));
 		}
 
 	@Test
-	public void shouldReturn404WhenTryUndeleteCompanyWhichNotExists() throws Exception {
+	public void undeleteCompanyWhichNotExists() throws Exception {
 		
         mockMvc.perform(put("/jobster/users/companies/undelete/" + (CompanyControllerTests.companies.get(4).getId()+1)))
         	.andExpect(status().isNotFound());
@@ -709,32 +1212,22 @@ public class CompanyControllerTests {
 		mockMvc.perform(delete("/jobster/users/companies/" + CompanyControllerTests.companies.get(0).getId())) 
 			.andExpect(status().isOk()) 
 			.andExpect(content().contentType(contentType)) 
-			.andExpect(jsonPath("$.id", 
+			.andExpect(jsonPath("$.user.id", 
 				is(CompanyControllerTests.companies.get(0).getId().intValue())))
-			.andExpect(jsonPath("$.status", is(0)));
+			.andExpect(jsonPath("$.user.status", is(0)));
+        CompanyControllerTests.userAccounts.get(0).setStatusInactive();
+        userAccountRepository.deleteById(CompanyControllerTests.userAccounts.get(0).getId());
+		CompanyControllerTests.userAccounts.remove(CompanyControllerTests.userAccounts.get(0));
 		CompanyControllerTests.companies.get(0).setStatusInactive();
 		companyRepository.deleteById(CompanyControllerTests.companies.get(0).getId());
 		CompanyControllerTests.companies.remove(CompanyControllerTests.companies.get(0));
 		}
 
 	@Test 
-	public void shouldReturn404WhenTryDeleteCompanyWhichNotExists() throws Exception {
+	public void deleteCompanyWhichNotExists() throws Exception {
 		
         mockMvc.perform(delete("/jobster/users/companies/" + (CompanyControllerTests.companies.get(4).getId()+1)))
         	.andExpect(status().isNotFound());
 		}	
-
-	/*@Test 
-	public void shouldReturnForbiddenWhenCompanyTryToDeleteItself() throws Exception {
-		output.append("f");
-		
-		CompanyEntity mockCompany = CompanyControllerTests.companies.get(0);
-		CompanyRepository mockCompanyRepository = Mockito.mock(CompanyRepository.class);
-		Mockito.when(mockCompanyRepository.getByIdAndStatusLike(CompanyControllerTests.companies.get(0).getId(), 1).thenReturn(Optional.of(mockCompany)));
-
-        mockMvc.perform(delete("/jobster/users/companies/" + CompanyControllerTests.companies.get(0).getId()))
-        	.andExpect(status().isForbidden());
-		}	*/
-
 	
 }

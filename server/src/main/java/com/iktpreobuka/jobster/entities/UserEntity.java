@@ -81,7 +81,7 @@ public class UserEntity {
 	private String email;
 	@JsonView(Views.User.class)
 	@Column(name="details_link")
-	@NotNull (message = "About must be provided.")
+	//@NotNull (message = "About must be provided.")
 	private String about;
 	@JsonView(Views.User.class)
 	@Max(5)

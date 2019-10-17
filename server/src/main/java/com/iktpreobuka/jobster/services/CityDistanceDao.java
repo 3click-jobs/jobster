@@ -5,6 +5,8 @@ import com.iktpreobuka.jobster.entities.UserEntity;
 
 public interface CityDistanceDao {
 
-	public void addNewDistancesForCity(CityEntity city, UserEntity loggedUser) throws Exception;
+	public void addNewDistancesForCity(CityEntity city) throws Exception;
+
+	public void addNewDistancesForCityWithLoggedUser(CityEntity city, UserEntity loggedUser) throws Exception;
 
 }

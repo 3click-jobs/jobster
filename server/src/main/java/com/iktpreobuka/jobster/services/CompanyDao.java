@@ -8,7 +8,7 @@ public interface CompanyDao {
 	
 	public Iterable<CompanyEntity> findCompanyByStatusLike(Integer status) throws Exception;
 	
-	public UserEntity addNewCompany(UserEntity loggedUser, CompanyDTO newCompany) throws Exception;
+	public UserEntity addNewCompany(CompanyDTO newCompany) throws Exception;
 
 	public void modifyCompany(UserEntity loggedUser, CompanyEntity company, CompanyDTO updateCompany) throws Exception;
 
