@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.PersonEntity;
@@ -78,6 +79,10 @@ public class PersonController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(1);
+			if (Iterables.isEmpty(users)) {
+				logger.info("---------------- Companies not found.");
+		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
 		} catch(Exception e) {
@@ -94,6 +99,10 @@ public class PersonController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, 1);
+			if (user == null) {
+				logger.info("---------------- Company not found.");
+		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
 		} catch(Exception e) {
@@ -111,6 +120,10 @@ public class PersonController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(0);
+			if (Iterables.isEmpty(users)) {
+				logger.info("---------------- Companies not found.");
+		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
 		} catch(Exception e) {
@@ -127,6 +140,10 @@ public class PersonController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, 0);
+			if (user == null) {
+				logger.info("---------------- Company not found.");
+		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
 		} catch(Exception e) {
@@ -143,6 +160,10 @@ public class PersonController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(-1);
+			if (Iterables.isEmpty(users)) {
+				logger.info("---------------- Companies not found.");
+		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
 		} catch(Exception e) {
@@ -159,6 +180,10 @@ public class PersonController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, -1);
+			if (user == null) {
+				logger.info("---------------- Company not found.");
+		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
 		} catch(Exception e) {
@@ -167,12 +192,11 @@ public class PersonController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewPerson(@Valid @RequestBody PersonDTO newPerson, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/users/persons/addNewPerson started.");
-		logger.info("Logged user: " + principal.getName());
+		//logger.info("Logged user: " + principal.getName());
 		if (result.hasErrors()) { 
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
@@ -203,12 +227,12 @@ public class PersonController {
 				logger.info("---------------- Username already exists.");
 		        return new ResponseEntity<>("Username already exists.", HttpStatus.NOT_ACCEPTABLE);
 		      }
-			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			logger.info("Logged user identified.");
-			user = personDao.addNewPerson(loggedUser, newPerson);
+			/*UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user identified.");*/
+			user = personDao.addNewPerson(newPerson);
 			logger.info("Person created.");
 			if (newPerson.getUsername() != null && newPerson.getPassword() != null && newPerson.getConfirmedPassword() != null && newPerson.getPassword().equals(newPerson.getConfirmedPassword())) {
-				UserAccountEntity account = userAccountDao.addNewUserAccount(loggedUser, user, newPerson.getUsername(), EUserRole.ROLE_USER, newPerson.getPassword());
+				UserAccountEntity account = userAccountDao.addNewUserAccount(user, user, newPerson.getUsername(), EUserRole.ROLE_USER, newPerson.getPassword());
 				logger.info("Account created.");
 				return new ResponseEntity<>(account, HttpStatus.OK);
 			}
@@ -241,6 +265,10 @@ public class PersonController {
 			logger.info("---------------- New person is null.");
 	        return new ResponseEntity<>("New person data is null.", HttpStatus.BAD_REQUEST);
 	      }
+		if (updatePerson.getFirstName() == null && updatePerson.getLastName() == null && updatePerson.getGender() == null && updatePerson.getBirthDate() == null && updatePerson.getAccessRole() == null && updatePerson.getEmail() == null && updatePerson.getMobilePhone() == null && (updatePerson.getCity() == null || updatePerson.getCountry() == null || updatePerson.getIso2Code() == null || updatePerson.getLatitude() == null || updatePerson.getLongitude() == null) && updatePerson.getUsername() == null && (updatePerson.getPassword() == null || updatePerson.getConfirmedPassword() == null) ) {
+			logger.info("---------------- Some atributes is null.");
+			return new ResponseEntity<>("Some atributes is null", HttpStatus.BAD_REQUEST);
+		}
 		PersonEntity user = new PersonEntity();
 		try {
 			if (updatePerson.getEmail() != null && personRepository.getByEmail(updatePerson.getEmail()) != null) {
@@ -422,10 +450,10 @@ public class PersonController {
 			logger.info("Person for archiving identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
-			if (id == loggedUser.getId()) {
+			/*if (id == loggedUser.getId()) {
 				logger.info("---------------- Selected Id is ID of logged User: Cann't archive yourself.");
 				return new ResponseEntity<>("Selected Id is ID of logged User: Cann't archive yourself.", HttpStatus.FORBIDDEN);
-		      }	
+		      }	*/
 			personDao.archivePerson(loggedUser, user);
 			logger.info("Person archived.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLike(user, EUserRole.ROLE_USER);
@@ -508,10 +536,10 @@ public class PersonController {
 			logger.info("Person for deleting identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
-			if (id == loggedUser.getId()) {
+			/*if (id == loggedUser.getId()) {
 				logger.info("---------------- Selected Id is ID of logged User: Cann't delete yourself.");
 				return new ResponseEntity<>("Selected Id is ID of logged User: Cann't delete yourself.", HttpStatus.FORBIDDEN);
-		      }	
+		      }	*/
 			personDao.deletePerson(loggedUser, user);
 			logger.info("Person deleted.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLikeAndStatusLike(user, EUserRole.ROLE_USER, 1);

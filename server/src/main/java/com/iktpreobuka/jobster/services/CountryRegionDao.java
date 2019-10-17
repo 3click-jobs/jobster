@@ -6,8 +6,12 @@ import com.iktpreobuka.jobster.entities.UserEntity;
 
 public interface CountryRegionDao {
 
-	public CountryRegionEntity addNewCountryRegion(String countryRegionName, CountryEntity country, UserEntity loggedUser) throws Exception;
+	public CountryRegionEntity addNewCountryRegion(String countryRegionName, CountryEntity country) throws Exception;
 
-	public CountryRegionEntity addNewCountryRegion(CountryEntity country, UserEntity loggedUser) throws Exception;
+	public CountryRegionEntity addNewCountryRegionWithLoggedUser(String countryRegionName, CountryEntity country, UserEntity loggedUser) throws Exception;
+
+	public CountryRegionEntity addNullCountryRegion(CountryEntity country) throws Exception;
+
+	public CountryRegionEntity addNullCountryRegionWithLoggedUser(CountryEntity country, UserEntity loggedUser) throws Exception;
 
 }

@@ -59,7 +59,7 @@ public class CompanyDaoImpl implements CompanyDao {
 	}
 
 	@Override
-	public UserEntity addNewCompany(UserEntity loggedUser, CompanyDTO newCompany) throws Exception {
+	public UserEntity addNewCompany(CompanyDTO newCompany) throws Exception {
 		if ( newCompany.getCompanyName() == null || newCompany.getCompanyRegistrationNumber() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || (newCompany.getCity() == null && newCompany.getCountry() == null && newCompany.getIso2Code() == null && newCompany.getLatitude() == null && newCompany.getLongitude() == null) || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
 			throw new Exception("Some data is null.");
 		}
@@ -82,7 +82,7 @@ public class CompanyDaoImpl implements CompanyDao {
 				city = null;
 			}
 			if( city == null) {
-				city = cityDao.addNewCity(newCompany.getCity(), newCompany.getLongitude(), newCompany.getLatitude(), newCompany.getCountryRegion(), newCompany.getCountry(), newCompany.getIso2Code(), loggedUser);
+				city = cityDao.addNewCity(newCompany.getCity(), newCompany.getLongitude(), newCompany.getLatitude(), newCompany.getCountryRegion(), newCompany.getCountry(), newCompany.getIso2Code());
 				logger.info("City created.");
 			}
 			((CompanyEntity) user).setCompanyName(newCompany.getCompanyName());
@@ -94,8 +94,11 @@ public class CompanyDaoImpl implements CompanyDao {
 		    user.setNumberOfRatings(0);
 		    user.setRating(0.0);
 			user.setStatusActive();
-			user.setCreatedById(loggedUser.getId());
 			companyRepository.save(user);
+			user.setCreatedById(user.getId());
+			companyRepository.save(user);
+			city.setCreatedById(user.getId());
+			cityRepository.save(city);
 			logger.info("addNewCompany finished.");
 		} catch (Exception e) {
 			throw new Exception("addNewCompany save failed.");
@@ -140,7 +143,7 @@ public class CompanyDaoImpl implements CompanyDao {
 					city = null;
 				}
 				if( city == null) {
-					city = cityDao.addNewCity(updateCompany.getCity(), updateCompany.getLongitude(), updateCompany.getLatitude(), updateCompany.getCountryRegion(), updateCompany.getCountry(), updateCompany.getIso2Code(), loggedUser);
+					city = cityDao.addNewCityWithLoggedUser(updateCompany.getCity(), updateCompany.getLongitude(), updateCompany.getLatitude(), updateCompany.getCountryRegion(), updateCompany.getCountry(), updateCompany.getIso2Code(), loggedUser);
 				}
 				if(!city.equals(company.getCity())) {
 					company.setCity(city);

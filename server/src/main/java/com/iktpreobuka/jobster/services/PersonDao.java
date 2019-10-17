@@ -7,7 +7,7 @@ import com.iktpreobuka.jobster.entities.dto.PersonDTO;
 
 public interface PersonDao {
 
-	public UserEntity addNewPerson(UserEntity loggedUser, PersonDTO newPerson) throws Exception;
+	public UserEntity addNewPerson(PersonDTO newPerson) throws Exception;
 
 	public void modifyPerson(UserEntity loggedUser, PersonEntity person, PersonDTO updatePerson) throws Exception;
 

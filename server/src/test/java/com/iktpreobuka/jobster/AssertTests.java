@@ -15,7 +15,7 @@ import com.iktpreobuka.jobster.controllers.UserController;
 
 @RunWith (SpringRunner.class)
 @SpringBootTest
-public class AssertExampleTest {
+public class AssertTests {
 
 	@Autowired
 	private	UserController userController;
