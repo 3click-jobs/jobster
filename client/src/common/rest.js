@@ -82,6 +82,118 @@ const rest = {
         method: 'DELETE'
       }
     },
+  },
+  users: {
+    actions: {
+      getAll: {
+        url: env.baseUrl + '/jobster/users',
+        method: 'GET'
+      }
+    }
+  },
+  persons: {
+    actions: {
+      getAll: {
+        url: env.baseUrl + '/jobster/users/persons',
+        method: 'GET'
+      },
+      getById: {
+        url: env.baseUrl + '/jobster/users/persons/{id}',
+        method: 'GET'
+      },
+      getAllDeleted: {
+        url: env.baseUrl + '/jobster/users/persons/deleted',
+        method: 'GET'
+      },
+      getDeletedById: {
+        url: env.baseUrl + '/jobster/users/persons/deleted/{id}',
+        method: 'GET'
+      },
+      getAllArchived: {
+        url: env.baseUrl + '/jobster/users/persons/archived',
+        method: 'GET'
+      },
+      getArchivedById: {
+        url: env.baseUrl + '/jobster/users/persons/archived/{id}',
+        method: 'GET'
+      },
+      addNewPerson: {
+        url: env.baseUrl + '/jobster/users/persons',
+        method: 'POST'
+      },
+      modifyPerson: {
+        url: env.baseUrl + '/jobster/users/persons/{id}',
+        method: 'PUT'
+      },
+      archive: {
+        url: env.baseUrl + '/jobster/users/persons/archive/{id}',
+        method: 'PUT'
+      },
+      unDelete: {
+        url: env.baseUrl + '/jobster/users/persons/undelete/{id}',
+        method: 'PUT'
+      },
+      delete: {
+        url: env.baseUrl + '/jobster/users/persons/{id}',
+        method: 'DELETE'
+      }
+    },
+  },
+  home: {
+    actions: {
+      greeting: {
+        url: env.baseUrl,
+        method: 'GET'
+      }
+    }
+  },
+  companies: {
+    actions: {
+      getAll: {
+        url: env.baseUrl + '/jobster/users/companies',
+        method: 'GET'
+      },
+      getById: {
+        url: env.baseUrl + '/jobster/users/companies/{id}',
+        method: 'GET'
+      },
+      getAllDeleted: {
+        url: env.baseUrl + '/jobster/users/companies/deleted',
+        method: 'GET'
+      },
+      getDeletedById: {
+        url: env.baseUrl + '/jobster/users/companies/deleted/{id}',
+        method: 'GET'
+      },
+      getAllArchived: {
+        url: env.baseUrl + '/jobster/users/companies/archived',
+        method: 'GET'
+      },
+      getArchivedById: {
+        url: env.baseUrl + '/jobster/users/companies/archived/{id}',
+        method: 'GET'
+      },
+      addNewCompany: {
+        url: env.baseUrl + '/jobster/users/companies',
+        method: 'POST'
+      },
+      modifyCompany: {
+        url: env.baseUrl + '/jobster/users/companies/{id}',
+        method: 'PUT'
+      },
+      archive: {
+        url: env.baseUrl + '/jobster/users/companies/archive/{id}',
+        method: 'PUT'
+      },
+      undelete: {
+        url: env.baseUrl + '/jobster/users/companies/undelete/{id}',
+        method: 'PUT'
+      },
+      delete: {
+        url: env.baseUrl + '/jobster/users/companies/{id}',
+        method: 'DELETE'
+      }      
+    }
   }
 }
 
