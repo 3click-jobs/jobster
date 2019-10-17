@@ -18,14 +18,14 @@ public class CompanyEntity extends UserEntity {
 
 	@JsonView(Views.User.class)
 	@Column(name="company_name")
-	@Pattern(regexp = "^[A-Za-z]{2,}$", message="Company name is not valid.")
+	@Pattern(regexp = "^[_A-Za-z0-9-]{2,}$", message="Company name is not valid.")
 	@NotNull (message = "Company name must be provided.")
 	protected String companyName;
 	@JsonView(Views.User.class)
-	@Column(name="company_id", unique=true, length=13, nullable=false)
-	@Pattern(regexp = "^[0-9]{13,13}$", message="Company ID is not valid, can contain only numbers and must be exactly 13 numbers long.")
-	@NotNull (message = "Company ID must be provided.")
-	protected String companyId;
+	@Column(name="company_registration_number", unique=true, length=14, nullable=false)
+	@Pattern(regexp = "^[0-9]{14,14}$", message="Company registration number is not valid, can contain only numbers and must be exactly 14 numbers long.")
+	@NotNull (message = "Company registration number must be provided.")
+	protected String companyRegistrationNumber;
 	
 	
 	public CompanyEntity() {
@@ -37,13 +37,13 @@ public class CompanyEntity extends UserEntity {
 			@Pattern(regexp = "^[0-9]{13,13}$", message = "Company ID is not valid, can contain only numbers and must be exactly 13 numbers long.") @NotNull(message = "Company ID must be provided.") String companyId) {
 		super();
 		this.companyName = companyName;
-		this.companyId = companyId;
+		this.companyRegistrationNumber = companyId;
 	}
 
 	public CompanyEntity(@NotNull(message = "City must be provided.") CityEntity city,
 			@NotNull(message = "Phone number must be provided.") @Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message = "Mobile phone number is not valid.") String mobilePhoneNumber,
 			@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") @NotNull(message = "E-mail must be provided.") String email,
-			@NotNull(message = "Details must be provided.") String detailsLink,
+			@NotNull(message = "Details must be provided.") String about,
 			Integer createdById,
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Company name is not valid.") @NotNull(message = "Company name must be provided.") String companyName,
 			@Pattern(regexp = "^[0-9]{13,13}$", message = "Company ID is not valid, can contain only numbers and must be exactly 13 numbers long.") @NotNull(message = "Company ID must be provided.") String companyId) {
@@ -51,13 +51,13 @@ public class CompanyEntity extends UserEntity {
 		super.setCity(city);
 		super.setMobilePhone(mobilePhoneNumber);
 		super.setEmail(email);
-		super.setDetailsLink(detailsLink);
+		super.setAbout(about);
 		super.setStatus(getStatusActive());
 		super.setRating(0.0);
 		super.setNumberOfRatings(0);
 		super.setCreatedById(createdById);
 		this.companyName = companyName;
-		this.companyId = companyId;
+		this.companyRegistrationNumber = companyId;
 	}
 
 	
@@ -69,12 +69,12 @@ public class CompanyEntity extends UserEntity {
 		this.companyName = companyName;
 	}
 	
-	public String getCompanyId() {
-		return companyId;
+	public String getCompanyRegistrationNumber() {
+		return companyRegistrationNumber;
 	}
 	
-	public void setCompanyId(String companyId) {
-		this.companyId = companyId;
+	public void setCompanyRegistrationNumber(String companyId) {
+		this.companyRegistrationNumber = companyId;
 	}
 
 }

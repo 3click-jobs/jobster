@@ -84,7 +84,7 @@ public class UserAccountEntity {
 	public UserAccountEntity(@NotNull(message = "User role must be provided.") EUserRole accessRole,
 			@NotNull(message = "Username must be provided.") @Size(min = 5, max = 20, message = "Username must be between {min} and {max} characters long.") String username,
 			@Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{5,}",
-			message="Password is not valid, must contin at least 1 upper case letter, 1 lower case letter and 1 digit, no whitespace allowed.") @NotNull(message = "Password must be provided.") @Size(min = 5, message = "Password must be {min} characters long or higher.") String password,
+			message="Password is not valid, must contain at least 1 upper case letter, 1 lower case letter and 1 digit, no whitespace allowed.") @NotNull(message = "Password must be provided.") @Size(min = 5, message = "Password must be {min} characters long or higher.") String password,
 			Integer createdById) {
 		super();
 		//this.user = user;
@@ -99,7 +99,7 @@ public class UserAccountEntity {
 			@NotNull(message = "User role must be provided.") EUserRole accessRole,
 			@NotNull(message = "Username must be provided.") @Size(min = 5, max = 20, message = "Username must be between {min} and {max} characters long.") String username,
 			@Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{5,}",
-			message="Password is not valid, must contin at least 1 upper case letter, 1 lower case letter and 1 digit, no whitespace allowed.") 
+			message="Password is not valid, must contain at least 1 upper case letter, 1 lower case letter and 1 digit, no whitespace allowed.") 
 			@NotNull(message = "Password must be provided.") @Size(min = 5, message = "Password must be {min} characters long or higher.") String password,
 			Integer createdById) {
 		super();

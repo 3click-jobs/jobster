@@ -41,6 +41,10 @@ public class UserController {
 		try {
 			Iterable<UserEntity> users = userRepository.findAll();
 			logger.info("All users (active, deleted, archived).");
+			if (users == null) {
+				logger.info("---------------- Users not found.");
+		        return new ResponseEntity<>("Users not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<UserEntity>>(users, HttpStatus.OK);
 		} catch(Exception e) {
