@@ -5,16 +5,20 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
+@EnableWebMvc
 public class JobsterApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JobsterApplication.class, args);
-		/*ApplicationContext ctx = SpringApplication.run(JobsterApplication.class, args);
+		//SpringApplication.run(JobsterApplication.class, args);
+		ApplicationContext ctx = SpringApplication.run(JobsterApplication.class, args);
 		DispatcherServlet dispatcherServlet = (DispatcherServlet)ctx.getBean("dispatcherServlet");
-        dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);*/
+        dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
 	}
 
 	@Bean

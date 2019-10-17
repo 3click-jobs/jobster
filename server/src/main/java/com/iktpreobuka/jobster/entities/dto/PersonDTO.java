@@ -52,7 +52,7 @@ public class PersonDTO {
 	@Max(value=90, message = "Latitude must be {value} or lower!")
 	private Double latitude;
 	@JsonView(Views.User.class)
-	private String detailsLink;
+	private String about;
 	@JsonView(Views.User.class)
 	@Max(5)
     @Min(0)
@@ -96,7 +96,7 @@ public class PersonDTO {
 			@Pattern(regexp = "^[A-Za-z]+$", message = "Country name is not valid, can contain only letters and minimum 1 letter.") String country,
 			@Pattern(regexp = "^[A-Za-z]{2,3}$", message = "ISO2 code is not valid.") String iso2Code,
 			@Pattern(regexp = "^[A-Za-z]+$", message = "Country region name is not valid, can contain only letters and minimum 1 letter.") String countryRegion,
-			Double longitude, Double latitude, String detailsLink, @Max(5) @Min(0) Double rating,
+			Double longitude, Double latitude, String about, @Max(5) @Min(0) Double rating,
 			@Min(0) Integer numberOfRatings, List<String> jobOffers, List<String> jobSeeks,
 			@Size(min = 5, max = 20, message = "Username must be between {min} and {max} characters long.") String username,
 			@Pattern(regexp = "^(ROLE_ADMIN|ROLE_USER|ROLE_GUEST)$", message = "Role is not valid, must be ROLE_ADMIN, ROLE_USER or ROLE_GUEST") String accessRole,
@@ -115,7 +115,7 @@ public class PersonDTO {
 		this.countryRegion = countryRegion;
 		this.longitude = longitude;
 		this.latitude = latitude;
-		this.detailsLink = detailsLink;
+		this.about = about;
 		this.rating = rating;
 		this.numberOfRatings = numberOfRatings;
 		this.jobOffers = jobOffers;
@@ -223,12 +223,12 @@ public class PersonDTO {
 		this.city = city;
 	}
 	
-	public String getDetailsLink() {
-		return detailsLink;
+	public String getAbout() {
+		return about;
 	}
 	
-	public void setDetailsLink(String detailsLink) {
-		this.detailsLink = detailsLink;
+	public void setAbout(String about) {
+		this.about = about;
 	}
 	
 	public Double getRating() {

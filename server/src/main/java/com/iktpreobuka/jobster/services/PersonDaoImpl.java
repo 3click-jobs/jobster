@@ -82,7 +82,7 @@ public class PersonDaoImpl implements PersonDao {
 			    user.setCity(city);
 			    user.setEmail(newPerson.getEmail());
 			    user.setMobilePhone(newPerson.getMobilePhone());
-			    user.setDetailsLink(newPerson.getDetailsLink());
+			    user.setAbout(newPerson.getAbout());
 			    user.setNumberOfRatings(0);
 			    user.setRating(0.0);
 				user.setStatusActive();

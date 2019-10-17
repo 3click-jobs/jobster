@@ -54,8 +54,13 @@ public class CompanyDaoImpl implements CompanyDao {
 
 	
 	@Override
+	public Iterable<CompanyEntity> findCompanyByStatusLike(Integer status) throws Exception {
+		return companyRepository.findByStatusLike(status);
+	}
+
+	@Override
 	public UserEntity addNewCompany(UserEntity loggedUser, CompanyDTO newCompany) throws Exception {
-		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null ) {
+		if ( newCompany.getCompanyName() == null || newCompany.getCompanyRegistrationNumber() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || (newCompany.getCity() == null && newCompany.getCountry() == null && newCompany.getIso2Code() == null && newCompany.getLatitude() == null && newCompany.getLongitude() == null) || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
 			throw new Exception("Some data is null.");
 		}
 		logger.info("addNewCompany validation Ok.");
@@ -81,11 +86,11 @@ public class CompanyDaoImpl implements CompanyDao {
 				logger.info("City created.");
 			}
 			((CompanyEntity) user).setCompanyName(newCompany.getCompanyName());
-			((CompanyEntity) user).setCompanyId(newCompany.getCompanyId());
+			((CompanyEntity) user).setCompanyRegistrationNumber(newCompany.getCompanyRegistrationNumber());
 		    user.setCity(city);
 		    user.setEmail(newCompany.getEmail());
 		    user.setMobilePhone(newCompany.getMobilePhone());
-		    user.setDetailsLink(newCompany.getDetailsLink());
+		    user.setAbout(newCompany.getAbout());
 		    user.setNumberOfRatings(0);
 		    user.setRating(0.0);
 			user.setStatusActive();
@@ -99,7 +104,7 @@ public class CompanyDaoImpl implements CompanyDao {
 	}
 	
 	public void modifyCompany(UserEntity loggedUser, CompanyEntity company, CompanyDTO updateCompany) throws Exception {
-		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyId() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getIso2Code() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) ) {
+		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyRegistrationNumber() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getIso2Code() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) ) {
 			throw new Exception("All data is null.");
 		}
 		try {
@@ -108,8 +113,8 @@ public class CompanyDaoImpl implements CompanyDao {
 				company.setCompanyName(updateCompany.getCompanyName());
 				i++;
 			}
-			if (updateCompany.getCompanyId() != null && !updateCompany.getCompanyId().equals(company.getCompanyId()) && !updateCompany.getCompanyId().equals(" ") && !updateCompany.getCompanyId().equals("")) {
-				company.setCompanyId(updateCompany.getCompanyId());
+			if (updateCompany.getCompanyRegistrationNumber() != null && !updateCompany.getCompanyRegistrationNumber().equals(company.getCompanyRegistrationNumber()) && !updateCompany.getCompanyRegistrationNumber().equals(" ") && !updateCompany.getCompanyRegistrationNumber().equals("")) {
+				company.setCompanyRegistrationNumber(updateCompany.getCompanyRegistrationNumber());
 				i++;
 			}
 			if (updateCompany.getEmail() != null && !updateCompany.getEmail().equals(company.getEmail()) && !updateCompany.getEmail().equals(" ") && !updateCompany.getEmail().equals("")) {
