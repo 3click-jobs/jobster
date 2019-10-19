@@ -10,12 +10,15 @@ import About from './Components/About';
 import RegisterPerson from './Components/RegisterPerson';
 import RegisterCompany from './Components/RegisterCompany';
 import Register from './Components/Register';
+import Job from './Components/Job';
+import JobList from './Components/JobList';
+import JobDetails from './Components/JobDetails';
 
 class App extends Component {
 
   render() {
      return (
-     <div>
+     <React.Fragment>
         <Navbar/>
           <Switch>
               <Route exact path='/' component={Home} />
@@ -24,9 +27,12 @@ class App extends Component {
               <Route exact path='/about' component={About} />
               <Route exact path='/register' component={Register} />  
               <Route exact path='/registerperson' component={RegisterPerson} />       
-              <Route exact path='/registercompany' component={RegisterCompany} />          
+              <Route exact path='/registercompany' component={RegisterCompany} />   
+              <Route path='/job' component={Job} />   
+              <Route path='/joblist' component={JobList} />      
+              <Route path='/jobdetails' component={JobDetails} />    
           </Switch>         
-     </div>
+     </React.Fragment>
     );
   }
 }
