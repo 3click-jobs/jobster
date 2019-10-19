@@ -77,7 +77,7 @@ public class JobSeekDaoImpl implements JobSeekDao{
 		newSeek.setCity(cityRepository.getByCityName(seek.getCityName()));//ako nema napraviti cityDaoIml.addNewCityWithLoggedUser()
 		newSeek.setType(jobTypeRepository.getByTypeName(seek.getJobTypeName()));
 			
-		newSeek.setDistanceToJob(seek.getDistanceToJob());
+		newSeek.setDistanceToJob(seek.getDistanceToJob());//da vidimo da li radi
 		newSeek.setBeginningDate(seek.getEndDate());
 		newSeek.setEndDate(seek.getEndDate());
 		newSeek.setFlexibileDates(seek.getFlexibileDates());
