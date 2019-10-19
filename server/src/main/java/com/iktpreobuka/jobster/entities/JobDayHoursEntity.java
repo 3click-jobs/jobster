@@ -65,7 +65,7 @@ public class JobDayHoursEntity {
 	private Integer toHour;
 	@Column(name="is_min_max")
 	//@JsonView(Views.Admin.class)
-	private Boolean isMinMax;
+	private Boolean isMinMax;//DRAKULICEV ATRIBUT AKO JE TRU ONDA JE FROMHOUR MINHOUR DNEVNO A TOHOUR MAKSIMALNO SATI TOGDANA, TKO TUMACIM, A AKO JE TO FALSE ONDA HOCU DA RADIM OD FROMHOUR DO TOHOUR
 	@Column(name="flexibile_hours")
 	//@JsonView(Views.Admin.class)
 	private Boolean flexibileHours;
@@ -74,12 +74,6 @@ public class JobDayHoursEntity {
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
-	//@JsonView(Views.Admin.class)
-    @Column(name = "created_by", nullable = false, updatable = false)
-	private Integer createdById;
-    //@JsonView(Views.Admin.class)
-    @Column(name = "updated_by")
-    private Integer updatedById;
 	@JsonIgnore
 	@Version
 	private Integer version;
@@ -93,7 +87,7 @@ public class JobDayHoursEntity {
 			@NotNull(message = "Day must be provided.") EDay day,
 			@NotNull(message = "From/minimum hour/s must be provided.") @Min(value = 0, message = "From/minimum hour/s must be {value} or higher!") @Max(value = 24, message = "From/minimum hour/s must be {value} or lower!") Integer fromHour,
 			@NotNull(message = "To/maximum hour/s must be provided.") @Min(value = 0, message = "To/maximum hour/s must be {value} or higher!") @Max(value = 24, message = "To/maximum hour/s must be {value} or lower!") Integer toHour,
-			Boolean isMinMax, Boolean isFlexibile, Integer createdById) {
+			Boolean isMinMax, Boolean isFlexibile) {
 		super();
 		this.offer = offer;
 		this.day = day;
@@ -102,7 +96,6 @@ public class JobDayHoursEntity {
 		this.isMinMax = isMinMax;
 		this.flexibileHours = isFlexibile;
 		this.status = getStatusActive();;
-		this.createdById = createdById;
 	}
 	
 	
@@ -160,22 +153,6 @@ public class JobDayHoursEntity {
 
 	public void setFlexibileHours(Boolean isFlexibile) {
 		this.flexibileHours = isFlexibile;
-	}
-
-	public Integer getCreatedById() {
-		return createdById;
-	}
-
-	public void setCreatedById(Integer createdById) {
-		this.createdById = createdById;
-	}
-
-	public Integer getUpdatedById() {
-		return updatedById;
-	}
-
-	public void setUpdatedById(Integer updatedById) {
-		this.updatedById = updatedById;
 	}
 
 	public Integer getVersion() {
