@@ -59,7 +59,7 @@ public class CountryRegionEntity {
     @Column(name = "status", nullable = false)
 	private Integer status;
 	//@JsonView(Views.Admin.class)
-    @Column(name = "created_by", nullable = false, updatable = false)
+    @Column(name = "created_by", updatable = false)
 	private Integer createdById;
     //@JsonView(Views.Admin.class)
     @Column(name = "updated_by")
@@ -82,6 +82,14 @@ public class CountryRegionEntity {
 		this.countryRegionName = countryRegionName;
 		this.status = getStatusActive();
 		this.createdById = createdById;
+	}
+
+	public CountryRegionEntity(@NotNull(message = "Country must be provided.") CountryEntity country,
+			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Country region name is not valid.") @NotNull(message = "Country region name must be provided.") String countryRegionName) {
+		super();
+		this.country = country;
+		this.countryRegionName = countryRegionName;
+		this.status = getStatusActive();
 	}
 
 

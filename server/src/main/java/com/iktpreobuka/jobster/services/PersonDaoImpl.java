@@ -53,7 +53,7 @@ public class PersonDaoImpl implements PersonDao {
 
 
 	@Override
-	public UserEntity addNewPerson(UserEntity loggedUser, PersonDTO newPerson) throws Exception {
+	public UserEntity addNewPerson(PersonDTO newPerson) throws Exception {
 			if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getIso2Code() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null ) {
 				throw new Exception("Some data is null.");
 			}
@@ -72,7 +72,7 @@ public class PersonDaoImpl implements PersonDao {
 					city = null;
 				}
 				if( city == null) {
-					city = cityDao.addNewCity(newPerson.getCity(), newPerson.getLongitude(), newPerson.getLatitude(), newPerson.getCountryRegion(), newPerson.getCountry(), newPerson.getIso2Code(), loggedUser);
+					city = cityDao.addNewCity(newPerson.getCity(), newPerson.getLongitude(), newPerson.getLatitude(), newPerson.getCountryRegion(), newPerson.getCountry(), newPerson.getIso2Code());
 				}
 				((PersonEntity) user).setFirstName(newPerson.getFirstName());
 				((PersonEntity) user).setLastName(newPerson.getLastName());
@@ -82,12 +82,15 @@ public class PersonDaoImpl implements PersonDao {
 			    user.setCity(city);
 			    user.setEmail(newPerson.getEmail());
 			    user.setMobilePhone(newPerson.getMobilePhone());
-			    user.setDetailsLink(newPerson.getDetailsLink());
+			    user.setAbout(newPerson.getAbout());
 			    user.setNumberOfRatings(0);
 			    user.setRating(0.0);
 				user.setStatusActive();
-				user.setCreatedById(loggedUser.getId());
 				personRepository.save(user);
+				user.setCreatedById(user.getId());
+				personRepository.save(user);
+				city.setCreatedById(user.getId());
+				cityRepository.save(city);
 			} catch (Exception e) {
 				throw new Exception("addNewPerson save failed.");
 			}
@@ -141,7 +144,7 @@ public class PersonDaoImpl implements PersonDao {
 					city = null;
 				}
 				if( city == null) {
-					city = cityDao.addNewCity(updatePerson.getCity(), updatePerson.getLongitude(), updatePerson.getLatitude(), updatePerson.getCountryRegion(), updatePerson.getCountry(), updatePerson.getIso2Code(), loggedUser);
+					city = cityDao.addNewCityWithLoggedUser(updatePerson.getCity(), updatePerson.getLongitude(), updatePerson.getLatitude(), updatePerson.getCountryRegion(), updatePerson.getCountry(), updatePerson.getIso2Code(), loggedUser);
 				}
 				if(!city.equals(person.getCity())) {
 					person.setCity(city);

@@ -63,7 +63,7 @@ public class CityDistanceEntity {
     @Column(name = "status", nullable = false)
 	private Integer status;
 	//@JsonView(Views.Admin.class)
-    @Column(name = "created_by", nullable = false, updatable = false)
+    @Column(name = "created_by", updatable = false)
 	private Integer createdById;
     //@JsonView(Views.Admin.class)
     @Column(name = "updated_by")
@@ -89,6 +89,18 @@ public class CityDistanceEntity {
 		this.miDistance = miDistance;
 		this.status = getStatusActive();
 		this.createdById = createdById;
+	}
+
+	public CityDistanceEntity(@NotNull(message = "From city must be provided.") CityEntity fromCity,
+			@NotNull(message = "To city must be provided.") CityEntity toCity,
+			@NotNull(message = "Distance in kilometres must be provided.") @Min(value = 0, message = "Distance in kilometres must be {value} or higher!") Double kmDistance,
+			@NotNull(message = "Distance in miles must be provided.") @Min(value = 0, message = "Distance in miles  must be {value} or higher!") Double miDistance) {
+		super();
+		this.fromCity = fromCity;
+		this.toCity = toCity;
+		this.kmDistance = kmDistance;
+		this.miDistance = miDistance;
+		this.status = getStatusActive();
 	}
 
 
