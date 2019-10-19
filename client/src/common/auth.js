@@ -6,7 +6,7 @@ const hasCredentials = () => {
 
 const getAuthHeader = () => {
   const token = localStorage.getItem(env.localStorageKey)
-  return { Authorization: `Basic ${token}==` }
+  return { Authorization: `Basic ${token}` }
 }
 
 const setCredentials = ({ username, password }) => {

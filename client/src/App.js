@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -14,19 +14,19 @@ import Register from './Components/Register';
 class App extends Component {
 
   render() {
-     return (
-     <div>
-        <Navbar/>
+    return (
+        <div>
+          <Navbar />
           <Switch>
-              <Route exact path='/' component={Home} />
-              <Route exact path='/login' component={Login} />
-              <Route exact path='/contact' component={Contact} />
-              <Route exact path='/about' component={About} />
-              <Route exact path='/register' component={Register} />  
-              <Route exact path='/registerperson' component={RegisterPerson} />       
-              <Route exact path='/registercompany' component={RegisterCompany} />          
-          </Switch>         
-     </div>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/login' component={Login} />
+            <Route exact path='/contact' component={Contact} />
+            <Route exact path='/about' component={About} />
+            <Route exact path='/register' component={Register} />
+            <Route exact path='/registerperson' component={RegisterPerson} />
+            <Route exact path='/registercompany' component={RegisterCompany} />
+          </Switch>
+        </div>
     );
   }
 }
