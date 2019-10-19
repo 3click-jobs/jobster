@@ -58,6 +58,48 @@ public class PersonEntity extends UserEntity {
 		this.birthDate = birthDate;
 	}
 
+	public PersonEntity(@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Phone number must be provided.") @Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message = "Mobile phone number is not valid.") String mobilePhoneNumber,
+			@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") @NotNull(message = "E-mail must be provided.") String email,
+			@NotNull(message = "Details must be provided.") String about,
+			Integer createdById,
+			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "First name is not valid.") @NotNull(message = "First name must be provided.") String firstName,
+			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Last name is not valid.") @NotNull(message = "Last name must be provided.") String lastName,
+			@NotNull(message = "Birth date must be provided.") Date birthDate) {
+		super();
+		super.setCity(city);
+		super.setMobilePhone(mobilePhoneNumber);
+		super.setEmail(email);
+		super.setAbout(about);
+		super.setStatus(getStatusActive());
+		super.setRating(0.0);
+		super.setNumberOfRatings(0);
+		super.setCreatedById(createdById);
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.birthDate = birthDate;
+	}
+
+	public PersonEntity(@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Phone number must be provided.") @Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message = "Mobile phone number is not valid.") String mobilePhoneNumber,
+			@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") @NotNull(message = "E-mail must be provided.") String email,
+			@NotNull(message = "Details must be provided.") String about,
+			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "First name is not valid.") @NotNull(message = "First name must be provided.") String firstName,
+			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Last name is not valid.") @NotNull(message = "Last name must be provided.") String lastName,
+			@NotNull(message = "Birth date must be provided.") Date birthDate) {
+		super();
+		super.setCity(city);
+		super.setMobilePhone(mobilePhoneNumber);
+		super.setEmail(email);
+		super.setAbout(about);
+		super.setStatus(getStatusActive());
+		super.setRating(0.0);
+		super.setNumberOfRatings(0);
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.birthDate = birthDate;
+	}
+
 
 	public String getFirstName() {
 		return firstName;

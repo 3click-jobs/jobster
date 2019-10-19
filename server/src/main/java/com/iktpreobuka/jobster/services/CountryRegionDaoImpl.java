@@ -16,7 +16,29 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 	private CountryRegionRepository countryRegionRepository;
 
 
-	public CountryRegionEntity addNewCountryRegion(String countryRegionName, CountryEntity country, UserEntity loggedUser) throws Exception {
+	public CountryRegionEntity addNewCountryRegion(String countryRegionName, CountryEntity country) throws Exception {
+		if ( countryRegionName == null || country == null ) {
+			throw new Exception("Country region name and/or country name is null.");
+		}
+		CountryRegionEntity countryRegion = new CountryRegionEntity();
+		try {
+			countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(countryRegionName, country);
+			if (countryRegion == null) {
+				countryRegion = new CountryRegionEntity();
+				if ( countryRegionName != null ) {
+					countryRegion.setCountryRegionName(countryRegionName);
+				}
+				countryRegion.setCountry(country);
+				countryRegion.setStatusActive();
+				countryRegionRepository.save(countryRegion);
+			}
+		} catch (Exception e) {
+			throw new Exception("addNewCountryRegion(countryRegionName, country, loggedUser) save failed.");
+		}
+		return countryRegion;
+	}
+	
+	public CountryRegionEntity addNewCountryRegionWithLoggedUser(String countryRegionName, CountryEntity country, UserEntity loggedUser) throws Exception {
 		if ( countryRegionName == null || country == null || loggedUser == null ) {
 			throw new Exception("Country region name and/or country name and/or logged user is null.");
 		}
@@ -39,7 +61,27 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 		return countryRegion;
 	}
 	
-	public CountryRegionEntity addNewCountryRegion(CountryEntity country, UserEntity loggedUser) throws Exception {
+	public CountryRegionEntity addNullCountryRegion(CountryEntity country) throws Exception {
+		if ( country == null ) {
+			throw new Exception("Country is null.");
+		}
+		CountryRegionEntity countryRegion = new CountryRegionEntity();
+		try {
+			countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(null, country);
+			if (countryRegion == null) {
+				countryRegion = new CountryRegionEntity();
+				countryRegion.setCountryRegionName(null);
+				countryRegion.setCountry(country);
+				countryRegion.setStatusActive();
+				countryRegionRepository.save(countryRegion);
+			}
+		} catch (Exception e) {
+			throw new Exception("addNewCountryRegion(country, loggedUser) save failed.");
+		}
+		return countryRegion;
+	}
+
+	public CountryRegionEntity addNullCountryRegionWithLoggedUser(CountryEntity country, UserEntity loggedUser) throws Exception {
 		if ( country == null || loggedUser == null ) {
 			throw new Exception("Country and/or logged user is null.");
 		}
@@ -59,6 +101,5 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 		}
 		return countryRegion;
 	}
-
 
 }

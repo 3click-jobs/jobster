@@ -2,6 +2,7 @@ package com.iktpreobuka.jobster.repositories;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.iktpreobuka.jobster.entities.CompanyEntity;
 import com.iktpreobuka.jobster.entities.PersonEntity;
@@ -10,6 +11,7 @@ import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.enumerations.EUserRole;
 
 
+@Repository
 public interface UserAccountRepository extends CrudRepository<UserAccountEntity, Integer> {
 
 	public UserAccountEntity getById(Integer id);
@@ -33,5 +35,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 			+ "join ua.user ue "
 			+ "where ua.username=:username")
 	public Integer getUserIdByUsername(String username); // pitati drakulica da li ce ovo da radi
+	@SuppressWarnings("unchecked")
+	public UserAccountEntity save(UserAccountEntity userAccountEntity);
 
 }
