@@ -264,5 +264,6 @@ public class UserEntity {
 	public void setStatusArchived() {
 		this.status = getStatusArchived();
 	}
+
 	
 }

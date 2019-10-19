@@ -10,6 +10,6 @@ public interface JobOfferRepository extends CrudRepository<JobOfferEntity, Integ
 
 	public JobOfferEntity findByIdAndStatusLike(int parseInt, int i);
 
-	public JobOfferEntity findByEmployerAndStatusLike(int parseInt, int i);
+	public JobOfferEntity findByEmployerAndStatusLike(int parseInt, int i); 
 	
 }
