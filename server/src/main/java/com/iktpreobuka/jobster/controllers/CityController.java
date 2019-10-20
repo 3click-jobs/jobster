@@ -25,11 +25,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.CityEntity;
-import com.iktpreobuka.jobster.entities.PersonEntity;
-import com.iktpreobuka.jobster.entities.UserAccountEntity;
-import com.iktpreobuka.jobster.entities.UserEntity;
-import com.iktpreobuka.jobster.entities.dto.PersonDTO;
-import com.iktpreobuka.jobster.enumerations.EUserRole;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.security.Views;
 
