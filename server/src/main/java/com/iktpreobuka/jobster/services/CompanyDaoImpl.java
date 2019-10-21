@@ -70,19 +70,28 @@ public class CompanyDaoImpl implements CompanyDao {
 		CountryRegionEntity countryRegion = new CountryRegionEntity();
 		try {
 			country = countryRepository.findByCountryNameAndIso2Code(newCompany.getCountry(), newCompany.getIso2Code());
+			Boolean newCountryRegion = false;
+			Boolean newCountry = false;
+			Boolean newCity = false;
 			if(country != null) {
+				logger.info("Country founded.");
 				countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newCompany.getCountryRegion(), country);
 				if (countryRegion != null) {
+					logger.info("CountryRegion founded.");
 					city = cityRepository.getByCityNameAndRegion(newCompany.getCity(), countryRegion);
 					logger.info("City founded.");
 				} else {
 					city = null;
+					newCountryRegion = true;
 				}
 			} else {
 				city = null;
+				newCountry = true;
+				newCountryRegion = true;
 			}
 			if( city == null) {
 				city = cityDao.addNewCity(newCompany.getCity(), newCompany.getLongitude(), newCompany.getLatitude(), newCompany.getCountryRegion(), newCompany.getCountry(), newCompany.getIso2Code());
+				newCity = true;
 				logger.info("City created.");
 			}
 			((CompanyEntity) user).setCompanyName(newCompany.getCompanyName());
@@ -95,10 +104,28 @@ public class CompanyDaoImpl implements CompanyDao {
 		    user.setRating(0.0);
 			user.setStatusActive();
 			companyRepository.save(user);
+			logger.info("User created.");
+			user = companyRepository.getByEmailAndStatusLike(newCompany.getEmail(), 1);
 			user.setCreatedById(user.getId());
 			companyRepository.save(user);
-			city.setCreatedById(user.getId());
-			cityRepository.save(city);
+			logger.info("User CreatedById added.");
+			if(newCity == true) {
+				city.setCreatedById(user.getId());
+				cityRepository.save(city);
+				logger.info("City CreatedById added.");
+				if(newCountryRegion == true) {
+					if(newCountry == true) {
+						country = countryRepository.getByCountryNameAndIso2Code(newCompany.getCountry(), newCompany.getIso2Code());
+						country.setCreatedById(user.getId());
+						countryRepository.save(country);
+						logger.info("Country CreatedById added.");
+					}
+					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newCompany.getCountryRegion(), country);
+					countryRegion.setCreatedById(user.getId());
+					countryRegionRepository.save(countryRegion);
+					logger.info("CountryRegion CreatedById added.");
+				}
+			}
 			logger.info("addNewCompany finished.");
 		} catch (Exception e) {
 			throw new Exception("addNewCompany save failed.");
@@ -107,7 +134,7 @@ public class CompanyDaoImpl implements CompanyDao {
 	}
 	
 	public void modifyCompany(UserEntity loggedUser, CompanyEntity company, CompanyDTO updateCompany) throws Exception {
-		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyRegistrationNumber() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getIso2Code() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) ) {
+		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyRegistrationNumber() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getIso2Code() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) && updateCompany.getAbout() == null ) {
 			throw new Exception("All data is null.");
 		}
 		try {
@@ -126,6 +153,10 @@ public class CompanyDaoImpl implements CompanyDao {
 			}
 			if (updateCompany.getMobilePhone() != null && !updateCompany.getMobilePhone().equals(company.getMobilePhone()) && !updateCompany.getMobilePhone().equals(" ") && !updateCompany.getMobilePhone().equals("")) {
 				company.setMobilePhone(updateCompany.getMobilePhone());
+				i++;
+			}
+			if (updateCompany.getAbout() != null && !updateCompany.getAbout().equals(company.getAbout()) && !updateCompany.getAbout().equals(" ") && !updateCompany.getAbout().equals("")) {
+				company.setAbout(updateCompany.getAbout());
 				i++;
 			}
 			if (updateCompany.getCity() != null && !updateCompany.getCity().equals(" ") && !updateCompany.getCity().equals("") && updateCompany.getCountry() != null && !updateCompany.getCountry().equals(" ") && !updateCompany.getCountry().equals("") && updateCompany.getIso2Code() != null && !updateCompany.getIso2Code().equals(" ") && !updateCompany.getIso2Code().equals("") ) {

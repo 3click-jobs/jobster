@@ -21,4 +21,6 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	@SuppressWarnings("unchecked")
 	public CityEntity save(CityEntity cityEntity);
+	
+	public CityEntity getByCreatedById(Integer id);
 }

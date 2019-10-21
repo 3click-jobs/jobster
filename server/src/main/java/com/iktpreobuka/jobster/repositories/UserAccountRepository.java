@@ -37,5 +37,6 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	public Integer getUserIdByUsername(String username); // pitati drakulica da li ce ovo da radi
 	@SuppressWarnings("unchecked")
 	public UserAccountEntity save(UserAccountEntity userAccountEntity);
+	public UserAccountEntity findByUserAndStatusLike(CompanyEntity companyEntity, int i);
 
 }
