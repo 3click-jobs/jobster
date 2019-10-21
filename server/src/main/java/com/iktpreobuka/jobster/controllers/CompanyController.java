@@ -197,9 +197,8 @@ public class CompanyController {
 
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> addNewCompany(@Valid @RequestBody CompanyDTO newCompany, /*Principal principal,*/ BindingResult result) {
+	public ResponseEntity<?> addNewCompany(@Valid @RequestBody CompanyDTO newCompany, BindingResult result) {
 		logger.info("################ /jobster/users/companies/addNewCompany started.");
-		//logger.info("Logged user: " + principal.getName());
 		if (result.hasErrors()) { 
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
@@ -209,8 +208,12 @@ public class CompanyController {
 	        return new ResponseEntity<>("New Company is null.", HttpStatus.BAD_REQUEST);
 	      }
 		if (newCompany.getCompanyName() == null || newCompany.getCompanyRegistrationNumber() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
-			logger.info("---------------- Some atributes is null.");
-			return new ResponseEntity<>("Some atributes is null", HttpStatus.BAD_REQUEST);
+			logger.info("---------------- Some or all atributes are null.");
+			return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
+		}
+		if (newCompany.getCompanyName().equals(" ") || newCompany.getCompanyName().equals("") || newCompany.getCompanyRegistrationNumber().equals(" ") || newCompany.getCompanyRegistrationNumber().equals("") || newCompany.getAccessRole().equals(" ") || newCompany.getAccessRole().equals("") || newCompany.getEmail().equals(" ") || newCompany.getEmail().equals("") || newCompany.getMobilePhone().equals(" ") || newCompany.getMobilePhone().equals("") || newCompany.getCity().equals(" ") || newCompany.getCity().equals("") || newCompany.getCountry().equals(" ") || newCompany.getCountry().equals("") || newCompany.getIso2Code().equals(" ") || newCompany.getIso2Code().equals("") || newCompany.getUsername().equals(" ") || newCompany.getUsername().equals("") || newCompany.getPassword().equals(" ") || newCompany.getPassword().equals("") || newCompany.getConfirmedPassword().equals(" ") || newCompany.getConfirmedPassword().equals("") ) {
+			logger.info("---------------- Some or all atributes are blanks.");
+			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		UserEntity user = new CompanyEntity();
 		try {
@@ -234,8 +237,6 @@ public class CompanyController {
 				logger.info("---------------- Username already exists.");
 		        return new ResponseEntity<>("Username already exists.", HttpStatus.NOT_ACCEPTABLE);
 		      }
-			/*UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			logger.info("Logged user identified.");*/
 			user = companyDao.addNewCompany(newCompany);
 			logger.info("Company created.");
 			if (newCompany.getUsername() != null && newCompany.getPassword() != null && newCompany.getConfirmedPassword() != null && newCompany.getPassword().equals(newCompany.getConfirmedPassword())) {
@@ -272,9 +273,13 @@ public class CompanyController {
 			logger.info("---------------- New Company is null.");
 	        return new ResponseEntity<>("New Company data is null.", HttpStatus.BAD_REQUEST);
 	      }
-		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyRegistrationNumber() == null && updateCompany.getAccessRole() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getIso2Code() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) && updateCompany.getUsername() == null && (updateCompany.getPassword() == null || updateCompany.getConfirmedPassword() == null) ) {
-			logger.info("---------------- Some atributes is null.");
-			return new ResponseEntity<>("Some atributes is null", HttpStatus.BAD_REQUEST);
+		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyRegistrationNumber() == null && updateCompany.getAccessRole() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getIso2Code() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) && updateCompany.getAbout() == null && updateCompany.getUsername() == null && (updateCompany.getPassword() == null || updateCompany.getConfirmedPassword() == null) ) {
+			logger.info("---------------- All atributes are null.");
+			return new ResponseEntity<>("All atributes are null", HttpStatus.BAD_REQUEST);
+		}
+		if ( ( updateCompany.getCompanyName() != null && (updateCompany.getCompanyName().equals(" ") || updateCompany.getCompanyName().equals("") ) ) || ( updateCompany.getCompanyRegistrationNumber() != null && (updateCompany.getCompanyRegistrationNumber().equals(" ") || updateCompany.getCompanyRegistrationNumber().equals("") ) ) || ( updateCompany.getAccessRole() != null && ( updateCompany.getAccessRole().equals(" ") || updateCompany.getAccessRole().equals("") ) ) || ( updateCompany.getEmail() != null && ( updateCompany.getEmail().equals(" ") || updateCompany.getEmail().equals("") ) ) || ( updateCompany.getMobilePhone() != null && ( updateCompany.getMobilePhone().equals(" ") || updateCompany.getMobilePhone().equals("") ) ) || ( updateCompany.getCity() != null && ( updateCompany.getCity().equals(" ") || updateCompany.getCity().equals("") ) ) || (updateCompany.getCountry() != null && ( updateCompany.getCountry().equals(" ") || updateCompany.getCountry().equals("") ) ) || ( updateCompany.getIso2Code() != null && ( updateCompany.getIso2Code().equals(" ") || updateCompany.getIso2Code().equals("") ) ) || ( updateCompany.getUsername() != null && (updateCompany.getUsername().equals(" ") || updateCompany.getUsername().equals("") ) ) || ( updateCompany.getPassword() != null && ( updateCompany.getPassword().equals(" ") || updateCompany.getPassword().equals("") ) ) || ( updateCompany.getConfirmedPassword() != null && (updateCompany.getConfirmedPassword().equals(" ") || updateCompany.getConfirmedPassword().equals("") ) ) ) {
+			logger.info("---------------- Some or all atributes are blanks.");
+			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		CompanyEntity user = new CompanyEntity();
 		try {

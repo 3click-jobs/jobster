@@ -19,12 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.iktpreobuka.jobster.entities.JobDayHoursEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.UserAccountEntity;
-import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDto;
 import com.iktpreobuka.jobster.repositories.CityRepository;
-import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.JobDayHoursRepository;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 import com.iktpreobuka.jobster.repositories.JobTypeRepository;
@@ -75,7 +72,7 @@ public class JobSeekDaoImpl implements JobSeekDao{
 		
 		newSeek.setEmployee(userAccountRepository.findUserByUsername(principal.getName()));
 		newSeek.setCity(cityRepository.getByCityName(seek.getCityName()));//ako nema napraviti cityDaoIml.addNewCityWithLoggedUser()
-		newSeek.setType(jobTypeRepository.getByTypeName(seek.getJobTypeName()));
+		newSeek.setType(jobTypeRepository.getByJobTypeName(seek.getJobTypeName()));
 			
 		newSeek.setDistanceToJob(seek.getDistanceToJob());//da vidimo da li radi
 		newSeek.setBeginningDate(seek.getEndDate());

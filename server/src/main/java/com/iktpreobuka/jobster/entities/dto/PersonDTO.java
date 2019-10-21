@@ -32,16 +32,16 @@ public class PersonDTO {
 	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message="Email is not valid.")
 	private String email;
 	@JsonView(Views.User.class)
-	@Pattern(regexp = "^[A-Za-z\\s]+$", message="City name is not valid, can contain only letters and minimum 1 letter.")
+	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="City name is not valid.")
 	private String city;
 	@JsonView(Views.User.class)
-	@Pattern(regexp = "^[A-Za-z\\s]+$", message="Country name is not valid, can contain only letters and minimum 1 letter.")
+	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
 	private String country;
 	@JsonView(Views.User.class)
 	@Pattern(regexp = "^[A-Za-z]{2,3}$", message="ISO2 code is not valid.")
 	protected String iso2Code;
 	@JsonView(Views.User.class)
-	@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid, can contain only letters.")
+	@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid.")
 	private String countryRegion;
 	@JsonView(Views.User.class)
 	@Min(value=-180, message = "Longitude  must be {value} or higher!")
@@ -52,6 +52,7 @@ public class PersonDTO {
 	@Max(value=90, message = "Latitude must be {value} or lower!")
 	private Double latitude;
 	@JsonView(Views.User.class)
+	@Size(max=255, message = "About must be maximum {max} characters long.")
 	private String about;
 	@JsonView(Views.User.class)
 	@Max(5)
@@ -92,12 +93,15 @@ public class PersonDTO {
 			String birthDate,
 			@Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message = "Mobile phone number is not valid.") String mobilePhone,
 			@Size(max = 50, message = "E-mail must be maximum {max} characters long.") @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") String email,
-			@Pattern(regexp = "^[A-Za-z]+$", message = "City name is not valid, can contain only letters and minimum 1 letter.") String city,
-			@Pattern(regexp = "^[A-Za-z]+$", message = "Country name is not valid, can contain only letters and minimum 1 letter.") String country,
+			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "City name is not valid.") String city,
+			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") String country,
 			@Pattern(regexp = "^[A-Za-z]{2,3}$", message = "ISO2 code is not valid.") String iso2Code,
-			@Pattern(regexp = "^[A-Za-z]+$", message = "Country region name is not valid, can contain only letters and minimum 1 letter.") String countryRegion,
-			Double longitude, Double latitude, String about, @Max(5) @Min(0) Double rating,
-			@Min(0) Integer numberOfRatings, List<String> jobOffers, List<String> jobSeeks,
+			@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message = "Country region name is not valid.") String countryRegion,
+			@Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") Double longitude,
+			@Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") Double latitude,
+			@Size(max = 255, message = "About must be maximum {max} characters long.") String about,
+			@Max(5) @Min(0) Double rating, @Min(0) Integer numberOfRatings, List<String> jobOffers,
+			List<String> jobSeeks,
 			@Size(min = 5, max = 20, message = "Username must be between {min} and {max} characters long.") String username,
 			@Pattern(regexp = "^(ROLE_ADMIN|ROLE_USER|ROLE_GUEST)$", message = "Role is not valid, must be ROLE_ADMIN, ROLE_USER or ROLE_GUEST") String accessRole,
 			@Size(min = 5, message = "Password must be {min} characters long or higher.") @Pattern(regexp = "^[A-Za-z0-9]*$", message = "Password is not valid, must contin only letters and numbers.") String password,

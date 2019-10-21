@@ -6,6 +6,6 @@ import com.iktpreobuka.jobster.entities.JobTypeEntity;
 
 public interface JobTypeRepository extends CrudRepository<JobTypeEntity, Integer>{
 
-	public JobTypeEntity getByTypeName(String typeName);
+	public JobTypeEntity getByJobTypeName(String typeName);
 	
 }

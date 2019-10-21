@@ -207,8 +207,12 @@ public class UserAccountController {
 	        return new ResponseEntity<>("New user account is null", HttpStatus.BAD_REQUEST);
 	      }
 		if (newUserAccount.getUsername() == null || newUserAccount.getAccessRole() == null || (newUserAccount.getPassword() == null && newUserAccount.getConfirmedPassword() == null) || newUserAccount.getUserId() == null) {
-			logger.info("---------------- Some or all atributes is null.");
-			return new ResponseEntity<>("Some or all atributes is null.", HttpStatus.BAD_REQUEST);
+			logger.info("---------------- Some or all atributes are null.");
+			return new ResponseEntity<>("Some or all atributes are null.", HttpStatus.BAD_REQUEST);
+		}
+		if (newUserAccount.getAccessRole().equals(" ") || newUserAccount.getAccessRole().equals("") || newUserAccount.getUsername().equals(" ") || newUserAccount.getUsername().equals("") || newUserAccount.getPassword().equals(" ") || newUserAccount.getPassword().equals("") || newUserAccount.getConfirmedPassword().equals(" ") || newUserAccount.getConfirmedPassword().equals("") || newUserAccount.getUserId().equals(" ") || newUserAccount.getUserId().equals("") ) {
+			logger.info("---------------- Some or all atributes are blanks.");
+			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		UserAccountEntity account = new UserAccountEntity();
 		try {
@@ -289,6 +293,10 @@ public class UserAccountController {
 		if (updateUserAccount.getUsername() == null && updateUserAccount.getAccessRole() == null && (updateUserAccount.getPassword() == null || updateUserAccount.getConfirmedPassword() == null) && updateUserAccount.getUserId() == null) {
 			logger.info("---------------- All atributes is null.");
 			return new ResponseEntity<>("All atributes is null.", HttpStatus.BAD_REQUEST);
+		}
+		if ( (updateUserAccount.getAccessRole() != null && (updateUserAccount.getAccessRole().equals(" ") || updateUserAccount.getAccessRole().equals(""))) || (updateUserAccount.getUsername() != null && (updateUserAccount.getUsername().equals(" ") || updateUserAccount.getUsername().equals(""))) || (updateUserAccount.getPassword() != null && (updateUserAccount.getPassword().equals(" ") || updateUserAccount.getPassword().equals(""))) || (updateUserAccount.getConfirmedPassword() != null && (updateUserAccount.getConfirmedPassword().equals(" ") || updateUserAccount.getConfirmedPassword().equals(""))) || (updateUserAccount.getUserId() != null && (updateUserAccount.getUserId().equals(" ") || updateUserAccount.getUserId().equals(""))) ) {
+			logger.info("---------------- Some or all atributes are blanks.");
+			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		UserAccountEntity account = new UserAccountEntity();
 		try {

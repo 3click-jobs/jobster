@@ -70,6 +70,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 				account.setUpdatedById(loggedUser.getId());
 				userAccountRepository.save(account);
 			}
+			logger.info("modifyAccount finished.");
 		} catch (Exception e) {
 			throw new Exception("ModifyAccount for Admin failed on saving.");
 		}
@@ -90,13 +91,15 @@ public class UserAccountDaoImpl implements UserAccountDao {
 				i++;
 			}
 			if (updateCompany.getPassword() != null && !Encryption.getPassEncoded(updateCompany.getPassword()).equals(account.getPassword()) && !updateCompany.getPassword().equals(" ") && !updateCompany.getPassword().equals("")) {
-				account.setPassword(Encryption.getPassEncoded(updateCompany.getPassword()));
+				//account.setPassword(Encryption.getPassEncoded(updateCompany.getPassword()));
+				account.setPassword(updateCompany.getPassword());
 				i++;
 			}
 			if (i>0) {
 				account.setUpdatedById(loggedUser.getId());
 				userAccountRepository.save(account);
 			}
+			logger.info("modifyAccount2 finished.");
 		} catch (Exception e) {
 			throw new Exception("ModifyAccount for Parent failed on saving.");
 		}
@@ -113,6 +116,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 				account.setUpdatedById(loggedUser.getId());
 				userAccountRepository.save(account);
 			}
+			logger.info("modifyAccountUsername finished.");
 		} catch (Exception e) {
 			throw new Exception("ModifyAccountUsername failed on saving.");
 		}
@@ -126,6 +130,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 				account.setUpdatedById(loggedUser.getId());
 				userAccountRepository.save(account);
 			}
+			logger.info("modifyAccountAccessRole finished.");
 		} catch (Exception e) {
 			throw new Exception("modifyAccountAccessRole failed on saving.");
 		}
@@ -140,6 +145,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 				account.setUpdatedById(loggedUser.getId());
 				userAccountRepository.save(account);
 			}
+			logger.info("modifyAccountUserAndAccessRole finished.");
 		} catch (Exception e) {
 			throw new Exception("modifyAccountUserAndAccessRole failed on saving.");
 		}
@@ -153,6 +159,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 				account.setUpdatedById(loggedUser.getId());
 				userAccountRepository.save(account);
 			}
+			logger.info("modifyAccountUser finished.");
 		} catch (Exception e) {
 			throw new Exception("modifyAccountUser failed on saving.");
 		}
@@ -161,11 +168,13 @@ public class UserAccountDaoImpl implements UserAccountDao {
 	@Override
 	public void modifyAccountPassword(UserEntity loggedUser, UserAccountEntity account, String password) throws Exception {
 		try {
-			if (password != null && !Encryption.getPassEncoded(password).equals(account.getPassword()) && !password.equals(" ") && !password.equals("")) {
-				account.setPassword(Encryption.getPassEncoded(password));
+			if (password != null && /*!Encryption.getPassEncoded(password).equals(account.getPassword())*/!password.equals(account.getPassword()) && !password.equals(" ") && !password.equals("")) {
+				//account.setPassword(Encryption.getPassEncoded(password));
+				account.setPassword(password);
 				account.setUpdatedById(loggedUser.getId());
 				userAccountRepository.save(account);
 			}
+			logger.info("modifyAccountPassword finished.");
 		} catch (Exception e) {
 			throw new Exception("ModifyAccountPassword failed on saving.");
 		}
@@ -185,13 +194,15 @@ public class UserAccountDaoImpl implements UserAccountDao {
 				i++;
 			}
 			if (!Encryption.getPassEncoded(password).equals(account.getPassword()) && password != null && !password.equals(" ") && !password.equals("")) {
-				account.setPassword(Encryption.getPassEncoded(password));
+				//account.setPassword(Encryption.getPassEncoded(password));
+				account.setPassword(password);
 				i++;
 			}
 			if (i>0) {
 				account.setUpdatedById(loggedUser.getId());
 				userAccountRepository.save(account);
 			}
+			logger.info("modifyAccount3 finished.");
 		} catch (Exception e) {
 			throw new Exception("ModifyAccountUsername failed on saving.");
 		}
@@ -204,6 +215,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			account.setStatusInactive();
 			account.setUpdatedById(loggedUser.getId());
 			userAccountRepository.save(account);
+			logger.info("deleteAccount finished.");
 		} catch (Exception e) {
 			throw new Exception("DeleteAccount failed on saving.");
 		}
@@ -215,6 +227,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			account.setStatusActive();
 			account.setUpdatedById(loggedUser.getId());
 			userAccountRepository.save(account);
+			logger.info("undeleteAccount finished.");
 		} catch (Exception e) {
 			throw new Exception("UndeleteAccount failed on saving.");
 		}		
@@ -226,6 +239,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			account.setStatusArchived();
 			account.setUpdatedById(loggedUser.getId());
 			userAccountRepository.save(account);
+			logger.info("archiveAccount finished.");
 		} catch (Exception e) {
 			throw new Exception("ArchiveDeleteAccount failed on saving.");
 		}				
