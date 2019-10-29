@@ -1,5 +1,8 @@
 package com.iktpreobuka.jobster.repositories;
 
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,7 +15,7 @@ import com.iktpreobuka.jobster.enumerations.EUserRole;
 
 
 @Repository
-public interface UserAccountRepository extends CrudRepository<UserAccountEntity, Integer> {
+public interface UserAccountRepository extends JpaRepository<UserAccountEntity, Integer> {
 
 	public UserAccountEntity getById(Integer id);
 	public UserAccountEntity getByUsername(String username);
@@ -38,5 +41,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	@SuppressWarnings("unchecked")
 	public UserAccountEntity save(UserAccountEntity userAccountEntity);
 	public UserAccountEntity findByUserAndStatusLike(CompanyEntity companyEntity, int i);
+	public Optional<UserAccountEntity> findById(String username);
+	
 
 }
