@@ -3,8 +3,6 @@ package com.iktpreobuka.jobster.entities.dto;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -12,8 +10,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.iktpreobuka.jobster.entities.UserEntity;
-import com.iktpreobuka.jobster.enumerations.EDay;
 
 public class JobSeekDto {
 	
@@ -60,7 +56,7 @@ public class JobSeekDto {
 		private Double price;
 		
 		//@JsonView(Views.Teacher.class)
-		@NotNull (message = "Details must be provided.") //???????????????????????????????????
+		//@NotNull (message = "Details must be provided.") //???????????????????????????????????
 	    @Size(min = 0, max = 250, message = "Text can have 250 character max.")
 		private String detailsLink;
 		
@@ -68,7 +64,35 @@ public class JobSeekDto {
 		@NotNull (message = "List must be provided.")
 		protected List<JobDayHoursDto> listJobDayHoursDto;
 		
+		//@JsonView(Views.User.class)
+		@NotNull (message = "Contry name must be provided.")
+		@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
+		private String countryName;
+		
+		//@JsonView(Views.User.class)
+		@Pattern(regexp = "^[A-Za-z]{2,3}$", message="ISO2 code is not valid.")
+		@NotNull (message = "Contry Iso2Code must be provided.")
+		protected String iso2Code;
+		
+		//@JsonView(Views.User.class)
+		@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid.")
+		private String countryRegionName;
+		
+		//@JsonView(Views.User.class)
+		@Min(value=-180, message = "Longitude  must be {value} or higher!")
+		@Max(value=180, message = "Longitude must be {value} or lower!")
+		@NotNull (message = "City longitude must be provided.")
+		private Double longitude;
+		
+		//@JsonView(Views.User.class)
+		@Min(value=-90, message = "Latitude  must be {value} or higher!")
+		@Max(value=90, message = "Latitude must be {value} or lower!")
+		@NotNull (message = "City latitude must be provided.")
+		private Double latitude;
+		
 		public JobSeekDto() {}
+		
+		
 
 		public JobSeekDto(
 				@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
@@ -78,8 +102,13 @@ public class JobSeekDto {
 				@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
 				Boolean flexibileDays,
 				@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
-				@NotNull(message = "Details must be provided.") @Size(min = 0, max = 250, message = "Text can have 250 character max.") String detailsLink,
-				@NotNull(message = "List must be provided.") List<JobDayHoursDto> listJobDayHoursDto) {
+				@Size(min = 0, max = 250, message = "Text can have 250 character max.") String detailsLink,
+				@NotNull(message = "List must be provided.") List<JobDayHoursDto> listJobDayHoursDto,
+				@NotNull(message = "Contry name must be provided.") @Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") String countryName,
+				@Pattern(regexp = "^[A-Za-z]{2,3}$", message = "ISO2 code is not valid.") @NotNull(message = "Contry Iso2Code must be provided.") String iso2Code,
+				@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message = "Country region name is not valid.") String countryRegionName,
+				@Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") @NotNull(message = "City longitude must be provided.") Double longitude,
+				@Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") @NotNull(message = "City latitude must be provided.") Double latitude) {
 			super();
 			this.cityName = cityName;
 			this.jobTypeName = jobTypeName;
@@ -91,7 +120,14 @@ public class JobSeekDto {
 			this.price = price;
 			this.detailsLink = detailsLink;
 			this.listJobDayHoursDto = listJobDayHoursDto;
+			this.countryName = countryName;
+			this.iso2Code = iso2Code;
+			this.countryRegionName = countryRegionName;
+			this.longitude = longitude;
+			this.latitude = latitude;
 		}
+
+
 
 		public String getCityName() {
 			return cityName;
@@ -171,7 +207,49 @@ public class JobSeekDto {
 
 		public void setListJobDayHoursDto(List<JobDayHoursDto> listJobDayHoursDto) {
 			this.listJobDayHoursDto = listJobDayHoursDto;
-		};
+		}
+
+		public String getCountryName() {
+			return countryName;
+		}
+
+		public void setCountryName(String countryName) {
+			this.countryName = countryName;
+		}
+
+		public String getIso2Code() {
+			return iso2Code;
+		}
+
+		public void setIso2Code(String iso2Code) {
+			this.iso2Code = iso2Code;
+		}
+
+		public String getCountryRegionName() {
+			return countryRegionName;
+		}
+
+		public void setCountryRegionName(String countryRegionName) {
+			this.countryRegionName = countryRegionName;
+		}
+
+		public Double getLongitude() {
+			return longitude;
+		}
+
+		public void setLongitude(Double longitude) {
+			this.longitude = longitude;
+		}
+
+		public Double getLatitude() {
+			return latitude;
+		}
+
+		public void setLatitude(Double latitude) {
+			this.latitude = latitude;
+		}
+
+		
 		
 		
 

@@ -6,9 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.iktpreobuka.jobster.entities.dto.JobSeekDto;
 
 public interface JobSeekDao {
@@ -17,7 +14,13 @@ public interface JobSeekDao {
 	
 	public JobSeekDto emptyWithEmptyDayHours();
 	
-	public ResponseEntity<?> addNewSeek(Principal principal, @Valid @RequestBody JobSeekDto seek, BindingResult result);//post
+	public ResponseEntity<?> addNewSeek(@Valid JobSeekDto seek, Principal principal, BindingResult result);
+
+	public ResponseEntity<?> deleteById(Integer id);
+
+	public ResponseEntity<?> archiveById(Integer id);
+
+	public ResponseEntity<?> getById(Integer id);
 
 
 
