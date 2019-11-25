@@ -11,90 +11,69 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class JobSeekDto {
+public class JobSeekPostDto {
 	
 		
-		//@JsonView(Views.Admin.class)
 		@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="City name is not valid.")
 		@NotNull (message = "City name must be provided.")
 		protected String cityName;
 		
-		//@JsonView(Views.Student.class)
 		@Pattern(regexp = "^[A-Za-z]{2,}$", message="Job type name is not valid.")
 		@NotNull (message = "Job type name must be provided.")
 		protected String jobTypeName;
 	
-		//@JsonView(Views.Student.class)
-		@NotNull (message = "Distance to job must be provided.") //??????????????????????
+		@NotNull (message = "Distance to job must be provided.")
 		@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")
 		@Min(value=0, message = "Distance to job must be {value} or higher!")
 		private Integer distanceToJob;
-		
-		
-		
-		 // -----------------DATES-------------------
-		
-		//@JsonView(Views.Student.class)
-		@NotNull (message = "Beginning date must be provided.") //?????????????????????????
+	
+		@NotNull (message = "Beginning date must be provided.")
 		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 		private Date beginningDate;
 		
-		//@JsonView(Views.Student.class)
-		@NotNull (message = "End date must be provided.") //??????????????????????????????????
+		@NotNull (message = "End date must be provided.")
 		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 		private Date endDate;
-		
-		//@JsonView(Views.Admin.class)
+				
 		private Boolean flexibileDates;
+				
+		private Boolean flexibileDays;
 		
-		//@JsonView(Views.Admin.class)
-		private Boolean flexibileDays; //------------------DAYS---------------------
-		
-		//@JsonView(Views.Student.class)
-		@NotNull (message = "Price must be provided.") //?????????????????????????????????????
+		@NotNull (message = "Price must be provided.")
 		@Min(value=0, message = "Price must be {value} or higher!")
 		private Double price;
 		
-		//@JsonView(Views.Teacher.class)
-		//@NotNull (message = "Details must be provided.") //???????????????????????????????????
 	    @Size(min = 0, max = 250, message = "Text can have 250 character max.")
 		private String detailsLink;
 		
-		//@JsonView(Views.Admin.class)
 		@NotNull (message = "List must be provided.")
 		protected List<JobDayHoursDto> listJobDayHoursDto;
 		
-		//@JsonView(Views.User.class)
 		@NotNull (message = "Contry name must be provided.")
 		@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
 		private String countryName;
 		
-		//@JsonView(Views.User.class)
 		@Pattern(regexp = "^[A-Za-z]{2,3}$", message="ISO2 code is not valid.")
 		@NotNull (message = "Contry Iso2Code must be provided.")
 		protected String iso2Code;
 		
-		//@JsonView(Views.User.class)
 		@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid.")
 		private String countryRegionName;
 		
-		//@JsonView(Views.User.class)
 		@Min(value=-180, message = "Longitude  must be {value} or higher!")
 		@Max(value=180, message = "Longitude must be {value} or lower!")
 		@NotNull (message = "City longitude must be provided.")
 		private Double longitude;
 		
-		//@JsonView(Views.User.class)
 		@Min(value=-90, message = "Latitude  must be {value} or higher!")
 		@Max(value=90, message = "Latitude must be {value} or lower!")
 		@NotNull (message = "City latitude must be provided.")
 		private Double latitude;
 		
-		public JobSeekDto() {}
+		public JobSeekPostDto() {}
 		
-		
-
-		public JobSeekDto(
+	
+		public JobSeekPostDto(
 				@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
 				@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Job type name is not valid.") @NotNull(message = "Job type name must be provided.") String jobTypeName,
 				@NotNull(message = "Distance to job must be provided.") @Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.") @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,

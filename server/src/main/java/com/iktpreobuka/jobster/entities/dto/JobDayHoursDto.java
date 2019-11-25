@@ -10,28 +10,23 @@ import com.iktpreobuka.jobster.enumerations.EDay;
 
 public class JobDayHoursDto {
 	
-	//@JsonView(Views.Admin.class)
 			@Enumerated(EnumType.STRING)
-			@NotNull (message = "Day must be provided.") //???????????????????????????????????
+			@NotNull (message = "Day must be provided.")
 			private EDay day;
 			
-			//@JsonView(Views.Admin.class)
-			@NotNull (message = "From/minimum hour/s must be provided.") //???????????????????????
+			@NotNull (message = "From/minimum hour/s must be provided.")
 			@Min(value=0, message = "From/minimum hour/s must be {value} or higher!")
 			@Max(value=24, message = "From/minimum hour/s must be {value} or lower!")
 			private Integer fromHour;
 			
-			//@JsonView(Views.Admin.class)
-			@NotNull (message = "To/maximum hour/s must be provided.") //???????????????????????????
+			@NotNull (message = "To/maximum hour/s must be provided.")
 			@Min(value=0, message = "To/maximum hour/s must be {value} or higher!")
 			@Max(value=24, message = "To/maximum hour/s must be {value} or lower!")
 			private Integer toHour;
 			
-			//@JsonView(Views.Admin.class)
 			private Boolean flexibileHours;
 			
-			//@JsonView(Views.Admin.class)
-			private Boolean isMinMax;//DRAKULICEV ATRIBUT AKO JE TRU ONDA JE FROMHOUR MINHOUR DNEVNO A TOHOUR MAKSIMALNO SATI TOGDANA, TKO TUMACIM, A AKO JE TO FALSE ONDA HOCU DA RADIM OD FROMHOUR DO TOHOUR
+			private Boolean isMinMax;
 
 			public JobDayHoursDto() {};
 			
@@ -86,9 +81,6 @@ public class JobDayHoursDto {
 			public void setIsMinMax(Boolean isMinMax) {
 				this.isMinMax = isMinMax;
 			}
-			
-			
-			
 			
 
 }
