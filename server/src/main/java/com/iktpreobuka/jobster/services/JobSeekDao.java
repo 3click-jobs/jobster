@@ -22,6 +22,10 @@ public interface JobSeekDao {
 
 	public ResponseEntity<?> getById(Integer id);
 
+	public ResponseEntity<?> unDeleteById(Integer id);
+
+	public ResponseEntity<?> unArchiveById(Integer id);
+
 
 
 	//public ResponseEntity<?> modifySeekById(@Valid @RequestBody NekiDto job, BindingResult result, @PathVariable Integer id);//put
