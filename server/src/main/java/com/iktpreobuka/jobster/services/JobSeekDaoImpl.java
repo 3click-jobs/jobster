@@ -35,7 +35,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 	@Autowired
 	private CityRepository cityRepository;
-	
+
 	@Autowired
 	private CityDao cityDao;
 
@@ -109,7 +109,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			if (((cityRepository.count()) == 0) || (cityRepository.getByCityName(seek.getCityName())) == null) {
 				logger.info("Creating city.");
 				try {
-					city = cityDao.addNewCityWithLoggedUser(seek.getCityName(), seek.getLongitude(), seek.getLatitude(), seek.getCountryRegionName(), seek.getCountryName(), seek.getIso2Code(), loggedUser);
+					city = cityDao.addNewCityWithLoggedUser(seek.getCityName(), seek.getLongitude(), seek.getLatitude(),
+							seek.getCountryRegionName(), seek.getCountryName(), seek.getIso2Code(), loggedUser);
 				} catch (Exception e) {
 					logger.info("Error occured during 'Checkin database'.");
 					return new ResponseEntity<String>("Error occured during 'Checkin database'." + e,
@@ -136,12 +137,13 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			return new ResponseEntity<String>("Error occured during 'Checkin database'." + e, HttpStatus.BAD_REQUEST);
 		}
 
+		// Mapping atributs
 		JobSeekEntity newSeek = new JobSeekEntity();
-
+		try {
+		logger.info("Mapping atributs.");
 		newSeek.setEmployee(loggedUser);
 		newSeek.setCity(city);
 		newSeek.setType(jobTypeRepository.getByJobTypeName(seek.getJobTypeName()));
-
 		newSeek.setDistanceToJob(seek.getDistanceToJob());
 		newSeek.setBeginningDate(seek.getBeginningDate());
 		newSeek.setEndDate(seek.getEndDate());
@@ -157,8 +159,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		JobDayHoursEntity newDaysAndHours = new JobDayHoursEntity();
 		List<JobDayHoursEntity> listJobDaysAndHours = new ArrayList<JobDayHoursEntity>();
 
-		for (JobDayHoursDto i : listJobDayHoursDto) {// ovo nisam siguran da li ce dodavati nove clanove ili ce samo
-														// zalepiti poslednji
+		logger.info("Mapping days and hours.");
+		for (JobDayHoursDto i : listJobDayHoursDto) {
 			newDaysAndHours.setDay(i.getDay());
 			newDaysAndHours.setFromHour(i.getFromHour());
 			newDaysAndHours.setToHour(i.getToHour());
@@ -166,14 +168,20 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			newDaysAndHours.setIsMinMax(i.getIsMinMax());
 			listJobDaysAndHours.add(newDaysAndHours);
 		}
-
-		jobDayHoursRepository.saveAll(listJobDaysAndHours);
-		newSeek.setDaysAndHours(listJobDaysAndHours);
-		jobSeekRepository.save(newSeek);
-
 		
-
-		return new ResponseEntity<JobSeekDto>(seek, HttpStatus.OK);
+		logger.info("Saveing days and hours.");
+		jobDayHoursRepository.saveAll(listJobDaysAndHours);
+		logger.info("Adding all list of days and hours to JobSeek.");
+		newSeek.setDaysAndHours(listJobDaysAndHours);
+		logger.info("Saveing JobSeek.");
+		jobSeekRepository.save(newSeek);
+		logger.info("Atributs mapped.");
+		}catch (Exception e) {
+			logger.info("Error ocured during mapping atributs.");
+			return new ResponseEntity<String>("Error ocured during mapping atributs.", HttpStatus.BAD_REQUEST);
+		}
+		logger.info("Returning new jobSeek.");
+		return new ResponseEntity<JobSeekEntity>(newSeek, HttpStatus.OK);
 	}
 
 ////////////////////////////////////////////GET BY ID///////////////////////////////////////////
@@ -198,9 +206,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 	}
 
-	////////////////// DELETE and UNDELETE ////////////////////////////
+	////////////////// DELETE ////////////////////////////
 
-	@Override // da li sam dobro razumeno 1 i 0 i -1???????
+	@Override
 	public ResponseEntity<?> deleteById(@PathVariable Integer id) {
 		try {
 			logger.info("Checking database.");
@@ -227,27 +235,90 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		try {
 			logger.info("Changing activity.");
 			if (wantedJobSeek.getStatus().equals(1)) {
+				logger.info("Deleting entity.");
 				wantedJobSeek.setStatusInactive();
-			}
-			if (wantedJobSeek.getStatus().equals(0)) {
-				wantedJobSeek.setStatusActive();
-			}
-			if (wantedJobSeek.getStatus().equals(-1)) {
-				return new ResponseEntity<String>("jobSeek is arhived it can't be deleted or undeleted.",
+				logger.info("Entity deleted.");
+			} else if (wantedJobSeek.getStatus().equals(0)) {
+				logger.info("JobSeek status is already deleted.");
+				return new ResponseEntity<String>("JobSeek status is already deleted.", HttpStatus.OK);
+			} else if (wantedJobSeek.getStatus().equals(-1)) {
+				logger.info("JobSeek is arhived it can't be deleted or undeleted.");
+				return new ResponseEntity<String>("JobSeek is arhived it can't be deleted or undeleted.",
+						HttpStatus.OK);
+			} else {
+				logger.info("JobSeek has unknown status, check status in datebase for jobSeek.");
+				return new ResponseEntity<String>("JobSeek has unknown status, check status in datebase for jobSeek.",
 						HttpStatus.OK);
 			}
+			logger.info("Saveing entity.");
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
 			logger.info("Error occured during 'Deleting jobSeek.'");
 			return new ResponseEntity<String>("Error occured during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.BAD_REQUEST);
+		logger.info("Returning jobSeek.");
+		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
 	}
 
-	////////////////////// ARCHICE and UNARCHIVE //////////////////////////
+	////////////////////// UNDELETE //////////////////////////////
 
-	@Override // da li sam dobro razumeno 1 i 0 i -1???????
+	@Override
+	public ResponseEntity<?> unDeleteById(@PathVariable Integer id) {
+		try {
+			logger.info("Checking database.");
+			if (((jobSeekRepository.count() == 0))) {
+				logger.info("Database empty.");
+				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+		}
+		JobSeekEntity wantedJobSeek = new JobSeekEntity();
+		try {
+			logger.info("Looking for jobSeek.");
+			wantedJobSeek = jobSeekRepository.findById(id).orElse(null);
+			if (wantedJobSeek == null) {
+				logger.info("JobSeek that you asked for doesn't exist.");
+				return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+		}
+		try {
+			logger.info("Changing activity.");
+			if (wantedJobSeek.getStatus().equals(0)) {
+				logger.info("Undeleteing entity.");
+				wantedJobSeek.setStatusActive();
+				logger.info("Entity deleted.");
+			} else if (wantedJobSeek.getStatus().equals(1)) {
+				logger.info("JobSeek status is already activ.");
+				return new ResponseEntity<String>("JobSeek status is already activ.", HttpStatus.OK);
+			} else if (wantedJobSeek.getStatus().equals(-1)) {
+				logger.info("JobSeek is arhived it can't be deleted or undeleted.");
+				return new ResponseEntity<String>("JobSeek is arhived it can't be deleted or undeleted.",
+						HttpStatus.OK);
+			} else {
+				logger.info("JobSeek has unknown status, check status in datebase for jobSeek.");
+				return new ResponseEntity<String>("JobSeek has unknown status, check status in datebase for jobSeek.",
+						HttpStatus.OK);
+			}
+			logger.info("Saveing entity.");
+			jobSeekRepository.save(wantedJobSeek);
+			logger.info("jobSeek changed.");
+		} catch (Exception e) {
+			logger.info("Error occured during 'Deleting jobSeek.'");
+			return new ResponseEntity<String>("Error occured during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
+		}
+		logger.info("Returning jobSeek.");
+		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
+	}
+
+	////////////////////// ARCHIVE //////////////////////////
+
+	@Override
 	public ResponseEntity<?> archiveById(@PathVariable Integer id) {
 		try {
 			logger.info("Checking database.");
@@ -265,7 +336,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			wantedJobSeek = jobSeekRepository.findById(id).orElse(null);
 			if (wantedJobSeek == null) {
 				logger.info("jobSeek that you asked for doesn't exist.");
-				return new ResponseEntity<String>("jobSeek that you asked for doesn't exist.", HttpStatus.OK);
+				return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
 			logger.info("Error occured during 'Checking database'.");
@@ -274,19 +345,79 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		try {
 			logger.info("Changing activity.");
 			if (wantedJobSeek.getStatus().equals(0) || wantedJobSeek.getStatus().equals(1)) {
+				logger.info("Archiving entity.");
 				wantedJobSeek.setStatusArchived();
+				logger.info("Entity archived.");
 			} else if (wantedJobSeek.getStatus().equals(-1)) {
-				wantedJobSeek.setStatusActive();
+				logger.info("JobSeek status is already archived.");
+				return new ResponseEntity<String>("JobSeek status is already archived.",
+						HttpStatus.OK);
 			} else {
-				wantedJobSeek.setStatusArchived();
+				logger.info("JobSeek has unknown status, check status in datebase for jobSeek.");
+				return new ResponseEntity<String>("JobSeek has unknown status, check status in datebase for jobSeek.",
+						HttpStatus.OK);
 			}
+			logger.info("Saveing entity.");
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
 			logger.info("Error occured during 'Deleting jobSeek.'");
 			return new ResponseEntity<String>("Error occured during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.BAD_REQUEST);
+		logger.info("Returning jobSeek.");
+		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
+	}
+	
+	///////////////////// UNARCHIVE ///////////////////////////////
+	
+	@Override
+	public ResponseEntity<?> unArchiveById(@PathVariable Integer id) {
+		try {
+			logger.info("Checking database.");
+			if (((jobSeekRepository.count() == 0))) {
+				logger.info("Database empty.");
+				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+		}
+		JobSeekEntity wantedJobSeek = new JobSeekEntity();
+		try {
+			logger.info("Looking for jobSeek.");
+			wantedJobSeek = jobSeekRepository.findById(id).orElse(null);
+			if (wantedJobSeek == null) {
+				logger.info("JobSeek that you asked for doesn't exist.");
+				return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+		}
+		try {
+			logger.info("Changing activity.");
+			if (wantedJobSeek.getStatus().equals(-1)) {
+				logger.info("Unarchiving entity.");
+				wantedJobSeek.setStatusActive();
+				logger.info("Entity unarchived.");
+			} else if (wantedJobSeek.getStatus().equals(1) || wantedJobSeek.getStatus().equals(0)) {
+				logger.info("JobSeek status is already active.");
+				return new ResponseEntity<String>("JobSeek status is already active.",
+						HttpStatus.OK);
+			} else {
+				logger.info("JobSeek has unknown status, check status in datebase for jobSeek.");
+				return new ResponseEntity<String>("JobSeek has unknown status, check status in datebase for jobSeek.",
+						HttpStatus.OK);
+			}
+			logger.info("Saveing entity.");
+			jobSeekRepository.save(wantedJobSeek);
+			logger.info("jobSeek changed.");
+		} catch (Exception e) {
+			logger.info("Error occured during 'Deleting jobSeek.'");
+			return new ResponseEntity<String>("Error occured during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
+		}
+		logger.info("Returning jobSeek.");
+		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
 	}
 
 	private String createErrorMessage(BindingResult result) {
