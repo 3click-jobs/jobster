@@ -288,30 +288,39 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			newSeek.setEmployee(loggedUser);
 			if (seek.getCityName() != null) {
 				newSeek.setCity(city);
+				logger.info("City changed.");
 			}
 			if (seek.getJobTypeName() != null) {
 				newSeek.setType(jobTypeRepository.getByJobTypeName(seek.getJobTypeName()));
+				logger.info("Job type name changed.");
 			}
 			if (seek.getDistanceToJob() != null) {
 				newSeek.setDistanceToJob(seek.getDistanceToJob());
+				logger.info("Distance to job changed.");
 			}
 			if (seek.getBeginningDate() != null) {
 				newSeek.setBeginningDate(seek.getBeginningDate());
+				logger.info("Beginning date changed.");
 			}
 			if (seek.getEndDate() != null) {
 				newSeek.setEndDate(seek.getEndDate());
+				logger.info("End date changed.");
 			}
 			if (seek.getFlexibileDates() != null) {
 				newSeek.setFlexibileDates(seek.getFlexibileDates());
+				logger.info("Flexibility for dates changed.");
 			}
 			if (seek.getPrice() != null) {
 				newSeek.setPrice(seek.getPrice());
+				logger.info("Price changed.");
 			}
 			if (seek.getDetailsLink() != null) {
 				newSeek.setDetailsLink(seek.getDetailsLink());
+				logger.info("Details changed");
 			}
 			if (seek.getFlexibileDays() != null) {
 				newSeek.setFlexibileDays(seek.getFlexibileDays());
+				logger.info("Flexibility for days changed.");
 			}
 			newSeek.setCreatedById(loggedUser.getId());
 
@@ -331,6 +340,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 					newDaysAndHours.setIsMinMax(i.getIsMinMax());
 					listJobDaysAndHours.add(newDaysAndHours);
 				}
+				logger.info("Days and hours changed.");
 				logger.info("Saveing days and hours.");
 				jobDayHoursRepository.saveAll(listJobDaysAndHours);
 				logger.info("Adding all list of days and hours to JobSeek.");
@@ -368,6 +378,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 
 	}
+	
 
 	////////////////// DELETE ////////////////////////////
 
@@ -472,8 +483,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
-			logger.info("Error occured during 'Deleting jobSeek.'");
-			return new ResponseEntity<String>("Error occured during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occured during 'Undeleting jobSeek.'");
+			return new ResponseEntity<String>("Error occured during 'Undeleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning jobSeek.");
 		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
@@ -523,8 +534,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
-			logger.info("Error occured during 'Deleting jobSeek.'");
-			return new ResponseEntity<String>("Error occured during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occured during 'Archiveing jobSeek.'");
+			return new ResponseEntity<String>("Error occured during 'Archiveing jobSeek'." + e, HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning jobSeek.");
 		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
@@ -574,8 +585,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
-			logger.info("Error occured during 'Deleting jobSeek.'");
-			return new ResponseEntity<String>("Error occured during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occured during 'Unarchiveing jobSeek.'");
+			return new ResponseEntity<String>("Error occured during 'Unarchiveing jobSeek'." + e, HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning jobSeek.");
 		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
