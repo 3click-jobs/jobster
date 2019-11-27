@@ -225,6 +225,10 @@ public class PersonController {
 			if (newPerson.getAccessRole() != null && !newPerson.getAccessRole().equals("ROLE_USER")) {
 				logger.info("---------------- Access role must be ROLE_USER.");
 		        return new ResponseEntity<>("Access role must be ROLE_USER.", HttpStatus.NOT_ACCEPTABLE);
+			}	
+			if (newPerson.getGender() != null && (!newPerson.getGender().equals("GENDER_MALE") || !newPerson.getGender().equals("GENDER_FEMALE"))) {
+				logger.info("---------------- Gender must be GENDER_MALE or GENDER_FEMALE.");
+		        return new ResponseEntity<>("Gender must be GENDER_MALE or GENDER_FEMALE.", HttpStatus.NOT_ACCEPTABLE);
 			}		
 			if (newPerson.getUsername() != null && userAccountRepository.getByUsername(newPerson.getUsername()) != null) {
 				logger.info("---------------- Username already exists.");
@@ -287,6 +291,10 @@ public class PersonController {
 			if (updatePerson.getAccessRole() != null && !updatePerson.getAccessRole().equals("ROLE_USER")) {
 				logger.info("---------------- Access role must be ROLE_USER.");
 		        return new ResponseEntity<>("Access role must be ROLE_USER.", HttpStatus.NOT_ACCEPTABLE);
+			}	
+			if (updatePerson.getGender() != null && (!updatePerson.getGender().equals("GENDER_MALE") || !updatePerson.getGender().equals("GENDER_FEMALE"))) {
+				logger.info("---------------- Gender must be GENDER_MALE or GENDER_FEMALE.");
+		        return new ResponseEntity<>("Gender must be GENDER_MALE or GENDER_FEMALE.", HttpStatus.NOT_ACCEPTABLE);
 			}		
 			if (updatePerson.getUsername() != null && userAccountRepository.getByUsername(updatePerson.getUsername()) != null) {
 				logger.info("---------------- Username already exists.");

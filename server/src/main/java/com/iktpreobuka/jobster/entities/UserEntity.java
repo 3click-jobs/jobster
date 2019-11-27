@@ -130,6 +130,19 @@ public class UserEntity {
 		this.createdById = createdById;
 		}
 
+	public UserEntity(@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Phone number must be provided.") @Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message = "Mobile phone number is not valid.") String mobilePhoneNumber,
+			@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "Email is not valid.") @NotNull(message = "E-mail must be provided.") String email,
+			@Size(max=255, message = "About must be maximum {max} characters long.") String about) {
+		super();
+		this.city = city;
+		this.mobilePhone = mobilePhoneNumber;
+		this.email = email;
+		this.about = about;
+		this.status = getStatusActive();
+		this.rating = 0.0;
+		this.numberOfRatings = 0;
+		}
 
 /*	public UserAccountEntity getAccount() {
 		return userAccount;
@@ -138,6 +151,7 @@ public class UserEntity {
 	public void setAccount(UserAccountEntity userAccount) {
 		this.userAccount = userAccount;
 	}*/
+
 
 	public CityEntity getCity() {
 		return city;
