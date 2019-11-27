@@ -33,6 +33,18 @@ public interface JobSeekDao {
 
 	public ResponseEntity<?> unArchiveById(@PathVariable Integer id);
 
+	public ResponseEntity<?> getAll();
+	
+	public ResponseEntity<?> getAllLikeEmployee(@PathVariable Integer id);
+	
+	public ResponseEntity<?> getAllLikeCity(@PathVariable Integer id);
+
+	public ResponseEntity<?> getAllLikeJobType(@PathVariable Integer id);
+
+	
+
+
+
 
 
 }
