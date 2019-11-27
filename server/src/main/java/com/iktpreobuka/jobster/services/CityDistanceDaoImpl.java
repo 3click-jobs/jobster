@@ -23,6 +23,7 @@ public class CityDistanceDaoImpl implements CityDistanceDao {
 	private CityDistanceRepository cityDistanceRepository;
 	
 	
+
 	public void addNewDistancesForCity(CityEntity city) throws Exception {
 		if ( city == null ) {
 			throw new Exception("City is null.");

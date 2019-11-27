@@ -1,3 +1,4 @@
+
 package com.iktpreobuka.jobster.repositories;
 
 import java.util.List;
@@ -21,4 +22,5 @@ public interface JobSeekRepository extends CrudRepository<JobSeekEntity, Integer
 
 	
 		
+
 }

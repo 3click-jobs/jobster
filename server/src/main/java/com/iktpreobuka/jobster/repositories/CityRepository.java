@@ -1,3 +1,4 @@
+
 package com.iktpreobuka.jobster.repositories;
 
 import java.util.List;
@@ -45,3 +46,4 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	//public CityEntity getByCityNameIgnoreCase(String name);
 }
+

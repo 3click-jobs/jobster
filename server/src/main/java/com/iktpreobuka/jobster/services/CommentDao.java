@@ -11,4 +11,6 @@ public interface CommentDao {
 
 	ShowCommentDTO fromCommentToDTO(CommentEntity comment);
 
+	void updateReceiverRating(Integer commReceiverId, Integer rating);
+
 }

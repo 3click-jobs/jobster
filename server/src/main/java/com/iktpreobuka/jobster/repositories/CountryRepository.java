@@ -19,6 +19,8 @@ public interface CountryRepository extends CrudRepository<CountryEntity, Integer
 	@SuppressWarnings("unchecked")
 	public CountryEntity save(CountryEntity countryEntity);
 
+
 	public CountryEntity getByCreatedById(Integer id);
 	
+
 }

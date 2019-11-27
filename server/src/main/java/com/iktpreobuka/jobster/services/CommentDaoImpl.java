@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.iktpreobuka.jobster.entities.CommentEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.ShowCommentDTO;
 import com.iktpreobuka.jobster.repositories.CompanyRepository;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
+import com.iktpreobuka.jobster.repositories.UserRepository;
 
 @Service
 public class CommentDaoImpl implements CommentDao {
@@ -20,6 +22,9 @@ public class CommentDaoImpl implements CommentDao {
 	
 	@Autowired
 	CompanyRepository companyRepository;
+	
+	@Autowired
+	UserRepository userRepository;
 	
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -68,6 +73,20 @@ public class CommentDaoImpl implements CommentDao {
 		
 		
 	}
+	@Override
+	public void updateReceiverRating(Integer commReceiverId, Integer rating) {
+		UserEntity user = userRepository.getByIdAndStatusLike(commReceiverId, 1);
+		logger.info("---------------- Updating rating .... Found user receiving the comment.");
+		Integer numberOfRatings = user.getNumberOfRatings();
+		Double totalRating = user.getRating()*numberOfRatings;
+		totalRating += rating;
+		numberOfRatings++;
+		user.setNumberOfRatings(numberOfRatings);
+		user.setRating(totalRating/numberOfRatings);
+		logger.info("---------------- Updating rating .... updated ratings saved to user. Saving user into the repo...");
+		userRepository.save(user);		
+	}
+
 
 
 }
