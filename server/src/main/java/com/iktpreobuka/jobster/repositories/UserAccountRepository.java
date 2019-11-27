@@ -39,6 +39,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	@SuppressWarnings("unchecked")
 	public UserAccountEntity save(UserAccountEntity userAccountEntity);
 	public UserAccountEntity findByUserAndStatusLike(CompanyEntity companyEntity, int i);
+	public UserAccountEntity findByUserAndStatusLike(PersonEntity personEntity, int i);
 
 
 }
