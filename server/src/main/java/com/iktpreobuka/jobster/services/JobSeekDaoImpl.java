@@ -266,7 +266,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 						HttpStatus.BAD_REQUEST);
 			}
 		}
-		
+
 		// checking jobType
 		if (seek.getJobTypeName() != null) {
 			try {
@@ -334,45 +334,47 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 				logger.info("Mapping days and hours.");
 				for (JobDayHoursPutDto i : listJobDayHoursPutDto) {
-					if(i.getDay()==null) {
+					if (i.getDay() == null) {
 						logger.info("Missing data. You need to put 'day'.");
 						return new ResponseEntity<String>("You need to put 'day'.", HttpStatus.BAD_REQUEST);
 					}
-					if(i.getDay()!=null) {
+					if (i.getDay() != null) {
 						newDaysAndHours.setDay(i.getDay());
 					}
-					
-					if(i.getFromHour()==null) {
+
+					if (i.getFromHour() == null) {
 						logger.info("Missing data. You need to put 'from hour'.");
 						return new ResponseEntity<String>("You need to put 'from hour'.", HttpStatus.BAD_REQUEST);
 					}
-					if(i.getFromHour()!=null) {
+					if (i.getFromHour() != null) {
 						newDaysAndHours.setFromHour(i.getFromHour());
 					}
-					
-					if(i.getToHour()==null) {
+
+					if (i.getToHour() == null) {
 						logger.info("Missing data. You need to put 'to hour'.");
 						return new ResponseEntity<String>("You need to put 'to hour'.", HttpStatus.BAD_REQUEST);
 					}
-					if(i.getToHour()!=null) {
+					if (i.getToHour() != null) {
 						newDaysAndHours.setToHour(i.getToHour());
 					}
-					
-					if(i.getFlexibileHours()==null && i.getIsMinMax()==null) {
+
+					if (i.getFlexibileHours() == null && i.getIsMinMax() == null) {
 						newDaysAndHours.setFlexibileHours(true);
 						newDaysAndHours.setIsMinMax(false);
 					}
-					
-					if(i.getFlexibileHours()==true && i.getIsMinMax()==true) {
-						return new ResponseEntity<String>("You need decide between 'flexibile hours' and 'MinMax'.", HttpStatus.BAD_REQUEST);
+
+					if (i.getFlexibileHours() == true && i.getIsMinMax() == true) {
+						return new ResponseEntity<String>("You need decide between 'flexibile hours' and 'MinMax'.",
+								HttpStatus.BAD_REQUEST);
 					}
-					
-					if(i.getFlexibileHours()==false && i.getIsMinMax()==false) {
-						return new ResponseEntity<String>("You need decide between 'flexibile hours' and 'MinMax'.", HttpStatus.BAD_REQUEST);
+
+					if (i.getFlexibileHours() == false && i.getIsMinMax() == false) {
+						return new ResponseEntity<String>("You need decide between 'flexibile hours' and 'MinMax'.",
+								HttpStatus.BAD_REQUEST);
 					}
-					
-					if(i.getFlexibileHours()!=null || i.getIsMinMax()!=null)
-					newDaysAndHours.setFlexibileHours(i.getFlexibileHours());
+
+					if (i.getFlexibileHours() != null || i.getIsMinMax() != null)
+						newDaysAndHours.setFlexibileHours(i.getFlexibileHours());
 					newDaysAndHours.setIsMinMax(i.getIsMinMax());
 					listJobDaysAndHours.add(newDaysAndHours);
 				}
@@ -393,11 +395,29 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		return new ResponseEntity<JobSeekEntity>(seekForModify, HttpStatus.OK);
 	}
 
+/////////////////////////////////////////////GET ALL /////////////////////////////////////////
+
+	@Override
+	public ResponseEntity<?> getAll() {
+		try {
+			logger.info("Checking database.");
+			if (((jobSeekRepository.count() == 0))) {
+				logger.info("Database empty.");
+				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+		}
+		List<JobSeekEntity> list = (List<JobSeekEntity>) jobSeekRepository.findAll();
+		logger.info("Returning result.");
+		return new ResponseEntity<List<JobSeekEntity>>(list, HttpStatus.OK);
+	}
+
 ////////////////////////////////////////////GET BY ID///////////////////////////////////////////
 
 	@Override
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
-
 		try {
 			logger.info("Looking for pupil.");
 			JobSeekEntity wantedJobSeek = jobSeekRepository.findById(id).orElse(null);
@@ -405,16 +425,109 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				logger.info("JobSeek found.");
 				return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
 			}
-
 		} catch (Exception e) {
 			logger.info("Error occured during 'Checking database'.");
 			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
+	}
+
+///////////////////////////////////////GET BY EMPLOYEE /////////////////////////////////////
+
+	@Override
+	public ResponseEntity<?> getAllLikeEmployee(@PathVariable Integer id) {
+		try {
+			logger.info("Checking database.");
+			if (((jobSeekRepository.count() == 0))) {
+				logger.info("Database empty.");
+				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			logger.info("Looking for jobs with selected employee");
+			List<JobSeekEntity> wantedJobSeeks = jobSeekRepository.getAllByEmployeeId(id);
+			if (!wantedJobSeeks.isEmpty()) {
+				logger.info("Returning JobSeeks.");
+				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+		}
+
+		logger.info("JobSeek that you asked for doesn't exist.");
+		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 
 	}
-	
+
+////////////////////////////////////////// GET BY JOBTYPE ////////////////////////////////////////
+
+	@Override
+	public ResponseEntity<?> getAllLikeJobType(@PathVariable Integer id) {
+		try {
+			logger.info("Checking database.");
+			if (((jobSeekRepository.count() == 0))) {
+				logger.info("Database empty.");
+				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			logger.info("Looking for jobs with selected jobType");
+			List<JobSeekEntity> wantedJobSeeks = jobSeekRepository.getAllByTypeId(id);
+			if (!wantedJobSeeks.isEmpty()) {
+				logger.info("Returning JobSeeks.");
+				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+		}
+
+		logger.info("JobSeek that you asked for doesn't exist.");
+		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
+
+	}
+
+///////////////////////////////////////GET BY CITY /////////////////////////////////////
+
+	@Override
+	public ResponseEntity<?> getAllLikeCity(@PathVariable Integer id) {
+		try {
+			logger.info("Checking database.");
+			if (((jobSeekRepository.count() == 0))) {
+				logger.info("Database empty.");
+				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			logger.info("Looking for jobs with selected city");
+			List<JobSeekEntity> wantedJobSeeks = jobSeekRepository.getAllByCityId(id);
+			if (!wantedJobSeeks.isEmpty()) {
+				logger.info("Returning JobSeeks.");
+				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			logger.info("Error occured during 'Checking database'.");
+			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+		}
+
+		logger.info("JobSeek that you asked for doesn't exist.");
+		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
+
+	}
 
 	////////////////// DELETE ////////////////////////////
 
@@ -622,7 +735,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
 			logger.info("Error occured during 'Unarchiveing jobSeek.'");
-			return new ResponseEntity<String>("Error occured during 'Unarchiveing jobSeek'." + e, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("Error occured during 'Unarchiveing jobSeek'." + e,
+					HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning jobSeek.");
 		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);

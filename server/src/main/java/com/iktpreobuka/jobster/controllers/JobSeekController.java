@@ -49,6 +49,31 @@ public class JobSeekController {
 		return jobService.modifySeek(seek, seekId, principal, result);
 	}
 	
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<?> getAll() {
+		return jobService.getAll();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	public ResponseEntity<?> getById(@PathVariable Integer id){
+		return jobService.getById(id);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/employee/{id}")
+	public ResponseEntity<?> getAllLikeEmployee(@PathVariable Integer id){
+		return jobService.getAllLikeEmployee(id);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/city/{id}")
+	public ResponseEntity<?> getAllLikeCity(@PathVariable Integer id){
+		return jobService.getAllLikeCity(id);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/jobType/{id}")
+	public ResponseEntity<?> getAllLikeJobType(@PathVariable Integer id){
+		return jobService.getAllLikeJobType(id);
+	}
+	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete")
 	public ResponseEntity<?> deleteById(@PathVariable Integer Id){
 		return jobService.deleteById(Id);
