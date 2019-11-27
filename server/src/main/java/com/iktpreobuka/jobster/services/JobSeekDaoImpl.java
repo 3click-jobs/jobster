@@ -22,7 +22,8 @@ import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.JobDayHoursEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
-import com.iktpreobuka.jobster.entities.dto.JobDayHoursDto;
+import com.iktpreobuka.jobster.entities.dto.JobDayHoursPostDto;
+import com.iktpreobuka.jobster.entities.dto.JobDayHoursPutDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 import com.iktpreobuka.jobster.repositories.CityRepository;
@@ -66,12 +67,12 @@ public class JobSeekDaoImpl implements JobSeekDao {
 	@Override
 	public JobSeekPostDto emptyWithEmptyDayHours() {
 		JobSeekPostDto emptyWith = new JobSeekPostDto();
-		JobDayHoursDto empty1 = new JobDayHoursDto();
-		JobDayHoursDto empty2 = new JobDayHoursDto();
-		List<JobDayHoursDto> list = new ArrayList<JobDayHoursDto>();
+		JobDayHoursPostDto empty1 = new JobDayHoursPostDto();
+		JobDayHoursPostDto empty2 = new JobDayHoursPostDto();
+		List<JobDayHoursPostDto> list = new ArrayList<JobDayHoursPostDto>();
 		list.add(empty1);
 		list.add(empty2);
-		emptyWith.setListJobDayHoursDto(list);
+		emptyWith.setListJobDayHoursPostDto(list);
 		return emptyWith;
 	}
 
@@ -160,14 +161,14 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			newSeek.setFlexibileDays(seek.getFlexibileDays());
 			newSeek.setCreatedById(loggedUser.getId());
 
-			List<JobDayHoursDto> listJobDayHoursDto = new ArrayList<JobDayHoursDto>();
-			listJobDayHoursDto = seek.getListJobDayHoursDto();
+			List<JobDayHoursPostDto> listJobDayHoursPostDto = new ArrayList<JobDayHoursPostDto>();
+			listJobDayHoursPostDto = seek.getListJobDayHoursPostDto();
 
 			JobDayHoursEntity newDaysAndHours = new JobDayHoursEntity();
 			List<JobDayHoursEntity> listJobDaysAndHours = new ArrayList<JobDayHoursEntity>();
 
 			logger.info("Mapping days and hours.");
-			for (JobDayHoursDto i : listJobDayHoursDto) {
+			for (JobDayHoursPostDto i : listJobDayHoursPostDto) {
 				newDaysAndHours.setDay(i.getDay());
 				newDaysAndHours.setFromHour(i.getFromHour());
 				newDaysAndHours.setToHour(i.getToHour());
@@ -226,11 +227,11 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		}
 
 		// checking seek
-		JobSeekEntity newSeek = new JobSeekEntity();
+		JobSeekEntity seekForModify = new JobSeekEntity();
 		try {
 			logger.info("Looking for pupil.");
-			newSeek = jobSeekRepository.findById(seekId).orElse(null);
-			if (newSeek == null) {
+			seekForModify = jobSeekRepository.findById(seekId).orElse(null);
+			if (seekForModify == null) {
 				logger.info("JobSeek that you asked for doesn't exist.");
 				return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.OK);
 			}
@@ -285,57 +286,92 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		// Mapping atributs
 		try {
 			logger.info("Mapping atributs.");
-			newSeek.setEmployee(loggedUser);
-			if (seek.getCityName() != null) {
-				newSeek.setCity(city);
+			seekForModify.setEmployee(loggedUser);
+			if (seek.getCityName() != null && seek.getCityName() != seekForModify.getCity().getCityName()) {
+				seekForModify.setCity(city);
 				logger.info("City changed.");
 			}
-			if (seek.getJobTypeName() != null) {
-				newSeek.setType(jobTypeRepository.getByJobTypeName(seek.getJobTypeName()));
+			if (seek.getJobTypeName() != null && seek.getJobTypeName() != seekForModify.getType().getJobTypeName()) {
+				seekForModify.setType(jobTypeRepository.getByJobTypeName(seek.getJobTypeName()));
 				logger.info("Job type name changed.");
 			}
-			if (seek.getDistanceToJob() != null) {
-				newSeek.setDistanceToJob(seek.getDistanceToJob());
+			if (seek.getDistanceToJob() != null && seek.getDistanceToJob() != seekForModify.getDistanceToJob()) {
+				seekForModify.setDistanceToJob(seek.getDistanceToJob());
 				logger.info("Distance to job changed.");
 			}
-			if (seek.getBeginningDate() != null) {
-				newSeek.setBeginningDate(seek.getBeginningDate());
+			if (seek.getBeginningDate() != null && seek.getBeginningDate() != seekForModify.getBeginningDate()) {
+				seekForModify.setBeginningDate(seek.getBeginningDate());
 				logger.info("Beginning date changed.");
 			}
-			if (seek.getEndDate() != null) {
-				newSeek.setEndDate(seek.getEndDate());
+			if (seek.getEndDate() != null && seek.getEndDate() != seekForModify.getEndDate()) {
+				seekForModify.setEndDate(seek.getEndDate());
 				logger.info("End date changed.");
 			}
-			if (seek.getFlexibileDates() != null) {
-				newSeek.setFlexibileDates(seek.getFlexibileDates());
+			if (seek.getFlexibileDates() != null && seek.getFlexibileDates() != seekForModify.getFlexibileDates()) {
+				seekForModify.setFlexibileDates(seek.getFlexibileDates());
 				logger.info("Flexibility for dates changed.");
 			}
-			if (seek.getPrice() != null) {
-				newSeek.setPrice(seek.getPrice());
+			if (seek.getPrice() != null && seek.getPrice() != seekForModify.getPrice()) {
+				seekForModify.setPrice(seek.getPrice());
 				logger.info("Price changed.");
 			}
-			if (seek.getDetailsLink() != null) {
-				newSeek.setDetailsLink(seek.getDetailsLink());
+			if (seek.getDetailsLink() != null && seek.getDetailsLink() != seekForModify.getDetailsLink()) {
+				seekForModify.setDetailsLink(seek.getDetailsLink());
 				logger.info("Details changed");
 			}
-			if (seek.getFlexibileDays() != null) {
-				newSeek.setFlexibileDays(seek.getFlexibileDays());
+			if (seek.getFlexibileDays() != null && seek.getFlexibileDays() != seekForModify.getFlexibileDays()) {
+				seekForModify.setFlexibileDays(seek.getFlexibileDays());
 				logger.info("Flexibility for days changed.");
 			}
-			newSeek.setCreatedById(loggedUser.getId());
+			seekForModify.setCreatedById(loggedUser.getId());
 
-			if (!seek.getListJobDayHoursDto().isEmpty()) {
-				List<JobDayHoursDto> listJobDayHoursDto = new ArrayList<JobDayHoursDto>();
-				listJobDayHoursDto = seek.getListJobDayHoursDto();
+			if (!seek.getListJobDayHoursPutDto().isEmpty()) {
+				List<JobDayHoursPutDto> listJobDayHoursPutDto = new ArrayList<JobDayHoursPutDto>();
+				listJobDayHoursPutDto = seek.getListJobDayHoursPutDto();
 
 				JobDayHoursEntity newDaysAndHours = new JobDayHoursEntity();
 				List<JobDayHoursEntity> listJobDaysAndHours = new ArrayList<JobDayHoursEntity>();
 
 				logger.info("Mapping days and hours.");
-				for (JobDayHoursDto i : listJobDayHoursDto) {
-					newDaysAndHours.setDay(i.getDay());
-					newDaysAndHours.setFromHour(i.getFromHour());
-					newDaysAndHours.setToHour(i.getToHour());
+				for (JobDayHoursPutDto i : listJobDayHoursPutDto) {
+					if(i.getDay()==null) {
+						logger.info("Missing data. You need to put 'day'.");
+						return new ResponseEntity<String>("You need to put 'day'.", HttpStatus.BAD_REQUEST);
+					}
+					if(i.getDay()!=null) {
+						newDaysAndHours.setDay(i.getDay());
+					}
+					
+					if(i.getFromHour()==null) {
+						logger.info("Missing data. You need to put 'from hour'.");
+						return new ResponseEntity<String>("You need to put 'from hour'.", HttpStatus.BAD_REQUEST);
+					}
+					if(i.getFromHour()!=null) {
+						newDaysAndHours.setFromHour(i.getFromHour());
+					}
+					
+					if(i.getToHour()==null) {
+						logger.info("Missing data. You need to put 'to hour'.");
+						return new ResponseEntity<String>("You need to put 'to hour'.", HttpStatus.BAD_REQUEST);
+					}
+					if(i.getToHour()!=null) {
+						newDaysAndHours.setToHour(i.getToHour());
+					}
+					
+					if(i.getFlexibileHours()==null && i.getIsMinMax()==null) {
+						newDaysAndHours.setFlexibileHours(true);
+						newDaysAndHours.setIsMinMax(false);
+					}
+					
+					if(i.getFlexibileHours()==true && i.getIsMinMax()==true) {
+						return new ResponseEntity<String>("You need decide between 'flexibile hours' and 'MinMax'.", HttpStatus.BAD_REQUEST);
+					}
+					
+					if(i.getFlexibileHours()==false && i.getIsMinMax()==false) {
+						return new ResponseEntity<String>("You need decide between 'flexibile hours' and 'MinMax'.", HttpStatus.BAD_REQUEST);
+					}
+					
+					if(i.getFlexibileHours()!=null || i.getIsMinMax()!=null)
 					newDaysAndHours.setFlexibileHours(i.getFlexibileHours());
 					newDaysAndHours.setIsMinMax(i.getIsMinMax());
 					listJobDaysAndHours.add(newDaysAndHours);
@@ -344,17 +380,17 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				logger.info("Saveing days and hours.");
 				jobDayHoursRepository.saveAll(listJobDaysAndHours);
 				logger.info("Adding all list of days and hours to JobSeek.");
-				newSeek.setDaysAndHours(listJobDaysAndHours);
+				seekForModify.setDaysAndHours(listJobDaysAndHours);
 			}
 			logger.info("Saveing JobSeek.");
-			jobSeekRepository.save(newSeek);
+			jobSeekRepository.save(seekForModify);
 			logger.info("Atributs mapped.");
 		} catch (Exception e) {
 			logger.info("Error ocured during mapping atributs.");
 			return new ResponseEntity<String>("Error ocured during mapping atributs.", HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning new jobSeek.");
-		return new ResponseEntity<JobSeekEntity>(newSeek, HttpStatus.OK);
+		return new ResponseEntity<JobSeekEntity>(seekForModify, HttpStatus.OK);
 	}
 
 ////////////////////////////////////////////GET BY ID///////////////////////////////////////////

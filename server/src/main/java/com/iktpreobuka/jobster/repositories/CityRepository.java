@@ -23,4 +23,8 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 	public CityEntity save(CityEntity cityEntity);
 	
 	public CityEntity getByCreatedById(Integer id);
+
+	//public Iterable<CityEntity> findByCityNameIgnoreCase();
+
+	//public CityEntity getByCityNameIgnoreCase(String name);
 }
