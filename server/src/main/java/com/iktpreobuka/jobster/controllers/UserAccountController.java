@@ -216,6 +216,10 @@ public class UserAccountController {
 		}
 		UserAccountEntity account = new UserAccountEntity();
 		try {
+			if (newUserAccount.getUsername() != null && userAccountRepository.getByUsername(newUserAccount.getUsername()) != null) {
+				logger.info("---------------- Username already exists.");
+		        return new ResponseEntity<>("Username already exists.", HttpStatus.NOT_ACCEPTABLE);
+		    }
 			UserEntity user = new UserEntity();
 			EUserRole role = null;
 			if (newUserAccount.getUsername() != null && userAccountRepository.getByUsername(newUserAccount.getUsername()) != null) {
@@ -300,6 +304,10 @@ public class UserAccountController {
 		}
 		UserAccountEntity account = new UserAccountEntity();
 		try {
+			if (updateUserAccount.getUsername() != null && userAccountRepository.getByUsername(updateUserAccount.getUsername()) != null) {
+				logger.info("---------------- Username already exists.");
+		        return new ResponseEntity<>("Username already exists.", HttpStatus.NOT_ACCEPTABLE);
+		    }
 			account = userAccountRepository.findByIdAndStatusLike(id, 1);
 			if (account == null) {
 				logger.info("---------------- User account not found.");
