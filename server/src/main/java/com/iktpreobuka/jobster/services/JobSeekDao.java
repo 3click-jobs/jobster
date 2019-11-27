@@ -9,34 +9,30 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.iktpreobuka.jobster.entities.dto.JobSeekDto;
+import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
+import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 
 public interface JobSeekDao {
 	
-	public JobSeekDto empty();
+	public JobSeekPostDto empty();
 	
-	public JobSeekDto emptyWithEmptyDayHours();
+	public JobSeekPostDto emptyWithEmptyDayHours();
 	
-	public ResponseEntity<?> addNewSeek(Principal principal, @Valid @RequestBody JobSeekDto seek, BindingResult result);//post
+	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekPostDto seek, Principal principal, BindingResult result);
+
+	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekPutDto seek, @PathVariable Integer seekId, Principal principal,
+			BindingResult result);
+	
+	public ResponseEntity<?> deleteById(@PathVariable Integer id);
+
+	public ResponseEntity<?> archiveById(@PathVariable Integer id);
+
+	public ResponseEntity<?> getById(@PathVariable Integer id);
+
+	public ResponseEntity<?> unDeleteById(@PathVariable Integer id);
+
+	public ResponseEntity<?> unArchiveById(@PathVariable Integer id);
 
 
-
-	//public ResponseEntity<?> modifySeekById(@Valid @RequestBody NekiDto job, BindingResult result, @PathVariable Integer id);//put
-		
-
-	//public ResponseEntity<?> deleteById(@PathVariable Integer id);//delete
-	
-	//public ResponseEntity<?> restorById(@PathVariable Integer id);//delete
-	
-	//public ResponseEntity<?> archiveById(@PathVariable Integer id);//delete
-	
-	//public ResponseEntity<?> unArchiveById(@PathVariable Integer id);//delete
-	
-	
-	//public ResponseEntity<?>  getById(@PathVariable Integer id);//get
-
-
-
-	
 
 }

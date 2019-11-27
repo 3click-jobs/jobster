@@ -9,5 +9,5 @@ import com.iktpreobuka.jobster.entities.JobSeekEntity;
 public interface JobSeekRepository extends CrudRepository<JobSeekEntity, Integer> {
 
 	public JobSeekEntity getById(Integer id);
-	
+		
 }
