@@ -1,6 +1,7 @@
 package com.iktpreobuka.jobster.controllers;
 
 import java.security.Principal;
+import java.util.Date;
 
 import javax.validation.Valid;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
@@ -72,6 +74,62 @@ public class JobSeekController {
 	@RequestMapping(method = RequestMethod.GET, value = "/jobType/{id}")
 	public ResponseEntity<?> getAllLikeJobType(@PathVariable Integer id){
 		return jobService.getAllLikeJobType(id);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/distance")
+	public ResponseEntity<?> getAllJobSeekWhereDistanceIsAndLessThen(@RequestParam Integer distance){
+		return jobService.getAllJobSeekWhereDistanceIsAndLessThen(distance);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/beginDate")
+	public ResponseEntity<?> getAllWithBeginnigDate(@RequestParam Date beginDate){
+		return jobService.getAllWithBeginnigDate(beginDate);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/endDate")
+	public ResponseEntity<?> getAllWithEndDate(@RequestParam Date endDate){
+		return jobService.getAllWithEndDate(endDate);
+	}
+	
+			
+	@RequestMapping(method = RequestMethod.GET, value = "/flexDates")
+	public ResponseEntity<?> getAllWithFlexibileDates(@RequestParam boolean flexDates){
+		return jobService.getAllWithFlexibileDates(flexDates);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/price")
+	public ResponseEntity<?> getAllWherePriceIsAndMore(@RequestParam Double price){
+		return jobService.getAllWherePriceIsAndMore(price);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/flexDays")
+	public ResponseEntity<?> getAllWithFlexibileDays(@RequestParam boolean flexDays){
+		return jobService.getAllWithFlexibileDays(flexDays);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/status")
+	public ResponseEntity<?> getAllWithStatus(@RequestParam Integer status){
+		return jobService.getAllWithStatus(status);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/elapse")
+	public ResponseEntity<?> getAllWithElapse(@RequestParam Integer elapse){
+		return jobService.getAllWithElapse(elapse);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/createdBy")
+	public ResponseEntity<?> getAllByCreatedBy(@RequestParam Integer createdBy){
+		return jobService.getAllByCreatedBy(createdBy);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/updatedBy")
+	public ResponseEntity<?> getAllByUpdatedBy(@RequestParam Integer updatedBy){
+		return jobService.getAllByUpdatedBy(updatedBy);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/version")
+	public ResponseEntity<?> getAllByVersion(@RequestParam Integer version){
+		return jobService. getAllByVersion(version);
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete")
