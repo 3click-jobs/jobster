@@ -1,3 +1,4 @@
+
 package com.iktpreobuka.jobster.repositories;
 
 import java.util.List;
@@ -21,4 +22,11 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	@SuppressWarnings("unchecked")
 	public CityEntity save(CityEntity cityEntity);
+	
+	public CityEntity getByCreatedById(Integer id);
+
+	//public Iterable<CityEntity> findByCityNameIgnoreCase();
+
+	//public CityEntity getByCityNameIgnoreCase(String name);
 }
+

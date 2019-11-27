@@ -13,19 +13,9 @@ class RegisterPerson extends Component {
         fetch('http://localhost:8080/jobster/users/persons', {
             method: 'post',
             headers: {'Content-Type':'application/json'},
-            body: {
-             "firstName": "test",
-             "lastName": "test",
-             "gender": "test",
-             "firstName": "test",
-             "firstName": "test",
-             "firstName": "test",
-             
-            }
+            body: {}
            });
     }
-
-
 
   render() {
     return (
@@ -69,8 +59,7 @@ class RegisterPerson extends Component {
                             </div>
                             <div className="form-group">
                                 <input type="password" className="form-control" placeholder="Confirm Password *"/>
-                            </div>                    
-                   
+                            </div>               
                             <button type="button" className="btn btn-danger btn-lg" onClick={this.handleRegisterUser()}>Login</button>
                      </div>
                 </div>

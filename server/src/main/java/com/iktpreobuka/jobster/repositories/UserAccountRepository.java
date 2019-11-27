@@ -29,7 +29,16 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	public UserAccountEntity findByUserAndAccessRoleLike(CompanyEntity user, EUserRole role);
 	public UserAccountEntity findByUserAndAccessRoleLike(PersonEntity user, EUserRole role);
 	public void deleteByUser(Integer id);
+
+	public UserEntity findUserByUsername(String username);
+	@Query("select ue.id "
+			+ "from UserAccountEntity ua "
+			+ "join ua.user ue "
+			+ "where ua.username=:username")
+	public Integer getUserIdByUsername(String username); // pitati drakulica da li ce ovo da radi
 	@SuppressWarnings("unchecked")
 	public UserAccountEntity save(UserAccountEntity userAccountEntity);
+	public UserAccountEntity findByUserAndStatusLike(CompanyEntity companyEntity, int i);
+
 
 }

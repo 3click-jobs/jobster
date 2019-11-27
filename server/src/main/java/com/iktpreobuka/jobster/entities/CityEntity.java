@@ -1,3 +1,4 @@
+
 package com.iktpreobuka.jobster.entities;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class CityEntity {
     @Column(name = "status", nullable = false)
 	private Integer status;
 	//@JsonView(Views.Admin.class)
-    @Column(name = "created_by", nullable = false, updatable = false)
+    @Column(name = "created_by", updatable = false)
 	private Integer createdById;
     //@JsonView(Views.Admin.class)
     @Column(name = "updated_by")
@@ -112,6 +113,18 @@ public class CityEntity {
 		this.latitude = latitude;
 		this.status = getStatusActive();
 		this.createdById = createdById;
+	}
+	
+	public CityEntity(@NotNull(message = "Country region must be provided.") CountryRegionEntity region,
+			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
+			@NotNull(message = "Longitude must be provided.") @Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") Double longitude,
+			@NotNull(message = "Latitude must be provided.") @Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") Double latitude) {
+		super();
+		this.region = region;
+		this.cityName = cityName;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.status = getStatusActive();
 	}
 
 	

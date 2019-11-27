@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.CompanyEntity;
@@ -80,9 +81,9 @@ public class CompanyController {
 		logger.info("################ /jobster/users/companies/getAll started.");
 		//logger.info("Logged username: " + principal.getName());
 		try {
-			Iterable<CompanyEntity> users= companyRepository.findByStatusLike(1);
+			Iterable<CompanyEntity> users= companyDao.findCompanyByStatusLike(1);
 			logger.info("---------------- Finished OK.");
-			if (users == null) {
+			if (Iterables.isEmpty(users)) {
 				logger.info("---------------- Companies not found.");
 		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
 		      }
@@ -121,9 +122,9 @@ public class CompanyController {
 		logger.info("################ /jobster/users/companies/deleted/getAllDeleted started.");
 		//logger.info("Logged username: " + principal.getName());
 		try {
-			Iterable<CompanyEntity> users= companyRepository.findByStatusLike(0);
+			Iterable<CompanyEntity> users= companyDao.findCompanyByStatusLike(0);
 			logger.info("---------------- Finished OK.");
-			if (users == null) {
+			if (Iterables.isEmpty(users)) {
 				logger.info("---------------- Deleted companies not found.");
 		        return new ResponseEntity<>("Deleted companies not found.", HttpStatus.NOT_FOUND);
 		      }
@@ -161,9 +162,9 @@ public class CompanyController {
 		logger.info("################ /jobster/users/companies/archived/getAllArchived started.");
 		//logger.info("Logged username: " + principal.getName());
 		try {
-			Iterable<CompanyEntity> users= companyRepository.findByStatusLike(-1);
+			Iterable<CompanyEntity> users= companyDao.findCompanyByStatusLike(-1);
 			logger.info("---------------- Finished OK.");
-			if (users == null) {
+			if (Iterables.isEmpty(users)) {
 				logger.info("---------------- Archived companies not found.");
 		        return new ResponseEntity<>("Archived companies not found.", HttpStatus.NOT_FOUND);
 		      }
@@ -194,12 +195,10 @@ public class CompanyController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> addNewCompany(@Valid @RequestBody CompanyDTO newCompany, /*Principal principal,*/ BindingResult result) {
+	public ResponseEntity<?> addNewCompany(@Valid @RequestBody CompanyDTO newCompany, BindingResult result) {
 		logger.info("################ /jobster/users/companies/addNewCompany started.");
-		//logger.info("Logged user: " + principal.getName());
 		if (result.hasErrors()) { 
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
@@ -208,9 +207,13 @@ public class CompanyController {
 			logger.info("---------------- New Company is null.");
 	        return new ResponseEntity<>("New Company is null.", HttpStatus.BAD_REQUEST);
 	      }
-		if (newCompany.getCompanyName() == null || newCompany.getCompanyId() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
-			logger.info("---------------- Some atributes is null.");
-			return new ResponseEntity<>("Some atributes is null", HttpStatus.BAD_REQUEST);
+		if (newCompany.getCompanyName() == null || newCompany.getCompanyRegistrationNumber() == null || newCompany.getAccessRole() == null || newCompany.getEmail() == null || newCompany.getMobilePhone() == null || newCompany.getCity() == null || newCompany.getCountry() == null || newCompany.getIso2Code() == null || newCompany.getLatitude() == null || newCompany.getLongitude() == null || newCompany.getUsername() == null || newCompany.getPassword() == null || newCompany.getConfirmedPassword() == null ) {
+			logger.info("---------------- Some or all atributes are null.");
+			return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
+		}
+		if (newCompany.getCompanyName().equals(" ") || newCompany.getCompanyName().equals("") || newCompany.getCompanyRegistrationNumber().equals(" ") || newCompany.getCompanyRegistrationNumber().equals("") || newCompany.getAccessRole().equals(" ") || newCompany.getAccessRole().equals("") || newCompany.getEmail().equals(" ") || newCompany.getEmail().equals("") || newCompany.getMobilePhone().equals(" ") || newCompany.getMobilePhone().equals("") || newCompany.getCity().equals(" ") || newCompany.getCity().equals("") || newCompany.getCountry().equals(" ") || newCompany.getCountry().equals("") || newCompany.getIso2Code().equals(" ") || newCompany.getIso2Code().equals("") || newCompany.getUsername().equals(" ") || newCompany.getUsername().equals("") || newCompany.getPassword().equals(" ") || newCompany.getPassword().equals("") || newCompany.getConfirmedPassword().equals(" ") || newCompany.getConfirmedPassword().equals("") ) {
+			logger.info("---------------- Some or all atributes are blanks.");
+			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		UserEntity user = new CompanyEntity();
 		try {
@@ -222,7 +225,7 @@ public class CompanyController {
 				logger.info("---------------- Mobile phone number already exists.");
 		        return new ResponseEntity<>("Mobile phone number already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
-			if (newCompany.getCompanyId() != null && companyRepository.getByCompanyId(newCompany.getCompanyId()) != null) {
+			if (newCompany.getCompanyRegistrationNumber() != null && companyRepository.getByCompanyRegistrationNumber(newCompany.getCompanyRegistrationNumber()) != null) {
 				logger.info("---------------- Company Id already exists.");
 		        return new ResponseEntity<>("Company Id already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
@@ -234,13 +237,10 @@ public class CompanyController {
 				logger.info("---------------- Username already exists.");
 		        return new ResponseEntity<>("Username already exists.", HttpStatus.NOT_ACCEPTABLE);
 		      }
-			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			UserEntity loggedUser = userRepository.getByIdAndStatusLike(1, 1);
-			logger.info("Logged user identified.");
-			user = companyDao.addNewCompany(loggedUser, newCompany);
+			user = companyDao.addNewCompany(newCompany);
 			logger.info("Company created.");
 			if (newCompany.getUsername() != null && newCompany.getPassword() != null && newCompany.getConfirmedPassword() != null && newCompany.getPassword().equals(newCompany.getConfirmedPassword())) {
-				UserAccountEntity account = userAccountDao.addNewUserAccount(loggedUser, user, newCompany.getUsername(), EUserRole.ROLE_USER, newCompany.getPassword());
+				UserAccountEntity account = userAccountDao.addNewUserAccount(user, user, newCompany.getUsername(), EUserRole.ROLE_USER, newCompany.getPassword());
 				logger.info("Account created.");
 				return new ResponseEntity<>(account, HttpStatus.OK);
 			}
@@ -273,6 +273,14 @@ public class CompanyController {
 			logger.info("---------------- New Company is null.");
 	        return new ResponseEntity<>("New Company data is null.", HttpStatus.BAD_REQUEST);
 	      }
+		if (updateCompany.getCompanyName() == null && updateCompany.getCompanyRegistrationNumber() == null && updateCompany.getAccessRole() == null && updateCompany.getEmail() == null && updateCompany.getMobilePhone() == null && (updateCompany.getCity() == null || updateCompany.getCountry() == null || updateCompany.getIso2Code() == null || updateCompany.getLatitude() == null || updateCompany.getLongitude() == null) && updateCompany.getAbout() == null && updateCompany.getUsername() == null && (updateCompany.getPassword() == null || updateCompany.getConfirmedPassword() == null) ) {
+			logger.info("---------------- All atributes are null.");
+			return new ResponseEntity<>("All atributes are null", HttpStatus.BAD_REQUEST);
+		}
+		if ( ( updateCompany.getCompanyName() != null && (updateCompany.getCompanyName().equals(" ") || updateCompany.getCompanyName().equals("") ) ) || ( updateCompany.getCompanyRegistrationNumber() != null && (updateCompany.getCompanyRegistrationNumber().equals(" ") || updateCompany.getCompanyRegistrationNumber().equals("") ) ) || ( updateCompany.getAccessRole() != null && ( updateCompany.getAccessRole().equals(" ") || updateCompany.getAccessRole().equals("") ) ) || ( updateCompany.getEmail() != null && ( updateCompany.getEmail().equals(" ") || updateCompany.getEmail().equals("") ) ) || ( updateCompany.getMobilePhone() != null && ( updateCompany.getMobilePhone().equals(" ") || updateCompany.getMobilePhone().equals("") ) ) || ( updateCompany.getCity() != null && ( updateCompany.getCity().equals(" ") || updateCompany.getCity().equals("") ) ) || (updateCompany.getCountry() != null && ( updateCompany.getCountry().equals(" ") || updateCompany.getCountry().equals("") ) ) || ( updateCompany.getIso2Code() != null && ( updateCompany.getIso2Code().equals(" ") || updateCompany.getIso2Code().equals("") ) ) || ( updateCompany.getUsername() != null && (updateCompany.getUsername().equals(" ") || updateCompany.getUsername().equals("") ) ) || ( updateCompany.getPassword() != null && ( updateCompany.getPassword().equals(" ") || updateCompany.getPassword().equals("") ) ) || ( updateCompany.getConfirmedPassword() != null && (updateCompany.getConfirmedPassword().equals(" ") || updateCompany.getConfirmedPassword().equals("") ) ) ) {
+			logger.info("---------------- Some or all atributes are blanks.");
+			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
+		}
 		CompanyEntity user = new CompanyEntity();
 		try {
 			if (updateCompany.getEmail() != null && companyRepository.getByEmail(updateCompany.getEmail()) != null) {
@@ -283,7 +291,7 @@ public class CompanyController {
 				logger.info("---------------- Mobile phone number already exists.");
 		        return new ResponseEntity<>("Mobile phone number already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
-			if (updateCompany.getCompanyId() != null && companyRepository.getByCompanyId(updateCompany.getCompanyId()) != null) {
+			if (updateCompany.getCompanyRegistrationNumber() != null && companyRepository.getByCompanyRegistrationNumber(updateCompany.getCompanyRegistrationNumber()) != null) {
 				logger.info("---------------- Company Id already exists.");
 		        return new ResponseEntity<>("Company Id already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
@@ -302,9 +310,9 @@ public class CompanyController {
 		      }
 			logger.info("Company identified.");
 			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			UserEntity loggedUser = userRepository.getByIdAndStatusLike(1, 1);
+			UserEntity loggedUser = userRepository.getByIdAndStatusLike(id, 1);
 			logger.info("Logged user identified.");
-			if (updateCompany.getCompanyName() != null || updateCompany.getCompanyId() != null || updateCompany.getEmail() != null || updateCompany.getMobilePhone() != null || (updateCompany.getCity() != null && updateCompany.getCountry() != null && updateCompany.getIso2Code() != null && updateCompany.getCountryRegion() != null && updateCompany.getLatitude() != null && updateCompany.getLongitude() != null) || updateCompany.getDetailsLink() != null ) {
+			if (updateCompany.getCompanyName() != null || updateCompany.getCompanyRegistrationNumber() != null || updateCompany.getEmail() != null || updateCompany.getMobilePhone() != null || (updateCompany.getCity() != null && updateCompany.getCountry() != null && updateCompany.getIso2Code() != null && updateCompany.getCountryRegion() != null && updateCompany.getLatitude() != null && updateCompany.getLongitude() != null) || updateCompany.getAbout() != null ) {
 				companyDao.modifyCompany(loggedUser, user, updateCompany);
 				logger.info("Company modified.");
 			}
@@ -348,12 +356,12 @@ public class CompanyController {
 		      }
 			logger.info("Company for archiving identified.");
 			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			UserEntity loggedUser = userRepository.getByIdAndStatusLike(1, 1);
+			UserEntity loggedUser = userRepository.getById(id);
 			logger.info("Logged user identified.");
-			if (id == loggedUser.getId()) {
+			/*if (id == loggedUser.getId()) {
 				logger.info("---------------- Selected Id is ID of logged User: Cann't archive yourself.");
 				return new ResponseEntity<>("Selected Id is ID of logged User: Cann't archive yourself.", HttpStatus.FORBIDDEN);
-		      }	
+		      }	*/
 			companyDao.archiveCompany(loggedUser, user);
 			logger.info("Company archived.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLike(user, EUserRole.ROLE_USER);
@@ -394,7 +402,7 @@ public class CompanyController {
 		      }
 			logger.info("Company for undeleting identified.");
 			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			UserEntity loggedUser = userRepository.getByIdAndStatusLike(1, 1);
+			UserEntity loggedUser = userRepository.getByIdAndStatusLike(id, 0);
 			logger.info("Logged user identified.");
 			companyDao.undeleteCompany(loggedUser, user);
 			logger.info("Company undeleted.");
@@ -436,12 +444,12 @@ public class CompanyController {
 		      }
 			logger.info("Company for deleting identified.");
 			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			UserEntity loggedUser = userRepository.getByIdAndStatusLike(1, 1);
+			UserEntity loggedUser = userRepository.getByIdAndStatusLike(id, 1);
 			logger.info("Logged user identified.");
-			if (id == loggedUser.getId()) {
+			/*if (id == loggedUser.getId()) {
 				logger.info("---------------- Selected Id is ID of logged User: Cann't delete yourself.");
 				return new ResponseEntity<>("Selected Id is ID of logged User: Cann't delete yourself.", HttpStatus.FORBIDDEN);
-		      }	
+		      }	*/
 			companyDao.deleteCompany(loggedUser, user);
 			logger.info("Company deleted.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLikeAndStatusLike(user, EUserRole.ROLE_USER, 1);

@@ -3,6 +3,8 @@ package com.iktpreobuka.jobster.services;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,28 +53,43 @@ public class PersonDaoImpl implements PersonDao {
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+
 
 	@Override
-	public UserEntity addNewPerson(UserEntity loggedUser, PersonDTO newPerson) throws Exception {
+	public UserEntity addNewPerson(PersonDTO newPerson) throws Exception {
 			if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getIso2Code() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null ) {
 				throw new Exception("Some data is null.");
 			}
 			UserEntity user = new CompanyEntity();
 			CityEntity city = new CityEntity();
+			CountryEntity country = new CountryEntity();
+			CountryRegionEntity countryRegion = new CountryRegionEntity();
 			try {
-				CountryEntity country = countryRepository.getByCountryNameAndIso2Code(newPerson.getCountry(), newPerson.getIso2Code());
+				country = countryRepository.getByCountryNameAndIso2Code(newPerson.getCountry(), newPerson.getIso2Code());
+				Boolean newCountryRegion = false;
+				Boolean newCountry = false;
+				Boolean newCity = false;
 				if(country != null) {
-					CountryRegionEntity countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
+					logger.info("Country founded.");
+					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
 					if (countryRegion != null) {
+						logger.info("CountryRegion founded.");
 						city = cityRepository.getByCityNameAndRegion(newPerson.getCity(), countryRegion);
+						logger.info("City founded.");
 					} else {
 						city = null;
+						newCountryRegion = true;
 					}
 				} else {
 					city = null;
+					newCountry = true;
+					newCountryRegion = true;
 				}
 				if( city == null) {
-					city = cityDao.addNewCity(newPerson.getCity(), newPerson.getLongitude(), newPerson.getLatitude(), newPerson.getCountryRegion(), newPerson.getCountry(), newPerson.getIso2Code(), loggedUser);
+					city = cityDao.addNewCity(newPerson.getCity(), newPerson.getLongitude(), newPerson.getLatitude(), newPerson.getCountryRegion(), newPerson.getCountry(), newPerson.getIso2Code());
+					newCity = true;
+					logger.info("City created.");
 				}
 				((PersonEntity) user).setFirstName(newPerson.getFirstName());
 				((PersonEntity) user).setLastName(newPerson.getLastName());
@@ -82,12 +99,34 @@ public class PersonDaoImpl implements PersonDao {
 			    user.setCity(city);
 			    user.setEmail(newPerson.getEmail());
 			    user.setMobilePhone(newPerson.getMobilePhone());
-			    user.setDetailsLink(newPerson.getDetailsLink());
+			    user.setAbout(newPerson.getAbout());
 			    user.setNumberOfRatings(0);
 			    user.setRating(0.0);
 				user.setStatusActive();
-				user.setCreatedById(loggedUser.getId());
 				personRepository.save(user);
+				logger.info("User created.");
+				user = personRepository.getByEmailAndStatusLike(newPerson.getEmail(), 1);
+				user.setCreatedById(user.getId());
+				personRepository.save(user);
+				logger.info("User CreatedById added.");
+				if(newCity == true) {
+					city.setCreatedById(user.getId());
+					cityRepository.save(city);
+					logger.info("City CreatedById added.");
+					if(newCountryRegion == true) {
+						if(newCountry == true) {
+							country = countryRepository.getByCountryNameAndIso2Code(newPerson.getCountry(), newPerson.getIso2Code());
+							country.setCreatedById(user.getId());
+							countryRepository.save(country);
+							logger.info("Country CreatedById added.");
+						}
+						countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
+						countryRegion.setCreatedById(user.getId());
+						countryRegionRepository.save(countryRegion);
+						logger.info("CountryRegion CreatedById added.");
+					}
+				}
+				logger.info("addNewPerson finished.");
 			} catch (Exception e) {
 				throw new Exception("addNewPerson save failed.");
 			}
@@ -96,7 +135,7 @@ public class PersonDaoImpl implements PersonDao {
 
 	@Override
 	public void modifyPerson(UserEntity loggedUser, PersonEntity person, PersonDTO updatePerson) throws Exception {
-		if (updatePerson.getFirstName() == null && updatePerson.getLastName() == null && updatePerson.getGender() == null && updatePerson.getBirthDate() == null && updatePerson.getEmail() == null && updatePerson.getMobilePhone() == null && ( updatePerson.getCity() == null || updatePerson.getCountry() == null || updatePerson.getIso2Code() == null || updatePerson.getLatitude() == null || updatePerson.getLongitude() == null) ) {
+		if (updatePerson.getFirstName() == null && updatePerson.getLastName() == null && updatePerson.getGender() == null && updatePerson.getBirthDate() == null && updatePerson.getEmail() == null && updatePerson.getMobilePhone() == null && ( updatePerson.getCity() == null || updatePerson.getCountry() == null || updatePerson.getIso2Code() == null || updatePerson.getLatitude() == null || updatePerson.getLongitude() == null) && updatePerson.getAbout() == null ) {
 			throw new Exception("All data is null.");
 		}
 		try {
@@ -126,6 +165,10 @@ public class PersonDaoImpl implements PersonDao {
 				person.setMobilePhone(updatePerson.getMobilePhone());
 				i++;
 			}
+			if (updatePerson.getAbout() != null && !updatePerson.getAbout().equals(person.getAbout()) && !updatePerson.getAbout().equals(" ") && !updatePerson.getAbout().equals("")) {
+				person.setAbout(updatePerson.getAbout());
+				i++;
+			}
 			if (updatePerson.getCity() != null && !updatePerson.getCity().equals(" ") && !updatePerson.getCity().equals("") && updatePerson.getCountry() != null && !updatePerson.getCountry().equals(" ") && !updatePerson.getCountry().equals("") && updatePerson.getIso2Code() != null && !updatePerson.getIso2Code().equals(" ") && !updatePerson.getIso2Code().equals("") ) {
 				CityEntity city = new CityEntity();
 				CountryRegionEntity countryRegion = new CountryRegionEntity();
@@ -141,7 +184,7 @@ public class PersonDaoImpl implements PersonDao {
 					city = null;
 				}
 				if( city == null) {
-					city = cityDao.addNewCity(updatePerson.getCity(), updatePerson.getLongitude(), updatePerson.getLatitude(), updatePerson.getCountryRegion(), updatePerson.getCountry(), updatePerson.getIso2Code(), loggedUser);
+					city = cityDao.addNewCityWithLoggedUser(updatePerson.getCity(), updatePerson.getLongitude(), updatePerson.getLatitude(), updatePerson.getCountryRegion(), updatePerson.getCountry(), updatePerson.getIso2Code(), loggedUser);
 				}
 				if(!city.equals(person.getCity())) {
 					person.setCity(city);
@@ -213,6 +256,5 @@ public class PersonDaoImpl implements PersonDao {
 			throw new Exception("ArchivePerson failed on saving.");
 		}		
 	}
-
 
 }

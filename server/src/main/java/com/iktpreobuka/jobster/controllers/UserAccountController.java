@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.UserAccountEntity;
@@ -78,6 +79,10 @@ public class UserAccountController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<UserAccountEntity> accounts= userAccountRepository.findByStatusLike(1);
+			if (Iterables.isEmpty(accounts)) {
+				logger.info("---------------- User accounts not found.");
+		        return new ResponseEntity<>("User accounts not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<UserAccountEntity>>(accounts, HttpStatus.OK);
 		} catch(Exception e) {
@@ -94,6 +99,10 @@ public class UserAccountController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			UserAccountEntity account= userAccountRepository.findByIdAndStatusLike(id, 1);
+			if (account == null) {
+				logger.info("---------------- User account not found.");
+		        return new ResponseEntity<>("User account not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<UserAccountEntity>(account, HttpStatus.OK);
 		} catch(Exception e) {
@@ -111,6 +120,10 @@ public class UserAccountController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<UserAccountEntity> accounts= userAccountRepository.findByStatusLike(0);
+			if (Iterables.isEmpty(accounts)) {
+				logger.info("---------------- Deleted user accounts not found.");
+		        return new ResponseEntity<>("Deleted user accounts not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<UserAccountEntity>>(accounts, HttpStatus.OK);
 		} catch(Exception e) {
@@ -127,6 +140,10 @@ public class UserAccountController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			UserAccountEntity account= userAccountRepository.findByIdAndStatusLike(id, 0);
+			if (account == null) {
+				logger.info("---------------- Deleted user account not found.");
+		        return new ResponseEntity<>("Deleted user account not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<UserAccountEntity>(account, HttpStatus.OK);
 		} catch(Exception e) {
@@ -143,6 +160,10 @@ public class UserAccountController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<UserAccountEntity> accounts= userAccountRepository.findByStatusLike(-1);
+			if (Iterables.isEmpty(accounts)) {
+				logger.info("---------------- Archived user accounts not found.");
+		        return new ResponseEntity<>("Archived user accounts not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<UserAccountEntity>>(accounts, HttpStatus.OK);
 		} catch(Exception e) {
@@ -159,6 +180,10 @@ public class UserAccountController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			UserAccountEntity account= userAccountRepository.findByIdAndStatusLike(id, -1);
+			if (account == null) {
+				logger.info("---------------- Archived user account not found.");
+		        return new ResponseEntity<>("Archived user account not found.", HttpStatus.NOT_FOUND);
+		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<UserAccountEntity>(account, HttpStatus.OK);
 		} catch(Exception e) {
@@ -182,8 +207,12 @@ public class UserAccountController {
 	        return new ResponseEntity<>("New user account is null", HttpStatus.BAD_REQUEST);
 	      }
 		if (newUserAccount.getUsername() == null || newUserAccount.getAccessRole() == null || (newUserAccount.getPassword() == null && newUserAccount.getConfirmedPassword() == null) || newUserAccount.getUserId() == null) {
-			logger.info("---------------- Some or all atributes is null.");
-			return new ResponseEntity<>("Some or all atributes is null.", HttpStatus.BAD_REQUEST);
+			logger.info("---------------- Some or all atributes are null.");
+			return new ResponseEntity<>("Some or all atributes are null.", HttpStatus.BAD_REQUEST);
+		}
+		if (newUserAccount.getAccessRole().equals(" ") || newUserAccount.getAccessRole().equals("") || newUserAccount.getUsername().equals(" ") || newUserAccount.getUsername().equals("") || newUserAccount.getPassword().equals(" ") || newUserAccount.getPassword().equals("") || newUserAccount.getConfirmedPassword().equals(" ") || newUserAccount.getConfirmedPassword().equals("") || newUserAccount.getUserId().equals(" ") || newUserAccount.getUserId().equals("") ) {
+			logger.info("---------------- Some or all atributes are blanks.");
+			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		UserAccountEntity account = new UserAccountEntity();
 		try {
@@ -264,6 +293,10 @@ public class UserAccountController {
 		if (updateUserAccount.getUsername() == null && updateUserAccount.getAccessRole() == null && (updateUserAccount.getPassword() == null || updateUserAccount.getConfirmedPassword() == null) && updateUserAccount.getUserId() == null) {
 			logger.info("---------------- All atributes is null.");
 			return new ResponseEntity<>("All atributes is null.", HttpStatus.BAD_REQUEST);
+		}
+		if ( (updateUserAccount.getAccessRole() != null && (updateUserAccount.getAccessRole().equals(" ") || updateUserAccount.getAccessRole().equals(""))) || (updateUserAccount.getUsername() != null && (updateUserAccount.getUsername().equals(" ") || updateUserAccount.getUsername().equals(""))) || (updateUserAccount.getPassword() != null && (updateUserAccount.getPassword().equals(" ") || updateUserAccount.getPassword().equals(""))) || (updateUserAccount.getConfirmedPassword() != null && (updateUserAccount.getConfirmedPassword().equals(" ") || updateUserAccount.getConfirmedPassword().equals(""))) || (updateUserAccount.getUserId() != null && (updateUserAccount.getUserId().equals(" ") || updateUserAccount.getUserId().equals(""))) ) {
+			logger.info("---------------- Some or all atributes are blanks.");
+			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		UserAccountEntity account = new UserAccountEntity();
 		try {

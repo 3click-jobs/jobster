@@ -60,7 +60,8 @@ public class CountryEntity {
 	private Integer status;
 	
 	//@JsonView(Views.Admin.class)
-    @Column(name = "created_by", nullable = false, updatable = false)
+
+    @Column(name = "created_by", updatable = false)
 	private Integer createdById;
     
     //@JsonView(Views.Admin.class)
@@ -85,6 +86,16 @@ public class CountryEntity {
 		this.iso2Code = iso2Code;
 		this.status = getStatusActive();
 		this.createdById = createdById;
+	}
+
+	public CountryEntity(
+			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
+			@Pattern(regexp = "^[A-Za-z]{2,3}$", message = "ISO2 code is not valid.") @NotNull(message = "ISO2 code must be provided.") String iso2Code) {
+		super();
+		this.countryName = countryName;
+		this.iso2Code = iso2Code;
+		this.status = getStatusActive();
+
 	}
 
 

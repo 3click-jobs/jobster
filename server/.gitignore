@@ -12,8 +12,8 @@ target/
 .settings
 .springBeans
 .sts4-cache
+/logs
 bin/
-
 
 ### IntelliJ IDEA ###
 .idea
@@ -31,4 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/.metadata/

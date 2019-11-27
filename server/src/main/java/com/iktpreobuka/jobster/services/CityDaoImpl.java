@@ -37,7 +37,42 @@ public class CityDaoImpl implements CityDao {
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	
-	public CityEntity addNewCity(String cityName, Double longitude, Double latitude, String countryRegionName, String countryName, String iso2Code, UserEntity loggedUser) throws Exception {
+
+	public CityEntity addNewCity(String cityName, Double longitude, Double latitude, String countryRegionName, String countryName, String iso2Code) throws Exception {
+		if ( cityName == null || longitude == null || latitude == null || countryName == null || iso2Code == null ) {
+			throw new Exception("Some data is null.");
+		}
+		logger.info("addNewCity validation Ok.");
+		CityEntity city = new CityEntity();
+		try {
+			CountryEntity country = countryRepository.getByIso2Code(iso2Code);
+			if( country == null ) {
+				country = countryDao.addNewCountryWithIso2Code(countryName, iso2Code);
+			}
+			CountryRegionEntity region = countryRegionRepository.getByCountryRegionNameAndCountry(countryRegionName, country);
+			if( region == null) {
+				if ( countryRegionName == null ) {
+					region = countryRegionDao.addNullCountryRegion(country);
+				} else {
+					region = countryRegionDao.addNewCountryRegion(countryRegionName, country);
+				}
+			}
+			city.setCityName(cityName);
+			city.setLongitude(longitude);
+			city.setLatitude(latitude);
+			city.setRegion(region);
+			city.setStatusActive();
+			cityRepository.save(city);
+			logger.info("City added.");
+			cityDistanceDao.addNewDistancesForCity(city);
+			logger.info("City distances added.");
+		} catch (Exception e) {
+			throw new Exception("addNewCity failed on saving.");
+		}
+		return city;
+	}
+
+	public CityEntity addNewCityWithLoggedUser(String cityName, Double longitude, Double latitude, String countryRegionName, String countryName, String iso2Code, UserEntity loggedUser) throws Exception {
 		if ( cityName == null || longitude == null || latitude == null || countryName == null || iso2Code == null || loggedUser == null ) {
 			throw new Exception("Some data is null.");
 		}
@@ -46,14 +81,14 @@ public class CityDaoImpl implements CityDao {
 		try {
 			CountryEntity country = countryRepository.getByIso2Code(iso2Code);
 			if( country == null ) {
-				country = countryDao.addNewCountryWithIso2Code(countryName, iso2Code, loggedUser);
+				country = countryDao.addNewCountryWithIso2CodeAndLoggedUser(countryName, iso2Code, loggedUser);
 			}
 			CountryRegionEntity region = countryRegionRepository.getByCountryRegionNameAndCountry(countryRegionName, country);
 			if( region == null) {
 				if ( countryRegionName == null ) {
-					region = countryRegionDao.addNewCountryRegion(country, loggedUser);
+					region = countryRegionDao.addNullCountryRegionWithLoggedUser(country, loggedUser);
 				} else {
-					region = countryRegionDao.addNewCountryRegion(countryRegionName, country, loggedUser);
+					region = countryRegionDao.addNewCountryRegionWithLoggedUser(countryRegionName, country, loggedUser);
 				}
 			}
 			city.setCityName(cityName);
@@ -64,12 +99,14 @@ public class CityDaoImpl implements CityDao {
 			city.setCreatedById(loggedUser.getId());
 			cityRepository.save(city);
 			logger.info("City added.");
-			cityDistanceDao.addNewDistancesForCity(city, loggedUser);
+			cityDistanceDao.addNewDistancesForCityWithLoggedUser(city, loggedUser);
 			logger.info("City distances added.");
 		} catch (Exception e) {
 			throw new Exception("addNewCity failed on saving.");
 		}
 		return city;
 	}
+
+
 
 }

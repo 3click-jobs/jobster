@@ -57,7 +57,7 @@ public class JobSeekEntity {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "seek", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
-	private List<ApplyContactEntity> contacts = new ArrayList<>();
+	private List<ApplyContactEntity> contacts = new ArrayList<>(); //STA JE I GDE JE OVO????????????????????????SLOBO
 	
 	
 	@Id

@@ -15,4 +15,11 @@ public interface CountryRegionRepository extends CrudRepository<CountryRegionEnt
 
 	@SuppressWarnings("unchecked")
 	public CountryRegionEntity save(CountryRegionEntity countryRegionEntity);
+
+	
+	CountryRegionEntity getByCountryRegionName(String string);
+
+	CountryRegionEntity getByCreatedById(Integer id);
+	
+
 }
