@@ -91,7 +91,7 @@ public class CityController {
 		
 			try {
 		
-				Iterable<CityEntity> cities= cityRepository.findByCityNameIgnoreCase();
+				Iterable<CityEntity> cities= cityRepository.getAllByStatusLike(1);
 		
 				logger.info("---------------- Finished OK.");
 		
