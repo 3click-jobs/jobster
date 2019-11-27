@@ -52,6 +52,8 @@ public class CommentController {
 	@Autowired 
 	CommentDao commentDao;
 	
+
+	
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 	
 	private String createErrorMessage(BindingResult result) { 
@@ -245,6 +247,12 @@ public class CommentController {
 			logger.info("---------------- Comment created!!!");
 			commentRepository.save(comment);
 			logger.info("---------------- Comment saved in DB!!!");
+			
+			logger.info("---------------- Starting update comment receiver rating!!!");
+			commentDao.updateReceiverRating(commReceiverId,comment.getRating());
+			logger.info("---------------- Comment receiver rating updated!!!");
+
+			
 
 			return new ResponseEntity<>(comment, HttpStatus.OK);			
 			
