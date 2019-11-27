@@ -110,6 +110,7 @@ public class PersonControllerTests {
 	private boolean dbInit = false;
 
 
+	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() throws Exception { 
 		logger.info("DBsetUp");

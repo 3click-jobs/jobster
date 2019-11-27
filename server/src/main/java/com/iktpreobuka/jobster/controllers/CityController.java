@@ -41,102 +41,102 @@ public class CityController {
 		
 
 		
-//	@Autowired 
-//		
-//	private CityRepository cityRepository;
-//		
-//
-//		
-//	@Autowired 
-//		
-//	private UserCustomValidator userValidator;
-//		
-//
-//		
-//	@InitBinder
-//		
-//	protected void initBinder(final WebDataBinder binder) { 
-//		
-//		binder.addValidators(userValidator); 
-//		
-//		}
-//		
-//
-//		
-//
-//		
-//	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
-//		
-//
-//		
-//	private String createErrorMessage(BindingResult result) { 
-//		
-//		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
-//		
-//		}
-//		
-//
-//		
-//	//@Secured("ROLE_ADMIN")
-//		
-//		@JsonView(Views.Admin.class)
-//		
-//		@RequestMapping(method = RequestMethod.GET)
-//		
-//		public ResponseEntity<?> getAll(Principal principal) {
-//		
-//			logger.info("################ /jobster/cities/getAll started.");
-//		
-//			logger.info("Logged username: " + principal.getName());
-//		
-//			try {
-//		
-//				Iterable<CityEntity> cities= cityRepository.findByCityNameIgnoreCase();
-//		
-//				logger.info("---------------- Finished OK.");
-//		
-//				return new ResponseEntity<Iterable<CityEntity>>(cities, HttpStatus.OK);
-//		
-//			} catch(Exception e) {
-//		
-//				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-//		
-//				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//		
-//			}
-//		
-//		}
-//		
-//
-//		
-//		//@Secured("ROLE_ADMIN")
-//		
-//		@JsonView(Views.Admin.class)
-//		
-//		@RequestMapping(method = RequestMethod.GET, value = "/{name}")
-//		
-//		public ResponseEntity<?> getByName(@PathVariable String name, Principal principal) {
-//		
-//			logger.info("################ /jobster/cities/getByName started.");
-//		
-//			logger.info("Logged username: " + principal.getName());
-//		
-//			try {
-//		
-//				CityEntity city= cityRepository.getByCityNameIgnoreCase(name);
-//		
-//				logger.info("---------------- Finished OK.");
-//		
-//				return new ResponseEntity<CityEntity>(city, HttpStatus.OK);
-//		
-//			} catch(Exception e) {
-//		
-//				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-//		
-//				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//		
-//			}
-//		
-//		}
-//		
+	@Autowired 
+		
+	private CityRepository cityRepository;
+		
+
+		
+	@Autowired 
+		
+	private UserCustomValidator userValidator;
+		
+
+		
+	@InitBinder
+		
+	protected void initBinder(final WebDataBinder binder) { 
+		
+		binder.addValidators(userValidator); 
+		
+		}
+		
+
+		
+
+		
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+		
+
+		
+	private String createErrorMessage(BindingResult result) { 
+		
+		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
+		
+		}
+		
+
+		
+	//@Secured("ROLE_ADMIN")
+		
+		@JsonView(Views.Admin.class)
+		
+		@RequestMapping(method = RequestMethod.GET)
+		
+		public ResponseEntity<?> getAll(Principal principal) {
+		
+			logger.info("################ /jobster/cities/getAll started.");
+		
+			logger.info("Logged username: " + principal.getName());
+		
+			try {
+		
+				Iterable<CityEntity> cities= cityRepository.getAllByStatusLike(1);
+		
+				logger.info("---------------- Finished OK.");
+		
+				return new ResponseEntity<Iterable<CityEntity>>(cities, HttpStatus.OK);
+		
+			} catch(Exception e) {
+		
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+		
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		
+			}
+		
+		}
+		
+
+		
+		//@Secured("ROLE_ADMIN")
+		
+		@JsonView(Views.Admin.class)
+		
+		@RequestMapping(method = RequestMethod.GET, value = "/{name}")
+		
+		public ResponseEntity<?> getByName(@PathVariable String name, Principal principal) {
+		
+			logger.info("################ /jobster/cities/getByName started.");
+		
+			logger.info("Logged username: " + principal.getName());
+		
+			try {
+		
+				CityEntity city= cityRepository.getByCityNameIgnoreCase(name);
+		
+				logger.info("---------------- Finished OK.");
+		
+				return new ResponseEntity<CityEntity>(city, HttpStatus.OK);
+		
+			} catch(Exception e) {
+		
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+		
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		
+			}
+		
+		}
+		
 }
