@@ -13,6 +13,8 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	public CityEntity getByCityName(String cityName);
 	
+	public List<CityEntity> getByCityNameIgnoreCase(String cityName);
+	
 	public CityEntity getByCityNameAndRegionId(String cityName, String countryRegion);
 
 	public List<CityEntity> getByIdIsNot(Integer id);
@@ -23,4 +25,14 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 	public CityEntity save(CityEntity cityEntity);
 	
 	public CityEntity getByCreatedById(Integer id);
+
+	public CityEntity getById(Integer id);
+
+	public boolean existsByCityNameIgnoreCase(String cityName);
+
+	public boolean existsByLongitude(Double longitude);
+
+	public boolean existsByLatitude(Double latitude);
+
+	public boolean existsByRegion(CountryRegionEntity region);
 }
