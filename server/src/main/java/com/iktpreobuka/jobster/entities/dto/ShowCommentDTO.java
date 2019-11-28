@@ -33,6 +33,7 @@ public class ShowCommentDTO {
 	private Date endDate;
 	@JsonView(Views.User.class)
 	private Double price;
+	private Integer id;
 	
 	
 	public ShowCommentDTO() {
@@ -41,13 +42,32 @@ public class ShowCommentDTO {
 	}
 
 
+	
+
+
+	public Integer getId() {
+		return id;
+	}
+
+
+
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+
+
+
+
 	public ShowCommentDTO(@NotNull(message = "Please add a title to the comment") String commentTitle,
 			String commentContent, Date commentDate,
 			@Max(value = 5, message = "Maximum rating is 5 stars") @Min(value = 1, message = "Minimum rating is 1 stars") Integer rating,
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "First name is not valid, can contain only letters and minimum is 2 letter.") String commentPosterName,
 			@Pattern(regexp = "^[A-Za-z\\s]+$", message = "City name is not valid, can contain only letters and minimum 1 letter.") String cityName,
 			@Pattern(regexp = "^[A-Za-z\\s]+$", message = "Job type is not valid, can contain only letters.") String type,
-			Date beginningDate, Date endDate, Double price) {
+			Date beginningDate, Date endDate, Double price, Integer id) {
 		super();
 		this.commentTitle = commentTitle;
 		this.commentContent = commentContent;
@@ -59,7 +79,11 @@ public class ShowCommentDTO {
 		this.beginningDate = beginningDate;
 		this.endDate = endDate;
 		this.price = price;
+		this.id = id;
 	}
+
+
+
 
 
 	public String getCommentTitle() {
