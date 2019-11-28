@@ -24,8 +24,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CommentEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.AddCommentDTO;
 import com.iktpreobuka.jobster.entities.dto.ShowCommentDTO;
+import com.iktpreobuka.jobster.enumerations.EUserRole;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
 import com.iktpreobuka.jobster.repositories.CommentRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
@@ -39,28 +41,26 @@ public class CommentController {
 
 	@Autowired
 	CommentRepository commentRepository;
-	
+
 	@Autowired
 	UserAccountRepository userAccountRepository;
-	
+
 	@Autowired
 	ApplyContactRepository applyContactRepository;
-	
+
 	@Autowired
 	ApplyContactDao applyContactDao;
-	
-	@Autowired 
+
+	@Autowired
 	CommentDao commentDao;
-	
 
-	
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
-	
-	private String createErrorMessage(BindingResult result) { 
-		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
-		}
 
-	//@Secured("ROLE_ADMIN")
+	private String createErrorMessage(BindingResult result) {
+		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
+	}
+
+	// @Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/all") // get all comments
 	public ResponseEntity<?> getAll(Principal principal) {
@@ -75,11 +75,12 @@ public class CommentController {
 			return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	//@Secured("ROLE_ADMIN")
+
+	// @Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET) // get all active comments
 	public ResponseEntity<?> getAllActive(Principal principal) {
@@ -94,10 +95,12 @@ public class CommentController {
 			return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	//@Secured("ROLE_ADMIN")
+
+	// @Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive") // get all inactive comments
 	public ResponseEntity<?> getAllInactive(Principal principal) {
@@ -113,10 +116,12 @@ public class CommentController {
 
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	//@Secured("ROLE_ADMIN")
+
+	// @Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived") // get all archived comments
 	public ResponseEntity<?> getAllArchived(Principal principal) {
@@ -132,13 +137,15 @@ public class CommentController {
 
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	//@Secured("ROLE_ADMIN")
+
+	// @Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "{id}") // get active by ID
-	public ResponseEntity<?> getById(@PathVariable Integer id,Principal principal) {
+	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/comment/getById started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
@@ -146,7 +153,7 @@ public class CommentController {
 			if (comment == null) {
 				logger.info("++++++++++++++++ Active comment not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
+			}
 			logger.info("---------------- Found comment - OK.");
 			logger.info("---------------- Comment to DTO service starting ");
 			ShowCommentDTO commentDTO = commentDao.fromCommentToDTO(comment);
@@ -154,13 +161,15 @@ public class CommentController {
 			return new ResponseEntity<>(commentDTO, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	//@Secured("ROLE_ADMIN")
+
+	// @Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/all/{id}/getByIdFromAll") // get by ID from all
-	public ResponseEntity<?> getByIdAll(@PathVariable Integer id,Principal principal) {
+	public ResponseEntity<?> getByIdAll(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/comment/getByIdFromAll started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
@@ -168,7 +177,7 @@ public class CommentController {
 			if (comment == null) {
 				logger.info("++++++++++++++++ Comment not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
+			}
 			logger.info("---------------- Found comment - OK.");
 			logger.info("---------------- Comment to DTO service starting ");
 			ShowCommentDTO commentDTO = commentDao.fromCommentToDTO(comment);
@@ -176,18 +185,19 @@ public class CommentController {
 			return new ResponseEntity<>(commentDTO, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/user/{id}") //Get comments received by user 
-	public ResponseEntity<?> getUsersComment(@PathVariable Integer id,Principal principal) {
+
+	// @Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/user/{id}") // Get comments received by user
+	public ResponseEntity<?> getUsersComment(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/comment/getUsersComment started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
-			Iterable<CommentEntity> comments = commentRepository.findByCommentReceiverAndStatusLike(id,1);			
+			Iterable<CommentEntity> comments = commentRepository.findByCommentReceiverAndStatusLike(id, 1);
 			logger.info("---------------- Found comments - OK.");
 			logger.info("---------------- Comments to DTOs service starting ");
 			ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
@@ -195,64 +205,69 @@ public class CommentController {
 			return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
-	//@Secured("ROLE_ADMIN")
+
+	// @Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> addNewComment(@Valid @RequestBody AddCommentDTO newComment, Principal principal,BindingResult result){
+	public ResponseEntity<?> addNewComment(@Valid @RequestBody AddCommentDTO newComment, Principal principal,
+			BindingResult result) {
 		logger.info("################ /jobster/comment/{id}/addNewComment started.");
 		logger.info("Logged username: " + principal.getName());
-		if (result.hasErrors()) { 
+		if (result.hasErrors()) {
 			logger.error("---------------- Validation has errors - " + createErrorMessage(result));
-			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
-			}
+			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
+		}
 		if (newComment == null) {
 			logger.error("---------------- New comment is null.");
-	        return new ResponseEntity<>("New comment cannot be null", HttpStatus.BAD_REQUEST);
-	      }
-		if(newComment.getApplyId() == null) {
-			logger.error("---------------- Apply ID null.");
-	        return new ResponseEntity<>("Please provide applyJob id", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("New comment cannot be null", HttpStatus.BAD_REQUEST);
 		}
-		if (newComment.getCommentTitle() == null || newComment.getCommentContent() == null || newComment.getRating() == null) {
+		if (newComment.getApplyId() == null) {
+			logger.error("---------------- Apply ID null.");
+			return new ResponseEntity<>("Please provide applyJob id", HttpStatus.BAD_REQUEST);
+		}
+		if (newComment.getCommentTitle() == null || newComment.getCommentContent() == null
+				|| newComment.getRating() == null) {
 			logger.error("---------------- One or more attributes are null");
 			return new ResponseEntity<>("All attributes must be specified.", HttpStatus.BAD_REQUEST);
 		}
-		
+
 		CommentEntity comment = new CommentEntity();
-		
+
 		try {
 
 			ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(newComment.getApplyId(), 1);
-			if(application == null) {
+			if (application == null) {
 				logger.info("---------------- ApplyContact not found.");
 				return new ResponseEntity<>("ApplyContact not found.", HttpStatus.NOT_FOUND);
 			}
-			if(!application.getCommentable()) {
+			if (!application.getCommentable()) {
 				logger.info("---------------- Commenting not available at the moment.");
 				return new ResponseEntity<>("Commenting not available at the moment.", HttpStatus.BAD_REQUEST);
 			}
 			logger.info("---------------- Application Found");
-			
-			Integer posterId = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser().getId();
-			if(!(posterId == application.getOffer().getEmployer().getId() || posterId == application.getSeek().getEmployee().getId())) {
-				logger.error("---------------- "+ principal.getName() + " cannot comment on this job apply.");
-				return new ResponseEntity<>(principal.getName() + " cannot comment on this job apply.", HttpStatus.FORBIDDEN);
+
+			Integer posterId = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser()
+					.getId();
+			if (!(posterId == application.getOffer().getEmployer().getId()
+					|| posterId == application.getSeek().getEmployee().getId())) {
+				logger.error("---------------- " + principal.getName() + " cannot comment on this job apply.");
+				return new ResponseEntity<>(principal.getName() + " cannot comment on this job apply.",
+						HttpStatus.FORBIDDEN);
 			}
-			
+
 			logger.info("---------------- Comment oster Id found");
-			
+
 			Integer commReceiverId = applyContactDao.otherPartyFromApply(posterId, application);
-			if(commReceiverId == null || userAccountRepository.findByIdAndStatusLike(commReceiverId, 1)==null) {
+			if (commReceiverId == null || userAccountRepository.findByIdAndStatusLike(commReceiverId, 1) == null) {
 				logger.error("---------------- other party not found.");
 				return new ResponseEntity<>(" other party not found", HttpStatus.BAD_REQUEST);
 			}
-			
+
 			logger.info("---------------- Comment receiver Id found");
-			
+
 			comment.setApplication(application);
 			comment.setCommentContent(newComment.getCommentContent());
 			comment.setCommentDate(new Date());
@@ -266,21 +281,57 @@ public class CommentController {
 			logger.info("---------------- Comment created!!!");
 			commentRepository.save(comment);
 			logger.info("---------------- Comment saved in DB!!!");
-			
+
 			logger.info("---------------- Starting update comment receiver rating!!!");
-			commentDao.updateReceiverRating(commReceiverId,comment.getRating());
+			commentDao.updateReceiverRating(commReceiverId, comment.getRating());
 			logger.info("---------------- Comment receiver rating updated!!!");
 
-			
+			return new ResponseEntity<>(comment, HttpStatus.OK);
 
-			return new ResponseEntity<>(comment, HttpStatus.OK);			
-			
-			
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 	}
-	
+
+	// @Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}") // Get comments received by user
+	public ResponseEntity<?> deactivateComment(@PathVariable Integer id, Principal principal) {
+		try {
+			logger.info("################ /jobster/comment/deactivateComment started.");
+			logger.info("Logged username: " + principal.getName());
+			CommentEntity comment = commentRepository.findByIdAndStatusLike(id, 1);
+			if (comment == null) {
+				logger.error("++++++++++++++++ Active comment not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			if (user == null) {
+				logger.error("++++++++++++++++ User attempting to delete was not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+
+			if (userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1)
+					.getAccessRole() != EUserRole.ROLE_ADMIN || comment.getCommentReceiver() != user.getId()
+					|| comment.getCreatedById() != user.getId()) {
+				logger.error("++++++++++++++++ User not allowed to delete the desired comment");
+				return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+			}
+			logger.info("---------------- User and comment found OK");
+			comment.setStatus(0);
+			comment.setUpdatedById(user.getId());
+			logger.info("---------------- Comment status and updatedy updated!!!");
+			commentRepository.save(comment);
+			logger.info("---------------- Comment deactivated form DB!!!");
+			return new ResponseEntity<CommentEntity>(comment, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }
