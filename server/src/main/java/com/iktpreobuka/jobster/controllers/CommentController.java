@@ -180,6 +180,25 @@ public class CommentController {
 		}
 	}
 	
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/user/{id}") //Get comments received by user 
+	public ResponseEntity<?> getUsersComment(@PathVariable Integer id,Principal principal) {
+		logger.info("################ /jobster/comment/getUsersComment started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Iterable<CommentEntity> comments = commentRepository.findByCommentReceiverAndStatusLike(id,1);			
+			logger.info("---------------- Found comments - OK.");
+			logger.info("---------------- Comments to DTOs service starting ");
+			ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	
 	//@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST)

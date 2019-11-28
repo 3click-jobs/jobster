@@ -32,6 +32,7 @@ public class CommentDaoImpl implements CommentDao {
 	public ShowCommentDTO fromCommentToDTO(CommentEntity comment) {
 		logger.info("---------------- Transfering from comment to outputDTO.");
 		ShowCommentDTO outputComment = new ShowCommentDTO();
+		outputComment.setId(comment.getId());
 		outputComment.setBeginningDate(comment.getApplication().getOffer().getBeginningDate());
 		outputComment.setCityName(comment.getApplication().getOffer().getCity().getCityName());
 		outputComment.setCommentContent(comment.getCommentContent());
