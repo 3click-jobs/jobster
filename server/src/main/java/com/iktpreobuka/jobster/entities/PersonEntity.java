@@ -51,10 +51,12 @@ public class PersonEntity extends UserEntity {
 	public PersonEntity(
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "First name is not valid.") @NotNull(message = "First name must be provided.") String firstName,
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Last name is not valid.") @NotNull(message = "Last name must be provided.") String lastName,
+			@NotNull(message = "Gender must be provided.") EGender gender,
 			@NotNull(message = "Birth date must be provided.") Date birthDate) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.gender = gender;
 		this.birthDate = birthDate;
 	}
 
@@ -65,6 +67,7 @@ public class PersonEntity extends UserEntity {
 			Integer createdById,
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "First name is not valid.") @NotNull(message = "First name must be provided.") String firstName,
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Last name is not valid.") @NotNull(message = "Last name must be provided.") String lastName,
+			@NotNull(message = "Gender must be provided.") EGender gender,
 			@NotNull(message = "Birth date must be provided.") Date birthDate) {
 		super();
 		super.setCity(city);
@@ -77,6 +80,7 @@ public class PersonEntity extends UserEntity {
 		super.setCreatedById(createdById);
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.gender = gender;
 		this.birthDate = birthDate;
 	}
 
@@ -86,6 +90,7 @@ public class PersonEntity extends UserEntity {
 			@NotNull(message = "Details must be provided.") String about,
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "First name is not valid.") @NotNull(message = "First name must be provided.") String firstName,
 			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Last name is not valid.") @NotNull(message = "Last name must be provided.") String lastName,
+			@NotNull(message = "Gender must be provided.") EGender gender,
 			@NotNull(message = "Birth date must be provided.") Date birthDate) {
 		super();
 		super.setCity(city);
@@ -97,6 +102,7 @@ public class PersonEntity extends UserEntity {
 		super.setNumberOfRatings(0);
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.gender = gender;
 		this.birthDate = birthDate;
 	}
 

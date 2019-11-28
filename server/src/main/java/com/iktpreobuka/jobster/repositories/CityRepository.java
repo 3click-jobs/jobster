@@ -1,3 +1,4 @@
+
 package com.iktpreobuka.jobster.repositories;
 
 import java.util.List;
@@ -36,3 +37,4 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	public boolean existsByRegion(CountryRegionEntity region);
 }
+

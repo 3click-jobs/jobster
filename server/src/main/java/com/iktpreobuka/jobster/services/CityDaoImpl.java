@@ -37,6 +37,7 @@ public class CityDaoImpl implements CityDao {
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	
+
 	public CityEntity addNewCity(String cityName, Double longitude, Double latitude, String countryRegionName, String countryName, String iso2Code) throws Exception {
 		if ( cityName == null || longitude == null || latitude == null || countryName == null || iso2Code == null ) {
 			throw new Exception("Some data is null.");
@@ -105,6 +106,7 @@ public class CityDaoImpl implements CityDao {
 		}
 		return city;
 	}
+
 
 
 }

@@ -59,6 +59,7 @@ public class CountryRegionEntity {
     @Column(name = "status", nullable = false)
 	private Integer status;
 	//@JsonView(Views.Admin.class)
+
     @Column(name = "created_by", updatable = false)
 	private Integer createdById;
     //@JsonView(Views.Admin.class)

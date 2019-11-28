@@ -47,7 +47,7 @@ public class JobSeekPostDto {
 		private String detailsLink;
 		
 		@NotNull (message = "List must be provided.")
-		protected List<JobDayHoursDto> listJobDayHoursDto;
+		protected List<JobDayHoursPostDto> listJobDayHoursPostDto;
 		
 		@NotNull (message = "Contry name must be provided.")
 		@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
@@ -82,7 +82,7 @@ public class JobSeekPostDto {
 				Boolean flexibileDays,
 				@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
 				@Size(min = 0, max = 250, message = "Text can have 250 character max.") String detailsLink,
-				@NotNull(message = "List must be provided.") List<JobDayHoursDto> listJobDayHoursDto,
+				@NotNull(message = "List must be provided.") List<JobDayHoursPostDto> listJobDayHoursPostDto,
 				@NotNull(message = "Contry name must be provided.") @Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") String countryName,
 				@Pattern(regexp = "^[A-Za-z]{2,3}$", message = "ISO2 code is not valid.") @NotNull(message = "Contry Iso2Code must be provided.") String iso2Code,
 				@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message = "Country region name is not valid.") String countryRegionName,
@@ -98,7 +98,7 @@ public class JobSeekPostDto {
 			this.flexibileDays = flexibileDays;
 			this.price = price;
 			this.detailsLink = detailsLink;
-			this.listJobDayHoursDto = listJobDayHoursDto;
+			this.listJobDayHoursPostDto = listJobDayHoursPostDto;
 			this.countryName = countryName;
 			this.iso2Code = iso2Code;
 			this.countryRegionName = countryRegionName;
@@ -180,12 +180,12 @@ public class JobSeekPostDto {
 			this.detailsLink = detailsLink;
 		}
 
-		public List<JobDayHoursDto> getListJobDayHoursDto() {
-			return listJobDayHoursDto;
+		public List<JobDayHoursPostDto> getListJobDayHoursPostDto() {
+			return listJobDayHoursPostDto;
 		}
 
-		public void setListJobDayHoursDto(List<JobDayHoursDto> listJobDayHoursDto) {
-			this.listJobDayHoursDto = listJobDayHoursDto;
+		public void setListJobDayHoursPostDto(List<JobDayHoursPostDto> listJobDayHoursPostDto) {
+			this.listJobDayHoursPostDto = listJobDayHoursPostDto;
 		}
 
 		public String getCountryName() {

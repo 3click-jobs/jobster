@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import com.iktpreobuka.jobster.enumerations.EDay;
 
-public class JobDayHoursDto {
+public class JobDayHoursPostDto {
 	
 			@Enumerated(EnumType.STRING)
 			@NotNull (message = "Day must be provided.")
@@ -28,9 +28,9 @@ public class JobDayHoursDto {
 			
 			private Boolean isMinMax;
 
-			public JobDayHoursDto() {};
+			public JobDayHoursPostDto() {};
 			
-			public JobDayHoursDto(EDay day,
+			public JobDayHoursPostDto(EDay day,
 					@Min(value = 0, message = "From/minimum hour/s must be {value} or higher!") @Max(value = 24, message = "From/minimum hour/s must be {value} or lower!") Integer fromHour,
 					@Min(value = 0, message = "To/maximum hour/s must be {value} or higher!") @Max(value = 24, message = "To/maximum hour/s must be {value} or lower!") Integer toHour,
 					Boolean flexibileHours, Boolean isMinMax) {
