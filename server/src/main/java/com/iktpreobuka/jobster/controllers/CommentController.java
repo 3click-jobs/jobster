@@ -447,7 +447,45 @@ public class CommentController {
 		}
 	}
 	
-	
+	// @Secured("ROLE_ADMIN")
+		// @JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}") // Get comments received by user
+		public ResponseEntity<?> archiveComment(@PathVariable Integer id, Principal principal) {
+			try {
+				logger.info("################ /jobster/comment/archiveComment started.");
+				logger.info("Logged username: " + principal.getName());
+				CommentEntity comment = commentRepository.findById(id).orElse(null);
+				if (comment == null || comment.getStatus() == -1) {
+					logger.error("++++++++++++++++ Comment not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+				if (user == null) {
+					logger.error("++++++++++++++++ User attempting to archive was not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+
+				if (userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1)
+						.getAccessRole() != EUserRole.ROLE_ADMIN) {
+					logger.error("++++++++++++++++ User not allowed to archive the desired comment");
+					return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+				}
+				logger.info("---------------- User and comment found OK");
+				comment.setStatus(-1);
+				comment.setUpdatedById(user.getId());
+				logger.info("---------------- Comment status and updatedBy updated!!!");
+				commentRepository.save(comment);
+				logger.info("---------------- Comment archived!!!");
+				return new ResponseEntity<CommentEntity>(comment, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+
+
 	
 
 }
