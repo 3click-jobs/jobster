@@ -35,6 +35,11 @@ public class CityDaoImpl implements CityDao {
 	private CityDistanceDao cityDistanceDao;
 	
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+	
+	@Override
+	public Iterable<CityEntity> findCityByStatusLike(Integer status) throws Exception {
+		return cityRepository.findByStatusLike(status);
+	}
 
 	
 
