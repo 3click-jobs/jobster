@@ -209,6 +209,26 @@ public class CommentController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	// @Secured("ROLE_ADMIN")
+		// @JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/apply/{id}") // Get comments by apply
+		public ResponseEntity<?> getApplicationComment(@PathVariable Integer id, Principal principal) {
+			logger.info("################ /jobster/comment/getApplicationComment started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				Iterable<CommentEntity> comments = commentRepository.findByApplicationAndStatusLike(id, 1);
+				logger.info("---------------- Found comments - OK.");
+				logger.info("---------------- Comments to DTOs service starting ");
+				ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
+				logger.info("---------------- Finished OK.");
+				return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 
 	// @Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST)
@@ -295,6 +315,81 @@ public class CommentController {
 		}
 
 	}
+	
+	// @Secured("ROLE_ADMIN")
+		//@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+		public ResponseEntity<?> editComment(@PathVariable Integer id, @Valid @RequestBody AddCommentDTO updateComment, Principal principal, BindingResult result) {
+			logger.info("################ /jobster/comment/{id}/editComment started.");
+			logger.info("Logged user: " + principal.getName());
+			if (result.hasErrors()) { 
+				logger.info("---------------- Validation has errors - " + createErrorMessage(result));
+				return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
+				}
+			if (updateComment == null) {
+				logger.info("---------------- New comment data is null.");
+		        return new ResponseEntity<>("New Comment data is null.", HttpStatus.BAD_REQUEST);
+		      }
+			if (updateComment.getCommentContent() == null && updateComment.getCommentTitle() == null && updateComment.getRating() == null ) {
+				logger.info("---------------- All atributes are null.");
+				return new ResponseEntity<>("All atributes are null", HttpStatus.BAD_REQUEST);
+			}
+			if ( ( updateComment.getCommentContent() != null && (updateComment.getCommentContent().equals(" ") || updateComment.getCommentContent().equals("") ) )
+					|| ( updateComment.getCommentTitle() != null && (updateComment.getCommentTitle().equals(" ") || updateComment.getCommentTitle().equals("") ) )) {
+				logger.info("---------------- Comment content or title is blank.");
+				return new ResponseEntity<>("Comment content or title is blank", HttpStatus.BAD_REQUEST);
+			}
+			if ( ( updateComment.getCommentContent() != null && (updateComment.getCommentContent().equals(" ") || updateComment.getCommentContent().equals("") ) )
+					|| ( updateComment.getCommentTitle() != null && (updateComment.getCommentTitle().equals(" ") || updateComment.getCommentTitle().equals("") ) )) {
+				logger.info("---------------- Comment content or title is blank.");
+				return new ResponseEntity<>("Comment content or title is blank", HttpStatus.BAD_REQUEST);
+			}
+			
+			try {
+				CommentEntity comm = commentRepository.findByIdAndStatusLike(id, 1);
+				
+				if (comm == null) {
+					logger.info("---------------- Comment not found.");
+			        return new ResponseEntity<>("Comment not found.", HttpStatus.NOT_FOUND);
+			      }
+				Integer puterId = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser()
+						.getId();
+				if (!(puterId == comm.getCreatedById())) {
+					logger.error("---------------- " + principal.getName() + " tried to edit comment which was not created by him");
+					return new ResponseEntity<>(principal.getName() + " Cannot edit this comment ",
+							HttpStatus.FORBIDDEN);
+				}
+				logger.info("Comment found ok.");
+				
+				if (!(updateComment.getCommentContent() == null || updateComment.getCommentContent().equals(" ") || updateComment.getCommentContent().equals("") )) {
+					comm.setCommentContent(updateComment.getCommentContent());
+				}
+				if (!(updateComment.getCommentTitle() == null || updateComment.getCommentTitle().equals(" ") || updateComment.getCommentTitle().equals("") )) {
+					comm.setCommentTitle(updateComment.getCommentTitle());
+				}
+				if (updateComment.getRating()!=null && updateComment.getRating()>0 && updateComment.getRating()<6) {
+					comm.setRating(updateComment.getRating());
+				}
+				comm.setCommentDate(new Date());
+				comm.setEdited(true);
+				comm.setUpdatedById(puterId);
+							
+				logger.info("---------------- Comment edited successfuly !!!");
+				commentRepository.save(comm);
+				logger.info("---------------- Comment saved in DB!!!");
+
+				logger.info("---------------- Starting update comment receiver rating!!!");
+				commentDao.updateReceiverRating(comm.getCommentReceiver(), comm.getRating());
+				logger.info("---------------- Comment receiver rating updated!!!");
+
+				return new ResponseEntity<>(comm, HttpStatus.OK);
+
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 
 	// @Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
@@ -372,80 +467,7 @@ public class CommentController {
 		}
 
 
-	// @Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
-	public ResponseEntity<?> editComment(@PathVariable Integer id, @Valid @RequestBody AddCommentDTO updateComment, Principal principal, BindingResult result) {
-		logger.info("################ /jobster/comment/{id}/editComment started.");
-		logger.info("Logged user: " + principal.getName());
-		if (result.hasErrors()) { 
-			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
-			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
-			}
-		if (updateComment == null) {
-			logger.info("---------------- New comment data is null.");
-	        return new ResponseEntity<>("New Comment data is null.", HttpStatus.BAD_REQUEST);
-	      }
-		if (updateComment.getCommentContent() == null && updateComment.getCommentTitle() == null && updateComment.getRating() == null ) {
-			logger.info("---------------- All atributes are null.");
-			return new ResponseEntity<>("All atributes are null", HttpStatus.BAD_REQUEST);
-		}
-		if ( ( updateComment.getCommentContent() != null && (updateComment.getCommentContent().equals(" ") || updateComment.getCommentContent().equals("") ) )
-				|| ( updateComment.getCommentTitle() != null && (updateComment.getCommentTitle().equals(" ") || updateComment.getCommentTitle().equals("") ) )) {
-			logger.info("---------------- Comment content or title is blank.");
-			return new ResponseEntity<>("Comment content or title is blank", HttpStatus.BAD_REQUEST);
-		}
-		if ( ( updateComment.getCommentContent() != null && (updateComment.getCommentContent().equals(" ") || updateComment.getCommentContent().equals("") ) )
-				|| ( updateComment.getCommentTitle() != null && (updateComment.getCommentTitle().equals(" ") || updateComment.getCommentTitle().equals("") ) )) {
-			logger.info("---------------- Comment content or title is blank.");
-			return new ResponseEntity<>("Comment content or title is blank", HttpStatus.BAD_REQUEST);
-		}
-		
-		try {
-			CommentEntity comm = commentRepository.findByIdAndStatusLike(id, 1);
-			
-			if (comm == null) {
-				logger.info("---------------- Comment not found.");
-		        return new ResponseEntity<>("Comment not found.", HttpStatus.NOT_FOUND);
-		      }
-			Integer puterId = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser()
-					.getId();
-			if (!(puterId == comm.getCreatedById())) {
-				logger.error("---------------- " + principal.getName() + " tried to edit comment which was not created by him");
-				return new ResponseEntity<>(principal.getName() + " Cannot edit this comment ",
-						HttpStatus.FORBIDDEN);
-			}
-			logger.info("Comment found ok.");
-			
-			if (!(updateComment.getCommentContent() == null || updateComment.getCommentContent().equals(" ") || updateComment.getCommentContent().equals("") )) {
-				comm.setCommentContent(updateComment.getCommentContent());
-			}
-			if (!(updateComment.getCommentTitle() == null || updateComment.getCommentTitle().equals(" ") || updateComment.getCommentTitle().equals("") )) {
-				comm.setCommentTitle(updateComment.getCommentTitle());
-			}
-			if (updateComment.getRating()!=null && updateComment.getRating()>0 && updateComment.getRating()<6) {
-				comm.setRating(updateComment.getRating());
-			}
-			comm.setCommentDate(new Date());
-			comm.setEdited(true);
-			comm.setUpdatedById(puterId);
-						
-			logger.info("---------------- Comment edited successfuly !!!");
-			commentRepository.save(comm);
-			logger.info("---------------- Comment saved in DB!!!");
-
-			logger.info("---------------- Starting update comment receiver rating!!!");
-			commentDao.updateReceiverRating(comm.getCommentReceiver(), comm.getRating());
-			logger.info("---------------- Comment receiver rating updated!!!");
-
-			return new ResponseEntity<>(comm, HttpStatus.OK);
-
-		} catch (Exception e) {
-			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+	
 	
 	// @Secured("ROLE_ADMIN")
 		// @JsonView(Views.Admin.class)

@@ -14,6 +14,8 @@ public interface CommentRepository extends CrudRepository<CommentEntity,Integer>
 
 	Iterable<CommentEntity> findByCommentReceiverAndStatusLike(Integer id, int i);
 
+	Iterable<CommentEntity> findByApplicationAndStatusLike(Integer id, int i);
+
 	
 	
 }
