@@ -40,6 +40,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	public UserAccountEntity save(UserAccountEntity userAccountEntity);
 	public UserAccountEntity findByUserAndStatusLike(CompanyEntity companyEntity, int i);
 	public UserAccountEntity findByUserAndStatusLike(PersonEntity personEntity, int i);
+	public UserAccountEntity findByUsernameAndStatusLikeAndAccessRoleLike(String name, int i, EUserRole roleAdmin);
 
 
 }

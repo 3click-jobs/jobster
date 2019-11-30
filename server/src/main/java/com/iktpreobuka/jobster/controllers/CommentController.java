@@ -333,6 +333,44 @@ public class CommentController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	// @Secured("ROLE_ADMIN")
+		// @JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}") //
+		public ResponseEntity<?> reactivateComment(@PathVariable Integer id, Principal principal) {
+			try {
+				logger.info("################ /jobster/comment/undelete/{id} reactivateComment started.");
+				logger.info("Logged username: " + principal.getName());
+				CommentEntity comment = commentRepository.findByIdAndStatusLike(id, 0);
+				if (comment == null) {
+					logger.error("++++++++++++++++ Inactive comment not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+				if (user == null) {
+					logger.error("++++++++++++++++ User attempting to undelete was not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+
+				if (userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1)
+						.getAccessRole() != EUserRole.ROLE_ADMIN ) {
+					logger.error("++++++++++++++++ User not allowed to undelete");
+					return new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+				}
+				logger.info("---------------- User and comment found OK");
+				comment.setStatus(1);
+				comment.setUpdatedById(user.getId());
+				logger.info("---------------- Comment status and updatedBy updated!!!");
+				commentRepository.save(comment);
+				logger.info("---------------- Comment activated!!!");
+				return new ResponseEntity<CommentEntity>(comment, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+
 
 	// @Secured("ROLE_ADMIN")
 	//@JsonView(Views.Admin.class)
@@ -407,7 +445,9 @@ public class CommentController {
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 	}
+	
+	
+	
 
 }
