@@ -1,3 +1,4 @@
+
 package com.iktpreobuka.jobster.entities;
 
 import javax.persistence.Column;

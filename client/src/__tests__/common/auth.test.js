@@ -36,6 +36,7 @@ describe('authorization helpers', () => {
 
       expect(actual).toEqual(expected)
     })
+    
 
     it('has credentials returns true if there is a token', () => {
       localStorage.setItem(env.localStorageKey, 'randomstring')

@@ -60,6 +60,7 @@ public class CountryEntity {
 	private Integer status;
 	
 	//@JsonView(Views.Admin.class)
+
     @Column(name = "created_by", updatable = false)
 	private Integer createdById;
     
@@ -94,6 +95,7 @@ public class CountryEntity {
 		this.countryName = countryName;
 		this.iso2Code = iso2Code;
 		this.status = getStatusActive();
+
 	}
 
 
