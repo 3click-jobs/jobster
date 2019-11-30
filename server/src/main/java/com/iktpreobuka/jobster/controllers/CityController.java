@@ -30,6 +30,7 @@ import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.security.Views;
+import com.iktpreobuka.jobster.services.CityDao;
 		
 
 		
@@ -49,7 +50,9 @@ public class CityController {
 		
 	private CityRepository cityRepository;
 		
-
+	@Autowired 
+	
+	private CityDao cityDao;
 		
 	@Autowired 
 		
@@ -155,7 +158,7 @@ public class CityController {
 		
 			try {
 		
-				Iterable<CityEntity> cities= cityRepository.getAllBySTATUS_ACTIVE();
+				Iterable<CityEntity> cities= cityDao.findCityByStatusLike(1);
 		
 				logger.info("---------------- Finished OK.");
 		
@@ -185,7 +188,7 @@ public class CityController {
 				
 					try {
 				
-						Iterable<CityEntity> cities= cityRepository.getAllBySTATUS_INACTIVE();
+						Iterable<CityEntity> cities= cityDao.findCityByStatusLike(0);
 				
 						logger.info("---------------- Finished OK.");
 				
@@ -215,7 +218,7 @@ public class CityController {
 				
 					try {
 				
-						Iterable<CityEntity> cities= cityRepository.getAllBySTATUS_ARCHIVED();
+						Iterable<CityEntity> cities= cityDao.findCityByStatusLike(-1);
 				
 						logger.info("---------------- Finished OK.");
 				
@@ -267,11 +270,11 @@ public class CityController {
 		
 				@JsonView(Views.Admin.class)
 				
-				@RequestMapping(method = RequestMethod.POST)
+				@RequestMapping(method = RequestMethod.POST, value = "/addNewCity")
 				
 				public ResponseEntity<?> addNewCity(@Valid @RequestBody CityEntity newCity, Principal principal, BindingResult result) {
 				
-					logger.info("################ /jobster/cities AddNewCity started.");
+					logger.info("################ /jobster/cities/addNewCity started.");
 				
 					logger.info("Logged user: " + principal.getName());
 				
@@ -339,5 +342,41 @@ public class CityController {
 				
 				}
 				
-}
-		
+				//@Secured("ROLE_ADMIN")
+				@JsonView(Views.Admin.class)
+				@RequestMapping(method = RequestMethod.PUT, value = "/modifyCity/{id}")
+				public ResponseEntity<?> modifyCity(@PathVariable Integer id, @Valid @RequestBody CityEntity updateCity, /*Principal principal, */BindingResult result) {
+					logger.info("################ /jobster/cities/modifyCity/{id} started.");
+					try {
+					CityEntity city=cityRepository.getById(id);
+					//logger.info("Logged user: " + principal.getName());
+					if (city == null) {
+						logger.info("---------------- City doesn't exists.");
+				        return new ResponseEntity<>("City doesn't exists.", HttpStatus.BAD_REQUEST);
+				      }
+					
+					city.setCityName(updateCity.getCityName());
+					city.setLongitude(updateCity.getLongitude());
+					city.setLatitude(updateCity.getLatitude());
+					city.setRegion(updateCity.getRegion());
+	
+					if (result.hasErrors()) { 
+						logger.info("---------------- Validation has errors - " + createErrorMessage(result));
+						return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
+						}
+					
+					if (updateCity.getCityName() == null && updateCity.getLongitude() == null &&  updateCity.getLatitude() == null && updateCity.getRegion() == null) {
+						logger.info("---------------- Some or all atributes are null.");
+						return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
+					}
+					cityRepository.save(city);
+					logger.info("City updated.");
+					logger.info("---------------- Finished OK.");
+					return new ResponseEntity<>(updateCity, HttpStatus.OK);
+					}
+					catch(Exception e) {
+						logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+				
+					}
+}}
