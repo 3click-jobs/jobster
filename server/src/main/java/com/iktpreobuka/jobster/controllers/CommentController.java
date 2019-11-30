@@ -31,9 +31,11 @@ import com.iktpreobuka.jobster.enumerations.EUserRole;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
 import com.iktpreobuka.jobster.repositories.CommentRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
+import com.iktpreobuka.jobster.repositories.UserRepository;
 import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.ApplyContactDao;
 import com.iktpreobuka.jobster.services.CommentDao;
+import com.iktpreobuka.jobster.services.EmailDao;
 
 @RestController
 @RequestMapping(path = "/jobster/comment")
@@ -47,12 +49,18 @@ public class CommentController {
 
 	@Autowired
 	ApplyContactRepository applyContactRepository;
+	
+	@Autowired
+	UserRepository userRepository;
 
 	@Autowired
 	ApplyContactDao applyContactDao;
 
 	@Autowired
 	CommentDao commentDao;
+	
+	@Autowired
+	EmailDao emailDao;
 
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -281,7 +289,7 @@ public class CommentController {
 			logger.info("---------------- Comment poster Id found");
 
 			Integer commReceiverId = applyContactDao.otherPartyFromApply(posterId, application);
-			if (commReceiverId == null || userAccountRepository.findByIdAndStatusLike(commReceiverId, 1) == null) {
+			if (commReceiverId == null || userRepository.getByIdAndStatusLike(commReceiverId, 1) == null) {
 				logger.error("---------------- other party not found.");
 				return new ResponseEntity<>(" other party not found", HttpStatus.BAD_REQUEST);
 			}
@@ -301,11 +309,15 @@ public class CommentController {
 			logger.info("---------------- Comment created!!!");
 			commentRepository.save(comment);
 			logger.info("---------------- Comment saved in DB!!!");
-
+			
 			logger.info("---------------- Starting update comment receiver rating!!!");
 			commentDao.updateReceiverRating(commReceiverId, comment.getRating());
 			logger.info("---------------- Comment receiver rating updated!!!");
-
+			
+			logger.info("---------------- Email sending service started...");
+			emailDao.sendCommentAddedEmail(userRepository.getByIdAndStatusLike(commReceiverId, 1));
+			logger.info("---------------- Email sent");
+			
 			return new ResponseEntity<>(comment, HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -381,6 +393,10 @@ public class CommentController {
 				logger.info("---------------- Starting update comment receiver rating!!!");
 				commentDao.updateReceiverRating(comm.getCommentReceiver(), comm.getRating());
 				logger.info("---------------- Comment receiver rating updated!!!");
+				
+				logger.info("---------------- Email sending service started...");
+				emailDao.sendCommentEditedEmail(userRepository.getByIdAndStatusLike(comm.getCommentReceiver(), 1));
+				logger.info("---------------- Email sent");
 
 				return new ResponseEntity<>(comm, HttpStatus.OK);
 
@@ -420,7 +436,12 @@ public class CommentController {
 			comment.setUpdatedById(user.getId());
 			logger.info("---------------- Comment status and updatedy updated!!!");
 			commentRepository.save(comment);
-			logger.info("---------------- Comment deactivated form DB!!!");
+			logger.info("---------------- Comment deactivated");
+			
+			logger.info("---------------- Email sending service started...");
+			emailDao.sendCommentDeletedEmail(userRepository.getByIdAndStatusLike(comment.getCommentReceiver(), 1));
+			logger.info("---------------- Email sent");
+			
 			return new ResponseEntity<CommentEntity>(comment, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -458,6 +479,12 @@ public class CommentController {
 				logger.info("---------------- Comment status and updatedBy updated!!!");
 				commentRepository.save(comment);
 				logger.info("---------------- Comment activated!!!");
+				
+				logger.info("---------------- Email sending service started...");
+				emailDao.sendCommentUndeleteEmail(userRepository.getByIdAndStatusLike(comment.getCommentReceiver(), 1));
+				logger.info("---------------- Email sent");
+				
+				
 				return new ResponseEntity<CommentEntity>(comment, HttpStatus.OK);
 			} catch (Exception e) {
 				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
