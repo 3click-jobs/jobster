@@ -141,6 +141,96 @@ public class CityController {
 		
 		}
 		
+		//@Secured("ROLE_ADMIN")
+		
+		@JsonView(Views.Admin.class)
+		
+		@RequestMapping(method = RequestMethod.GET, value = "/active")
+		
+		public ResponseEntity<?> getAllActive(Principal principal) {
+		
+			logger.info("################ /jobster/cities/getAllActive started.");
+		
+			logger.info("Logged username: " + principal.getName());
+		
+			try {
+		
+				Iterable<CityEntity> cities= cityRepository.getAllBySTATUS_ACTIVE();
+		
+				logger.info("---------------- Finished OK.");
+		
+				return new ResponseEntity<Iterable<CityEntity>>(cities, HttpStatus.OK);
+		
+			} catch(Exception e) {
+		
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+		
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		
+			}
+		
+		}
+		
+		//@Secured("ROLE_ADMIN")
+		
+				@JsonView(Views.Admin.class)
+				
+				@RequestMapping(method = RequestMethod.GET, value = "/inactive")
+				
+				public ResponseEntity<?> getAllInactive(Principal principal) {
+				
+					logger.info("################ /jobster/cities/getAllInactive started.");
+				
+					logger.info("Logged username: " + principal.getName());
+				
+					try {
+				
+						Iterable<CityEntity> cities= cityRepository.getAllBySTATUS_INACTIVE();
+				
+						logger.info("---------------- Finished OK.");
+				
+						return new ResponseEntity<Iterable<CityEntity>>(cities, HttpStatus.OK);
+				
+					} catch(Exception e) {
+				
+						logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				
+						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+				
+					}
+				
+				}
+				
+				//@Secured("ROLE_ADMIN")
+				
+				@JsonView(Views.Admin.class)
+				
+				@RequestMapping(method = RequestMethod.GET, value = "/archived")
+				
+				public ResponseEntity<?> getAllArchived(Principal principal) {
+				
+					logger.info("################ /jobster/cities/getAllArchived started.");
+				
+					logger.info("Logged username: " + principal.getName());
+				
+					try {
+				
+						Iterable<CityEntity> cities= cityRepository.getAllBySTATUS_ARCHIVED();
+				
+						logger.info("---------------- Finished OK.");
+				
+						return new ResponseEntity<Iterable<CityEntity>>(cities, HttpStatus.OK);
+				
+					} catch(Exception e) {
+				
+						logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				
+						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+				
+					}
+				
+				}
+		
 
 		
 		//@Secured("ROLE_ADMIN")

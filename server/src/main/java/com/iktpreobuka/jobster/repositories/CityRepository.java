@@ -35,4 +35,10 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 	public boolean existsByLatitude(Double latitude);
 
 	public boolean existsByRegion(CountryRegionEntity region);
+
+	public Iterable<CityEntity> getAllBySTATUS_ACTIVE();
+
+	public Iterable<CityEntity> getAllBySTATUS_INACTIVE();
+
+	public Iterable<CityEntity> getAllBySTATUS_ARCHIVED();
 }
