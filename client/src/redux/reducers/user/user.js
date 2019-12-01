@@ -9,6 +9,7 @@ const role = (state = 'ROLE_GUEST', action) => {
     case 'FAILURE_USER_LOGIN':
     case 'FAILURE_USER_VERIFY':
     case 'FAILURE_USER_SIGNUP':
+    case 'REQUEST_USER_CREDENTIALS_UNASSIGN':
       return 'ROLE_GUEST'
     default:
       return state
@@ -23,9 +24,9 @@ const username = (state = '', action) => {
       return action.payload.username
     case 'FAILURE_USER_VERIFY':
     case 'FAILURE_USER_LOGIN':
-    case 'FAILURE_USER_SIGNUP': {
+    case 'FAILURE_USER_SIGNUP':
+    case 'REQUEST_USER_CREDENTIALS_UNASSIGN':
       return ''
-    }
     default:
       return state
   }
@@ -40,6 +41,7 @@ const loggedIn = (state = false, action) => {
     case 'FAILURE_USER_VERIFY':
     case 'FAILURE_USER_LOGIN':
     case 'FAILURE_USER_SIGNUP':
+    case 'REQUEST_USER_CREDENTIALS_UNASSIGN':
       return false
     default:
       return state
