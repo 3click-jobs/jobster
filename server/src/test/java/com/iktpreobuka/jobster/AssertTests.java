@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.iktpreobuka.jobster.controllers.CommentController;
 import com.iktpreobuka.jobster.controllers.CompanyController;
 import com.iktpreobuka.jobster.controllers.PersonController;
 import com.iktpreobuka.jobster.controllers.UserAccountController;
@@ -29,6 +30,8 @@ public class AssertTests {
 	@Autowired
 	private	UserAccountController userAccountController;
 
+	@Autowired
+	private	CommentController commentController;
 	
 	@Test
 	public void contexLoadsUser() throws Exception {
@@ -48,6 +51,11 @@ public class AssertTests {
 	@Test
 	public void contexLoadsUserAccount() throws Exception {
 		assertThat(userAccountController).isNotNull();
+	}
+	
+	@Test
+	public void contexLoadsApplyComment() throws Exception {
+		assertThat(commentController).isNotNull();
 	}
 
 }
