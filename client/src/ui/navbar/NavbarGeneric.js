@@ -8,6 +8,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Drawer from '@material-ui/core/Drawer'
 import NavbarDrawer from './NavbarDrawer'
 import { makeStyles } from '@material-ui/styles';
+import NavbarProfileGuest from './NavbarProfileGuest';
+import NavbarProfileUser from './NavbarProfileUser';
+import NavbarProfileAdmin from './NavbarProfileAdmin';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,7 +25,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const NavbarGeneric = () => {
+export const NavbarGeneric = ({
+  role,
+  username
+}) => {
   const classes = useStyles()
   const [drawer, setDrawer] = React.useState(false)
 
@@ -40,34 +46,39 @@ export const NavbarGeneric = () => {
         <Toolbar>
           <NavbarDrawer />
           <div className={classes.title}>
-          <Typography variant="h6">
-            3
+            <Typography variant="h6">
+              3
           </Typography>
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <TouchAppIcon />
-          </IconButton>
-          <Typography variant="h6">
-            Jobs
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <TouchAppIcon />
+            </IconButton>
+            <Typography variant="h6">
+              Jobs
           </Typography>
           </div>
 
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            color="inherit"
-          >
-            <AccountCircle />
-          </IconButton>
+          {
+            (role === 'ROLE_GUEST') &&
+            <NavbarProfileGuest role={role} username={username} />
+          }
+          {
+            (role === 'ROLE_USER') &&
+            <NavbarProfileUser role={role} username={username} />
+          }
+          {
+            (role === 'ROLE_ADMIN') &&
+            <NavbarProfileAdmin role={role} username={username} />
+          }
+
         </Toolbar>
       </AppBar>
-      <Drawer 
-        anchor='left' 
+      <Drawer
+        anchor='left'
         open={drawer}
         onClose={toggleDrawer(false)}
       >

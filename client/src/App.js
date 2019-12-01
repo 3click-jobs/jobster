@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { HomePage } from './ui/home/HomePage'
 import NavbarGeneric from './ui/navbar/NavbarGeneric';
-import { RegisterAccount } from './ui/accounts/RegisterAccount';
+import RegisterAccount from './ui/accounts/RegisterAccount';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import { RegisterPerson } from './ui/persons/register/RegisterPerson';
+import RegisterPerson from './ui/persons/register/RegisterPerson';
 
 import { connect } from 'react-redux'
 import { verifyUser, checkCredentials, assignCredentials, unassignCredentials } from './redux/actions/user'
 import Login from './ui/accounts/Login';
+import Signout from './ui/accounts/Signout'
 
 const defaultTheme = createMuiTheme({
   palette: {
@@ -20,7 +21,7 @@ const defaultTheme = createMuiTheme({
 
 export const App = ({
   role,
-  userName,
+  username,
   verifyUser,
   checkCredentials
 }) => {
@@ -31,12 +32,12 @@ export const App = ({
     } else {
 
     }
-  }, [role, userName])
+  }, [role, username])
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <Router>
-        <NavbarGeneric />
+        <NavbarGeneric role={role} username={username} />
         <Switch>
           <Route exact path='/'>
             <HomePage />
@@ -62,6 +63,9 @@ export const App = ({
           <Route exact path='/login'>
             <Login />
           </Route>
+          <Route exact path='/signout'>
+            <Signout />
+          </Route>
         </Switch>
       </Router>
     </ThemeProvider>
@@ -76,7 +80,7 @@ export const App = ({
 const mapStateToProps = (state) => {
   return {
     role: state.user.role,
-    userName: state.user.userName
+    username: state.user.username
   }
 }
 
