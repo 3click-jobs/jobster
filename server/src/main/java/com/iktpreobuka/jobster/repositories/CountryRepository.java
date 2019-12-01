@@ -21,6 +21,8 @@ public interface CountryRepository extends CrudRepository<CountryEntity, Integer
 
 
 	public CountryEntity getByCreatedById(Integer id);
+
+	public CountryEntity getById(Integer id);
 	
 
 }
