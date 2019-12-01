@@ -112,6 +112,41 @@ public class CityDaoImpl implements CityDao {
 		return city;
 	}
 
+	@Override
+	public void deleteCity(UserEntity loggedUser, CityEntity city) throws Exception {
+		try {
+			city.setStatusInactive();
+			city.setUpdatedById(loggedUser.getId());
+			cityRepository.save(city);
+			logger.info("deleteCity finished.");
+		} catch (Exception e) {
+			throw new Exception("DeleteCity failed on saving.");
+		}
+	}
+
+	@Override
+	public void undeleteCity(UserEntity loggedUser, CityEntity city) throws Exception {
+		try {
+			city.setStatusActive();
+			city.setUpdatedById(loggedUser.getId());
+			cityRepository.save(city);
+			logger.info("undeleteCity finished.");
+		} catch (Exception e) {
+			throw new Exception("UndeleteCity failed on saving.");
+		}		
+	}
+	
+	@Override
+	public void archiveCity(UserEntity loggedUser, CityEntity city) throws Exception {
+		try {
+			city.setStatusArchived();
+			city.setUpdatedById(loggedUser.getId());
+			cityRepository.save(city);
+			logger.info("archiveCity finished.");
+		} catch (Exception e) {
+			throw new Exception("ArchiveCity failed on saving.");
+		}				
+	}
 
 
 }

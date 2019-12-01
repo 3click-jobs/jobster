@@ -37,12 +37,8 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	public boolean existsByRegion(CountryRegionEntity region);
 
-	/*public Iterable<CityEntity> getAllBySTATUS_ACTIVE();
-
-	public Iterable<CityEntity> getAllBySTATUS_INACTIVE();
-
-	public Iterable<CityEntity> getAllBySTATUS_ARCHIVED();*/
-
 	public Iterable<CityEntity> findByStatusLike(Integer status);
+
+	public CityEntity findByIdAndStatusLike(Integer id, int i);
 }
 

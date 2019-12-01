@@ -12,4 +12,10 @@ public interface CityDao {
 	Iterable<CityEntity> findCityByStatusLike(Integer status) throws Exception;
 	//mrzim ovo govno od githuba
 
+	void deleteCity(UserEntity loggedUser, CityEntity city) throws Exception;
+
+	void undeleteCity(UserEntity loggedUser, CityEntity city) throws Exception;
+
+	void archiveCity(UserEntity loggedUser, CityEntity city) throws Exception;
+
 }

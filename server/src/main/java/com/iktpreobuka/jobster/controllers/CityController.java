@@ -28,7 +28,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.CityEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.repositories.CityRepository;
+import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.CityDao;
 		
@@ -46,17 +48,17 @@ public class CityController {
 		
 
 		
-	@Autowired 
-		
+	@Autowired 	
 	private CityRepository cityRepository;
 		
 	@Autowired 
-	
 	private CityDao cityDao;
 		
 	@Autowired 
-		
 	private UserCustomValidator userValidator;
+	
+	@Autowired 
+	private UserAccountRepository userAccountRepository;
 		
 
 		
@@ -379,4 +381,89 @@ public class CityController {
 						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 				
 					}
-}}
+				}
+				
+				//@Secured("ROLE_ADMIN")
+				@JsonView(Views.Admin.class)
+				@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
+				public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
+					logger.info("################ /jobster/cities/archive/{id}/archive started.");
+					logger.info("Logged user: " + principal.getName());
+					CityEntity city = new CityEntity();
+					try {
+						city = cityRepository.getById(id);
+						if (city == null || city.getStatus() == -1) {
+							logger.info("---------------- City not found.");
+					        return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
+					      }
+						logger.info("City for archiving identified.");
+						UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+						logger.info("Logged user identified.");
+						cityDao.archiveCity(loggedUser, city);
+						logger.info("---------------- Finished OK.");
+						return new ResponseEntity<CityEntity>(city, HttpStatus.OK);
+					} catch (NumberFormatException e) {
+						logger.error("++++++++++++++++ Number format exception occurred: " + e.getMessage());
+						return new ResponseEntity<RESTError>(new RESTError(2, "Number format exception occurred: "+ e.getLocalizedMessage()), HttpStatus.NOT_ACCEPTABLE);
+					} catch (Exception e) {
+						logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				}
+
+				//@Secured("ROLE_ADMIN")
+				@JsonView(Views.Admin.class)
+				@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
+				public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
+					logger.info("################ /jobster/cities/undelete/{id}/unDelete started.");
+					logger.info("Logged user: " + principal.getName());
+					CityEntity city = new CityEntity();
+					try {
+						city = cityRepository.findByIdAndStatusLike(id, 0);
+						if (city == null) {
+							logger.info("---------------- City not found.");
+					        return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
+					      }
+						logger.info("City for undeleting identified.");
+						UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+						logger.info("Logged user identified.");
+						cityDao.undeleteCity(loggedUser, city);
+						logger.info("---------------- Finished OK.");
+						return new ResponseEntity<CityEntity>(city, HttpStatus.OK);
+					} catch (NumberFormatException e) {
+						logger.error("++++++++++++++++ Number format exception occurred: " + e.getMessage());
+						return new ResponseEntity<RESTError>(new RESTError(2, "Number format exception occurred: "+ e.getLocalizedMessage()), HttpStatus.NOT_ACCEPTABLE);
+					} catch (Exception e) {
+						logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				}
+				
+				//@Secured("ROLE_ADMIN")
+				@JsonView(Views.Admin.class)
+				@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+				public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
+					logger.info("################ /jobster/cities/{id}/delete started.");
+					logger.info("Logged user: " + principal.getName());
+					CityEntity city = new CityEntity();
+					try {
+						city = cityRepository.findByIdAndStatusLike(id, 1);
+						if (city == null) {
+							logger.info("---------------- City not found.");
+					        return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
+					      }
+						logger.info("City for deleting identified.");
+						UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+						logger.info("Logged user identified.");
+						cityDao.deleteCity(loggedUser, city);
+						logger.info("---------------- Finished OK.");
+						return new ResponseEntity<CityEntity>(city, HttpStatus.OK);
+					} catch (NumberFormatException e) {
+						logger.error("++++++++++++++++ Number format exception occurred: " + e.getMessage());
+						return new ResponseEntity<RESTError>(new RESTError(2, "Number format exception occurred: "+ e.getLocalizedMessage()), HttpStatus.NOT_ACCEPTABLE);
+					} catch (Exception e) {
+						logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+					}
+				}		
+}
