@@ -15,10 +15,11 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   card: {
-    maxWidth: 345,
+    // maxWidth: 345,
   },
   media: {
     height: 0,
@@ -36,6 +37,10 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {
     backgroundColor: red[500],
+    '& a, & a:hover, & a:visited': {
+      textDecoration: 'none',
+      color: 'white'
+    }
   },
 }));
 
@@ -52,7 +57,7 @@ export const LookingForAJobCard = () => {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            R
+            <Link to='/apply'>GO</Link>
           </Avatar>
         }
         action={
@@ -60,18 +65,18 @@ export const LookingForAJobCard = () => {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title="Get a job in three clicks"
+        subheader="Follow the signs"
       />
       <CardMedia
         className={classes.media}
-        image="/static/images/cards/paella.jpg"
+        image="/img/carousel-1.jpg"
         title="Paella dish"
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook together with your
-          guests. Add 1 cup of frozen peas along with the mussels, if you like.
+          Select a location close to you or let the app get your location. Browse the jobs available
+          near your location. Choose the postings you like and apply. Easy as that.
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

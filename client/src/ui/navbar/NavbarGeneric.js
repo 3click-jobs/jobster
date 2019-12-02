@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/styles';
 import NavbarProfileGuest from './NavbarProfileGuest';
 import NavbarProfileUser from './NavbarProfileUser';
 import NavbarProfileAdmin from './NavbarProfileAdmin';
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,6 +23,13 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     textAlign: 'center',
     flexGrow: 1,
+    '& a': {
+      textDecoration: 'none',
+    },
+    '& img': {
+      position: 'relative',
+      top: '5px'
+    }
   }
 }))
 
@@ -46,7 +54,7 @@ export const NavbarGeneric = ({
         <Toolbar>
           <NavbarDrawer />
           <div className={classes.title}>
-            <Typography variant="h6">
+            {/* <Typography variant="h6">
               3
           </Typography>
             <IconButton
@@ -59,7 +67,8 @@ export const NavbarGeneric = ({
             </IconButton>
             <Typography variant="h6">
               Jobs
-          </Typography>
+          </Typography> */}
+          <Link to='/'><img src='/img/triklikjobslogo.png' /></Link>
           </div>
 
           {

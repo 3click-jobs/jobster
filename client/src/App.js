@@ -10,6 +10,8 @@ import { connect } from 'react-redux'
 import { verifyUser, checkCredentials, assignCredentials, unassignCredentials } from './redux/actions/user'
 import Login from './ui/accounts/Login';
 import Signout from './ui/accounts/Signout'
+import ApplyContainer from './ui/apply/ApplyContainer';
+import OfferContainer from './ui/offer/OfferContainer';
 
 const defaultTheme = createMuiTheme({
   palette: {
@@ -65,6 +67,12 @@ export const App = ({
           </Route>
           <Route exact path='/signout'>
             <Signout />
+          </Route>
+          <Route exact path='/apply'>
+            <ApplyContainer />
+          </Route>
+          <Route exact path='/offer'>
+            <OfferContainer />
           </Route>
         </Switch>
       </Router>

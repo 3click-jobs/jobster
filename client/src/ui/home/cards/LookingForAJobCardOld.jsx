@@ -15,11 +15,10 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   card: {
-    // maxWidth: 345,
+    maxWidth: 345,
   },
   media: {
     height: 0,
@@ -37,14 +36,10 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {
     backgroundColor: red[500],
-    '& a, & a:hover, & a:visited': {
-      textDecoration: 'none',
-      color: 'white'
-    }
   },
 }));
 
-export const OfferingAJobCard = () => {
+export const LookingForAJobCard = () => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
@@ -57,7 +52,7 @@ export const OfferingAJobCard = () => {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            <Link to='/offer'>GO</Link>
+            R
           </Avatar>
         }
         action={
@@ -65,19 +60,18 @@ export const OfferingAJobCard = () => {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Post a job in three clicks"
-        subheader="Lead the way"
+        title="Shrimp and Chorizo Paella"
+        subheader="September 14, 2016"
       />
       <CardMedia
         className={classes.media}
-        image="/img/carousel-2.jpg"
+        image="/static/images/cards/paella.jpg"
         title="Paella dish"
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          Set the location or let the app set it based on your current location. Set the job category
-          the job description and the candidate needs. Check if everything is all right and post the job.
-          As easy as that.
+          This impressive paella is a perfect party dish and a fun meal to cook together with your
+          guests. Add 1 cup of frozen peas along with the mussels, if you like.
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -129,4 +123,4 @@ export const OfferingAJobCard = () => {
   )
 }
 
-export default OfferingAJobCard
+export default LookingForAJobCard
