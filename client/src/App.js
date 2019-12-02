@@ -1,40 +1,97 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Navbar from './Components/Navbar';
-import Home from './Components/Home';
-import Login from './Components/Login';
-import Contact from './Components/Contact';
-import About from './Components/About';
-import RegisterPerson from './Components/RegisterPerson';
-import RegisterCompany from './Components/RegisterCompany';
-import Register from './Components/Register';
-import Job from './Components/Job';
-import JobList from './Components/JobList';
-import JobDetails from './Components/JobDetails';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HomePage } from './ui/home/HomePage'
+import NavbarGeneric from './ui/navbar/NavbarGeneric';
+import RegisterAccount from './ui/accounts/RegisterAccount';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import RegisterPerson from './ui/persons/register/RegisterPerson';
 
-class App extends Component {
+import { connect } from 'react-redux'
+import { verifyUser, checkCredentials, assignCredentials, unassignCredentials } from './redux/actions/user'
+import Login from './ui/accounts/Login';
+import Signout from './ui/accounts/Signout'
 
-  render() {
-     return (
-     <React.Fragment>
-        <Navbar/>
-          <Switch>
-              <Route exact path='/' component={Home} />
-              <Route exact path='/login' component={Login} />
-              <Route exact path='/contact' component={Contact} />
-              <Route exact path='/about' component={About} />
-              <Route exact path='/register' component={Register} />  
-              <Route exact path='/registerperson' component={RegisterPerson} />       
-              <Route exact path='/registercompany' component={RegisterCompany} />   
-              <Route path='/job' component={Job} />   
-              <Route path='/joblist' component={JobList} />      
-              <Route path='/jobdetails' component={JobDetails} />    
-          </Switch>         
-     </React.Fragment>
-    );
+const defaultTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#191970',
+    }
+  }
+})
+
+export const App = ({
+  role,
+  username,
+  verifyUser,
+  checkCredentials
+}) => {
+
+  React.useEffect(() => {
+    if (checkCredentials()) {
+      verifyUser()
+    } else {
+
+    }
+  }, [role, username])
+
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <Router>
+        <NavbarGeneric role={role} username={username} />
+        <Switch>
+          <Route exact path='/'>
+            <HomePage />
+          </Route>
+          <Route exact path='/register-account'>
+            <RegisterAccount />
+          </Route>
+          <Route exact path='/register-person'>
+            <RegisterPerson />
+          </Route>
+          <Route exact path='/register-company'>
+
+          </Route>
+          <Route exact path='/accounts'>
+
+          </Route>
+          <Route exact path='/persons'>
+
+          </Route>
+          <Route exact path='/companies'>
+
+          </Route>
+          <Route exact path='/login'>
+            <Login />
+          </Route>
+          <Route exact path='/signout'>
+            <Signout />
+          </Route>
+        </Switch>
+      </Router>
+    </ThemeProvider>
+  );
+
+}
+
+// connect to store
+// check user
+// 
+
+const mapStateToProps = (state) => {
+  return {
+    role: state.user.role,
+    username: state.user.username
   }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    verifyUser: () => dispatch(verifyUser()),
+    checkCredentials: () => dispatch(checkCredentials())
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

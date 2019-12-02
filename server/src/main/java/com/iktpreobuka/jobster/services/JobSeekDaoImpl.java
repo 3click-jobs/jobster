@@ -289,8 +289,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		try {
 			logger.info("Mapping atributs.");
 			seekForModify.setEmployee(loggedUser);
-			if (seek.getCityName() != null && seek.getCityName() != seekForModify.getCity().getCityName()) {
-				seekForModify.setCity(city);
+			if (seek.getCityName() != null && (cityRepository.getByCityName(seek.getCityName()) != seekForModify.getCity())) {
+				seekForModify.setCity(city); 
 				logger.info("City changed.");
 			}
 			if (seek.getJobTypeName() != null && seek.getJobTypeName() != seekForModify.getType().getJobTypeName()) {
