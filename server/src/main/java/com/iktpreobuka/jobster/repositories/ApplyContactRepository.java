@@ -11,4 +11,6 @@ public interface ApplyContactRepository extends CrudRepository<ApplyContactEntit
 
 	
 	ApplyContactEntity findByIdAndStatusLike(Integer id, Integer i);
+
+	Iterable<ApplyContactEntity> findByStatusLike(int i);
 }

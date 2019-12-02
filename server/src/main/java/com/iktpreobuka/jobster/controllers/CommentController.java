@@ -152,9 +152,9 @@ public class CommentController {
 
 	// @Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "{id}") // get active by ID
-	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/comment/getById started.");
+	@RequestMapping(method = RequestMethod.GET, value = "/active/{id}") // get active by ID
+	public ResponseEntity<?> getActiveById(@PathVariable Integer id, Principal principal) {
+		logger.info("################ /jobster/comment/active/getActiveById started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			CommentEntity comment = commentRepository.findByIdAndStatusLike(id, 1);
@@ -162,11 +162,59 @@ public class CommentController {
 				logger.info("++++++++++++++++ Active comment not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-			logger.info("---------------- Found comment - OK.");
+			logger.info("---------------- Found active comment - OK.");
 			logger.info("---------------- Comment to DTO service starting ");
 			ShowCommentDTO commentDTO = commentDao.fromCommentToDTO(comment);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<>(commentDTO, HttpStatus.OK);
+			return new ResponseEntity<ShowCommentDTO>(commentDTO, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive/{id}") // get inactive by ID
+	public ResponseEntity<?> getInactiveById(@PathVariable Integer id, Principal principal) {
+		logger.info("################ /jobster/comment/inactive/getInactiveById started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			CommentEntity comment = commentRepository.findByIdAndStatusLike(id, 0);
+			if (comment == null) {
+				logger.info("++++++++++++++++ Inactive comment not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found inactive comment - OK.");
+			logger.info("---------------- Comment to DTO service starting ");
+			ShowCommentDTO commentDTO = commentDao.fromCommentToDTO(comment);
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<ShowCommentDTO>(commentDTO, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}") // get archived by ID
+	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
+		logger.info("################ /jobster/comment/archived/getArchivedById started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			CommentEntity comment = commentRepository.findByIdAndStatusLike(id, -1);
+			if (comment == null) {
+				logger.info("++++++++++++++++ archived comment not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found archivedcomment - OK.");
+			logger.info("---------------- Comment to DTO service starting ");
+			ShowCommentDTO commentDTO = commentDao.fromCommentToDTO(comment);
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<ShowCommentDTO>(commentDTO, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
@@ -176,9 +224,9 @@ public class CommentController {
 
 	// @Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/all/{id}/getByIdFromAll") // get by ID from all
+	@RequestMapping(method = RequestMethod.GET, value = "/all/{id}") // get by ID from all
 	public ResponseEntity<?> getByIdAll(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/comment/getByIdFromAll started.");
+		logger.info("################ /jobster/comment/all/getByIdAll started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			CommentEntity comment = commentRepository.findById(id).orElse(null);
@@ -190,7 +238,7 @@ public class CommentController {
 			logger.info("---------------- Comment to DTO service starting ");
 			ShowCommentDTO commentDTO = commentDao.fromCommentToDTO(comment);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<>(commentDTO, HttpStatus.OK);
+			return new ResponseEntity<ShowCommentDTO>(commentDTO, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
