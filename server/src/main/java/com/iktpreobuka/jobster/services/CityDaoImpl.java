@@ -147,6 +147,18 @@ public class CityDaoImpl implements CityDao {
 			throw new Exception("ArchiveCity failed on saving.");
 		}				
 	}
+	
+	@Override
+	public void unarchiveCity(UserEntity loggedUser, CityEntity city) throws Exception {
+		try {
+			city.setStatusActive();
+			city.setUpdatedById(loggedUser.getId());
+			cityRepository.save(city);
+			logger.info("unarchiveCity finished.");
+		} catch (Exception e) {
+			throw new Exception("UnarchiveCity failed on saving.");
+		}		
+	}
 
 
 }

@@ -1,5 +1,7 @@
 package com.iktpreobuka.jobster.repositories;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +25,8 @@ public interface CountryRepository extends CrudRepository<CountryEntity, Integer
 	public CountryEntity getByCreatedById(Integer id);
 
 	public CountryEntity getById(Integer id);
+
+	public List<CountryEntity> getByCountryNameIgnoreCase(String name);
 	
 
 }

@@ -13,4 +13,6 @@ public interface CountryDao {
 
 	public CountryEntity addNewCountryWithIso2CodeAndLoggedUser(String countryName, String iso2Code, UserEntity loggedUser) throws Exception;
 
+	public Iterable<CountryEntity> findCountryByStatusLike(int i);
+
 }

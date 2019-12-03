@@ -1,6 +1,7 @@
 package com.iktpreobuka.jobster.controllers;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -82,5 +83,69 @@ public class CountryController {
 					logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 					return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 				}
+	}
+	
+	//@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/active")
+	public ResponseEntity<?> getAllActive(Principal principal) {
+			logger.info("################ /jobster/countries/getAllActive started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				Iterable<CountryEntity> countries= countryDao.findCountryByStatusLike(1);
+				logger.info("---------------- Finished OK.");
+				return new ResponseEntity<Iterable<CountryEntity>>(countries, HttpStatus.OK);
+			} catch(Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+	}
+			
+	//@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive")
+	public ResponseEntity<?> getAllInactive(Principal principal) {
+		logger.info("################ /jobster/countries/getAllInactive started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Iterable<CountryEntity> countries= countryDao.findCountryByStatusLike(0);
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<Iterable<CountryEntity>>(countries, HttpStatus.OK);
+		} catch(Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
+	}
+					
+	//@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archived")
+	public ResponseEntity<?> getAllArchived(Principal principal) {
+		logger.info("################ /jobster/countries/getAllArchived started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Iterable<CountryEntity> countries= countryDao.findCountryByStatusLike(-1);
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<Iterable<CountryEntity>>(countries, HttpStatus.OK);
+		} catch(Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+			
+	//@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/{name}")
+	public ResponseEntity<?> getByName(@PathVariable String name, Principal principal) {
+		logger.info("################ /jobster/countries/getByName started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			List<CountryEntity> country= countryRepository.getByCountryNameIgnoreCase(name);
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<List<CountryEntity>>(country, HttpStatus.OK);
+		} catch(Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
