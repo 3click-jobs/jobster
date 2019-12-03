@@ -6,6 +6,26 @@ import { Formik } from 'formik'
 import { RegisterPersonForm } from './RegisterPersonForm'
 import { persons as personsSchema } from '../../../common/utils/schemas/persons'
 
+const initialValues = {
+  firstName: 'Pera',
+  lastName: 'Peric',
+  gender: 'GENDER_MALE',
+  birthDate: '2000-12-12',
+  mobilePhone: "381605222122",
+  email: "mail@m2ail.com",
+  city: "Novi Sad",
+  country: "Serbia",
+  iso2Code: "SER",
+  countryRegion: "Vojvodina",
+  longitude: "45.5",
+  latitude: "45.6",
+  about: "Something about Mary",
+  username: "makaroni2",
+  accessRole: "ROLE_USER",
+  password: "password",
+  confirmedPassword: "password",
+}
+
 export const RegisterPerson = ({
   isFetching,
   isError,
@@ -13,10 +33,10 @@ export const RegisterPerson = ({
 }) => {
   return (
     <Formik
-      initialValues={{ gender: 'GENDER_MALE', username: '', password: '', confirmedPassword: '' }}
+      initialValues={initialValues}
       onSubmit={(values, formikBag) => {
 
-        
+
         // registerCompany(values)
         //   .then(resp => {
         //     console.log('not err: ', resp)
@@ -24,14 +44,10 @@ export const RegisterPerson = ({
         //     formikBag.setErrors({ ...resp.errors })
         //   })
         //   .catch(err => console.log('error: ', err))
+        console.log(values)
+        const payload = {...values}
 
-        const payload = {
-          username: values.username,
-          password: values.password,
-          confirmedPassword: values.confirmedPassword,
-          accessRole: 'ROLE_USER'
-        }
-        createPerson(payload).then(() => formikBag.setSubmitting(false))        
+        createPerson(payload).then(() => formikBag.setSubmitting(false))
       }}
 
       validationSchema={personsSchema.create}

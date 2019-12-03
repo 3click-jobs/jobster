@@ -67,11 +67,17 @@ export const NavbarDrawer = () => {
           </List>
           <Divider />
           <List component="nav" aria-label="browse entities">
-            <ListItem button>
-              <ListItemText primary="Trash" />
-            </ListItem>
-            <ListItemLink to='/profile'>
-              <ListItemText primary="Spam" />
+            <ListItemLink to='/persons'>
+              <ListItemIcon>
+                <FaceIcon />
+              </ListItemIcon>
+              <ListItemText primary="Browse persons" />
+            </ListItemLink>
+            <ListItemLink to='/companies'>
+              <ListItemIcon>
+                <BusinessIcon />
+              </ListItemIcon>
+              <ListItemText primary="Browse companies" />
             </ListItemLink>
           </List>
         </div>

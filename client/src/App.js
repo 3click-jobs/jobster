@@ -12,6 +12,9 @@ import Login from './ui/accounts/Login';
 import Signout from './ui/accounts/Signout'
 import ApplyContainer from './ui/apply/ApplyContainer';
 import OfferContainer from './ui/offer/OfferContainer';
+import PersonsContainer from './ui/persons/browse/PersonsContainer';
+import CompaniesContainer from './ui/companies/browse/CompaniesContainer';
+
 
 const defaultTheme = createMuiTheme({
   palette: {
@@ -32,12 +35,15 @@ export const App = ({
     if (checkCredentials()) {
       verifyUser()
     } else {
-
+      
     }
   }, [role, username])
 
   return (
     <ThemeProvider theme={defaultTheme}>
+    {
+
+    }
       <Router>
         <NavbarGeneric role={role} username={username} />
         <Switch>
@@ -57,10 +63,10 @@ export const App = ({
 
           </Route>
           <Route exact path='/persons'>
-
+            <PersonsContainer />
           </Route>
           <Route exact path='/companies'>
-
+            <CompaniesContainer />
           </Route>
           <Route exact path='/login'>
             <Login />
