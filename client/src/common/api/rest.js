@@ -117,11 +117,11 @@ const rest = {
         url: env.baseUrl + '/jobster/users/persons/archived/{id}',
         method: 'GET'
       },
-      addNewPerson: {
+      create: {
         url: env.baseUrl + '/jobster/users/persons',
         method: 'POST'
       },
-      modifyPerson: {
+      update: {
         url: env.baseUrl + '/jobster/users/persons/{id}',
         method: 'PUT'
       },
