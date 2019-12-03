@@ -2,6 +2,8 @@ package com.iktpreobuka.jobster.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
@@ -13,6 +15,14 @@ public class CountryDaoImpl implements CountryDao {
 
 	@Autowired
 	private CountryRepository countryRepository;
+	
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+	
+	@Override
+	public Iterable<CountryEntity> findCountryByStatusLike(Integer status) throws Exception {
+		return countryRepository.findByStatusLike(status);
+	}
+
 
 
 	public CountryEntity addNewCountry(String countryName) throws Exception {
@@ -94,5 +104,52 @@ public class CountryDaoImpl implements CountryDao {
 		}
 		return country;
 	}
-
+	
+	@Override
+	public void archiveCountry(UserEntity loggedUser, CountryEntity country) throws Exception {
+		try {
+			country.setStatusArchived();
+			country.setUpdatedById(loggedUser.getId());
+			countryRepository.save(country);
+			logger.info("archiveCountry finished.");
+		} catch (Exception e) {
+			throw new Exception("ArchiveCountry failed on saving.");
+		}				
+	}
+	
+	@Override
+	public void unarchiveCountry(UserEntity loggedUser, CountryEntity country) throws Exception {
+		try {
+			country.setStatusArchived();
+			country.setUpdatedById(loggedUser.getId());
+			countryRepository.save(country);
+			logger.info("archiveCity finished.");
+		} catch (Exception e) {
+			throw new Exception("ArchiveCity failed on saving.");
+		}				
+	}
+	
+	@Override
+	public void undeleteCountry(UserEntity loggedUser, CountryEntity country) throws Exception {
+		try {
+			country.setStatusActive();
+			country.setUpdatedById(loggedUser.getId());
+			countryRepository.save(country);
+			logger.info("undeleteCity finished.");
+		} catch (Exception e) {
+			throw new Exception("UndeleteCity failed on saving.");
+		}		
+	}
+	
+	@Override
+	public void deleteCountry(UserEntity loggedUser, CountryEntity country) throws Exception {
+		try {
+			country.setStatusInactive();
+			country.setUpdatedById(loggedUser.getId());
+			countryRepository.save(country);
+			logger.info("deleteCity finished.");
+		} catch (Exception e) {
+			throw new Exception("DeleteCity failed on saving.");
+		}
+	}
 }

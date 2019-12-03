@@ -27,6 +27,14 @@ public interface CountryRepository extends CrudRepository<CountryEntity, Integer
 	public CountryEntity getById(Integer id);
 
 	public List<CountryEntity> getByCountryNameIgnoreCase(String name);
+
+	public boolean existsByCountryNameIgnoreCase(String countryName);
+
+	public boolean existsByIso2Code(String iso2Code);
+
+	public CountryEntity findByIdAndStatusLike(Integer id, int i);
+
+	public Iterable<CountryEntity> findByStatusLike(Integer status);
 	
 
 }

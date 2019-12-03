@@ -346,9 +346,9 @@ public class CityController {
 				
 				//@Secured("ROLE_ADMIN")
 				@JsonView(Views.Admin.class)
-				@RequestMapping(method = RequestMethod.PUT, value = "/modifyCity/{id}")
+				@RequestMapping(method = RequestMethod.PUT, value = "/modify/{id}")
 				public ResponseEntity<?> modifyCity(@PathVariable Integer id, @Valid @RequestBody CityEntity updateCity, /*Principal principal, */BindingResult result) {
-					logger.info("################ /jobster/cities/modifyCity/{id} started.");
+					logger.info("################ /jobster/cities/modify/{id} started.");
 					try {
 					CityEntity city=cityRepository.getById(id);
 					//logger.info("Logged user: " + principal.getName());
@@ -367,7 +367,7 @@ public class CityController {
 						return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
 						}
 					
-					if (updateCity.getCityName() == null && updateCity.getLongitude() == null &&  updateCity.getLatitude() == null && updateCity.getRegion() == null) {
+					if (updateCity.getCityName() == null || updateCity.getLongitude() == null ||  updateCity.getLatitude() == null || updateCity.getRegion() == null) {
 						logger.info("---------------- Some or all atributes are null.");
 						return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
 					}
@@ -415,7 +415,7 @@ public class CityController {
 				@JsonView(Views.Admin.class)
 				@RequestMapping(method = RequestMethod.PUT, value = "/unarchive/{id}")
 				public ResponseEntity<?> unArchive(@PathVariable Integer id, Principal principal) {
-					logger.info("################ /jobster/cities/undelete/{id}/unDelete started.");
+					logger.info("################ /jobster/cities/unarchive/{id}/ Unarchive started.");
 					logger.info("Logged user: " + principal.getName());
 					CityEntity city = new CityEntity();
 					try {
