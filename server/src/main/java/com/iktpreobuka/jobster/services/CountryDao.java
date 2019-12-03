@@ -13,4 +13,14 @@ public interface CountryDao {
 
 	public CountryEntity addNewCountryWithIso2CodeAndLoggedUser(String countryName, String iso2Code, UserEntity loggedUser) throws Exception;
 
+	public void archiveCountry(UserEntity loggedUser, CountryEntity country) throws Exception;
+
+	void unarchiveCountry(UserEntity loggedUser, CountryEntity country) throws Exception;
+
+	void undeleteCountry(UserEntity loggedUser, CountryEntity country) throws Exception;
+
+	void deleteCountry(UserEntity loggedUser, CountryEntity country) throws Exception;
+
+	Iterable<CountryEntity> findCountryByStatusLike(Integer status) throws Exception;
+
 }

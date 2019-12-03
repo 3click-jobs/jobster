@@ -18,4 +18,6 @@ public interface CityDao {
 
 	void archiveCity(UserEntity loggedUser, CityEntity city) throws Exception;
 
+	public void unarchiveCity(UserEntity loggedUser, CityEntity city) throws Exception;
+
 }
