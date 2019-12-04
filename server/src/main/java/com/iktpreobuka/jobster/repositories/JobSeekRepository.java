@@ -20,6 +20,8 @@ public interface JobSeekRepository extends CrudRepository<JobSeekEntity, Integer
 	
 	public List<JobSeekEntity> getAllByCityId(@PathVariable Integer id);
 
+	public JobSeekEntity findByIdAndStatusLike(Integer id, int i);
+
 	
 		
 

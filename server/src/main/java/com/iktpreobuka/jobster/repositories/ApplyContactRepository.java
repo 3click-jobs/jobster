@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
+import com.iktpreobuka.jobster.entities.JobSeekEntity;
 
 
 @Repository
@@ -18,4 +19,8 @@ public interface ApplyContactRepository extends CrudRepository<ApplyContactEntit
 	Iterable<ApplyContactEntity> findByOfferAndStatusLike(JobOfferEntity offer, int i);
 
 	Iterable<ApplyContactEntity> findByOffer(JobOfferEntity offer);
+
+	Iterable<ApplyContactEntity> findBySeekAndStatusLike(JobSeekEntity seek, int i);
+	
+	Iterable<ApplyContactEntity> findBySeek(JobSeekEntity seek);
 }
