@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CommentEntity;
@@ -160,7 +161,7 @@ public class CommentController {
 			CommentEntity comment = commentRepository.findByIdAndStatusLike(id, 1);
 			if (comment == null) {
 				logger.info("++++++++++++++++ Active comment not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Active comment not found.",HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found active comment - OK.");
 			logger.info("---------------- Comment to DTO service starting ");
@@ -184,7 +185,7 @@ public class CommentController {
 			CommentEntity comment = commentRepository.findByIdAndStatusLike(id, 0);
 			if (comment == null) {
 				logger.info("++++++++++++++++ Inactive comment not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Inactive comment not found.",HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found inactive comment - OK.");
 			logger.info("---------------- Comment to DTO service starting ");
@@ -208,7 +209,7 @@ public class CommentController {
 			CommentEntity comment = commentRepository.findByIdAndStatusLike(id, -1);
 			if (comment == null) {
 				logger.info("++++++++++++++++ archived comment not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Archived comment not found.",HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found archivedcomment - OK.");
 			logger.info("---------------- Comment to DTO service starting ");
@@ -232,7 +233,7 @@ public class CommentController {
 			CommentEntity comment = commentRepository.findById(id).orElse(null);
 			if (comment == null) {
 				logger.info("++++++++++++++++ Comment not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Comment not found.",HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found comment - OK.");
 			logger.info("---------------- Comment to DTO service starting ");
@@ -254,6 +255,11 @@ public class CommentController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<CommentEntity> comments = commentRepository.findByCommentReceiverAndStatusLike(id, 1);
+			if(Iterables.isEmpty(comments)) {
+				logger.info("++++++++++++++++ User has no comments");
+				return new ResponseEntity<>("User has no comments.",HttpStatus.NOT_FOUND);
+			}
+			
 			logger.info("---------------- Found comments - OK.");
 			logger.info("---------------- Comments to DTOs service starting ");
 			ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
@@ -274,6 +280,10 @@ public class CommentController {
 			logger.info("Logged username: " + principal.getName());
 			try {
 				Iterable<CommentEntity> comments = commentRepository.findByApplicationAndStatusLike(id, 1);
+				if(Iterables.isEmpty(comments)) {
+					logger.info("++++++++++++++++ Application has no comments");
+					return new ResponseEntity<>("Application has no comments.",HttpStatus.NOT_FOUND);
+				}
 				logger.info("---------------- Found comments - OK.");
 				logger.info("---------------- Comments to DTOs service starting ");
 				ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
