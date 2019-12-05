@@ -28,60 +28,67 @@ export const App = ({
   role,
   username,
   verifyUser,
-  checkCredentials
+  checkCredentials,
+  authReady,
+  hasCredentials
 }) => {
 
   React.useEffect(() => {
-    if (checkCredentials()) {
+    checkCredentials()
+  }, [hasCredentials])
+
+  React.useEffect(() => {
+    if (hasCredentials)
       verifyUser()
-    } else {
-      
-    }
-  }, [role, username])
+  }, [hasCredentials])
 
   return (
     <ThemeProvider theme={defaultTheme}>
-    {
+      {
+        !authReady &&
+        <p>Waiting for authentication</p>
+      }
+      {
+        authReady &&
+        <Router>
+          <NavbarGeneric role={role} username={username} />
+          <Switch>
+            <Route exact path='/'>
+              <HomePage />
+            </Route>
+            <Route exact path='/register-account'>
+              <RegisterAccount />
+            </Route>
+            <Route exact path='/register-person'>
+              <RegisterPerson />
+            </Route>
+            <Route exact path='/register-company'>
 
-    }
-      <Router>
-        <NavbarGeneric role={role} username={username} />
-        <Switch>
-          <Route exact path='/'>
-            <HomePage />
-          </Route>
-          <Route exact path='/register-account'>
-            <RegisterAccount />
-          </Route>
-          <Route exact path='/register-person'>
-            <RegisterPerson />
-          </Route>
-          <Route exact path='/register-company'>
+            </Route>
+            <Route exact path='/accounts'>
 
-          </Route>
-          <Route exact path='/accounts'>
-
-          </Route>
-          <Route exact path='/persons'>
-            <PersonsContainer />
-          </Route>
-          <Route exact path='/companies'>
-            <CompaniesContainer />
-          </Route>
-          <Route exact path='/login'>
-            <Login />
-          </Route>
-          <Route exact path='/signout'>
-            <Signout />
-          </Route>
-          <Route exact path='/apply'>
-            <ApplyContainer />
-          </Route>
-          <Route exact path='/offer'>
-            <OfferContainer />
-          </Route>
-        </Switch>
-      </Router>
+            </Route>
+            <Route exact path='/persons'>
+              <PersonsContainer />
+            </Route>
+            <Route exact path='/companies'>
+              <CompaniesContainer />
+            </Route>
+            <Route exact path='/login'>
+              <Login />
+            </Route>
+            <Route exact path='/signout'>
+              <Signout />
+            </Route>
+            <Route exact path='/apply'>
+              <ApplyContainer />
+            </Route>
+            <Route exact path='/offer'>
+              <OfferContainer />
+            </Route>
+          </Switch>
+        </Router>
+      }
     </ThemeProvider>
   );
 
@@ -94,7 +101,9 @@ export const App = ({
 const mapStateToProps = (state) => {
   return {
     role: state.user.role,
-    username: state.user.username
+    username: state.user.username,
+    authReady: state.user.authReady,
+    hasCredentials: state.user.hasCredentials
   }
 }
 

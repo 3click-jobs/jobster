@@ -12,6 +12,8 @@ import './redux/js/index'
 
 // const store = configureStore()
 
+// something like firebaseIsReady...
+
 ReactDOM.render(
 <Provider store={store}>
   <App />
