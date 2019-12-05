@@ -56,12 +56,47 @@ const isFetching = (state = false, action) => {
   return false
 }
 
+const authReady = (state = false, action) => {
+  switch (action.type) {
+    case 'REQUEST_USER_CREDENTIALS':
+    case 'SUCCESS_USER_CREDENTIALS':
+      {
+        console.log('AUTH READY: (false) -- ', false)
+        return false
+      }
+    case 'SUCCESS_USER_VERIFY':
+    case 'FAILURE_USER_CREDENTIALS':
+      {
+        console.log('AUTH READY: (true) -- ', true)
+        return true
+      }
+    default:
+      {
+        console.log('AUTH READY: (state) -- ', state)
+        return state
+      }
+  }
+}
+
+const hasCredentials = (state = false, action) => {
+  switch (action.type) {
+    case 'SUCCESS_USER_CREDENTIALS': 
+      return true
+    case 'FAILURE_USER_CREDENTIALS':
+      return false
+    default: 
+      return state
+  }
+}
+
 const userReducer = combineReducers({
   loggedIn,
   username,
   role,
   errorMessage,
-  isFetching
+  isFetching,
+  authReady,
+  hasCredentials
 })
 
 export default userReducer
