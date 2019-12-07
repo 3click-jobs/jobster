@@ -5,6 +5,7 @@ import NavbarGeneric from './ui/navbar/NavbarGeneric';
 import RegisterAccount from './ui/accounts/RegisterAccount';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import RegisterPerson from './ui/persons/register/RegisterPerson';
+import RegisterCompany from './ui/companies/register/RegisterCompany';
 
 import { connect } from 'react-redux'
 import { verifyUser, checkCredentials, assignCredentials, unassignCredentials } from './redux/actions/user'
@@ -63,7 +64,7 @@ export const App = ({
               <RegisterPerson />
             </Route>
             <Route exact path='/register-company'>
-
+              <RegisterCompany />
             </Route>
             <Route exact path='/accounts'>
 

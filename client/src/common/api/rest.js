@@ -149,7 +149,7 @@ const rest = {
   },
   companies: {
     actions: {
-      getAll: {
+      get: {
         url: env.baseUrl + '/jobster/users/companies',
         method: 'GET'
       },
@@ -173,11 +173,11 @@ const rest = {
         url: env.baseUrl + '/jobster/users/companies/archived/{id}',
         method: 'GET'
       },
-      addNewCompany: {
+      create: {
         url: env.baseUrl + '/jobster/users/companies',
         method: 'POST'
       },
-      modifyCompany: {
+      update: {
         url: env.baseUrl + '/jobster/users/companies/{id}',
         method: 'PUT'
       },
