@@ -13,6 +13,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -858,7 +859,33 @@ public class ApplyContactController {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-			logger.info("---------------- Found pplications application - OK.");
+			logger.info("---------------- Found applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/myApplies")
+	public ResponseEntity<?> getMyAppliesQuery( Principal principal, 
+			@RequestParam(required = false) Boolean commentable,
+			@RequestParam(required = false) Boolean rejected,
+			@RequestParam(required = false) Boolean connected,
+			@RequestParam(required = false) Boolean expired) {
+		logger.info("################ /jobster/apply/myApplies/getMyAppliesQuery started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Integer loggedInUserId = userAccountRepository.getByUsername(principal.getName()).getUser().getId();
+			Iterable <ApplyContactEntity> applications = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,rejected,connected,expired,commentable);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found applications - OK.");
 			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
