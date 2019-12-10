@@ -34,7 +34,7 @@ public class UserController {
 	@CrossOrigin
 	//@Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, path="/users")
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/users/getAll started.");
 		logger.info("Logged username: " + principal.getName());

@@ -74,9 +74,9 @@ public class PersonController {
 	//@Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<?> getAll(Principal principal) {
+	public ResponseEntity<?> getAll(/*Principal principal*/) {
 		logger.info("################ /jobster/users/persons/getAll started.");
-		logger.info("Logged username: " + principal.getName());
+//		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(1);
 			if (Iterables.isEmpty(users)) {
@@ -192,6 +192,7 @@ public class PersonController {
 		}
 	}
 
+	
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewPerson(@Valid @RequestBody PersonDTO newPerson, BindingResult result) {
