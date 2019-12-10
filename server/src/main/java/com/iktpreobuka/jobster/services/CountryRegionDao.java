@@ -14,4 +14,14 @@ public interface CountryRegionDao {
 
 	public CountryRegionEntity addNullCountryRegionWithLoggedUser(CountryEntity country, UserEntity loggedUser) throws Exception;
 
+	Iterable<CountryRegionEntity> findRegionByStatusLike(Integer status) throws Exception;
+
+	public void archiveRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception;
+
+	void unarchiveRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception;
+
+	void undeleteRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception;
+
+	void deleteRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception;
+
 }
