@@ -74,9 +74,9 @@ public class UserAccountController {
 	//@Secured("ROLE_ADMIN")
 	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<?> getAll(Principal principal) {
+	public ResponseEntity<?> getAll(/*Principal principal*/) {
 		logger.info("################ /jobster/accounts/getAll started.");
-		logger.info("Logged username: " + principal.getName());
+//		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<UserAccountEntity> accounts= userAccountRepository.findByStatusLike(1);
 			if (Iterables.isEmpty(accounts)) {
