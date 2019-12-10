@@ -135,9 +135,9 @@ public class CountryDaoImpl implements CountryDao {
 			country.setStatusActive();
 			country.setUpdatedById(loggedUser.getId());
 			countryRepository.save(country);
-			logger.info("undeleteCity finished.");
+			logger.info("undeleteCountry finished.");
 		} catch (Exception e) {
-			throw new Exception("UndeleteCity failed on saving.");
+			throw new Exception("UndeleteCountry failed on saving.");
 		}		
 	}
 	
@@ -147,9 +147,9 @@ public class CountryDaoImpl implements CountryDao {
 			country.setStatusInactive();
 			country.setUpdatedById(loggedUser.getId());
 			countryRepository.save(country);
-			logger.info("deleteCity finished.");
+			logger.info("deleteCountry finished.");
 		} catch (Exception e) {
-			throw new Exception("DeleteCity failed on saving.");
+			throw new Exception("DeleteCountry failed on saving.");
 		}
 	}
 }

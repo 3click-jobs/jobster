@@ -2,6 +2,8 @@ package com.iktpreobuka.jobster.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
@@ -14,6 +16,13 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 
 	@Autowired
 	private CountryRegionRepository countryRegionRepository;
+	
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+	
+	@Override
+	public Iterable<CountryRegionEntity> findRegionByStatusLike(Integer status) throws Exception {
+		return countryRegionRepository.findByStatusLike(status);
+	}
 
 
 	public CountryRegionEntity addNewCountryRegion(String countryRegionName, CountryEntity country) throws Exception {
@@ -101,5 +110,52 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 		}
 		return countryRegion;
 	}
+	
+	@Override
+	public void archiveRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception {
+		try {
+			region.setStatusArchived();
+			region.setUpdatedById(loggedUser.getId());
+			countryRegionRepository.save(region);
+			logger.info("archiveRegion finished.");
+		} catch (Exception e) {
+			throw new Exception("ArchiveRegion failed on saving.");
+		}				
+	}
+	
+	@Override
+	public void unarchiveRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception {
+		try {
+			region.setStatusArchived();
+			region.setUpdatedById(loggedUser.getId());
+			countryRegionRepository.save(region);
+			logger.info("archiveCity finished.");
+		} catch (Exception e) {
+			throw new Exception("ArchiveCity failed on saving.");
+		}				
+	}
 
+	@Override
+	public void undeleteRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception {
+		try {
+			region.setStatusActive();
+			region.setUpdatedById(loggedUser.getId());
+			countryRegionRepository.save(region);
+			logger.info("undeleteRegion finished.");
+		} catch (Exception e) {
+			throw new Exception("UndeleteRegion failed on saving.");
+		}		
+	}
+	
+	@Override
+	public void deleteRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception {
+		try {
+			region.setStatusInactive();
+			region.setUpdatedById(loggedUser.getId());
+			countryRegionRepository.save(region);
+			logger.info("deleteCountry finished.");
+		} catch (Exception e) {
+			throw new Exception("DeleteCountry failed on saving.");
+		}
+	}
 }
