@@ -148,7 +148,7 @@ public class CountryRegionController {
 		logger.info("################ /jobster/regions/getByName started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
-			List<CountryRegionEntity> region= countryRegionRepository.getByRegionNameIgnoreCase(name);
+			List<CountryRegionEntity> region= countryRegionRepository.getByCountryRegionNameIgnoreCase(name);
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<List<CountryRegionEntity>>(region, HttpStatus.OK);
 		} catch(Exception e) {
