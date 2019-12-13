@@ -1,5 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import ResponsiveTable from 'material-ui-next-responsive-table'
+
 import { actions as personsActions } from '../../../redux/actions/persons'
 import { personsSelectors } from '../../../redux/selectors/persons'
 import PersonsTable from './PersonsTable'
@@ -15,12 +17,74 @@ export const PersonsContainer = ({
     loadPersonsAll()
   }, [loadPersonsAll])
 
+
+  const columns = [
+    {
+      key: 'firstName',
+      label: 'Name',
+      primary: true,
+    },
+    {
+      key: 'lastName',
+      label: 'Surname',
+      primary: true,
+    },
+    {
+      key: 'gender',
+      label: 'Gender',
+    },
+    {
+      key: 'birthDate',
+      label: 'Birth date',
+    },
+    {
+      key: 'email',
+      label: 'E-mail',
+    },
+    {
+      key: 'mobilePhone',
+      label: 'Contact phone',
+    },
+    {
+      key: 'about',
+      label: 'About',
+    },
+    {
+      key: 'accessRole',
+      label: 'Access role',
+    },
+    {
+      key: 'city',
+      label: 'City',
+    },
+    {
+      key: 'countryRegion',
+      label: 'Country region',
+    },
+    {
+      key: 'country',
+      label: 'Country',
+    },
+    {
+      key: 'iso2Code',
+      label: 'Country code',
+    },
+    {
+      key: 'username',
+      label: 'Username',
+    }
+  ]
+  
+  const data = personsAll
+
+  
   return (
     <React.Fragment>
       {
         (!personsIsLoading && personsAll) &&
         <React.Fragment>
           <p>Number of persons in the database: {personsAll.length}</p>
+          <ResponsiveTable columns={columns} data={data} />
           <PersonsTable />
         </React.Fragment>
 
