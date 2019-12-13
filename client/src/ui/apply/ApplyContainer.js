@@ -14,6 +14,14 @@ const cities = [
   { name: 'Nis' }
 ]
 
+const jobTypes = [
+  { name: 'Keramicar' },
+  { name: 'Zidar' },
+  { name: 'Tesar' },
+  { name: 'Mesar' },
+  { name: 'Vozac' }
+]
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -46,7 +54,8 @@ function a11yProps(index) {
 
 export const ApplyContainer = () => {
 
-  const [value, setValue] = React.useState(null)
+  const [city, setCity] = React.useState(null)
+  const [jobType, setJobType] = React.useState(null)
   const [activeTab, setActiveTab] = React.useState(0)
 
   const handleTabChange = (event, newActiveTab) => {
@@ -68,30 +77,48 @@ export const ApplyContainer = () => {
         variant='fullWidth'
       >
         <Tab label='Where' />
-        <Tab label='What' />
-        <Tab label='Apply' />
+        {city ? <Tab label='What'/> : <Tab label='What' disabled/>}
+        {city && jobType ? <Tab label='Apply'/> : <Tab label='Apply' disabled/>}
       </Tabs>
       <TabPanel value={activeTab} index={0}>
         Item One -> Render City selection component.
-      </TabPanel>
-      <TabPanel value={activeTab} index={1}>
-        Item Two -> Render Job selection component. (disabled until city is chosen).
-      </TabPanel>
-      <TabPanel value={activeTab} index={2}>
-        Item Three -> Render Job details & apply component. (disabled until city & job are chosen).
-      </TabPanel>
         <Autocomplete
           id="combo-box-demo"
           options={cities}
           getOptionLabel={option => option.name}
           style={{ width: 300 }}
+          value={city}
+          autoComplete
           onChange={(event, newValue) => {
-            setValue(newValue);
+            setCity(newValue); 
+            if (!city) { setJobType(null) };
           }}
           renderInput={params => (
             <TextField {...params} label="City" variant="outlined" fullWidth />
           )}
         />
+      </TabPanel>
+      <TabPanel value={activeTab} index={1}>
+        Item Two -> Render Job selection component. (disabled until city is chosen).
+        <Autocomplete
+          id="combo-box-demo"
+          options={jobTypes}
+          getOptionLabel={option => option.name}
+          style={{ width: 300 }}
+          value={jobType}
+          autoComplete
+          onChange={(event, newValue) => {
+            setJobType(newValue);
+          }}
+          renderInput={params => (
+            <TextField {...params} label="Job type" variant="outlined" fullWidth />
+          )}
+        />
+      </TabPanel>
+      <TabPanel value={activeTab} index={2}>
+        Item Three -> Render Job details & apply component. (disabled until city & job are chosen).
+      </TabPanel>
+        
       </div>
     </div>
   )
