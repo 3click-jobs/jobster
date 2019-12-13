@@ -227,7 +227,7 @@ public class PersonController {
 				logger.info("---------------- Access role must be ROLE_USER.");
 		        return new ResponseEntity<>("Access role must be ROLE_USER.", HttpStatus.NOT_ACCEPTABLE);
 			}	
-			if (newPerson.getGender() != null && (!newPerson.getGender().equals("GENDER_MALE") || !newPerson.getGender().equals("GENDER_FEMALE"))) {
+			if (newPerson.getGender() != null && !(newPerson.getGender().equals("GENDER_MALE") || newPerson.getGender().equals("GENDER_FEMALE"))) {
 				logger.info("---------------- Gender must be GENDER_MALE or GENDER_FEMALE.");
 		        return new ResponseEntity<>("Gender must be GENDER_MALE or GENDER_FEMALE.", HttpStatus.NOT_ACCEPTABLE);
 			}		
