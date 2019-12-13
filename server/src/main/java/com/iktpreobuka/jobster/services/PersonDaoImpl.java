@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.iktpreobuka.jobster.entities.CityEntity;
-import com.iktpreobuka.jobster.entities.CompanyEntity;
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
@@ -61,7 +60,7 @@ public class PersonDaoImpl implements PersonDao {
 			if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getIso2Code() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null ) {
 				throw new Exception("Some data is null.");
 			}
-			UserEntity user = new CompanyEntity();
+			UserEntity user = new PersonEntity();
 			CityEntity city = new CityEntity();
 			CountryEntity country = new CountryEntity();
 			CountryRegionEntity countryRegion = new CountryRegionEntity();

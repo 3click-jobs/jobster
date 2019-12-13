@@ -17,6 +17,7 @@ export const PersonsContainer = ({
     loadPersonsAll()
   }, [loadPersonsAll])
 
+  // comment can be deleted
 
   const columns = [
     {
