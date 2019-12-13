@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
+import com.iktpreobuka.jobster.ApplyCommentControllerTest;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CommentEntity;
@@ -70,7 +71,7 @@ public class CommentController {
 	}
 
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/all") // get all comments
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/comment/all/getAll started.");
@@ -90,7 +91,7 @@ public class CommentController {
 	}
 
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET) // get all active comments
 	public ResponseEntity<?> getAllActive(Principal principal) {
 		logger.info("################ /jobster/comment/getAllActive started.");
@@ -110,7 +111,7 @@ public class CommentController {
 	}
 
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive") // get all inactive comments
 	public ResponseEntity<?> getAllInactive(Principal principal) {
 		logger.info("################ /jobster/comment/inactive/getAllInactive started.");
@@ -131,7 +132,7 @@ public class CommentController {
 	}
 
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived") // get all archived comments
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/comment/archived/getAllArchived started.");
@@ -152,7 +153,7 @@ public class CommentController {
 	}
 
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/{id}") // get active by ID
 	public ResponseEntity<?> getActiveById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/comment/active/getActiveById started.");
@@ -176,7 +177,7 @@ public class CommentController {
 	}
 	
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/{id}") // get inactive by ID
 	public ResponseEntity<?> getInactiveById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/comment/inactive/getInactiveById started.");
@@ -200,7 +201,7 @@ public class CommentController {
 	}
 	
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}") // get archived by ID
 	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/comment/archived/getArchivedById started.");
@@ -224,7 +225,7 @@ public class CommentController {
 	}
 
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/all/{id}") // get by ID from all
 	public ResponseEntity<?> getByIdAll(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/comment/all/getByIdAll started.");
@@ -279,7 +280,8 @@ public class CommentController {
 			logger.info("################ /jobster/comment/getApplicationComment started.");
 			logger.info("Logged username: " + principal.getName());
 			try {
-				Iterable<CommentEntity> comments = commentRepository.findByApplicationAndStatusLike(id, 1);
+				ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, 1);
+				Iterable<CommentEntity> comments = commentRepository.findByApplicationAndStatusLike(application, 1);
 				if(Iterables.isEmpty(comments)) {
 					logger.info("++++++++++++++++ Application has no comments");
 					return new ResponseEntity<>("Application has no comments.",HttpStatus.NOT_FOUND);
@@ -297,7 +299,7 @@ public class CommentController {
 		}
 
 	// @Secured("ROLE_ADMIN")
-	@RequestMapping(method = RequestMethod.POST)
+	//@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewComment(@Valid @RequestBody AddCommentDTO newComment, Principal principal,
 			BindingResult result) {
 		logger.info("################ /jobster/comment/{id}/addNewComment started.");
