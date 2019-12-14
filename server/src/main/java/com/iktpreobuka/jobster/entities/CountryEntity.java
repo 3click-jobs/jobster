@@ -61,7 +61,7 @@ public class CountryEntity {
 	
 	//@JsonView(Views.Admin.class)
 
-    @Column(name = "created_by", updatable = false)
+    @Column(name = "created_by"/*, updatable = false*/)
 	private Integer createdById;
     
     //@JsonView(Views.Admin.class)

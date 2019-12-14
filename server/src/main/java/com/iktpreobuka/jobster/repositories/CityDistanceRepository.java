@@ -3,6 +3,7 @@ package com.iktpreobuka.jobster.repositories;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.iktpreobuka.jobster.entities.CityDistanceEntity;
@@ -20,7 +21,7 @@ public interface CityDistanceRepository extends CrudRepository<CityDistanceEntit
 	public Iterable<CityDistanceEntity> findByFromCityLike(CityEntity cty);
 
 	@Query("select d from CityDistanceEntity d join d.fromCity f where f.id=:fromCityId")
-	public Iterable<CityDistanceEntity> findByFromCityIdLike(Integer fromCityId);
+	public Iterable<CityDistanceEntity> findByFromCityIdLike(@Param("fromCityId") Integer fromCityId);
 
 	
 }
