@@ -65,10 +65,11 @@ public class PersonDaoImpl implements PersonDao {
 			CountryEntity country = new CountryEntity();
 			CountryRegionEntity countryRegion = new CountryRegionEntity();
 			try {
-				country = countryRepository.getByCountryNameAndIso2Code(newPerson.getCountry(), newPerson.getIso2Code());
+				country = countryRepository.findByCountryNameAndIso2Code(newPerson.getCountry(), newPerson.getIso2Code());
 				Boolean newCountryRegion = false;
 				Boolean newCountry = false;
 				Boolean newCity = false;
+				
 				if(country != null) {
 					logger.info("Country founded.");
 					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
