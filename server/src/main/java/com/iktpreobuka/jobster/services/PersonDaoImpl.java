@@ -65,17 +65,24 @@ public class PersonDaoImpl implements PersonDao {
 			CountryEntity country = new CountryEntity();
 			CountryRegionEntity countryRegion = new CountryRegionEntity();
 			try {
-				country = countryRepository.findByCountryNameAndIso2Code(newPerson.getCountry(), newPerson.getIso2Code());
-				Boolean newCountryRegion = false;
-				Boolean newCountry = false;
-				Boolean newCity = false;
-				
+				country = countryRepository.findByCountryNameIgnoreCase(newPerson.getCountry());
+			} catch (Exception e1) {
+				throw new Exception("CountryRepository failed.");
+			}
+			logger.info("CountryRepository Ok.");
+			if (country != null && !country.getIso2Code().equalsIgnoreCase(newPerson.getIso2Code())) {
+				throw new Exception("Wrong country name or ISO country code.");
+			}
+			Boolean newCountryRegion = false;
+			Boolean newCountry = false;
+			Boolean newCity = false;
+			try {
 				if(country != null) {
 					logger.info("Country founded.");
-					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
+					countryRegion = countryRegionRepository.findByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
 					if (countryRegion != null) {
 						logger.info("CountryRegion founded.");
-						city = cityRepository.getByCityNameAndRegion(newPerson.getCity(), countryRegion);
+						city = cityRepository.findByCityNameAndRegion(newPerson.getCity(), countryRegion);
 						logger.info("City founded.");
 					} else {
 						city = null;
@@ -91,6 +98,10 @@ public class PersonDaoImpl implements PersonDao {
 					newCity = true;
 					logger.info("City created.");
 				}
+			} catch (Exception e2) {
+				throw new Exception(e2.getLocalizedMessage());
+			}
+			try {
 				((PersonEntity) user).setFirstName(newPerson.getFirstName());
 				((PersonEntity) user).setLastName(newPerson.getLastName());
 				((PersonEntity) user).setGender(EGender.valueOf(newPerson.getGender()));
@@ -105,7 +116,7 @@ public class PersonDaoImpl implements PersonDao {
 				user.setStatusActive();
 				personRepository.save(user);
 				logger.info("User created.");
-				user = personRepository.getByEmailAndStatusLike(newPerson.getEmail(), 1);
+				//user = personRepository.findByEmailAndStatusLike(newPerson.getEmail(), 1);
 				user.setCreatedById(user.getId());
 				personRepository.save(user);
 				logger.info("User CreatedById added.");
@@ -115,12 +126,12 @@ public class PersonDaoImpl implements PersonDao {
 					logger.info("City CreatedById added.");
 					if(newCountryRegion == true) {
 						if(newCountry == true) {
-							country = countryRepository.getByCountryNameAndIso2Code(newPerson.getCountry(), newPerson.getIso2Code());
+							country = countryRepository.findByCountryNameAndIso2Code(newPerson.getCountry(), newPerson.getIso2Code());
 							country.setCreatedById(user.getId());
 							countryRepository.save(country);
 							logger.info("Country CreatedById added.");
 						}
-						countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
+						countryRegion = countryRegionRepository.findByCountryRegionNameAndCountry(newPerson.getCountryRegion(), country);
 						countryRegion.setCreatedById(user.getId());
 						countryRegionRepository.save(countryRegion);
 						logger.info("CountryRegion CreatedById added.");
@@ -172,11 +183,11 @@ public class PersonDaoImpl implements PersonDao {
 			if (updatePerson.getCity() != null && !updatePerson.getCity().equals(" ") && !updatePerson.getCity().equals("") && updatePerson.getCountry() != null && !updatePerson.getCountry().equals(" ") && !updatePerson.getCountry().equals("") && updatePerson.getIso2Code() != null && !updatePerson.getIso2Code().equals(" ") && !updatePerson.getIso2Code().equals("") ) {
 				CityEntity city = new CityEntity();
 				CountryRegionEntity countryRegion = new CountryRegionEntity();
-				CountryEntity country = countryRepository.getByCountryNameAndIso2Code(updatePerson.getCountry(), updatePerson.getIso2Code());
+				CountryEntity country = countryRepository.findByCountryNameAndIso2Code(updatePerson.getCountry(), updatePerson.getIso2Code());
 				if(country != null) {
-					countryRegion = countryRegionRepository.getByCountryRegionNameAndCountry(updatePerson.getCountryRegion(), country);
+					countryRegion = countryRegionRepository.findByCountryRegionNameAndCountry(updatePerson.getCountryRegion(), country);
 					if (countryRegion != null) {
-						city = cityRepository.getByCityNameAndRegion(updatePerson.getCity(), countryRegion);
+						city = cityRepository.findByCityNameAndRegion(updatePerson.getCity(), countryRegion);
 					} else {
 						city = null;
 					}

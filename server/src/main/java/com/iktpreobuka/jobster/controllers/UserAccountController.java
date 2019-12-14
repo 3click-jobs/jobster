@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
@@ -34,7 +33,6 @@ import com.iktpreobuka.jobster.repositories.CompanyRepository;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
-import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.UserAccountDao;
 
 @Controller
@@ -72,12 +70,13 @@ public class UserAccountController {
 		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
 		}
 
-	@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<?> getAll(/*Principal principal*/) {
+	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/accounts/getAll started.");
-//		logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<UserAccountEntity> accounts= userAccountRepository.findByStatusLike(1);
 			if (Iterables.isEmpty(accounts)) {
@@ -93,7 +92,7 @@ public class UserAccountController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/getById started.");
@@ -114,7 +113,7 @@ public class UserAccountController {
 
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted")
 	public ResponseEntity<?> getAllDeleted(Principal principal) {
 		logger.info("################ /jobster/accounts/deleted/getAllDeleted started.");
@@ -134,7 +133,7 @@ public class UserAccountController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted/{id}")
 	public ResponseEntity<?> getDeletedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/deleted/{id}/getDeletedById started.");
@@ -154,7 +153,7 @@ public class UserAccountController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/accounts/archived/getAllArchived started.");
@@ -174,7 +173,7 @@ public class UserAccountController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}")
 	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/archived/{id}/getArchivedById started.");
@@ -194,7 +193,7 @@ public class UserAccountController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNew(@Valid @RequestBody UserAccountDTO newUserAccount, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/accounts/addNew started.");
@@ -282,7 +281,7 @@ public class UserAccountController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> modify(@PathVariable Integer id, @Valid @RequestBody UserAccountDTO updateUserAccount, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/accounts/{id}/modify started.");
@@ -391,7 +390,7 @@ public class UserAccountController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 	public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/archive/{id}/archive started.");
@@ -423,7 +422,7 @@ public class UserAccountController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 	public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/undelete/{id}/unDelete started.");
@@ -451,7 +450,7 @@ public class UserAccountController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/{id}/delete started.");

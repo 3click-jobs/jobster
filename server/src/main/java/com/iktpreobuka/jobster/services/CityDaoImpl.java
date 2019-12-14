@@ -49,8 +49,17 @@ public class CityDaoImpl implements CityDao {
 		}
 		logger.info("addNewCity validation Ok.");
 		CityEntity city = new CityEntity();
+		CountryEntity country = new CountryEntity();
 		try {
-			CountryEntity country = countryRepository.getByIso2Code(iso2Code);
+			country = countryRepository.getByIso2Code(iso2Code);
+		} catch (Exception e1) {
+			throw new Exception("CountryRepository failed.");
+		}
+		logger.info("CountryRepository Ok.");
+		if (country != null && !country.getCountryName().equalsIgnoreCase(countryName)) {
+			throw new Exception("Wrong country name or ISO country code.");
+		}
+		try {
 			if( country == null ) {
 				country = countryDao.addNewCountryWithIso2Code(countryName, iso2Code);
 			}
@@ -67,7 +76,7 @@ public class CityDaoImpl implements CityDao {
 			city.setLatitude(latitude);
 			city.setRegion(region);
 			city.setStatusActive();
-			cityRepository.save(city);
+			city = cityRepository.save(city);
 			logger.info("City added.");
 			cityDistanceDao.addNewDistancesForCity(city);
 			logger.info("City distances added.");
@@ -102,7 +111,7 @@ public class CityDaoImpl implements CityDao {
 			city.setRegion(region);
 			city.setStatusActive();
 			city.setCreatedById(loggedUser.getId());
-			cityRepository.save(city);
+			city = cityRepository.save(city);
 			logger.info("City added.");
 			cityDistanceDao.addNewDistancesForCityWithLoggedUser(city, loggedUser);
 			logger.info("City distances added.");
@@ -117,7 +126,7 @@ public class CityDaoImpl implements CityDao {
 		try {
 			city.setStatusInactive();
 			city.setUpdatedById(loggedUser.getId());
-			cityRepository.save(city);
+			city = cityRepository.save(city);
 			logger.info("deleteCity finished.");
 		} catch (Exception e) {
 			throw new Exception("DeleteCity failed on saving.");
@@ -129,7 +138,7 @@ public class CityDaoImpl implements CityDao {
 		try {
 			city.setStatusActive();
 			city.setUpdatedById(loggedUser.getId());
-			cityRepository.save(city);
+			city = cityRepository.save(city);
 			logger.info("undeleteCity finished.");
 		} catch (Exception e) {
 			throw new Exception("UndeleteCity failed on saving.");
@@ -141,7 +150,7 @@ public class CityDaoImpl implements CityDao {
 		try {
 			city.setStatusArchived();
 			city.setUpdatedById(loggedUser.getId());
-			cityRepository.save(city);
+			city = cityRepository.save(city);
 			logger.info("archiveCity finished.");
 		} catch (Exception e) {
 			throw new Exception("ArchiveCity failed on saving.");
@@ -153,7 +162,7 @@ public class CityDaoImpl implements CityDao {
 		try {
 			city.setStatusActive();
 			city.setUpdatedById(loggedUser.getId());
-			cityRepository.save(city);
+			city = cityRepository.save(city);
 			logger.info("unarchiveCity finished.");
 		} catch (Exception e) {
 			throw new Exception("UnarchiveCity failed on saving.");

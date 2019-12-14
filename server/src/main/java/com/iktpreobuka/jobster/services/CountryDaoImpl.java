@@ -31,12 +31,12 @@ public class CountryDaoImpl implements CountryDao {
 		}
 		CountryEntity country = new CountryEntity();
 		try {
-			country = countryRepository.getByCountryName(countryName);
+			country = countryRepository.findByCountryNameIgnoreCase(countryName);
 			if (country == null) {
 				country = new CountryEntity();
 				country.setCountryName(countryName);
 				country.setStatusActive();
-				countryRepository.save(country);
+				country = countryRepository.save(country);
 			}
 		} catch (Exception e) {
 			throw new Exception("addNewCountry(countryName, loggedUser) save failed.");
@@ -50,13 +50,13 @@ public class CountryDaoImpl implements CountryDao {
 		}
 		CountryEntity country = new CountryEntity();
 		try {
-			country = countryRepository.getByCountryName(countryName);
+			country = countryRepository.findByCountryNameIgnoreCase(countryName);
 			if (country == null) {
 				country = new CountryEntity();
 				country.setCountryName(countryName);
 				country.setStatusActive();
 				country.setCreatedById(loggedUser.getId());
-				countryRepository.save(country);
+				country = countryRepository.save(country);
 			}
 		} catch (Exception e) {
 			throw new Exception("addNewCountry(countryName, loggedUser) save failed.");
@@ -70,13 +70,21 @@ public class CountryDaoImpl implements CountryDao {
 		}
 		CountryEntity country = new CountryEntity();
 		try {
-			country = countryRepository.getByCountryNameAndIso2Code(countryName, iso2Code);
+			country = countryRepository.findByCountryNameIgnoreCase(countryName);
+		} catch (Exception e1) {
+			throw new Exception("CountryRepository failed.");
+		}
+		logger.info("CountryRepository Ok.");
+		if (country != null && !country.getIso2Code().equalsIgnoreCase(iso2Code)) {
+			throw new Exception("Wrong country name or ISO country code.");
+		}
+		try {
 			if (country == null) {
 				country = new CountryEntity();
 				country.setCountryName(countryName);
 				country.setIso2Code(iso2Code);
 				country.setStatusActive();
-				countryRepository.save(country);
+				country = countryRepository.save(country);
 			}
 		} catch (Exception e) {
 			throw new Exception("addNewCountry(countryName, iso2Code, loggedUser) save failed.");
@@ -90,14 +98,22 @@ public class CountryDaoImpl implements CountryDao {
 		}
 		CountryEntity country = new CountryEntity();
 		try {
-			country = countryRepository.getByCountryNameAndIso2Code(countryName, iso2Code);
+			country = countryRepository.findByCountryNameIgnoreCase(countryName);
+		} catch (Exception e1) {
+			throw new Exception("CountryRepository failed.");
+		}
+		logger.info("CountryRepository Ok.");
+		if (country != null && !country.getIso2Code().equalsIgnoreCase(iso2Code)) {
+			throw new Exception("Wrong country name or ISO country code.");
+		}
+		try {
 			if (country == null) {
 				country = new CountryEntity();
 				country.setCountryName(countryName);
 				country.setIso2Code(iso2Code);
 				country.setStatusActive();
 				country.setCreatedById(loggedUser.getId());
-				countryRepository.save(country);
+				country = countryRepository.save(country);
 			}
 		} catch (Exception e) {
 			throw new Exception("addNewCountry(countryName, iso2Code, loggedUser) save failed.");
@@ -110,7 +126,7 @@ public class CountryDaoImpl implements CountryDao {
 		try {
 			country.setStatusArchived();
 			country.setUpdatedById(loggedUser.getId());
-			countryRepository.save(country);
+			country = countryRepository.save(country);
 			logger.info("archiveCountry finished.");
 		} catch (Exception e) {
 			throw new Exception("ArchiveCountry failed on saving.");
@@ -122,7 +138,7 @@ public class CountryDaoImpl implements CountryDao {
 		try {
 			country.setStatusArchived();
 			country.setUpdatedById(loggedUser.getId());
-			countryRepository.save(country);
+			country = countryRepository.save(country);
 			logger.info("archiveCity finished.");
 		} catch (Exception e) {
 			throw new Exception("ArchiveCity failed on saving.");
@@ -134,7 +150,7 @@ public class CountryDaoImpl implements CountryDao {
 		try {
 			country.setStatusActive();
 			country.setUpdatedById(loggedUser.getId());
-			countryRepository.save(country);
+			country = countryRepository.save(country);
 			logger.info("undeleteCountry finished.");
 		} catch (Exception e) {
 			throw new Exception("UndeleteCountry failed on saving.");
@@ -146,7 +162,7 @@ public class CountryDaoImpl implements CountryDao {
 		try {
 			country.setStatusInactive();
 			country.setUpdatedById(loggedUser.getId());
-			countryRepository.save(country);
+			country = countryRepository.save(country);
 			logger.info("deleteCountry finished.");
 		} catch (Exception e) {
 			throw new Exception("DeleteCountry failed on saving.");

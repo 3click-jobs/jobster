@@ -35,6 +35,8 @@ public interface CountryRepository extends CrudRepository<CountryEntity, Integer
 	public CountryEntity findByIdAndStatusLike(Integer id, int i);
 
 	public Iterable<CountryEntity> findByStatusLike(Integer status);
+
+	public CountryEntity findByCountryNameIgnoreCase(String country);
 	
 
 }

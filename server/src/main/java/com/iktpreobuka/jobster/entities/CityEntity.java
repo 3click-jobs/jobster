@@ -87,7 +87,7 @@ public class CityEntity {
     @Column(name = "status", nullable = false)
 	private Integer status;
 	//@JsonView(Views.Admin.class)
-    @Column(name = "created_by", updatable = false)
+    @Column(name = "created_by"/*, updatable = false*/)
 	private Integer createdById;
     //@JsonView(Views.Admin.class)
     @Column(name = "updated_by")

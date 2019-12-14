@@ -40,5 +40,7 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 	public Iterable<CityEntity> findByStatusLike(Integer status);
 
 	public CityEntity findByIdAndStatusLike(Integer id, int i);
+
+	public CityEntity findByCityNameAndRegion(String city, CountryRegionEntity countryRegion);
 }
 

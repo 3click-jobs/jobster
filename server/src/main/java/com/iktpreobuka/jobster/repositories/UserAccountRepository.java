@@ -2,6 +2,7 @@ package com.iktpreobuka.jobster.repositories;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.iktpreobuka.jobster.entities.CompanyEntity;
@@ -18,7 +19,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	public UserAccountEntity getByUsername(String username);
 	public UserAccountEntity getByUser(UserEntity user);
 	@Query("select ua.user from UserAccountEntity ua where ua.username=:username and ua.status=:status")
-	public UserEntity findUserByUsernameAndStatusLike(String username, Integer status);
+	public UserEntity findUserByUsernameAndStatusLike(@Param("username") String username, @Param("status") Integer status);
 	public UserEntity findUserByIdAndStatusLike(Integer id, Integer status);
 	public UserAccountEntity findByUserAndAccessRoleLikeAndStatusLike(UserEntity user, EUserRole eUserRole, Integer status);
 	public Iterable<UserAccountEntity> findByStatusLike(Integer status);
@@ -35,7 +36,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 			+ "from UserAccountEntity ua "
 			+ "join ua.user ue "
 			+ "where ua.username=:username")
-	public Integer getUserIdByUsername(String username); // pitati drakulica da li ce ovo da radi
+	public Integer getUserIdByUsername(@Param("username") String username); // pitati drakulica da li ce ovo da radi
 	@SuppressWarnings("unchecked")
 	public UserAccountEntity save(UserAccountEntity userAccountEntity);
 	public UserAccountEntity findByUserAndStatusLike(CompanyEntity companyEntity, int i);

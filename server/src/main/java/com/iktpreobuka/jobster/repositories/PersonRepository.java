@@ -26,6 +26,7 @@ public interface PersonRepository extends CrudRepository<PersonEntity, Integer> 
 	public PersonEntity getByMobilePhoneAndStatusLike(String mobilePhone, Integer status);
 	public PersonEntity getByMobilePhone(String mobilePhone);
 	public PersonEntity getByIdAndStatusLike(Integer userId, Integer status);
+	public UserEntity findByEmailAndStatusLike(String email, Integer status);
 
 }
 
