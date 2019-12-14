@@ -46,10 +46,10 @@ export const Signout = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={() => history.goBack() } color="primary">
-            Disagree
+            Cancel
           </Button>
           <Button onClick={() => { unassignCredentials(); history.push('/') }} color="primary" autoFocus>
-            Agree
+            Ok
           </Button>
         </DialogActions>
       </Dialog>
