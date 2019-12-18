@@ -3,9 +3,9 @@ package com.iktpreobuka.jobster.controllers;
 
 		
 import java.security.Principal;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -16,23 +16,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
-import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.CityEntity;
+import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
+import com.iktpreobuka.jobster.entities.dto.POSTCityDTO;
 import com.iktpreobuka.jobster.repositories.CityRepository;
+import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
-import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.CityDao;
+import com.iktpreobuka.jobster.services.CityDistanceDao;
 		
 
 		
@@ -54,21 +53,27 @@ public class CityController {
 	@Autowired 
 	private CityDao cityDao;
 		
-	@Autowired 
-	private UserCustomValidator userValidator;
+	//@Autowired 
+	//private UserCustomValidator userValidator;
 	
 	@Autowired 
 	private UserAccountRepository userAccountRepository;
+	
+	@Autowired 
+	private CountryRegionRepository countryRegionRepository;
+	
+	@Autowired 
+	private CityDistanceDao cityDistanceDao;
 		
 
 		
-	@InitBinder
+	/*@InitBinder
 		
 	protected void initBinder(final WebDataBinder binder) { 
 		
 		binder.addValidators(userValidator); 
 		
-		}
+		}*/
 		
 
 		
@@ -86,15 +91,15 @@ public class CityController {
 	
 	//@Secured("ROLE_ADMIN")
 	
-			@JsonView(Views.Admin.class)
+			//@JsonView(Views.Admin.class)
 			
-			@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+			@RequestMapping(method = RequestMethod.GET, value = "/byId/{id}")
 			
 			public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 			
 				logger.info("################ /jobster/cities/getById started.");
 			
-				logger.info("Logged username: " + principal.getName());
+				//logger.info("Logged username: " + principal.getName());
 			
 				try {
 			
@@ -118,7 +123,7 @@ public class CityController {
 		
 	//@Secured("ROLE_ADMIN")
 		
-		@JsonView(Views.Admin.class)
+		//@JsonView(Views.Admin.class)
 		
 		@RequestMapping(method = RequestMethod.GET)
 		
@@ -126,7 +131,7 @@ public class CityController {
 		
 			logger.info("################ /jobster/cities/getAll started.");
 		
-			logger.info("Logged username: " + principal.getName());
+			//logger.info("Logged username: " + principal.getName());
 		
 			try {
 
@@ -148,7 +153,7 @@ public class CityController {
 		
 		//@Secured("ROLE_ADMIN")
 		
-		@JsonView(Views.Admin.class)
+		//@JsonView(Views.Admin.class)
 		
 		@RequestMapping(method = RequestMethod.GET, value = "/active")
 		
@@ -156,7 +161,7 @@ public class CityController {
 		
 			logger.info("################ /jobster/cities/getAllActive started.");
 		
-			logger.info("Logged username: " + principal.getName());
+			//logger.info("Logged username: " + principal.getName());
 		
 			try {
 		
@@ -178,7 +183,7 @@ public class CityController {
 		
 		//@Secured("ROLE_ADMIN")
 		
-				@JsonView(Views.Admin.class)
+				//@JsonView(Views.Admin.class)
 				
 				@RequestMapping(method = RequestMethod.GET, value = "/inactive")
 				
@@ -186,7 +191,7 @@ public class CityController {
 				
 					logger.info("################ /jobster/cities/getAllInactive started.");
 				
-					logger.info("Logged username: " + principal.getName());
+					//logger.info("Logged username: " + principal.getName());
 				
 					try {
 				
@@ -208,7 +213,7 @@ public class CityController {
 				
 				//@Secured("ROLE_ADMIN")
 				
-				@JsonView(Views.Admin.class)
+				//@JsonView(Views.Admin.class)
 				
 				@RequestMapping(method = RequestMethod.GET, value = "/archived")
 				
@@ -216,7 +221,7 @@ public class CityController {
 				
 					logger.info("################ /jobster/cities/getAllArchived started.");
 				
-					logger.info("Logged username: " + principal.getName());
+					//logger.info("Logged username: " + principal.getName());
 				
 					try {
 				
@@ -240,15 +245,15 @@ public class CityController {
 		
 		//@Secured("ROLE_ADMIN")
 		
-		@JsonView(Views.Admin.class)
+		//@JsonView(Views.Admin.class)
 		
-		@RequestMapping(method = RequestMethod.GET, value = "/{name}")
+		@RequestMapping(method = RequestMethod.GET, value = "/byName/{name}")
 		
 		public ResponseEntity<?> getByName(@PathVariable String name, Principal principal) {
 		
 			logger.info("################ /jobster/cities/getByName started.");
 		
-			logger.info("Logged username: " + principal.getName());
+			//logger.info("Logged username: " + principal.getName());
 		
 			try {
 		
@@ -269,85 +274,61 @@ public class CityController {
 		}
 		
 		//@Secured("ROLE_ADMIN")
-		
-				@JsonView(Views.Admin.class)
+		//@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.POST, value = "/addNewCity")
+			public ResponseEntity<?> addNewCity(@Valid @RequestBody POSTCityDTO newCity, Principal principal, BindingResult result) {
+				logger.info("################ /jobster/cities/addNewCity started.");
+				//logger.info("Logged user: " + principal.getName());
+				if (result.hasErrors()) { 
+					logger.info("---------------- Validation has errors - " + createErrorMessage(result));
+					return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
+				}
+				if (newCity == null) {
+					logger.info("---------------- New city is null.");
+					return new ResponseEntity<>("New city is null.", HttpStatus.BAD_REQUEST);
+				}
+				if (newCity.getCityName() == null || newCity.getLongitude() == null || newCity.getLatitude() == null || newCity.getRegion() == null) {
+					logger.info("---------------- Some atributes are null.");
+					return new ResponseEntity<>("Some atributes are null", HttpStatus.BAD_REQUEST);
+				}
 				
-				@RequestMapping(method = RequestMethod.POST, value = "/addNewCity")
+				try {
+					if (cityRepository.existsByCityNameIgnoreCase(newCity.getCityName()) &&
+					   (cityRepository.existsByLongitude(newCity.getLongitude())&& cityRepository.existsByLatitude(newCity.getLatitude()))) {
+					   logger.info("---------------- City already exists.");
+					   return new ResponseEntity<>("City already exists.", HttpStatus.NOT_ACCEPTABLE);
+				}
 				
-				public ResponseEntity<?> addNewCity(@Valid @RequestBody CityEntity newCity, Principal principal, BindingResult result) {
-				
-					logger.info("################ /jobster/cities/addNewCity started.");
-				
-					logger.info("Logged user: " + principal.getName());
-				
-					if (result.hasErrors()) { 
-				
-						logger.info("---------------- Validation has errors - " + createErrorMessage(result));
-				
-						return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
-				
-						}
-				
-					if (newCity == null) {
-				
-						logger.info("---------------- New city is null.");
-				
-				        return new ResponseEntity<>("New city is null.", HttpStatus.BAD_REQUEST);
-				
-				      }
-				
-					if (newCity.getCityName() == null || newCity.getLongitude() == null || newCity.getLatitude() == null || newCity.getRegion() == null ) {
-				
-						logger.info("---------------- Some atributes are null.");
-				
-						return new ResponseEntity<>("Some atributes are null", HttpStatus.BAD_REQUEST);
-				
-					}
-				
+						CityEntity city=new CityEntity();
+						city.setCityName(newCity.getCityName());
+						city.setLatitude(newCity.getLatitude());
+						city.setLongitude(newCity.getLongitude());
+						city.setStatusActive();
+						CountryRegionEntity region=countryRegionRepository.getById(newCity.getRegion());
+						city.setRegion(region);
 
-				
-					try {
-				
-						if (cityRepository.existsByCityNameIgnoreCase(newCity.getCityName()) && cityRepository.existsByLongitude(newCity.getLongitude())
-				
-								&& cityRepository.existsByLatitude(newCity.getLatitude()) && cityRepository.existsByRegion(newCity.getRegion())) {
-				
-							logger.info("---------------- City already exists.");
-				
-					        return new ResponseEntity<>("City already exists.", HttpStatus.NOT_ACCEPTABLE);
-				
-						}
-				
-						cityRepository.save(newCity);
-				
+						cityRepository.save(city);
 						logger.info("New city created.");
-				
+						logger.info("---------------- Calculate and add distance started.");
+						cityDistanceDao.addNewDistancesForCity(city);
+						logger.info("---------------- Calculate and add distance finished.");
 						logger.info("---------------- Finished OK.");
-				
-						return new ResponseEntity<>(newCity, HttpStatus.OK);
+						return new ResponseEntity<>(city, HttpStatus.OK);
 				
 					} catch (NumberFormatException e) {
-				
 						logger.error("++++++++++++++++ Number format exception occurred: " + e.getMessage());
-				
 						return new ResponseEntity<RESTError>(new RESTError(2, "Number format exception occurred: "+ e.getLocalizedMessage()), HttpStatus.NOT_ACCEPTABLE);
-				
 					} catch (Exception e) {
-				
 						logger.error("++++++++++++++++ This is an exception message: " + e.getMessage());
-				
-
-				
 						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-				
 					}
 				
 				}
 				
 				//@Secured("ROLE_ADMIN")
-				@JsonView(Views.Admin.class)
+				//@JsonView(Views.Admin.class)
 				@RequestMapping(method = RequestMethod.PUT, value = "/modify/{id}")
-				public ResponseEntity<?> modifyCity(@PathVariable Integer id, @Valid @RequestBody CityEntity updateCity, /*Principal principal, */BindingResult result) {
+				public ResponseEntity<?> modifyCity(@PathVariable Integer id, @Valid @RequestBody POSTCityDTO updateCity, Principal principal, BindingResult result) {
 					logger.info("################ /jobster/cities/modify/{id} started.");
 					try {
 					CityEntity city=cityRepository.getById(id);
@@ -360,7 +341,8 @@ public class CityController {
 					city.setCityName(updateCity.getCityName());
 					city.setLongitude(updateCity.getLongitude());
 					city.setLatitude(updateCity.getLatitude());
-					city.setRegion(updateCity.getRegion());
+					CountryRegionEntity region=countryRegionRepository.getById(updateCity.getRegion());
+					city.setRegion(region);
 	
 					if (result.hasErrors()) { 
 						logger.info("---------------- Validation has errors - " + createErrorMessage(result));
@@ -379,16 +361,15 @@ public class CityController {
 					catch(Exception e) {
 						logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 						return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-				
 					}
 				}
 				
 				//@Secured("ROLE_ADMIN")
-				@JsonView(Views.Admin.class)
+				//@JsonView(Views.Admin.class)
 				@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 				public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 					logger.info("################ /jobster/cities/archive/{id}/archive started.");
-					logger.info("Logged user: " + principal.getName());
+					//logger.info("Logged user: " + principal.getName());
 					CityEntity city = new CityEntity();
 					try {
 						city = cityRepository.getById(id);
@@ -397,9 +378,9 @@ public class CityController {
 					        return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
 					      }
 						logger.info("City for archiving identified.");
-						UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-						logger.info("Logged user identified.");
-						cityDao.archiveCity(loggedUser, city);
+						//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+						//logger.info("Logged user identified.");
+						//cityDao.archiveCity(loggedUser, city);
 						logger.info("---------------- Finished OK.");
 						return new ResponseEntity<CityEntity>(city, HttpStatus.OK);
 					} catch (NumberFormatException e) {
@@ -412,7 +393,7 @@ public class CityController {
 				}
 				
 				//@Secured("ROLE_ADMIN")
-				@JsonView(Views.Admin.class)
+				//@JsonView(Views.Admin.class)
 				@RequestMapping(method = RequestMethod.PUT, value = "/unarchive/{id}")
 				public ResponseEntity<?> unArchive(@PathVariable Integer id, Principal principal) {
 					logger.info("################ /jobster/cities/unarchive/{id}/ Unarchive started.");
@@ -440,7 +421,7 @@ public class CityController {
 				}
 
 				//@Secured("ROLE_ADMIN")
-				@JsonView(Views.Admin.class)
+				//@JsonView(Views.Admin.class)
 				@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 				public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
 					logger.info("################ /jobster/cities/undelete/{id}/unDelete started.");
@@ -468,7 +449,7 @@ public class CityController {
 				}
 				
 				//@Secured("ROLE_ADMIN")
-				@JsonView(Views.Admin.class)
+				//@JsonView(Views.Admin.class)
 				@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 				public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 					logger.info("################ /jobster/cities/{id}/delete started.");

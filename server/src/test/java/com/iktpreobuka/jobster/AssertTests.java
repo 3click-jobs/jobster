@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.iktpreobuka.jobster.controllers.CityController;
 import com.iktpreobuka.jobster.controllers.CompanyController;
+import com.iktpreobuka.jobster.controllers.CountryController;
+import com.iktpreobuka.jobster.controllers.CountryRegionController;
 import com.iktpreobuka.jobster.controllers.PersonController;
 import com.iktpreobuka.jobster.controllers.UserAccountController;
 import com.iktpreobuka.jobster.controllers.UserController;
@@ -29,6 +32,14 @@ public class AssertTests {
 	@Autowired
 	private	UserAccountController userAccountController;
 
+	@Autowired
+	private	CityController cityController;
+	
+	@Autowired
+	private	CountryController countryController;
+	
+	@Autowired
+	private	CountryRegionController countryRegionController;
 	
 	@Test
 	public void contexLoadsUser() throws Exception {
@@ -50,4 +61,18 @@ public class AssertTests {
 		assertThat(userAccountController).isNotNull();
 	}
 
+	@Test
+	public void contexLoadsCity() throws Exception {
+		assertThat(cityController).isNotNull();
+	}
+	
+	@Test
+	public void contexLoadsCountry() throws Exception {
+		assertThat(countryController).isNotNull();
+	}
+	
+	@Test
+	public void contexLoadsCountryRegion() throws Exception {
+		assertThat(countryRegionController).isNotNull();
+	}
 }
