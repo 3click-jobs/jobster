@@ -2,11 +2,14 @@ package com.iktpreobuka.jobster.entities.dto;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 public class AddCommentDTO {
 
+	@Size(max=255, message = "Comment title is to long, maximum is {max}")
 	protected String commentTitle;
 
+	@Size(max=255, message = "Comment content is to long, maximum is {max}")
 	protected String commentContent;
 
 	@Max(value = 5, message = "Maximum rating is 5 stars")

@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
@@ -32,7 +31,6 @@ import com.iktpreobuka.jobster.entities.dto.PersonDTO;
 import com.iktpreobuka.jobster.enumerations.EUserRole;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
-import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.PersonDao;
 import com.iktpreobuka.jobster.services.UserAccountDao;
 
@@ -72,7 +70,7 @@ public class PersonController {
 		}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/users/persons/getAll started.");
@@ -92,7 +90,7 @@ public class PersonController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/getById started.");
@@ -113,7 +111,7 @@ public class PersonController {
 
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted")
 	public ResponseEntity<?> getAllDeleted(Principal principal) {
 		logger.info("################ /jobster/users/persons/deleted/getAllDeleted started.");
@@ -133,7 +131,7 @@ public class PersonController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted/{id}")
 	public ResponseEntity<?> getDeletedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/deleted/getDeletedById started.");
@@ -153,7 +151,7 @@ public class PersonController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/users/persons/archived/getAllArchived started.");
@@ -173,7 +171,7 @@ public class PersonController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}")
 	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/archived/getArchivedById started.");
@@ -192,7 +190,8 @@ public class PersonController {
 		}
 	}
 
-	@JsonView(Views.Admin.class)
+	
+	//@JsonView(Views.Guest.class)
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewPerson(@Valid @RequestBody PersonDTO newPerson, BindingResult result) {
 		logger.info("################ /jobster/users/persons/addNewPerson started.");
@@ -226,7 +225,7 @@ public class PersonController {
 				logger.info("---------------- Access role must be ROLE_USER.");
 		        return new ResponseEntity<>("Access role must be ROLE_USER.", HttpStatus.NOT_ACCEPTABLE);
 			}	
-			if (newPerson.getGender() != null && (!newPerson.getGender().equals("GENDER_MALE") || !newPerson.getGender().equals("GENDER_FEMALE"))) {
+			if (newPerson.getGender() != null && !(newPerson.getGender().equals("GENDER_MALE") || newPerson.getGender().equals("GENDER_FEMALE"))) {
 				logger.info("---------------- Gender must be GENDER_MALE or GENDER_FEMALE.");
 		        return new ResponseEntity<>("Gender must be GENDER_MALE or GENDER_FEMALE.", HttpStatus.NOT_ACCEPTABLE);
 			}		
@@ -257,7 +256,7 @@ public class PersonController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> modifyPerson(@PathVariable Integer id, @Valid @RequestBody PersonDTO updatePerson, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/users/persons/{id}/modifyPerson started.");
@@ -338,7 +337,7 @@ public class PersonController {
 	}
 	
 	/*//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/add-offer")
 	public ResponseEntity<?> addOfferToPerson(@PathVariable Integer id, @Valid @RequestBody PersonDTO updatePerson, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/users/persons/{id}/add-offer/addOfferToPerson started.");
@@ -393,7 +392,7 @@ public class PersonController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}/remove-offer")
 	public ResponseEntity<?> removeOffersFromPerson(@PathVariable Integer id, @Valid @RequestBody PersonDTO updatePerson, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/users/persons/{id}/remove-offer/removeOffersFromPerson started.");
@@ -448,7 +447,7 @@ public class PersonController {
 	}*/
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 	public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/archive/archive started.");
@@ -493,7 +492,7 @@ public class PersonController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 	public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/undelete/{id}/unDelete started.");
@@ -534,7 +533,7 @@ public class PersonController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/{id}/delete started.");

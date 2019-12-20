@@ -39,7 +39,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 				}
 				countryRegion.setCountry(country);
 				countryRegion.setStatusActive();
-				countryRegionRepository.save(countryRegion);
+				countryRegion = countryRegionRepository.save(countryRegion);
 			}
 		} catch (Exception e) {
 			throw new Exception("addNewCountryRegion(countryRegionName, country, loggedUser) save failed.");
@@ -62,7 +62,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 				countryRegion.setCountry(country);
 				countryRegion.setStatusActive();
 				countryRegion.setCreatedById(loggedUser.getId());
-				countryRegionRepository.save(countryRegion);
+				countryRegion = countryRegionRepository.save(countryRegion);
 			}
 		} catch (Exception e) {
 			throw new Exception("addNewCountryRegion(countryRegionName, country, loggedUser) save failed.");
@@ -82,7 +82,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 				countryRegion.setCountryRegionName(null);
 				countryRegion.setCountry(country);
 				countryRegion.setStatusActive();
-				countryRegionRepository.save(countryRegion);
+				countryRegion = countryRegionRepository.save(countryRegion);
 			}
 		} catch (Exception e) {
 			throw new Exception("addNewCountryRegion(country, loggedUser) save failed.");
@@ -103,7 +103,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 				countryRegion.setCountry(country);
 				countryRegion.setStatusActive();
 				countryRegion.setCreatedById(loggedUser.getId());
-				countryRegionRepository.save(countryRegion);
+				countryRegion = countryRegionRepository.save(countryRegion);
 			}
 		} catch (Exception e) {
 			throw new Exception("addNewCountryRegion(country, loggedUser) save failed.");
@@ -116,7 +116,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 		try {
 			region.setStatusArchived();
 			region.setUpdatedById(loggedUser.getId());
-			countryRegionRepository.save(region);
+			region = countryRegionRepository.save(region);
 			logger.info("archiveRegion finished.");
 		} catch (Exception e) {
 			throw new Exception("ArchiveRegion failed on saving.");
@@ -128,7 +128,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 		try {
 			region.setStatusArchived();
 			region.setUpdatedById(loggedUser.getId());
-			countryRegionRepository.save(region);
+			region = countryRegionRepository.save(region);
 			logger.info("archiveCity finished.");
 		} catch (Exception e) {
 			throw new Exception("ArchiveCity failed on saving.");
@@ -140,7 +140,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 		try {
 			region.setStatusActive();
 			region.setUpdatedById(loggedUser.getId());
-			countryRegionRepository.save(region);
+			region = countryRegionRepository.save(region);
 			logger.info("undeleteRegion finished.");
 		} catch (Exception e) {
 			throw new Exception("UndeleteRegion failed on saving.");
@@ -152,7 +152,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 		try {
 			region.setStatusInactive();
 			region.setUpdatedById(loggedUser.getId());
-			countryRegionRepository.save(region);
+			region = countryRegionRepository.save(region);
 			logger.info("deleteCountry finished.");
 		} catch (Exception e) {
 			throw new Exception("DeleteCountry failed on saving.");

@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.repositories.UserRepository;
-import com.iktpreobuka.jobster.security.Views;
 
 @Controller
 @RestController
@@ -33,8 +31,8 @@ public class UserController {
 
 	@CrossOrigin
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET)
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, path="/users")
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/users/getAll started.");
 		logger.info("Logged username: " + principal.getName());

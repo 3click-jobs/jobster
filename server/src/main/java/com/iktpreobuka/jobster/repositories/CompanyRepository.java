@@ -19,6 +19,7 @@ public interface CompanyRepository extends CrudRepository<CompanyEntity, Integer
 	public CompanyEntity findByIdAndStatusLike(Integer id, Integer status);
 	public void save(@Valid CompanyDTO newUser);
 	public void save(UserEntity user);
+	
 	public Iterable<CompanyEntity> findByStatusLike(Integer status);
 	public CompanyEntity getByEmailAndStatusLike(String email, Integer status);
 	public CompanyEntity getByEmail(String email);
@@ -27,5 +28,6 @@ public interface CompanyRepository extends CrudRepository<CompanyEntity, Integer
 	public CompanyEntity getByIdAndStatusLike(Integer userId, Integer status);
 
 	public CompanyEntity getByCompanyRegistrationNumber(String companyId);
+	public UserEntity findByEmailAndStatusLike(String email, Integer status);
 
 }

@@ -78,6 +78,8 @@ public class ApplyContactEntity {
 	//@JsonView(Views.Admin.class)
 	private Boolean rejected;
 	//@JsonView(Views.Admin.class)
+	private Boolean expired;
+	//@JsonView(Views.Admin.class)
 	private Boolean commentable;
 	//@JsonView(Views.Admin.class)
 	@Max(1)
@@ -99,12 +101,21 @@ public class ApplyContactEntity {
 		super();
 	}
 
+	
+
+
+
+
+
+
+
+
 	public ApplyContactEntity(@NotNull(message = "Job Offer must be provided.") JobOfferEntity offer,
 			@NotNull(message = "Job Seek must be provided.") JobSeekEntity seek, List<CommentEntity> comments,
 			Integer id, @NotNull(message = "Contact date must be provided.") Date contactDate,
 			@NotNull(message = "First step must be provided.") EUserType firstStep, Boolean areConnected,
-			Date connectionDate, Boolean rejected, Boolean commentable, @Max(1) @Min(-1) Integer status,
-			Integer createdById, Integer updatedById, Integer version) {
+			Date connectionDate, Boolean rejected, Boolean expired, Boolean commentable,
+			@Max(1) @Min(-1) Integer status, Integer createdById, Integer updatedById, Integer version) {
 		super();
 		this.offer = offer;
 		this.seek = seek;
@@ -115,6 +126,7 @@ public class ApplyContactEntity {
 		this.areConnected = areConnected;
 		this.connectionDate = connectionDate;
 		this.rejected = rejected;
+		this.expired = expired;
 		this.commentable = commentable;
 		this.status = status;
 		this.createdById = createdById;
@@ -122,6 +134,13 @@ public class ApplyContactEntity {
 		this.version = version;
 	}
 
+	public Boolean getExpired() {
+		return expired;
+	}
+
+	public void setExpired(Boolean expired) {
+		this.expired = expired;
+	}
 
 
 

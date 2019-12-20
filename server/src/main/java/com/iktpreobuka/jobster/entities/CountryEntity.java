@@ -60,7 +60,6 @@ public class CountryEntity {
 	private Integer status;
 	
 	//@JsonView(Views.Admin.class)
-
     //@Column(name = "created_by", updatable = false)
 	private Integer createdById;
     
