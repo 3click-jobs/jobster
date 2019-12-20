@@ -27,7 +27,7 @@ public interface CountryRegionRepository extends CrudRepository<CountryRegionEnt
 
 	Iterable<CountryRegionEntity> findByStatusLike(Integer status);
 
-	List<CountryRegionEntity> getByCountryRegionNameIgnoreCase(String name);
+	CountryRegionEntity getByCountryRegionNameIgnoreCase(String name);
 
 	boolean existsByCountry(CountryEntity country);
 
@@ -35,7 +35,9 @@ public interface CountryRegionRepository extends CrudRepository<CountryRegionEnt
 
 	CountryRegionEntity findByIdAndStatusLike(Integer id, int i);
 
+
+	boolean existsByCountryRegionNameIgnoreCase(String country)
 	CountryRegionEntity findByCountryRegionNameAndCountry(String countryRegion, CountryEntity country);
-	
+
 
 }

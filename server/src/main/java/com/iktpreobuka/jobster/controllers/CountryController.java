@@ -27,6 +27,7 @@ import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
+import com.iktpreobuka.jobster.entities.dto.POSTCountryDTO;
 import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.security.Views;
@@ -50,10 +51,10 @@ public class CountryController {
 	@Autowired 
 	private UserAccountRepository userAccountRepository;
 	
-	@InitBinder
+	/*@InitBinder
 	protected void initBinder(final WebDataBinder binder) { 
 		binder.addValidators(userValidator); 
-		}
+		}*/
 		
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 		
@@ -62,13 +63,16 @@ public class CountryController {
 		}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/getById/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/countries/getById started.");
-		logger.info("Logged username: " + principal.getName());
+		//logger.info("Logged username: " + principal.getName());
 		try {
 			CountryEntity country= countryRepository.getById(id);
+			if (country==null) {
+				return new ResponseEntity<>("Country doesn't exists.", HttpStatus.BAD_REQUEST);
+			}
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<CountryEntity>(country, HttpStatus.OK);
 		} catch(Exception e) {
@@ -78,11 +82,11 @@ public class CountryController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET)
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/getAll")
 	public ResponseEntity<?> getAll(Principal principal) {
 			logger.info("################ /jobster/countries/getAll started.");
-			logger.info("Logged username: " + principal.getName());
+			//logger.info("Logged username: " + principal.getName());
 			try {
 				Iterable<CountryEntity> countries= countryRepository.findAll();
 				logger.info("---------------- Finished OK.");
@@ -94,11 +98,11 @@ public class CountryController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active")
 	public ResponseEntity<?> getAllActive(Principal principal) {
 			logger.info("################ /jobster/countries/getAllActive started.");
-			logger.info("Logged username: " + principal.getName());
+			//logger.info("Logged username: " + principal.getName());
 			try {
 				Iterable<CountryEntity> countries= countryDao.findCountryByStatusLike(1);
 				logger.info("---------------- Finished OK.");
@@ -110,11 +114,11 @@ public class CountryController {
 	}
 			
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive")
 	public ResponseEntity<?> getAllInactive(Principal principal) {
 		logger.info("################ /jobster/countries/getAllInactive started.");
-		logger.info("Logged username: " + principal.getName());
+		//logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<CountryEntity> countries= countryDao.findCountryByStatusLike(0);
 			logger.info("---------------- Finished OK.");
@@ -126,11 +130,11 @@ public class CountryController {
 	}
 					
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/countries/getAllArchived started.");
-		logger.info("Logged username: " + principal.getName());
+		//logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<CountryEntity> countries= countryDao.findCountryByStatusLike(-1);
 			logger.info("---------------- Finished OK.");
@@ -142,15 +146,18 @@ public class CountryController {
 	}
 			
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/{name}")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/getByName/{name}")
 	public ResponseEntity<?> getByName(@PathVariable String name, Principal principal) {
 		logger.info("################ /jobster/countries/getByName started.");
-		logger.info("Logged username: " + principal.getName());
+		//logger.info("Logged username: " + principal.getName());
 		try {
-			List<CountryEntity> country= countryRepository.getByCountryNameIgnoreCase(name);
+			CountryEntity country= countryRepository.getByCountryNameIgnoreCase(name);
+			if (country==null) {
+				return new ResponseEntity<>("Country doesn't exists.", HttpStatus.BAD_REQUEST);
+			}
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<List<CountryEntity>>(country, HttpStatus.OK);
+			return new ResponseEntity<CountryEntity>(country, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -158,11 +165,11 @@ public class CountryController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST, value = "/addNewCountry")
-	public ResponseEntity<?> addNewCountry(@Valid @RequestBody CountryEntity newCountry, Principal principal, BindingResult result) {
+	public ResponseEntity<?> addNewCountry(@Valid @RequestBody POSTCountryDTO newCountry, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/countries/addNewCountry started.");
-		logger.info("Logged user: " + principal.getName());
+		//logger.info("Logged user: " + principal.getName());
 		if (result.hasErrors()) { 
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
@@ -176,14 +183,17 @@ public class CountryController {
 			return new ResponseEntity<>("Some atributes are null", HttpStatus.BAD_REQUEST);
 		}
 		try {
-			if (countryRepository.existsByCountryNameIgnoreCase(newCountry.getCountryName()) && countryRepository.existsByIso2Code(newCountry.getIso2Code())) {
+			if (countryRepository.existsByCountryNameIgnoreCase(newCountry.getCountryName()) || countryRepository.existsByIso2CodeIgnoreCase(newCountry.getIso2Code())) {
 				logger.info("---------------- Country already exists.");
 		        return new ResponseEntity<>("Country already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
-			countryRepository.save(newCountry);
+			
+			String countryName=newCountry.getCountryName();
+			String iso2Code=newCountry.getIso2Code();
+			CountryEntity country=countryDao.addNewCountryWithIso2Code(countryName, iso2Code);
 			logger.info("New country created.");
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<>(newCountry, HttpStatus.OK);
+			return new ResponseEntity<>(country, HttpStatus.OK);
 		} catch (NumberFormatException e) {
 			logger.error("++++++++++++++++ Number format exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(2, "Number format exception occurred: "+ e.getLocalizedMessage()), HttpStatus.NOT_ACCEPTABLE);
@@ -194,9 +204,9 @@ public class CountryController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/modify/{id}")
-	public ResponseEntity<?> modifyCountry(@PathVariable Integer id, @Valid @RequestBody CountryEntity updateCountry, /*Principal principal, */BindingResult result) {
+	public ResponseEntity<?> modifyCountry(@PathVariable Integer id, @Valid @RequestBody POSTCountryDTO updateCountry, /*Principal principal, */BindingResult result) {
 		logger.info("################ /jobster/countries/modify/{id} started.");
 		try {
 			CountryEntity country=countryRepository.getById(id);
@@ -221,7 +231,7 @@ public class CountryController {
 		countryRepository.save(country);
 		logger.info("Country updated.");
 		logger.info("---------------- Finished OK.");
-		return new ResponseEntity<>(updateCountry, HttpStatus.OK);
+		return new ResponseEntity<>(country, HttpStatus.OK);
 		}
 		catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
@@ -231,11 +241,11 @@ public class CountryController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 	public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/countries/archive/{id}/archive started.");
-		logger.info("Logged user: " + principal.getName());
+		//logger.info("Logged user: " + principal.getName());
 		CountryEntity country = new CountryEntity();
 		try {
 			country = countryRepository.getById(id);
@@ -244,9 +254,9 @@ public class CountryController {
 		        return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("Country for archiving identified.");
-			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			logger.info("Logged user identified.");
-			countryDao.archiveCountry(loggedUser, country);
+			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+			//logger.info("Logged user identified.");
+			countryDao.archiveCountry(country);
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<CountryEntity>(country, HttpStatus.OK);
 		} catch (NumberFormatException e) {
@@ -259,11 +269,11 @@ public class CountryController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/unarchive/{id}")
 	public ResponseEntity<?> unArchive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/countries/unarchive/{id} Unarchive started.");
-		logger.info("Logged user: " + principal.getName());
+		//logger.info("Logged user: " + principal.getName());
 		CountryEntity country = new CountryEntity();
 		try {
 			country = countryRepository.findByIdAndStatusLike(id, -1);
@@ -272,9 +282,9 @@ public class CountryController {
 		        return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("Country for unarchiving identified.");
-			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			logger.info("Logged user identified.");
-			countryDao.unarchiveCountry(loggedUser, country);
+			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+			//logger.info("Logged user identified.");
+			countryDao.unarchiveCountry(country);
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<CountryEntity>(country, HttpStatus.OK);
 		} catch (NumberFormatException e) {
@@ -287,11 +297,11 @@ public class CountryController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 	public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/countries/undelete/{id} unDelete started.");
-		logger.info("Logged user: " + principal.getName());
+		//logger.info("Logged user: " + principal.getName());
 		CountryEntity country = new CountryEntity();
 		try {
 			country = countryRepository.findByIdAndStatusLike(id, 0);
@@ -300,9 +310,9 @@ public class CountryController {
 		        return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("Country for undeleting identified.");
-			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			logger.info("Logged user identified.");
-			countryDao.undeleteCountry(loggedUser, country);
+			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+			//logger.info("Logged user identified.");
+			countryDao.undeleteCountry(country);
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<CountryEntity>(country, HttpStatus.OK);
 		} catch (NumberFormatException e) {
@@ -315,11 +325,11 @@ public class CountryController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.PUT, value = "/delete/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/countries/{id} Delete started.");
-		logger.info("Logged user: " + principal.getName());
+		//logger.info("Logged user: " + principal.getName());
 		CountryEntity country = new CountryEntity();
 		try {
 			country = countryRepository.findByIdAndStatusLike(id, 1);
@@ -328,9 +338,9 @@ public class CountryController {
 		        return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("Country for deleting identified.");
-			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
-			logger.info("Logged user identified.");
-			countryDao.deleteCountry(loggedUser, country);
+			//UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
+			//logger.info("Logged user identified.");
+			countryDao.deleteCountry(country);
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<CountryEntity>(country, HttpStatus.OK);
 		} catch (NumberFormatException e) {

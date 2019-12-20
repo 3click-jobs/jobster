@@ -158,11 +158,11 @@ public class CountryRegionController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST, value = "/addNewRegion")
 	public ResponseEntity<?> addNewRegion(@Valid @RequestBody CountryRegionEntity newRegion, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/regions/addNewRegion started.");
-		logger.info("Logged user: " + principal.getName());
+		//logger.info("Logged user: " + principal.getName());
 		if (result.hasErrors()) { 
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 

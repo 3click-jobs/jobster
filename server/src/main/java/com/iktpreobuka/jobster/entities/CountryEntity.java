@@ -38,34 +38,33 @@ public class CountryEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	//@JsonView(Views.Parent.class)
-	@Column(name="coutry_id")
+	//@Column(name="coutry_id")
 	protected Integer id;
 	
 	//@JsonView(Views.Student.class)
-	@Column(name="coutry_name", unique=true)
+	//@Column(name="coutry_name", unique=true)
 	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
 	@NotNull (message = "Country name must be provided.")
 	protected String countryName;
 	
 	//@JsonView(Views.Student.class)
-	@Column(name="iso2", unique=true)
-	@Pattern(regexp = "^[A-Za-z]{2,3}$", message="ISO2 code is not valid.")
+	//@Column(name="iso2", unique=true)
+	@Pattern(regexp = "^[A-Za-z]{2,2}$", message="ISO2 code is not valid.")
 	@NotNull (message = "ISO2 code must be provided.")
 	protected String iso2Code;
 	
 	//@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(-1)
-    @Column(name = "status", nullable = false)
+    //@Column(name = "status", nullable = false)
 	private Integer status;
 	
 	//@JsonView(Views.Admin.class)
-
-    @Column(name = "created_by"/*, updatable = false*/)
+    //@Column(name = "created_by", updatable = false)
 	private Integer createdById;
     
     //@JsonView(Views.Admin.class)
-    @Column(name = "updated_by")
+    //@Column(name = "updated_by")
     private Integer updatedById;
     
 	@JsonIgnore
