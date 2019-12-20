@@ -47,7 +47,7 @@ public class CityEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "region")
-	@NotNull (message = "Country region must be provided.")
+	//@NotNull (message = "Country region must be provided.")
 	private CountryRegionEntity region;
 	
 	@JsonIgnore

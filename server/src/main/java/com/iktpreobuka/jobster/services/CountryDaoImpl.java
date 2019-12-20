@@ -39,7 +39,7 @@ public class CountryDaoImpl implements CountryDao {
 				countryRepository.save(country);
 			}
 		} catch (Exception e) {
-			throw new Exception("addNewCountry(countryName, loggedUser) save failed.");
+			throw new Exception("addNewCountry( countryName )save failed.");
 		}
 		return country;
 	}
@@ -106,7 +106,7 @@ public class CountryDaoImpl implements CountryDao {
 	}
 	
 	@Override
-	public void archiveCountry(UserEntity loggedUser, CountryEntity country) throws Exception {
+	public void archiveCountryWithLoggedUser(UserEntity loggedUser, CountryEntity country) throws Exception {
 		try {
 			country.setStatusArchived();
 			country.setUpdatedById(loggedUser.getId());
@@ -118,34 +118,78 @@ public class CountryDaoImpl implements CountryDao {
 	}
 	
 	@Override
-	public void unarchiveCountry(UserEntity loggedUser, CountryEntity country) throws Exception {
+	public void archiveCountry(CountryEntity country) throws Exception {
 		try {
 			country.setStatusArchived();
-			country.setUpdatedById(loggedUser.getId());
 			countryRepository.save(country);
-			logger.info("archiveCity finished.");
+			logger.info("archiveCountry finished.");
 		} catch (Exception e) {
-			throw new Exception("ArchiveCity failed on saving.");
+			throw new Exception("ArchiveCountry failed on saving.");
 		}				
 	}
 	
 	@Override
-	public void undeleteCountry(UserEntity loggedUser, CountryEntity country) throws Exception {
+	public void unarchiveCountryWithLoggedUser(UserEntity loggedUser, CountryEntity country) throws Exception {
 		try {
 			country.setStatusActive();
 			country.setUpdatedById(loggedUser.getId());
 			countryRepository.save(country);
-			logger.info("undeleteCountry finished.");
+			logger.info("unArchiveCountry finished.");
 		} catch (Exception e) {
-			throw new Exception("UndeleteCountry failed on saving.");
+			throw new Exception("unArchiveCountry failed on saving.");
+		}				
+	}
+	
+	@Override
+	public void unarchiveCountry(CountryEntity country) throws Exception {
+		try {
+			country.setStatusActive();
+			countryRepository.save(country);
+			logger.info("unArchiveCountry finished.");
+		} catch (Exception e) {
+			throw new Exception("unArchiveCountry failed on saving.");
+		}				
+	}
+	
+	@Override
+	public void undeleteCountryWithLoggedUser(UserEntity loggedUser, CountryEntity country) throws Exception {
+		try {
+			country.setStatusActive();
+			country.setUpdatedById(loggedUser.getId());
+			countryRepository.save(country);
+			logger.info("unDeleteCountry finished.");
+		} catch (Exception e) {
+			throw new Exception("unDeleteCountry failed on saving.");
 		}		
 	}
 	
 	@Override
-	public void deleteCountry(UserEntity loggedUser, CountryEntity country) throws Exception {
+	public void undeleteCountry(CountryEntity country) throws Exception {
+		try {
+			country.setStatusActive();
+			countryRepository.save(country);
+			logger.info("unDeleteCountry finished.");
+		} catch (Exception e) {
+			throw new Exception("unDeleteCountry failed on saving.");
+		}		
+	}
+	
+	@Override
+	public void deleteCountryWIthLoggedUser(UserEntity loggedUser, CountryEntity country) throws Exception {
 		try {
 			country.setStatusInactive();
 			country.setUpdatedById(loggedUser.getId());
+			countryRepository.save(country);
+			logger.info("deleteCountry finished.");
+		} catch (Exception e) {
+			throw new Exception("DeleteCountry failed on saving.");
+		}
+	}
+	
+	@Override
+	public void deleteCountry(CountryEntity country) throws Exception {
+		try {
+			country.setStatusInactive();
 			countryRepository.save(country);
 			logger.info("deleteCountry finished.");
 		} catch (Exception e) {

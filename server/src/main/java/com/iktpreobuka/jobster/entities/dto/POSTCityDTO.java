@@ -30,8 +30,15 @@ public class POSTCityDTO {
 		@Max(value=90, message = "Latitude must be {value} or lower!")
 		private Double latitude;
 		
-		@NotNull (message = "Country region must be provided.")
-		private Integer region;
+		private String region;
+		
+		@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
+		@NotNull (message = "Country must be provided.")
+		private String country;
+		
+		@Pattern(regexp = "^[A-Za-z]{2,2}$", message="ISO2 code is not valid.")
+		@NotNull (message = "ISO2 code must be provided.")
+		protected String iso2Code;
 
 		
 	public POSTCityDTO() {
@@ -62,12 +69,28 @@ public class POSTCityDTO {
 		this.latitude = latitude;
 	}
 
-	public Integer getRegion() {
+	public String getRegion() {
 		return region;
 	}
 
-	public void setRegion(Integer region) {
+	public void setRegion(String region) {
 		this.region = region;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getIso2Code() {
+		return iso2Code;
+	}
+
+	public void setIso2Code(String iso2Code) {
+		this.iso2Code = iso2Code;
 	}
    
 }

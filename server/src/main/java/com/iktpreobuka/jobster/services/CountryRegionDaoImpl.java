@@ -26,8 +26,8 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 
 
 	public CountryRegionEntity addNewCountryRegion(String countryRegionName, CountryEntity country) throws Exception {
-		if ( countryRegionName == null || country == null ) {
-			throw new Exception("Country region name and/or country name is null.");
+		if (country == null ) {
+			throw new Exception("Country is null.");
 		}
 		CountryRegionEntity countryRegion = new CountryRegionEntity();
 		try {

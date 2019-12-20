@@ -24,14 +24,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.CityEntity;
+import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.POSTCityDTO;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
+import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.services.CityDao;
 import com.iktpreobuka.jobster.services.CityDistanceDao;
+import com.iktpreobuka.jobster.services.CountryDao;
+import com.iktpreobuka.jobster.services.CountryRegionDao;
 		
 
 		
@@ -63,7 +67,16 @@ public class CityController {
 	private CountryRegionRepository countryRegionRepository;
 	
 	@Autowired 
+	private CountryRepository countryRepository;
+	
+	@Autowired 
 	private CityDistanceDao cityDistanceDao;
+	
+	@Autowired 
+	private CountryDao countryDao;
+	
+	@Autowired 
+	private CountryRegionDao countryRegionDao;
 		
 
 		
@@ -287,7 +300,7 @@ public class CityController {
 					logger.info("---------------- New city is null.");
 					return new ResponseEntity<>("New city is null.", HttpStatus.BAD_REQUEST);
 				}
-				if (newCity.getCityName() == null || newCity.getLongitude() == null || newCity.getLatitude() == null || newCity.getRegion() == null) {
+				if (newCity.getCityName() == null || newCity.getLongitude() == null || newCity.getLatitude() == null || newCity.getCountry() == null) {
 					logger.info("---------------- Some atributes are null.");
 					return new ResponseEntity<>("Some atributes are null", HttpStatus.BAD_REQUEST);
 				}
@@ -298,13 +311,27 @@ public class CityController {
 					   logger.info("---------------- City already exists.");
 					   return new ResponseEntity<>("City already exists.", HttpStatus.NOT_ACCEPTABLE);
 				}
+					if(!(countryRepository.existsByCountryNameIgnoreCase(newCity.getCountry()))) {
+						String countryName=newCity.getCountry();
+						String iso2Code=newCity.getIso2Code();
+						CountryEntity country=countryDao.addNewCountryWithIso2Code(countryName, iso2Code);
+					if(!(countryRegionRepository.existsByCountryRegionNameIgnoreCase(newCity.getCountry()))) {
+						String countryRegionName=newCity.getRegion();
+						countryRegionDao.addNewCountryRegion(countryRegionName, country);
+						}
+					}
+					
+					
 				
 						CityEntity city=new CityEntity();
 						city.setCityName(newCity.getCityName());
 						city.setLatitude(newCity.getLatitude());
 						city.setLongitude(newCity.getLongitude());
 						city.setStatusActive();
-						CountryRegionEntity region=countryRegionRepository.getById(newCity.getRegion());
+						CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameIgnoreCase(newCity.getRegion());
+						if(region==null) {
+							city.setRegion(null);
+						}
 						city.setRegion(region);
 
 						cityRepository.save(city);
@@ -341,7 +368,7 @@ public class CityController {
 					city.setCityName(updateCity.getCityName());
 					city.setLongitude(updateCity.getLongitude());
 					city.setLatitude(updateCity.getLatitude());
-					CountryRegionEntity region=countryRegionRepository.getById(updateCity.getRegion());
+					CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameIgnoreCase(updateCity.getRegion());
 					city.setRegion(region);
 	
 					if (result.hasErrors()) { 
