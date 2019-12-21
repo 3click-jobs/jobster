@@ -1,7 +1,5 @@
 package com.iktpreobuka.jobster.repositories;
 
-import java.util.List;
-
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -36,7 +34,7 @@ public interface CountryRegionRepository extends CrudRepository<CountryRegionEnt
 	CountryRegionEntity findByIdAndStatusLike(Integer id, int i);
 
 
-	boolean existsByCountryRegionNameIgnoreCase(String country)
+	boolean existsByCountryRegionNameIgnoreCase(String country);
 	CountryRegionEntity findByCountryRegionNameAndCountry(String countryRegion, CountryEntity country);
 
 
