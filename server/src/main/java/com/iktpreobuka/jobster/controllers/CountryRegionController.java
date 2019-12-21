@@ -148,9 +148,9 @@ public class CountryRegionController {
 		logger.info("################ /jobster/regions/getByName started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
-			List<CountryRegionEntity> region= countryRegionRepository.getByCountryRegionNameIgnoreCase(name);
+			CountryRegionEntity region= countryRegionRepository.getByCountryRegionNameIgnoreCase(name);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<List<CountryRegionEntity>>(region, HttpStatus.OK);
+			return new ResponseEntity<CountryRegionEntity>(region, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
