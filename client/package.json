@@ -8,6 +8,7 @@
     "@material-ui/lab": "^4.0.0-alpha.34",
     "bootstrap": "^4.3.1",
     "formik": "^2.0.6",
+    "geonames.js": "^2.3.0",
     "lodash.isequal": "^4.5.0",
     "material-ui-next-responsive-table": "^0.5.1",
     "normalizr": "^3.4.1",
