@@ -1,7 +1,6 @@
 package com.iktpreobuka.jobster.controllers;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
