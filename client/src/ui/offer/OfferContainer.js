@@ -11,6 +11,7 @@ import Icon from '@material-ui/core/Icon';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from "@material-ui/core";
 import Geonames from 'geonames.js';
+import CityAPIContainer from '../cities/CityAPIContainer';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -54,7 +55,7 @@ export const OfferContainer = () => {
   const [city, setCity] = React.useState(null)
   const [jobType, setJobType] = React.useState(null)
   const [activeTab, setActiveTab] = React.useState(0)
-  const [queryAPI, setQueryAPI] = React.useState([])
+  // const [queryAPI, setQueryAPI] = React.useState([])
   const classes = useStyles();
   let loading = false
 
@@ -62,40 +63,40 @@ export const OfferContainer = () => {
     setActiveTab(newActiveTab)
   }
 
-  const geonames = new Geonames({
-    username: 'drax82',
-    lan: 'en',
-    encoding: 'JSON'
-  });
+  // const geonames = new Geonames({
+  //   username: 'drax82',
+  //   lan: 'en',
+  //   encoding: 'JSON'
+  // });
 
-  const handleCitiesLoad = (event) => {
-    if (!event.target.value || event.target.value === "" || event.target.value === " " ) {
-      setJobType(null) 
-      setCity(null);
-    } else {
-      loading = true;
-      if (!loading) {
-        return undefined;
-      }
-      let utf8Name = encodeURIComponent(event.target.value).replace('%20',' ');
-      geonames.search({q: utf8Name, maxRows: '10', style: 'FULL', featureClass: 'P', lang: 'en' }) //get cities
-        .then(resp => {
-          setQueryAPI(resp.geonames);
-          loading = false;
-        })
-        .catch(err => console.error(err));
-    }
-  }
+  // const handleCitiesLoad = (event) => {
+  //   if (!event.target.value || event.target.value === "" || event.target.value === " " ) {
+  //     setJobType(null) 
+  //     setCity(null);
+  //   } else {
+  //     loading = true;
+  //     if (!loading) {
+  //       return undefined;
+  //     }
+  //     let utf8Name = encodeURIComponent(event.target.value).replace('%20',' ');
+  //     geonames.search({q: utf8Name, maxRows: '10', style: 'FULL', featureClass: 'P', lang: 'en' }) //get cities
+  //       .then(resp => {
+  //         setQueryAPI(resp.geonames);
+  //         loading = false;
+  //       })
+  //       .catch(err => console.error(err));
+  //   }
+  // }
   
-  const handleCItySelect = (newValue) => {
-      if (newValue && newValue !== "" && newValue !== " ") {
-        setCity({name: newValue.name, latitude: newValue.lat, longitude: newValue.lng, countryRegion: newValue.adminName1, countryName: newValue.countryName, countryCode: newValue.countryCode}) 
-      } else {
-        setJobType(null) 
-        setCity(null);
-      }
-      setQueryAPI([]);
-  }
+  // const handleCItySelect = (newValue) => {
+  //     if (newValue && newValue !== "" && newValue !== " ") {
+  //       setCity({name: newValue.name, latitude: newValue.lat, longitude: newValue.lng, countryRegion: newValue.adminName1, countryName: newValue.countryName, countryCode: newValue.countryCode}) 
+  //     } else {
+  //       setJobType(null) 
+  //       setCity(null);
+  //     }
+  //     setQueryAPI([]);
+  // }
 
 
   return (
@@ -111,13 +112,13 @@ export const OfferContainer = () => {
         style={{ margin: '10px auto', minHeight: '15vh', maxWidth: '100%' }}
         >
         <Grid item xs={4} align="center">
-          <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===0) ? '/img/animated-where.gif' : '/img/where.gif'} />
+          <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===0) ? null : '/img/where.gif'} />
         </Grid>
         <Grid item xs={4} align="center">
-          <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===1) ? '/img/animated-what.gif' : '/img/what.gif'} />
+          <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===1) ? null : '/img/what.gif'} />
         </Grid>
         <Grid item xs={4} align="center">
-          <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===2) ? '/img/animated-offer.gif' : '/img/offer.gif'} />
+          <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===2) ? null : '/img/offer.gif'} />
         </Grid>
       </Grid>
       <div>
@@ -133,7 +134,7 @@ export const OfferContainer = () => {
         {city && jobType ? <Tab label='Offer'/> : <Tab label='Offer' disabled/>}
       </Tabs>
       <TabPanel value={activeTab} index={0}>
-      <Autocomplete
+      {/* <Autocomplete
           id="autocomplete"
           options={queryAPI}
           getOptionLabel={option => option.name + ", " + option.countryName}
@@ -170,7 +171,8 @@ export const OfferContainer = () => {
               />
             )
           }}
-        />
+        /> */}
+        <CityAPIContainer city={city} setCity = {setCity} />
         <div>
           <Button
             disabled={ !city }

@@ -194,6 +194,150 @@ const rest = {
         method: 'DELETE'
       }      
     }
+  },
+  seeks: {
+    actions: {
+      get: {
+        url: env.baseUrl + '/jobster/seeks',
+        method: 'GET'
+      },
+      getById: {
+        url: env.baseUrl + '/jobster/seeks/{id}',
+        method: 'GET'
+      },
+      getAllDeleted: {
+        url: env.baseUrl + '/jobster/seeks/deleted',
+        method: 'GET'
+      },
+      getDeletedById: {
+        url: env.baseUrl + '/jobster/seeks/deleted/{id}',
+        method: 'GET'
+      },
+      getAllArchived: {
+        url: env.baseUrl + '/jobster/seeks/archived',
+        method: 'GET'
+      },
+      getArchivedById: {
+        url: env.baseUrl + '/jobster/seeks/archived/{id}',
+        method: 'GET'
+      },
+      create: {
+        url: env.baseUrl + '/jobster/seeks',
+        method: 'POST'
+      },
+      update: {
+        url: env.baseUrl + '/jobster/seeks/{id}',
+        method: 'PUT'
+      },
+      archive: {
+        url: env.baseUrl + '/jobster/seeks/archive/{id}',
+        method: 'PUT'
+      },
+      unDelete: {
+        url: env.baseUrl + '/jobster/seeks/undelete/{id}',
+        method: 'PUT'
+      },
+      delete: {
+        url: env.baseUrl + '/jobster/seeks/{id}',
+        method: 'DELETE'
+      }
+    }
+  },
+  jobTypes: {
+    actions: {
+      get: {
+        url: env.baseUrl + '/jobster/jobTypes',
+        method: 'GET'
+      },
+      getById: {
+        url: env.baseUrl + '/jobster/jobTypes/{id}',
+        method: 'GET'
+      },
+      getAllDeleted: {
+        url: env.baseUrl + '/jobster/jobTypes/deleted',
+        method: 'GET'
+      },
+      getDeletedById: {
+        url: env.baseUrl + '/jobster/jobTypes/deleted/{id}',
+        method: 'GET'
+      },
+      getAllArchived: {
+        url: env.baseUrl + '/jobster/jobTypes/archived',
+        method: 'GET'
+      },
+      getArchivedById: {
+        url: env.baseUrl + '/jobster/jobTypes/archived/{id}',
+        method: 'GET'
+      },
+      create: {
+        url: env.baseUrl + '/jobster/jobTypes',
+        method: 'POST'
+      },
+      update: {
+        url: env.baseUrl + '/jobster/jobTypes/{id}',
+        method: 'PUT'
+      },
+      archive: {
+        url: env.baseUrl + '/jobster/jobTypes/archive/{id}',
+        method: 'PUT'
+      },
+      unDelete: {
+        url: env.baseUrl + '/jobster/jobTypes/undelete/{id}',
+        method: 'PUT'
+      },
+      delete: {
+        url: env.baseUrl + '/jobster/jobTypes/{id}',
+        method: 'DELETE'
+      }
+    }
+  },
+  offers: {
+    actions: {
+      get: {
+        url: env.baseUrl + '/jobster/offers',
+        method: 'GET'
+      },
+      getById: {
+        url: env.baseUrl + '/jobster/offers/{id}',
+        method: 'GET'
+      },
+      getAllDeleted: {
+        url: env.baseUrl + '/jobster/offers/deleted',
+        method: 'GET'
+      },
+      getDeletedById: {
+        url: env.baseUrl + '/jobster/offers/deleted/{id}',
+        method: 'GET'
+      },
+      getAllArchived: {
+        url: env.baseUrl + '/jobster/offers/archived',
+        method: 'GET'
+      },
+      getArchivedById: {
+        url: env.baseUrl + '/jobster/offers/archived/{id}',
+        method: 'GET'
+      },
+      create: {
+        url: env.baseUrl + '/jobster/offers',
+        method: 'POST'
+      },
+      update: {
+        url: env.baseUrl + '/jobster/offers/{id}',
+        method: 'PUT'
+      },
+      archive: {
+        url: env.baseUrl + '/jobster/offers/archive/{id}',
+        method: 'PUT'
+      },
+      unDelete: {
+        url: env.baseUrl + '/jobster/offers/undelete/{id}',
+        method: 'PUT'
+      },
+      delete: {
+        url: env.baseUrl + '/jobster/offers/{id}',
+        method: 'DELETE'
+      }
+    }
   }
 }
 

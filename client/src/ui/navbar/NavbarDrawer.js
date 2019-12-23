@@ -12,6 +12,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import FaceIcon from '@material-ui/icons/Face';
 import BusinessIcon from '@material-ui/icons/Business';
+import RecentActors from '@material-ui/icons/RecentActors';
+import Build from '@material-ui/icons/Build';
 
 const ConnectedLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} {...props} />);
 
@@ -78,6 +80,18 @@ export const NavbarDrawer = () => {
                 <BusinessIcon />
               </ListItemIcon>
               <ListItemText primary="Browse companies" />
+            </ListItemLink>
+            <ListItemLink to='/seeks'>
+              <ListItemIcon>
+                <RecentActors />
+              </ListItemIcon>
+              <ListItemText primary="Browse job seeks" />
+            </ListItemLink>
+            <ListItemLink to='/offers'>
+              <ListItemIcon>
+                <Build />
+              </ListItemIcon>
+              <ListItemText primary="Browse job offers" />
             </ListItemLink>
           </List>
         </div>

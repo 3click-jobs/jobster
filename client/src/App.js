@@ -15,6 +15,8 @@ import ApplyContainer from './ui/apply/ApplyContainer';
 import OfferContainer from './ui/offer/OfferContainer';
 import PersonsContainer from './ui/persons/browse/PersonsContainer';
 import CompaniesContainer from './ui/companies/browse/CompaniesContainer';
+import SeeksContainer from './ui/seeks/browse/SeeksContainer';
+import OffersContainer from './ui/offers/browse/OffersContainer';
 
 
 const defaultTheme = createMuiTheme({
@@ -74,6 +76,12 @@ export const App = ({
             </Route>
             <Route exact path='/companies'>
               <CompaniesContainer />
+            </Route>
+            <Route exact path='/seeks'>
+              <SeeksContainer />
+            </Route>
+            <Route exact path='/offers'>
+              <OffersContainer />
             </Route>
             <Route exact path='/login'>
               <Login />
