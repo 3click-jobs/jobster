@@ -19,7 +19,10 @@ public class JobsterApplication {
 		ApplicationContext ctx = SpringApplication.run(JobsterApplication.class, args);
 		DispatcherServlet dispatcherServlet = (DispatcherServlet)ctx.getBean("dispatcherServlet");
         dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
+	
+    	
 	}
+	
 
 	@Bean
     public TomcatServletWebServerFactory tomcatEmbedded() {

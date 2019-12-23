@@ -33,8 +33,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 		try {
 			account.setAccessRole(role);
 			account.setUsername(username);
-			//account.setPassword(Encryption.getPassEncoded(password));
-			account.setPassword(password);
+			account.setPassword(Encryption.getPassEncoded(password));
 			account.setCreatedById(loggedUser.getId());
 			account.setStatusActive();
 			account.setUser(user);
