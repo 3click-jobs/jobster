@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
-import com.iktpreobuka.jobster.ApplyCommentControllerTest;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CommentEntity;
@@ -34,7 +32,6 @@ import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
 import com.iktpreobuka.jobster.repositories.CommentRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
-import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.ApplyContactDao;
 import com.iktpreobuka.jobster.services.CommentDao;
 import com.iktpreobuka.jobster.services.EmailDao;
@@ -90,7 +87,7 @@ public class CommentController {
 		}
 	}
 
-	// @Secured("ROLE_ADMIN")
+	//@Secured("ROLE_ADMIN")
 	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET) // get all active comments
 	public ResponseEntity<?> getAllActive(Principal principal) {

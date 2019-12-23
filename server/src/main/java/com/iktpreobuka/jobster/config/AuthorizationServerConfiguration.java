@@ -1,10 +1,7 @@
 package com.iktpreobuka.jobster.config;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -18,7 +15,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter{
-
+	
 	private static String REALM="MY_OAUTH_REALM";
 	
 	@Autowired
@@ -31,34 +28,20 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	@Qualifier("authenticationManagerBean")
 	private AuthenticationManager authenticationManager;
 	
-	/*dodao za autentifikaciju iz baze*/
-	@Autowired
-	private DataSource dataSource;
-	@Value("${spring.queries.users-query}")
-	private String usersQuery;
-	
-	@Value("${spring.queries.roles-query}")
-	private String rolesQuery;
+
 	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		
 	clients.inMemory()
 		.withClient("my-trusted-client")
 		.authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
 		.authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
 		.scopes("read", "write", "trust")
 		.secret("{noop}secret")
-		.accessTokenValiditySeconds(1200).//Access token is only valid for 2 minutes.
-		refreshTokenValiditySeconds(6000);//Refresh token is only valid for 10 minutes.
-//	clients.jdbcAuthentication()
-//	.usersByUsernameQuery(usersQuery) 
-//	.authoritiesByUsernameQuery(rolesQuery)
-//	.passwordEncoder(passwordEncoder())
-//	.dataSource(dataSource);
-	
+		.accessTokenValiditySeconds(1200).//Access token is only valid for 20 minutes.
+		refreshTokenValiditySeconds(6000);//Refresh token is only valid for 100 minutes.
+
 	}
-	
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints.tokenStore(tokenStore).userApprovalHandler(userApprovalHandler).authenticationManager(authenticationManager);
