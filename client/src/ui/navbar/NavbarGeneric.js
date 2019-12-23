@@ -28,7 +28,8 @@ const useStyles = makeStyles(theme => ({
     },
     '& img': {
       position: 'relative',
-      top: '5px'
+      top: '1px',
+      height: '40px'
     }
   }
 }))
@@ -68,7 +69,7 @@ export const NavbarGeneric = ({
             <Typography variant="h6">
               Jobs
           </Typography> */}
-          <Link to='/'><img src='/img/triklikjobslogo.png' /></Link>
+            <Link to='/'><img src='/img/triklikjobslogo.png' /></Link>
           </div>
 
           {
