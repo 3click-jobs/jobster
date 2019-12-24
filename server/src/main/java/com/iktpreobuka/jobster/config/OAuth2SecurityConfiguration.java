@@ -1,6 +1,9 @@
 package com.iktpreobuka.jobster.config;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +11,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
@@ -19,15 +24,29 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 @Configuration
 @EnableWebSecurity
 public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
+	
+	@Autowired
+	private DataSource dataSource;
+	
+	@Value("${spring.queries.users-query}")
+	private String usersQuery;
+	
+	@Value("${spring.queries.roles-query}")
+	private String rolesQuery;
+	
 	@Autowired
 	private ClientDetailsService clientDetailsService;
+	
+	
+	
 	@Autowired
-	//kredencijali za pristup aplikaciji user : testpass
 	public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-	auth.inMemoryAuthentication()
-	.withUser("user").password("{noop}testpass").roles("ADMIN").and()
-	.withUser("user2").password("{noop}testpass").roles("USER");
+	auth
+	.jdbcAuthentication()
+	.usersByUsernameQuery(usersQuery) 
+	.authoritiesByUsernameQuery(rolesQuery)
+	.passwordEncoder(passwordEncoder())
+	.dataSource(dataSource);
 	}
 	
 	@Override
@@ -49,7 +68,6 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	handler.setClientDetailsService(clientDetailsService);
 	return handler;
 	}
-	
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -66,4 +84,11 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	store.setTokenStore(tokenStore);
 	return store;
 	}
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+	    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+	
+
 }

@@ -47,7 +47,7 @@ export const RegisterPerson = ({
         console.log(values)
         const payload = {...values}
 
-        createPerson(payload).then(() => formikBag.setSubmitting(false))
+        createPerson(payload).then(() => {formikBag.setSubmitting(false)})
       }}
 
       validationSchema={personsSchema.create}
