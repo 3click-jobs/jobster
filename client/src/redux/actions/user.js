@@ -1,4 +1,4 @@
-import rest from '../../common/api/rest'
+// import rest from '../../common/api/rest'
 import { hasCredentials, setCredentials, removeCredentials, getAuthHeader } from '../../common/auth'
 
 const verifyUrl = 'http://localhost:3001/verify'

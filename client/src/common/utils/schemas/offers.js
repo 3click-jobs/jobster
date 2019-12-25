@@ -16,11 +16,11 @@ const offers = {
       countryRegion: Yup.string()
         .matches(/^[A-Za-z\s]{0,}$/, 'Country region name is not valid.'),
       longitude: Yup.number()
-        .min(-180, 'Longitude  must be ${min} or higher!')
-        .max(180, 'Longitude must be ${max} or lower!'),
+        .min(-180, 'Longitude  must be -180 or higher!')
+        .max(180, 'Longitude must be 180 or lower!'),
       latitude: Yup.number()
-        .min(-90, 'Latitude  must be ${min} or higher!')
-        .max(90, 'Latitude must be ${max} or lower!'),
+        .min(-90, 'Latitude  must be -90 or higher!')
+        .max(90, 'Latitude must be 90 or lower!'),
       beginningDate: Yup.date()
         .nullable()
         .required('Beginning date must be provided.'),
@@ -31,7 +31,7 @@ const offers = {
       numberOfEmployees: Yup.number()
         .nullable()
         .required('Number of employees must be provided.')
-        .min(1, 'Number of employees must be ${min} or higher!'),
+        .min(1, 'Number of employees must be 1 or higher!'),
       endDate: Yup.date()
         .nullable() 
         .required('End date must be provided.'),
@@ -43,7 +43,7 @@ const offers = {
       price: Yup.number()
         .nullable()
         .required('Price must be provided.')
-        .min(0, 'Price must be ${min} or higher!'),
+        .min(0, 'Price must be 0 or higher!'),
     })
 }
 

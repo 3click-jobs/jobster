@@ -45,20 +45,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const OfferingAJobCard = () => {
+export const LookingForAEmployeeCard = () => {
   const classes = useStyles();
-  // const [expanded, setExpanded] = React.useState(false);
+//   const [expanded, setExpanded] = React.useState(false);
 
-  // const handleExpandClick = () => {
-  //   setExpanded(!expanded);
-  // };
+//   const handleExpandClick = () => {
+//     setExpanded(!expanded);
+//   };
 
   return (
     <Card className={classes.card}>
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            <Link to='/offer'>GO</Link>
+            <Link to='/employ'>GO</Link>
           </Avatar>
         }
         // action={
@@ -66,17 +66,17 @@ export const OfferingAJobCard = () => {
         //     <MoreVertIcon />
         //   </IconButton>
         // }
-        title="Post a job in three clicks"
-        subheader="Lead the way"
+        title="Find a employee in three clicks"
+        subheader="Test The Waters"
       />
       <CardMedia
         className={classes.media}
-        image="/img/carousel-2.jpg"
-        title="Offer job"
+        image="/img/carousel-4.png"
+        title="Find employee"
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          Set the location. Set the job type and the job description. Check if everything is all right and post the job. As easy as that.
+          Select a location close to you. Browse the available job types. Choose the employees you like and contact them. As easy as that.
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -128,4 +128,4 @@ export const OfferingAJobCard = () => {
   )
 }
 
-export default OfferingAJobCard
+export default LookingForAEmployeeCard
