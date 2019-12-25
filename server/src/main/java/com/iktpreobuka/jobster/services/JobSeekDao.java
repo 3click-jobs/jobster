@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 
 public interface JobSeekDao {
+	
+	public JobSeekEntity emptyJobSeekEntity();
 	
 	public JobSeekPostDto empty();
 	
@@ -64,6 +67,8 @@ public interface JobSeekDao {
 	public ResponseEntity<?> getAllByUpdatedBy(@RequestParam Integer updatedBy);
 
 	public ResponseEntity<?> getAllByVersion(@RequestParam Integer version);
+
+	
 
 	
 

@@ -23,16 +23,16 @@ public class JobSeekPostDto {
 		protected String jobTypeName;
 	
 		@NotNull (message = "Distance to job must be provided.")
-		@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")
+		//@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")
 		@Min(value=0, message = "Distance to job must be {value} or higher!")
 		private Integer distanceToJob;
 	
 		@NotNull (message = "Beginning date must be provided.")
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+		//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 		private Date beginningDate;
 		
 		@NotNull (message = "End date must be provided.")
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+		//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 		private Date endDate;
 				
 		private Boolean flexibileDates;
@@ -76,7 +76,7 @@ public class JobSeekPostDto {
 		public JobSeekPostDto(
 				@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
 				@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Job type name is not valid.") @NotNull(message = "Job type name must be provided.") String jobTypeName,
-				@NotNull(message = "Distance to job must be provided.") @Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.") @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
+				@NotNull(message = "Distance to job must be provided.") /*@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")*/ @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
 				@NotNull(message = "Beginning date must be provided.") Date beginningDate,
 				@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
 				Boolean flexibileDays,
