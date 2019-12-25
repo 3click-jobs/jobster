@@ -24,13 +24,13 @@ export const HomePage = () => {
   return (
     <div className={classes.root} >
       <Grid container justify= "center" alignItems="stretch" spacing={2}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
           <LookingForAJobCard />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
           <OfferingAJobCard />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
           <LookingForAEmployeeCard />
         </Grid>
       </Grid>

@@ -11,7 +11,7 @@ import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { red, green, blueGrey } from '@material-ui/core/colors';
+import { red, green, blueGrey,  } from '@material-ui/core/colors';
 // import FavoriteIcon from '@material-ui/icons/Favorite';
 // import ShareIcon from '@material-ui/icons/Share';
 import AddComment from '@material-ui/icons/AddComment';
@@ -19,8 +19,10 @@ import AddComment from '@material-ui/icons/AddComment';
 import StarRate from '@material-ui/icons/StarRate';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 // import MoreVertIcon from '@material-ui/icons/MoreVert';
-import RemoveCircleSharp from '@material-ui/icons/RemoveCircleSharp';
-import CheckCircleSharp from '@material-ui/icons/CheckCircleSharp';
+// import RemoveCircleSharp from '@material-ui/icons/RemoveCircleSharp';
+// import CheckCircleSharp from '@material-ui/icons/CheckCircleSharp';
+import ClearIcon from '@material-ui/icons/Clear';
+import DoneSharpIcon from '@material-ui/icons/DoneSharp';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -35,7 +37,7 @@ const theme = createMuiTheme({
         marginRight: '10px',
       },
       action: {
-        alignSelf: 'flex-end',
+        alignSelf: 'auto',
         marginTop: '0px',
         marginRight: '-12px',
       },
@@ -89,7 +91,7 @@ const useStyles = makeStyles(theme => ({
     transform: 'rotate(180deg)',
   },
   avatar: {
-    backgroundColor: blueGrey[500],
+    backgroundColor: blueGrey[700],
     '& a, & a:hover, & a:visited': {
       textDecoration: 'none',
       color: 'white'
@@ -126,14 +128,14 @@ export const SeekCard = (props) => {
                 <Tooltip title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Contact" } aria-label="contact">
                   <span>
                     <IconButton aria-label="accept" onClick={ () => props.handleAcceptSeek(props.seek) } disabled={props.role==="ROLE_GUEST" ? true : false} >
-                      <CheckCircleSharp style={{ color: green[500], fontSize: 40 }} />
+                      <DoneSharpIcon style={{ color: green[900], fontSize: 30 }} />
                     </IconButton>
                   </span>
                 </Tooltip>
                 <Tooltip title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Remove" } aria-label="remove">
                   <span>
                     <IconButton aria-label="decline" onClick={ () => props.handleDeclineSeek(props.seek) } disabled={props.role==="ROLE_GUEST" ? true : false} >
-                      <RemoveCircleSharp style={{ color: red[500], fontSize: 40 }} />
+                      <ClearIcon style={{ color: red[900], fontSize: 30 }} />
                     </IconButton>
                   </span>
                 </Tooltip>
