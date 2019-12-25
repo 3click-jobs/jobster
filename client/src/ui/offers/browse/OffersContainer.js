@@ -46,8 +46,8 @@ export const OffersContainer = ({
               <Grid container spacing={2} direction="row" justify="space-evenly" alignItems="flex-start" >
                     {acceptableOffers.map(offer => {
                         return (
-                        <Grid key={offer.id} item xs={12} sm={6}>
-                            <OfferCard offer={offer} role={role} handleDeclineOffer={(declinedOffer) => decline(declinedOffer)} handleAcceptOffer={(acceptedOffer) => accept(acceptedOffer)} />
+                        <Grid key={offer.id} item xs={12} sm={8} md={7} lg={7} xl={7} >
+                          <OfferCard offer={offer} role={role} handleDeclineOffer={(declinedOffer) => decline(declinedOffer)} handleAcceptOffer={(acceptedOffer) => accept(acceptedOffer)} />
                         </Grid> )
                     })}     
                 </Grid>

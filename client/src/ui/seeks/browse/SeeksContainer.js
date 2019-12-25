@@ -46,8 +46,8 @@ export const SeeksContainer = ({
                 <Grid container spacing={2} direction="row" justify="space-evenly" alignItems="flex-start" >
                     {acceptableSeeks.map(seek => {
                         return (
-                        <Grid key={seek.id} item xs={12} sm={6}>
-                            <SeekCard seek={seek} role={role} handleDeclineSeek={(declinedSeek) => decline(declinedSeek)} handleAcceptSeek={(acceptedSeek) => accept(acceptedSeek)} />
+                        <Grid key={seek.id} item xs={12} sm={8} md={7} lg={7} xl={7} >
+                          <SeekCard seek={seek} role={role} handleDeclineSeek={(declinedSeek) => decline(declinedSeek)} handleAcceptSeek={(acceptedSeek) => accept(acceptedSeek)} />
                         </Grid> )
                     })}     
                 </Grid>
