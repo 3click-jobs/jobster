@@ -61,22 +61,24 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Autowired
 	public TokenStoreUserApprovalHandler userApprovalHandler(TokenStore tokenStore){
-	TokenStoreUserApprovalHandler handler = new
-	TokenStoreUserApprovalHandler();
+	TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
 	handler.setTokenStore(tokenStore);
 	handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailsService));
 	handler.setClientDetailsService(clientDetailsService);
 	return handler;
 	}
+	
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 	return super.authenticationManagerBean();
 	}
+	
 	@Bean
 	public TokenStore tokenStore() {
 	return new InMemoryTokenStore();
 	}
+	
 	@Bean
 	@Autowired
 	public ApprovalStore approvalStore(TokenStore tokenStore) throws Exception {
