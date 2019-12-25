@@ -15,9 +15,9 @@ public class Encryption {
 		return bCryptPasswordEncoder.matches(normalPass, crypPass);
 	}
 
-	public static void main(String[] args) {
-		System.out.println(getPassEncoded("test"));
-	}
+//	public static void main(String[] args) {
+//		System.out.println(getPassEncoded("test"));
+//	}
 
 
 }
