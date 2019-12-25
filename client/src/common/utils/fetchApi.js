@@ -159,4 +159,53 @@ const deleteResource = async (url, id) => {
   }
 }
 
-export { getOne, getAll, getAny, createResource, updateResource, deleteResource, updatePassword }
+const decline = async (url, payload) => {
+  try {
+    const resp = await fetch(`${url}`, {
+      method: 'POST',
+      headers: {
+        ...getAuthHeader(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+
+    if (resp.ok) {
+      const json = await resp.json()
+      return json
+    }
+
+    else {
+      throw new Error('contacted api but received other than ok...')
+    }
+  } catch (err) {
+    throw err
+  }
+}
+
+const accept = async (url, payload) => {
+  try {
+    const resp = await fetch(`${url}`, {
+      method: 'POST',
+      headers: {
+        ...getAuthHeader(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+
+    if (resp.ok) {
+      const json = await resp.json()
+      return json
+    }
+
+    else {
+      throw new Error('contacted api but received other than ok...')
+    }
+  } catch (err) {
+    throw err
+  }
+}
+
+
+export { getOne, getAll, getAny, createResource, updateResource, deleteResource, updatePassword, decline, accept }

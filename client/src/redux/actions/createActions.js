@@ -118,7 +118,35 @@ const createActions = (entity, idKey = 'id') => {
     }
   }
 
-  return { fetchAll, fetchAny, fetchOne, create, update, remove }
+  const decline = (payload) => async (dispatch) => {
+    const entityUpper = entity.toUpperCase()
+    try {
+      dispatch({ type: `REQUEST_${entityUpper}_DECLINE`})
+      // const resolved = await decline(rest[entity].actions.decline.url, payload.id)
+      return dispatch({
+        type: `SUCCESS_${entityUpper}_DECLINE`,
+        payload: normalize(payload, one)
+      })
+    } catch (err) {
+      return dispatch({ type: `FAILURE_${entityUpper}_DECLINE`, payload: err })
+    }
+  }
+
+  const accept = (payload) => async (dispatch) => {
+    const entityUpper = entity.toUpperCase()
+    try {
+      dispatch({ type: `REQUEST_${entityUpper}_ACCEPT`})
+      // const resolved = await accept(rest[entity].actions.accept.url, payload.id)
+      return dispatch({
+        type: `SUCCESS_${entityUpper}_ACCEPT`,
+        payload: normalize(payload, one)
+      })
+    } catch (err) {
+      return dispatch({ type: `FAILURE_${entityUpper}_ACCEPT`, payload: err })
+    }
+  }
+
+  return { fetchAll, fetchAny, fetchOne, create, update, remove, decline, accept }
 }
 
 export default createActions

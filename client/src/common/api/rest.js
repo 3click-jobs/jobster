@@ -225,6 +225,14 @@ const rest = {
         url: env.baseUrl + '/jobster/seeks',
         method: 'POST'
       },
+      decline: {
+        url: env.baseUrl + '/jobster/applies/decline',
+        method: 'POST'
+      },
+      accept: {
+        url: env.baseUrl + '/jobster/applies/accept',
+        method: 'POST'
+      },
       update: {
         url: env.baseUrl + '/jobster/seeks/{id}',
         method: 'PUT'
@@ -319,6 +327,14 @@ const rest = {
       },
       create: {
         url: env.baseUrl + '/jobster/offers',
+        method: 'POST'
+      },
+      decline: {
+        url: env.baseUrl + '/jobster/applies/decline',
+        method: 'POST'
+      },
+      accept: {
+        url: env.baseUrl + '/jobster/applies/accept',
         method: 'POST'
       },
       update: {
