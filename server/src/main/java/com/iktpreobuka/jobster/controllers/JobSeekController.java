@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
@@ -31,7 +33,13 @@ public class JobSeekController {
 	@Autowired
 	public JobSeekDao jobService;
 	
-	@RequestMapping(method = RequestMethod.GET, value = "/empty")
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekEntity")
+	public JobSeekEntity emptyJobSeekEntity() {
+		return jobService.emptyJobSeekEntity();
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekPostDto")
 	public JobSeekPostDto empty() {
 		return jobService.empty();
 	}
@@ -132,24 +140,24 @@ public class JobSeekController {
 		return jobService. getAllByVersion(version);
 	}
 	
-	@RequestMapping(method = RequestMethod.DELETE, value = "/delete")
-	public ResponseEntity<?> deleteById(@PathVariable Integer Id){
-		return jobService.deleteById(Id);
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
+	public ResponseEntity<?> deleteById(@PathVariable Integer id){
+		return jobService.deleteById(id);
 	}
 	
-	@RequestMapping(method = RequestMethod.DELETE, value = "/unDelete")
-	public ResponseEntity<?> unDeleteById(@PathVariable Integer Id){
-		return jobService.unDeleteById(Id);
+	@RequestMapping(method = RequestMethod.DELETE, value = "/unDelete/{id}")
+	public ResponseEntity<?> unDeleteById(@PathVariable Integer id){
+		return jobService.unDeleteById(id);
 	}
 	
-	@RequestMapping(method = RequestMethod.DELETE, value = "/archive")
-	public ResponseEntity<?> archiveById(@PathVariable Integer Id){
-		return jobService.archiveById(Id);
+	@RequestMapping(method = RequestMethod.DELETE, value = "/archive/{id}")
+	public ResponseEntity<?> archiveById(@PathVariable Integer id){
+		return jobService.archiveById(id);
 	}
 	
-	@RequestMapping(method = RequestMethod.DELETE, value = "/unArchive")
-	public ResponseEntity<?> unArchiveById(@PathVariable Integer Id){
-		return jobService.unArchiveById(Id);
+	@RequestMapping(method = RequestMethod.DELETE, value = "/unArchive/{id}")
+	public ResponseEntity<?> unArchiveById(@PathVariable Integer id){
+		return jobService.unArchiveById(id);
 	}
 
 }

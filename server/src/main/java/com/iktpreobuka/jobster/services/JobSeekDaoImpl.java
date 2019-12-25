@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.JobDayHoursEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
+import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursPostDto;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursPutDto;
@@ -33,9 +34,13 @@ import com.iktpreobuka.jobster.repositories.JobDayHoursRepository;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 import com.iktpreobuka.jobster.repositories.JobTypeRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
+import com.iktpreobuka.jobster.repositories.UserRepository;
 
 @Service
 public class JobSeekDaoImpl implements JobSeekDao {
+	
+	@Autowired
+	private ApplyContactDaoImp applyContactDaoImp;
 
 	@Autowired
 	private CityRepository cityRepository;
@@ -58,6 +63,11 @@ public class JobSeekDaoImpl implements JobSeekDao {
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	/////////////////// PRAZAN SEEK BEZ DAYANDHOURS///////////////////////
+	
+	@Override
+	public JobSeekEntity emptyJobSeekEntity() {
+		return new JobSeekEntity();
+	}
 
 	@Override
 	public JobSeekPostDto empty() {
@@ -111,7 +121,11 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			logger.info("Error occured during 'Checkin database'.");
 			return new ResponseEntity<String>("Error occured during 'Checkin database'." + e, HttpStatus.BAD_REQUEST);
 		}
-
+		
+		
+		
+		
+		
 		// checking city
 		CityEntity city = new CityEntity();
 		try {
@@ -402,14 +416,14 @@ public class JobSeekDaoImpl implements JobSeekDao {
 	@Override
 	public ResponseEntity<?> getAll() {
 		try {
-			logger.info("Checking database.");
+			logger.info("Checking database for JobSeek.");
 			if (((jobSeekRepository.count() == 0))) {
 				logger.info("Database empty.");
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
 			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		List<JobSeekEntity> list = (List<JobSeekEntity>) jobSeekRepository.findAll();
 		logger.info("Returning result.");
@@ -421,7 +435,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 	@Override
 	public ResponseEntity<?> getById(@PathVariable Integer id) {
 		try {
-			logger.info("Looking for pupil.");
+			logger.info("Looking for JobSeek.");
 			JobSeekEntity wantedJobSeek = jobSeekRepository.findById(id).orElse(null);
 			if (wantedJobSeek != null) {
 				logger.info("JobSeek found.");
@@ -947,6 +961,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			if (wantedJobSeek.getStatus().equals(1)) {
 				logger.info("Deleting entity.");
 				wantedJobSeek.setStatusInactive();
+				//applyContactDaoImp.markApplyAsExpiredBySeek(wantedJobSeek); //DODAO ZA NIDZU
 				logger.info("Entity deleted.");
 			} else if (wantedJobSeek.getStatus().equals(0)) {
 				logger.info("JobSeek status is already deleted.");
@@ -1057,6 +1072,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			if (wantedJobSeek.getStatus().equals(0) || wantedJobSeek.getStatus().equals(1)) {
 				logger.info("Archiving entity.");
 				wantedJobSeek.setStatusArchived();
+				//applyContactDaoImp.markApplyAsExpiredBySeek(wantedJobSeek); // DODAO ZA NIDZU
 				logger.info("Entity archived.");
 			} else if (wantedJobSeek.getStatus().equals(-1)) {
 				logger.info("JobSeek status is already archived.");
