@@ -1,10 +1,10 @@
 import React from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import TouchAppIcon from '@material-ui/icons/TouchApp';
-import IconButton from '@material-ui/core/IconButton'
-import AccountCircle from '@material-ui/icons/AccountCircle';
+// import Typography from '@material-ui/core/Typography'
+// import TouchAppIcon from '@material-ui/icons/TouchApp';
+// import IconButton from '@material-ui/core/IconButton'
+// import AccountCircle from '@material-ui/icons/AccountCircle';
 import Drawer from '@material-ui/core/Drawer'
 import NavbarDrawer from './NavbarDrawer'
 import { makeStyles } from '@material-ui/styles';
@@ -52,7 +52,7 @@ export const NavbarGeneric = ({
   return (
     <div className={classes.root}>
       <AppBar position='static'>
-        <Toolbar>
+        <Toolbar variant="dense" >
           <NavbarDrawer />
           <div className={classes.title}>
             {/* <Typography variant="h6">
@@ -69,7 +69,7 @@ export const NavbarGeneric = ({
             <Typography variant="h6">
               Jobs
           </Typography> */}
-            <Link to='/'><img src='/img/triklikjobslogo.png' /></Link>
+            <Link to='/'><img alt="3 Click Jobs" src='/img/triklikjobslogo.png' /></Link>
           </div>
 
           {

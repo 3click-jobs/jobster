@@ -10,6 +10,10 @@ const createEntitySlice = (entity) => {
       case `REQUEST_${entityUpper}_GETANY`:
       case `REQUEST_${entityUpper}_CREATE`:
       case `REQUEST_${entityUpper}_UPDATE`:
+      case `REQUEST_${entityUpper}_DECLINE`:
+        return true
+      case `REQUEST_${entityUpper}_ACCEPT`:    
+        return true
       case `REQUEST_${entityUpper}_DELETE`:
         return true
       case `SUCCESS_${entityUpper}_GETALL`:
@@ -17,12 +21,18 @@ const createEntitySlice = (entity) => {
       case `SUCCESS_${entityUpper}_GETANY`:
       case `SUCCESS_${entityUpper}_CREATE`:
       case `SUCCESS_${entityUpper}_UPDATE`:
+      case `SUCCESS_${entityUpper}_DECLINE`:
+      case `SUCCESS_${entityUpper}_ACCEPT`:
       case `SUCCESS_${entityUpper}_DELETE`:
       case `FAILURE_${entityUpper}_GETALL`:
       case `FAILURE_${entityUpper}_GETONE`:
       case `FAILURE_${entityUpper}_GETANY`:
       case `FAILURE_${entityUpper}_CREATE`:
       case `FAILURE_${entityUpper}_UPDATE`:
+      case `FAILURE_${entityUpper}_DECLINE`:
+        return false
+      case `FAILURE_${entityUpper}_ACCEPT`:  
+        return false  
       case `FAILURE_${entityUpper}_DELETE`:
         return false
       default:
@@ -38,11 +48,17 @@ const createEntitySlice = (entity) => {
       case `REQUEST_${entityUpper}_CREATE`:
       case `REQUEST_${entityUpper}_UPDATE`:
       case `REQUEST_${entityUpper}_DELETE`:
+      case `REQUEST_${entityUpper}_DECLINE`:
+      case `REQUEST_${entityUpper}_ACCEPT`:
       case `SUCCESS_${entityUpper}_GETALL`:
       case `SUCCESS_${entityUpper}_GETONE`:
       case `SUCCESS_${entityUpper}_GETANY`:
       case `SUCCESS_${entityUpper}_CREATE`:
       case `SUCCESS_${entityUpper}_UPDATE`:
+      case `SUCCESS_${entityUpper}_DECLINE`:
+        return null
+      case `SUCCESS_${entityUpper}_ACCEPT`:
+        return null
       case `SUCCESS_${entityUpper}_DELETE`:
         return null
       case `FAILURE_${entityUpper}_GETALL`:
@@ -50,6 +66,10 @@ const createEntitySlice = (entity) => {
       case `FAILURE_${entityUpper}_GETANY`:
       case `FAILURE_${entityUpper}_CREATE`:
       case `FAILURE_${entityUpper}_UPDATE`:
+      case `FAILURE_${entityUpper}_DECLINE`:
+        return action.payload.message || 'Something went wrong'
+      case `FAILURE_${entityUpper}_ACCEPT`:
+        return action.payload.message || 'Something went wrong'
       case `FAILURE_${entityUpper}_DELETE`:
         return action.payload.message || 'Something went wrong'
       default:
@@ -82,7 +102,18 @@ const createEntitySlice = (entity) => {
         delete newState[action.payload.result]
         return newState
       }
-
+      case `SUCCESS_${entityUpper}_DECLINE`: {
+        const newState = {...state}
+        // const newState = oldState.filter( val => val !== action.payload.id );
+        delete newState[action.payload.result]
+        return newState
+      }
+      case `SUCCESS_${entityUpper}_ACCEPT`: {
+        const newState = {...state}
+        // const newState = oldState.filter( val => val !== action.payload.id );
+        delete newState[action.payload.result]
+        return newState
+      }
       default:
         return state
     }
@@ -104,6 +135,10 @@ const createEntitySlice = (entity) => {
         }
       case `SUCCESS_${entityUpper}_DELETE`:
         return state.filter(id => id !== action.payload.result)
+      case `SUCCESS_${entityUpper}_DECLINE`:
+        return state.filter(id => id !== action.payload.result)
+      case `SUCCESS_${entityUpper}_ACCEPT`:
+        return state.filter(id => id !== action.payload.result)    
       default:
         return state
     }

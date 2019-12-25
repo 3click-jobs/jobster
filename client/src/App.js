@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { HomePage } from './ui/home/HomePage'
 import NavbarGeneric from './ui/navbar/NavbarGeneric';
@@ -8,7 +8,7 @@ import RegisterPerson from './ui/persons/register/RegisterPerson';
 import RegisterCompany from './ui/companies/register/RegisterCompany';
 
 import { connect } from 'react-redux'
-import { verifyUser, checkCredentials, assignCredentials, unassignCredentials } from './redux/actions/user'
+import { verifyUser, checkCredentials } from './redux/actions/user'
 import Login from './ui/accounts/Login';
 import Signout from './ui/accounts/Signout'
 import ApplyContainer from './ui/apply/ApplyContainer';
@@ -17,6 +17,7 @@ import PersonsContainer from './ui/persons/browse/PersonsContainer';
 import CompaniesContainer from './ui/companies/browse/CompaniesContainer';
 import SeeksContainer from './ui/seeks/browse/SeeksContainer';
 import OffersContainer from './ui/offers/browse/OffersContainer';
+import EmployContainer from './ui/employ/EmployContainer';
 
 
 const defaultTheme = createMuiTheme({
@@ -38,12 +39,12 @@ export const App = ({
 
   React.useEffect(() => {
     checkCredentials()
-  }, [hasCredentials])
+  }, [hasCredentials, checkCredentials])
 
   React.useEffect(() => {
     if (hasCredentials)
       verifyUser()
-  }, [hasCredentials])
+  }, [hasCredentials, verifyUser])
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -94,6 +95,9 @@ export const App = ({
             </Route>
             <Route exact path='/offer'>
               <OfferContainer />
+            </Route>
+            <Route exact path='/employ'>
+              <EmployContainer />
             </Route>
           </Switch>
         </Router>

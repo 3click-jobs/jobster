@@ -20,6 +20,7 @@ import { jobTypesSelectors } from '../../redux/selectors/jobTypes'
 // import Geonames from 'geonames.js';
 import CityAPIContainer from '../cities/CityAPIContainer';
 //import utf8 from 'utf8'
+import OffersContainer from '../offers/browse/OffersContainer';
 
 
 const useStyles = makeStyles(theme => ({
@@ -30,6 +31,16 @@ const useStyles = makeStyles(theme => ({
   buttonLeft: {
     margin: theme.spacing(1),
     float: 'left',
+  },
+  tabPaper: {
+    maxWidth: 720,
+    width: '100%',
+    marginTop: 10
+  },
+  tabContainer: {
+    display: "flex",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }));
 
@@ -72,12 +83,12 @@ function TabPanel(props) {
 //   value: PropTypes.any.isRequired,
 // };
 
-function a11yProps(index) {
-  return {
-    id: `scrollable-auto-tab-${index}`,
-    'aria-controls': `scrollable-auto-tabpanel-${index}`,
-  };
-}
+// function a11yProps(index) {
+//   return {
+//     id: `scrollable-auto-tab-${index}`,
+//     'aria-controls': `scrollable-auto-tabpanel-${index}`,
+//   };
+// }
 
 export const ApplyContainer = ({
   jobTypesAll,
@@ -95,8 +106,9 @@ export const ApplyContainer = ({
   // let loading = false
 
   React.useEffect(() => {
-    loadJobTypesAll()
-  }, [loadJobTypesAll])
+    if (jobTypesAll.length === 0)
+      loadJobTypesAll()
+  }, [loadJobTypesAll, jobTypesAll])
 
 
   const handleTabChange = (event, newActiveTab) => {
@@ -195,13 +207,13 @@ export const ApplyContainer = ({
             style={{ margin: '10px auto', minHeight: '15vh', maxWidth: '100%' }}
             >
             <Grid item xs={4} align="center">
-              <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===0) ? '/img/animated-where.gif' : '/img/where.gif'} />
+              <img alt="Where" style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===0) ? '/img/animated-where.gif' : '/img/where.gif'} />
             </Grid>
             <Grid item xs={4} align="center">
-              <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===1) ? '/img/animated-what.gif' : '/img/what.gif'} />
+              <img alt="What" style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===1) ? '/img/animated-what.gif' : '/img/what.gif'} />
             </Grid>
             <Grid item xs={4} align="center">
-              <img style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===2) ? '/img/animated-apply.gif' : '/img/apply.gif'} />
+              <img alt="Apply" style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===2) ? '/img/animated-apply.gif' : '/img/apply.gif'} />
             </Grid>
           </Grid>
           <div>
@@ -216,167 +228,178 @@ export const ApplyContainer = ({
               {city ? <Tab label='What'/> : <Tab label='What' disabled/>}
               {city && jobType ? <Tab label='Apply'/> : <Tab label='Apply' disabled/>}
             </Tabs>
-            <TabPanel value={activeTab} index={0}>
-              {/* Item One -> Render City selection component. */}
-              {/* <Autocomplete
-                id="combo-box-demo"
-                options={cities}
-                getOptionLabel={option => option.name}
-                style={{ width: 300 }}
-                value={city}
-                autoComplete
-                onChange={(event, newValue) => {
-                  setCity(newValue); 
-                  if (!city) { setJobType(null) };
-                }}
-                renderInput={params => (
-                  <TextField {...params} label="City" variant="outlined" fullWidth />
-                )}
-              /> */}
+              <TabPanel value={activeTab} index={0}>
+                {/* Item One -> Render City selection component. */}
+                {/* <Autocomplete
+                  id="combo-box-demo"
+                  options={cities}
+                  getOptionLabel={option => option.name}
+                  style={{ width: 300 }}
+                  value={city}
+                  autoComplete
+                  onChange={(event, newValue) => {
+                    setCity(newValue); 
+                    if (!city) { setJobType(null) };
+                  }}
+                  renderInput={params => (
+                    <TextField {...params} label="City" variant="outlined" fullWidth />
+                  )}
+                /> */}
 
-              {/* <Script
-                  url="https://maps.googleapis.com/maps/api/js?key=YOUR-KEY&libraries=places"
-                  onLoad={handleCitiesLoad}
-              /> */}
-              {/* <SearchBar id="autocomplete" placeholder="" hintText="Search City" value={queryAPI}
-                style={{
-                  margin: '0 auto',
-                  maxWidth: 800,
-                }}
-              /> */}
+                {/* <Script
+                    url="https://maps.googleapis.com/maps/api/js?key=YOUR-KEY&libraries=places"
+                    onLoad={handleCitiesLoad}
+                /> */}
+                {/* <SearchBar id="autocomplete" placeholder="" hintText="Search City" value={queryAPI}
+                  style={{
+                    margin: '0 auto',
+                    maxWidth: 800,
+                  }}
+                /> */}
 
-              {/* <Autocomplete
-                id="autocomplete"
-                options={queryAPI}
-                getOptionLabel={option => option.name + ", " + option.countryName}
-                style={{ minWidth: 270 }}
-                clearOnEscape
-                disableClearable
-                value={city}
-                loading={loading}
-                autoComplete
-                onChange={(event, newValue) => {
-                  handleCItySelect(newValue); 
-                }}
-                renderInput={params => {
-                  // const inputProps = params.inputProps;
-                  // inputProps.getOptionSelected= (option, value) => {
-                  //   if(value)
-                  //     return option.lng === value.lng && option.lat === value.lat;
-                  //   return false
-                  // };
-                  return (
-                    <TextField 
-                      {...params} 
-                      label= "City"
-                      variant="outlined" 
-                      required
-                      fullWidth 
-                      onChange={(event) => {
-                        handleCitiesLoad(event); 
+                {/* <Autocomplete
+                  id="autocomplete"
+                  options={queryAPI}
+                  getOptionLabel={option => option.name + ", " + option.countryName}
+                  style={{ minWidth: 270 }}
+                  clearOnEscape
+                  disableClearable
+                  value={city}
+                  loading={loading}
+                  autoComplete
+                  onChange={(event, newValue) => {
+                    handleCItySelect(newValue); 
+                  }}
+                  renderInput={params => {
+                    // const inputProps = params.inputProps;
+                    // inputProps.getOptionSelected= (option, value) => {
+                    //   if(value)
+                    //     return option.lng === value.lng && option.lat === value.lat;
+                    //   return false
+                    // };
+                    return (
+                      <TextField 
+                        {...params} 
+                        label= "City"
+                        variant="outlined" 
+                        required
+                        fullWidth 
+                        onChange={(event) => {
+                          handleCitiesLoad(event); 
+                        }}
+                        InputProps={{
+                          ...params.InputProps,
+                          autoComplete: "false",
+                          endAdornment: (
+                            <React.Fragment>
+                              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        }}
+                      />
+                    )
+                  }}
+                /> */}
+                <div className={classes.tabContainer}>
+                  <div className={classes.tabPaper}>
+                    <CityAPIContainer city={city} setCity = {setCity} />
+                    <div>
+                      <Button
+                        disabled={ !city }
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        endIcon={<Icon>arrow_forward_ios</Icon>} 
+                        onClick={() => { setActiveTab(1); }}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
+              <TabPanel value={activeTab} index={1}>
+                {/* Item Two -> Render Job selection component. (disabled until city is chosen). */}
+                <div className={classes.tabContainer}>
+                  <div className={classes.tabPaper}>
+                    <Autocomplete
+                      id="combo-box"
+                      options={jobTypesAll}
+                      getOptionLabel={option => option.jobTypeName}
+                      style={{ minWidth: 270 }}
+                      value={jobType}
+                      clearOnEscape
+                      disableClearable
+                      autoComplete
+                      onChange={(event, newValue) => {
+                        setJobType(newValue);
                       }}
-                      InputProps={{
-                        ...params.InputProps,
-                        autoComplete: "false",
-                        endAdornment: (
-                          <React.Fragment>
-                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                            {params.InputProps.endAdornment}
-                          </React.Fragment>
-                        ),
-                      }}
+                      renderInput={params => (
+                        <TextField {...params} 
+                          label="Job type" 
+                          variant="outlined" 
+                          required 
+                          fullWidth 
+                          onChange={(event) => {
+                            if (!event || event.target.value === "" || event.target.value === "")
+                              setJobType(null);
+                          }}
+                        />
+                      )}
                     />
-                  )
-                }}
-              /> */}
-              <CityAPIContainer city={city} setCity = {setCity} />
-              <div>
-                <Button
-                  disabled={ !city }
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  endIcon={<Icon>arrow_forward_ios</Icon>} 
-                  onClick={() => { setActiveTab(1); }}
-                >
-                  Next
-                </Button>
-              </div>
-
-            </TabPanel>
-            <TabPanel value={activeTab} index={1}>
-              {/* Item Two -> Render Job selection component. (disabled until city is chosen). */}
-              <Autocomplete
-                id="combo-box"
-                options={jobTypesAll}
-                getOptionLabel={option => option.jobTypeName}
-                style={{ minWidth: 270 }}
-                value={jobType}
-                clearOnEscape
-                disableClearable
-                autoComplete
-                onChange={(event, newValue) => {
-                  setJobType(newValue);
-                }}
-                renderInput={params => (
-                  <TextField {...params} 
-                    label="Job type" 
-                    variant="outlined" 
-                    required 
-                    fullWidth 
-                    onChange={(event) => {
-                      if (!event || event.target.value === "" || event.target.value === "")
-                        setJobType(null);
-                    }}
-                  />
-                )}
-              />
-              <div>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.buttonLeft}
-                  startIcon={<Icon>arrow_back_ios</Icon>} 
-                  onClick={() => { setActiveTab(0); }}
-                >
-                  Back
-                </Button>
-                <Button
-                  disabled={ !jobType }
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  endIcon={<Icon>arrow_forward_ios</Icon>} 
-                  onClick={() => { setActiveTab(2); }}
-                >
-                  Next
-                </Button>
-              </div>
-            </TabPanel>
-            <TabPanel value={activeTab} index={2}>
-              Item Three -> Render Job details & apply component. (disabled until city & job are chosen).
-              <div>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.buttonLeft}
-                  startIcon={<Icon>arrow_back_ios</Icon>} 
-                  onClick={() => { setActiveTab(1); }}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  endIcon={<Icon>send</Icon>} 
-                  onClick={() => { console.log("APPLY")}}
-                >
-                  Apply
-                </Button>
-              </div>
-
-            </TabPanel>
+                    <div>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.buttonLeft}
+                        startIcon={<Icon>arrow_back_ios</Icon>} 
+                        onClick={() => { setActiveTab(0); }}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        disabled={ !jobType }
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        endIcon={<Icon>arrow_forward_ios</Icon>} 
+                        onClick={() => { setActiveTab(2); }}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
+              <TabPanel value={activeTab} index={2}>
+                {/* Item Three -> Render Job details & apply component. (disabled until city & job are chosen). */}
+                <OffersContainer selectedCity={city} selectedJobType={jobType} />
+                <div className={classes.tabContainer}>
+                  <div className={classes.tabPaper}>
+                    <div>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.buttonLeft}
+                        startIcon={<Icon>arrow_back_ios</Icon>} 
+                        onClick={() => { setActiveTab(1); }}
+                      >
+                        Back
+                      </Button>
+                      {/* <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        endIcon={<Icon>send</Icon>} 
+                        onClick={() => { console.log("APPLY")}}
+                      >
+                        Apply
+                      </Button> */}
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
             
           </div>
         </div>
