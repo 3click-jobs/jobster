@@ -46,10 +46,10 @@ public class CountryRegionEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	//@JsonView(Views.Parent.class)
-	@Column(name="coutry_region__id")
+	//@Column(name="coutry_region__id")
 	protected Integer id;
 	//@JsonView(Views.Student.class)
-	@Column(name="coutry_region_name")
+	//@Column(name="coutry_region_name")
 	@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid.")
 	//@NotNull (message = "Country region name must be provided.")
 	protected String countryRegionName;
@@ -60,10 +60,10 @@ public class CountryRegionEntity {
 	private Integer status;
 	//@JsonView(Views.Admin.class)
 
-    @Column(name = "created_by"/*, updatable = false*/)
+    //@Column(name = "created_by"/*, updatable = false*/)
 	private Integer createdById;
     //@JsonView(Views.Admin.class)
-    @Column(name = "updated_by")
+    //@Column(name = "updated_by")
     private Integer updatedById;
 	@JsonIgnore
 	@Version

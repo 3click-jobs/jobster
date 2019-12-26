@@ -19,6 +19,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -65,52 +66,65 @@ public class JobSeekEntity {
 	//@JsonView(Views.Parent.class)
 	@Column(name="seek_id")
 	protected Integer id;
+	
 	//@JsonView(Views.Student.class)
 	@Column(name="distance_to_job")
 	@NotNull (message = "Distance to job must be provided.")
+	//@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")
 	@Min(value=0, message = "Distance to job must be {value} or higher!")
 	private Integer distanceToJob;
+	
 	//@JsonView(Views.Student.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@NotNull (message = "Beginning date must be provided.")
 	@Column(name="beginning_date")
 	private Date beginningDate;
+	
 	//@JsonView(Views.Student.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@NotNull (message = "End date must be provided.")
 	@Column(name="end_date")
 	private Date endDate;
+	
 	@Column(name="flexibile_dates")
 	//@JsonView(Views.Admin.class)
 	private Boolean flexibileDates;
+	
 	//@JsonView(Views.Student.class)
 	@Column(name="price")
 	@NotNull (message = "Price must be provided.")
 	@Min(value=0, message = "Price must be {value} or higher!")
 	private Double price;
+	
 	//@JsonView(Views.Teacher.class)
 	@Column(name="details_link")
 	@NotNull (message = "Details must be provided.")
 	private String detailsLink;
+	
 	@Column(name="flexibile_days")
 	//@JsonView(Views.Admin.class)
 	private Boolean flexibileDays;
+	
 	//@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
+	
 	//@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(0)
     @Column(name = "elapse", nullable = false)
 	private Integer elapse;
+	
 	//@JsonView(Views.Admin.class)
     @Column(name = "created_by", nullable = false, updatable = false)
 	private Integer createdById;
+    
     //@JsonView(Views.Admin.class)
     @Column(name = "updated_by")
     private Integer updatedById;
+    
 	@JsonIgnore
 	@Version
 	private Integer version;
@@ -123,7 +137,7 @@ public class JobSeekEntity {
 	public JobSeekEntity(@NotNull(message = "Employee must be provided.") UserEntity employee,
 			@NotNull(message = "City must be provided.") CityEntity city,
 			@NotNull(message = "Job type must be provided.") JobTypeEntity type, List<JobDayHoursEntity> daysAndHours,
-			@NotNull(message = "Distance to job must be provided.") @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
+			@NotNull(message = "Distance to job must be provided.") /*@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")*/ @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
 			@NotNull(message = "Beginning date must be provided.") Date beginningDate,
 			@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
 			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,

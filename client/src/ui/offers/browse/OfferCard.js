@@ -16,8 +16,10 @@ import { red, green, blueGrey } from '@material-ui/core/colors';
 import AddComment from '@material-ui/icons/AddComment';
 // import NoteAdd from '@material-ui/icons/NoteAdd';
 import StarRate from '@material-ui/icons/StarRate';
-import RemoveCircleSharp from '@material-ui/icons/RemoveCircleSharp';
-import CheckCircleSharp from '@material-ui/icons/CheckCircleSharp';
+// import RemoveCircleSharp from '@material-ui/icons/RemoveCircleSharp';
+// import CheckCircleSharp from '@material-ui/icons/CheckCircleSharp';
+import ClearIcon from '@material-ui/icons/Clear';
+import DoneSharpIcon from '@material-ui/icons/DoneSharp';
 // import Check from '@material-ui/icons/Check';
 // import Clear from '@material-ui/icons/Clear';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -37,7 +39,7 @@ const theme = createMuiTheme({
         marginRight: '10px',
       },
       action: {
-        alignSelf: 'flex-end',
+        alignSelf: 'auto',
         marginTop: '0px',
         marginRight: '-12px',
       },
@@ -135,7 +137,7 @@ export const OfferCard = (props) => {
                 <Tooltip title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Apply" } aria-label="apply">
                   <span>
                     <IconButton aria-label="accept" onClick={ () => props.handleAcceptOffer(props.offer) } disabled={props.role==="ROLE_GUEST" ? true : false} >
-                      <CheckCircleSharp style={{ color: green[500], fontSize: 40 }} />
+                      <DoneSharpIcon style={{ color: green[900], fontSize: 30 }} />
                     </IconButton>
                   </span>
                 </Tooltip>
@@ -143,7 +145,7 @@ export const OfferCard = (props) => {
                 <Tooltip title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Remove" } aria-label="remove">
                   <span>
                     <IconButton aria-label="decline" onClick={ () => props.handleDeclineOffer(props.offer) } disabled={props.role==="ROLE_GUEST" ? true : false} >
-                      <RemoveCircleSharp style={{ color: red[500], fontSize: 40 }}/>
+                      <ClearIcon style={{ color: red[900], fontSize: 30 }}/>
                     </IconButton>
                   </span>
                 </Tooltip>

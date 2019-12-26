@@ -13,22 +13,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
-import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
+import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
+import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
-import com.iktpreobuka.jobster.security.Views;
+import com.iktpreobuka.jobster.repositories.UserRepository;
 import com.iktpreobuka.jobster.services.CountryRegionDao;
 
 @Controller
@@ -37,8 +35,8 @@ import com.iktpreobuka.jobster.services.CountryRegionDao;
 
 public class CountryRegionController {
 	
-	@Autowired 
-	private UserCustomValidator userValidator;
+	//@Autowired 
+	//private UserCustomValidator userValidator;
 	
 	@Autowired 	
 	private CountryRegionRepository countryRegionRepository;
@@ -49,10 +47,13 @@ public class CountryRegionController {
 	@Autowired 
 	private UserAccountRepository userAccountRepository;
 	
-	@InitBinder
+	@Autowired 
+	private UserRepository userRepository;
+	
+	/*@InitBinder
 	protected void initBinder(final WebDataBinder binder) { 
 		binder.addValidators(userValidator); 
-		}
+		}*/
 		
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 		
@@ -61,7 +62,7 @@ public class CountryRegionController {
 		}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/regions/getById started.");
@@ -77,7 +78,7 @@ public class CountryRegionController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll(Principal principal) {
 			logger.info("################ /jobster/regions/getAll started.");
@@ -93,7 +94,7 @@ public class CountryRegionController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active")
 	public ResponseEntity<?> getAllActive(Principal principal) {
 			logger.info("################ /jobster/regions/getAllActive started.");
@@ -109,7 +110,7 @@ public class CountryRegionController {
 	}
 			
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive")
 	public ResponseEntity<?> getAllInactive(Principal principal) {
 		logger.info("################ /jobster/regions/getAllInactive started.");
@@ -125,7 +126,7 @@ public class CountryRegionController {
 	}
 					
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/regions/getAllArchived started.");
@@ -140,16 +141,17 @@ public class CountryRegionController {
 		}
 	}
 			
+	//Vraca listu svih regiona sa datim imenom
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/{name}")
-	public ResponseEntity<?> getByName(@PathVariable String name, Principal principal) {
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/All/{name}")
+	public ResponseEntity<?> getByNameAll(@PathVariable String name, Principal principal) {
 		logger.info("################ /jobster/regions/getByName started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
-			CountryRegionEntity region= countryRegionRepository.getByCountryRegionNameIgnoreCase(name);
+			Iterable<CountryRegionEntity> regions= countryRegionRepository.getByCountryRegionNameIgnoreCase(name);
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<CountryRegionEntity>(region, HttpStatus.OK);
+			return new ResponseEntity<Iterable<CountryRegionEntity>>(regions, HttpStatus.OK);
 		} catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -179,8 +181,12 @@ public class CountryRegionController {
 				logger.info("---------------- Country already exists.");
 		        return new ResponseEntity<>("Country already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
-			countryRegionRepository.save(newRegion);
-			logger.info("New country created.");
+			String countryRegionName=newRegion.getCountryRegionName();
+			CountryEntity country= newRegion.getCountry();
+			UserAccountEntity loggedUserAccount=userAccountRepository.getByUsername(principal.getName());
+			UserEntity loggedUser=loggedUserAccount.getUser();
+			countryRegionDao.addNewCountryRegionWithLoggedUser(countryRegionName, country, loggedUser);
+			logger.info("New region created.");
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<>(newRegion, HttpStatus.OK);
 		} catch (NumberFormatException e) {
@@ -193,7 +199,7 @@ public class CountryRegionController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/modify/{id}")
 	public ResponseEntity<?> modifyRegion(@PathVariable Integer id, @Valid @RequestBody CountryRegionEntity updateRegion, /*Principal principal, */BindingResult result) {
 		logger.info("################ /jobster/regions/modify/{id} started.");
@@ -230,7 +236,7 @@ public class CountryRegionController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 	public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/regions/archive/{id} Archive started.");
@@ -258,7 +264,7 @@ public class CountryRegionController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/unarchive/{id}")
 	public ResponseEntity<?> unArchive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/regions/unarchive/{id} Unarchive started.");
@@ -286,7 +292,7 @@ public class CountryRegionController {
 	}
 
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 	public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/regions/undelete/{id} unDelete started.");
@@ -314,7 +320,7 @@ public class CountryRegionController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/regions/{id} Delete started.");

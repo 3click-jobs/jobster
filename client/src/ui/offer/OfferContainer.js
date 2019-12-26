@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { actions as jobTypesActions } from '../../redux/actions/jobTypes'
 import { jobTypesSelectors } from '../../redux/selectors/jobTypes'
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+// import TextField from '@material-ui/core/TextField';
+// import Autocomplete from '@material-ui/lab/Autocomplete';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
@@ -15,6 +15,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from "@material-ui/core";
 // import Geonames from 'geonames.js';
 import CityAPIContainer from '../cities/CityAPIContainer';
+import PostOffer from '../offers/post/PostOffer';
+import JobTypesContainer from '../jobTypes/JobTypesContainer';
 
 
 const useStyles = makeStyles(theme => ({
@@ -221,7 +223,7 @@ export const OfferContainer = ({
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
                 2. Describe the job
-                <Autocomplete
+                {/* <Autocomplete
                   id="combo-box"
                   options={jobTypesAll}
                   getOptionLabel={option => option.jobTypeName}
@@ -245,7 +247,8 @@ export const OfferContainer = ({
                       }}
                     />
                   )}
-                />
+                /> */}
+                <JobTypesContainer selectedJobType={ jobType } handleJobType={ (jobType)=> { setJobType(jobType); } } />
                 <div>
                   <Button
                     variant="contained"
@@ -274,6 +277,7 @@ export const OfferContainer = ({
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
                 Item Three -> Confirm details & post. (disabled until city & job are chosen).
+                <PostOffer city={city} jobType={jobType} />
                 <div>
                   <Button
                     variant="contained"
@@ -284,7 +288,7 @@ export const OfferContainer = ({
                   >
                     Back
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="contained"
                     color="primary"
                     className={classes.button}
@@ -292,7 +296,7 @@ export const OfferContainer = ({
                     onClick={() => { console.log("OFFER")}}
                   >
                     Offer
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>

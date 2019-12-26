@@ -7,6 +7,8 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles';
 // import Container from '@material-ui/core/Container'
 import LookingForAEmployeeCard from './cards/LookingForAEmployeeCard';
+import SeekingForAJobCard from './cards/SeekingForAJobCard';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,14 +26,17 @@ export const HomePage = () => {
   return (
     <div className={classes.root} >
       <Grid container justify= "center" alignItems="stretch" spacing={2}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
           <LookingForAJobCard />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
+          <LookingForAEmployeeCard />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
           <OfferingAJobCard />
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <LookingForAEmployeeCard />
+        <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
+          <SeekingForAJobCard />
         </Grid>
       </Grid>
     </div>
