@@ -1,3 +1,4 @@
+
 package com.iktpreobuka.jobster.entities;
 
 import java.util.ArrayList;

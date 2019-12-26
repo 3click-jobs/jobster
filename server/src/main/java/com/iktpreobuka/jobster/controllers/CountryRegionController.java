@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
+import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
@@ -182,7 +183,8 @@ public class CountryRegionController {
 			}
 			String countryRegionName=newRegion.getCountryRegionName();
 			CountryEntity country= newRegion.getCountry();
-			UserEntity loggedUser=userRepository.getByUsername(principal.getName());
+			UserAccountEntity loggedUserAccount=userAccountRepository.getByUsername(principal.getName());
+			UserEntity loggedUser=loggedUserAccount.getUser();
 			countryRegionDao.addNewCountryRegionWithLoggedUser(countryRegionName, country, loggedUser);
 			logger.info("New region created.");
 			logger.info("---------------- Finished OK.");
