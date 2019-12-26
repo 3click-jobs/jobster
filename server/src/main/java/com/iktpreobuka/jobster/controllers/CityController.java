@@ -328,7 +328,8 @@ public class CityController {
 						city.setLatitude(newCity.getLatitude());
 						city.setLongitude(newCity.getLongitude());
 						city.setStatusActive();
-						CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameIgnoreCase(newCity.getRegion());
+						CountryEntity country = countryRepository.getByCountryName(newCity.getCountry());
+						CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameAndCountry(newCity.getRegion(), country);
 						if(region==null) {
 							city.setRegion(null);
 						}
@@ -368,7 +369,8 @@ public class CityController {
 					city.setCityName(updateCity.getCityName());
 					city.setLongitude(updateCity.getLongitude());
 					city.setLatitude(updateCity.getLatitude());
-					CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameIgnoreCase(updateCity.getRegion());
+					CountryEntity country = countryRepository.getByCountryName(updateCity.getCountry());
+					CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameAndCountry(updateCity.getRegion(), country);
 					city.setRegion(region);
 	
 					if (result.hasErrors()) { 
