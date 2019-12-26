@@ -12,6 +12,4 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
 	public UserEntity getByIdAndStatusLike(int parseInt, int i);
 
-	public UserEntity getByUsername(String name);
-
 }
