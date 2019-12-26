@@ -55,8 +55,7 @@ export const RegisterCompanyForm = ({
                   : ' '
               }
               error={touched.companyName && Boolean(errors.companyName)}
-              margin="dense"
-              variant="outlined"
+              margin="normal"
               fullWidth
               InputProps={
                 touched.companyName

@@ -18,6 +18,7 @@ import CompaniesContainer from './ui/companies/browse/CompaniesContainer';
 import SeeksContainer from './ui/seeks/browse/SeeksContainer';
 import OffersContainer from './ui/offers/browse/OffersContainer';
 import EmployContainer from './ui/employ/EmployContainer';
+import SeekContainer from './ui/seek/SeekContainer';
 
 
 const defaultTheme = createMuiTheme({
@@ -98,6 +99,9 @@ export const App = ({
             </Route>
             <Route exact path='/employ'>
               <EmployContainer />
+            </Route>
+            <Route exact path='/seek'>
+              <SeekContainer />
             </Route>
           </Switch>
         </Router>

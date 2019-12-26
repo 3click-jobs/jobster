@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+// import TextField from '@material-ui/core/TextField';
+// import Autocomplete from '@material-ui/lab/Autocomplete';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
@@ -21,6 +21,7 @@ import { jobTypesSelectors } from '../../redux/selectors/jobTypes'
 import CityAPIContainer from '../cities/CityAPIContainer';
 //import utf8 from 'utf8'
 import OffersContainer from '../offers/browse/OffersContainer';
+import JobTypesContainer from '../jobTypes/JobTypesContainer';
 
 
 const useStyles = makeStyles(theme => ({
@@ -323,7 +324,7 @@ export const ApplyContainer = ({
                 {/* Item Two -> Render Job selection component. (disabled until city is chosen). */}
                 <div className={classes.tabContainer}>
                   <div className={classes.tabPaper}>
-                    <Autocomplete
+                    {/* <Autocomplete
                       id="combo-box"
                       options={jobTypesAll}
                       getOptionLabel={option => option.jobTypeName}
@@ -347,7 +348,8 @@ export const ApplyContainer = ({
                           }}
                         />
                       )}
-                    />
+                    /> */}
+                    <JobTypesContainer selectedJobType={ jobType } handleJobType={ (jobType)=> { setJobType(jobType); } } />
                     <div>
                       <Button
                         variant="contained"

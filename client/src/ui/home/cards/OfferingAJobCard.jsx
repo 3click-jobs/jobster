@@ -66,7 +66,7 @@ export const OfferingAJobCard = () => {
         //     <MoreVertIcon />
         //   </IconButton>
         // }
-        title="Post a job in three clicks"
+        title="Offer a job in three clicks"
         subheader="Lead the way"
       />
       <CardMedia
@@ -76,7 +76,7 @@ export const OfferingAJobCard = () => {
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          Set the location. Set the job type and the job description. Check if everything is all right and post the job. As easy as that.
+          Set the location. Set the job type and the job description. Check if everything is all right and post the job offer. As easy as that.
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
