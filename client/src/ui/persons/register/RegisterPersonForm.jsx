@@ -117,9 +117,9 @@ export const RegisterPersonForm = ({
 
             <FormControl component="fieldset" >
               <FormLabel component="legend">Gender</FormLabel>
-              <RadioGroup aria-label="gender" name="gender" value={values.gender} onChange={handleChange}>
-                <FormControlLabel value="GENDER_FEMALE" control={<Radio />} label="Female" />
-                <FormControlLabel value="GENDER_MALE" control={<Radio />} label="Male" />
+              <RadioGroup aria-label="gender" name="gender" value={values.gender} onChange={handleChange} row >
+                <FormControlLabel value="GENDER_FEMALE" control={<Radio />} label="Female" labelPlacement="bottom" />
+                <FormControlLabel value="GENDER_MALE" control={<Radio />} label="Male" labelPlacement="bottom" />
               </RadioGroup>
             </FormControl>
 

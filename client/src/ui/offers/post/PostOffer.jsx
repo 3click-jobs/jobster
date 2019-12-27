@@ -47,21 +47,53 @@ const initialValues = {
           toHour: 19
         },
         {    
-          day: "DAY_THURSDAY",
+          day: "DAY_TUESDAY",
+          flexibileHours: false,
+          fromHour: 2,
+          id: 29,
+          isMinMax: true,
+          toHour: 8
+        },
+        {    
+          day: "DAY_WEDNESDAY",
           flexibileHours: true,
           fromHour: 16,
-          id: 29,
+          id: 30,
+          isMinMax: false,
+          toHour: 19
+        },        
+        {    
+          day: "DAY_THURSDAY",
+          flexibileHours: true,
+          fromHour: 4,
+          id: 31,
+          isMinMax: true,
+          toHour: 12
+        },
+        {    
+          day: "DAY_FRIDAY",
+          flexibileHours: false,
+          fromHour: 2,
+          id: 32,
+          isMinMax: true,
+          toHour: 5,
+        },
+        {    
+          day: "DAY_SATURDAY",
+          flexibileHours: false,
+          fromHour: 16,
+          id: 33,
           isMinMax: false,
           toHour: 19
         },
         {    
-          day: "DAY_FRIDAY",
-          flexibileHours: true,
-          fromHour: 2,
-          id: 30,
+          day: "DAY_SUNDAY",
+          flexibileHours: false,
+          fromHour: 1,
+          id: 34,
           isMinMax: true,
-          toHour: 5,
-        }    
+          toHour: 4
+        },
     ],
         city: "Temerin",
         country: "Serbia",
@@ -105,7 +137,6 @@ export const PostOffer = ({
       initialValues.longitude = city.longitude;
       initialValues.latitude = city.latitude;
       initialValues.iso2Code = city.iso2Code;
-      console.log(initialValues)
     }
   })
 
@@ -116,8 +147,12 @@ export const PostOffer = ({
       onSubmit={(values, formikBag) => {
 
           const payload = {...values}
+          // console.log("payload")
+          // console.log(payload)
 
           createOffer(payload).then(() => {formikBag.setSubmitting(false); loadOffersAll()})
+          // console.log("DONE")
+
       }}
 
       validationSchema={offersSchema.create}

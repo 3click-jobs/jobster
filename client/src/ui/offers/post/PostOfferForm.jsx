@@ -6,7 +6,7 @@ import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CityAPIContainer from '../../cities/CityAPIContainer'
 import JobTypesContainer from '../../jobTypes/JobTypesContainer'
 import Checkbox from '@material-ui/core/Checkbox';
@@ -14,6 +14,16 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import JobDayHoursContainer from '../../jobDayHours/JobDayHoursContainer';
 
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiFormControl: {
+      root: {
+        verticalAlign: "middle"
+      },
+    },
+  }
+});
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -47,6 +57,7 @@ export const PostOfferForm = ({
 
 
   return (
+    <ThemeProvider theme={theme}>
     <div className={classes.container}>
       <Form>
         <Card className={classes.card}>
@@ -257,12 +268,20 @@ export const PostOfferForm = ({
                   checked={values.flexibileDates}
                   control={<Checkbox color="primary" />}
                   label="Flexibile dates"
-                  labelPlacement="end"
+                  labelPlacement="bottom"
                   onChange={handleChange('flexibileDates')}
                 />
             </FormControl>
 
-            <JobDayHoursContainer />
+            <JobDayHoursContainer listJobDayHours={values.listJobDayHoursPostDto} 
+                                  handleChange={handleChange} 
+                                  handleBlur={handleBlur} 
+                                  touched={touched} 
+                                  errors={errors} 
+                                  setJobDayHoursChange={(props) => 
+                                    { values.listJobDayHoursPostDto = [...props]; 
+                                    } } 
+                                  />
 
             <FormControl component="fieldset">
                 <FormControlLabel
@@ -270,7 +289,7 @@ export const PostOfferForm = ({
                   checked={values.flexibileDays}
                   control={<Checkbox color="primary" />}
                   label="Flexibile days"
-                  labelPlacement="end"
+                  labelPlacement="bottom"
                   onChange={handleChange('flexibileDays')}
                 />
             </FormControl>
@@ -288,6 +307,7 @@ export const PostOfferForm = ({
         </Card>
       </Form>
     </div>
+    </ThemeProvider>
   )
 }
 
