@@ -57,7 +57,7 @@ export const SeekingForAJobCard = () => {
       />
       <CardMedia
         className={classes.media}
-        image="/img/carousel-2.jpg"
+        image="/img/carousel-3.jpg"
         title="Seek for job"
       />
       <CardContent>
