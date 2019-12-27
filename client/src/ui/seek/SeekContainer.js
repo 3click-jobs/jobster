@@ -90,7 +90,7 @@ export const SeekContainer = ({
           >
             <Tab label='Where' />
             {city ? <Tab label='What'/> : <Tab label='What' disabled/>}
-            {city && jobType ? <Tab label='Offer'/> : <Tab label='Offer' disabled/>}
+            {city && jobType ? <Tab label='Seek'/> : <Tab label='Seek' disabled/>}
           </Tabs>
           <TabPanel value={activeTab} index={0}>
             <div className={classes.tabContainer}>

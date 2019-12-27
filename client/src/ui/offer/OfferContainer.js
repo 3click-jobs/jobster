@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid } from "@material-ui/core";
+// import { Grid } from "@material-ui/core";
 // import Geonames from 'geonames.js';
 import CityAPIContainer from '../cities/CityAPIContainer';
 import PostOffer from '../offers/post/PostOffer';
@@ -130,11 +130,11 @@ export const OfferContainer = ({
       { 
         (!jobTypesIsLoading && jobTypesAll) &&
         <div>
-          Post a job in three clicks.
+          {/* Post a job in three clicks.
           (1) Select a city
           (2) Describe the job
-          (3) Confirm details & post
-          <Grid
+          (3) Confirm details & post */}
+          {/* <Grid
             container
             spacing={0}
             justify="center"
@@ -149,7 +149,7 @@ export const OfferContainer = ({
             <Grid item xs={4} align="center">
               <img alt="Offer" style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===2) ? null : '/img/offer.gif'} />
             </Grid>
-          </Grid>
+          </Grid> */}
           <div>
           <Tabs
             value={activeTab}
@@ -222,7 +222,7 @@ export const OfferContainer = ({
           <TabPanel value={activeTab} index={1}>
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
-                2. Describe the job
+                {/* 2. Describe the job */}
                 {/* <Autocomplete
                   id="combo-box"
                   options={jobTypesAll}
@@ -276,7 +276,7 @@ export const OfferContainer = ({
           <TabPanel value={activeTab} index={2}>
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
-                Item Three -> Confirm details & post. (disabled until city & job are chosen).
+                {/* Item Three -> Confirm details & post. (disabled until city & job are chosen). */}
                 <PostOffer city={city} jobType={jobType} />
                 <div>
                   <Button

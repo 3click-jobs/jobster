@@ -10,7 +10,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid } from "@material-ui/core";
+// import { Grid } from "@material-ui/core";
 import { actions as jobTypesActions } from '../../redux/actions/jobTypes'
 import { jobTypesSelectors } from '../../redux/selectors/jobTypes'
 // Import Search Bar Components
@@ -201,7 +201,7 @@ export const ApplyContainer = ({
           (1) Select a city
           (2) Select a job
           (3) View details & apply */}
-          <Grid
+          {/* <Grid
             container
             spacing={0}
             justify="center"
@@ -216,7 +216,7 @@ export const ApplyContainer = ({
             <Grid item xs={4} align="center">
               <img alt="Apply" style={{padding: '.1em', width: '90%', maxWidth: '16vh', height: 'auto', maxHeight: '18vh'}} src={!(activeTab===2) ? '/img/animated-apply.gif' : '/img/apply.gif'} />
             </Grid>
-          </Grid>
+          </Grid> */}
           <div>
             <Tabs
               value={activeTab}
