@@ -111,7 +111,9 @@ export const PostSeek = ({
   createSeek,
   loadSeeksAll,
   city,
-  jobType
+  jobType,
+  setCity,
+  handleJobType
 }) => {
 
   const useComponentDidMount = func => React.useEffect(func, []);
