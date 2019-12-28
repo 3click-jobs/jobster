@@ -6,11 +6,11 @@ import { Formik } from 'formik'
 import { RegisterCompanyForm } from './RegisterCompanyForm'
 import { companies as companiesSchema } from '../../../common/utils/schemas/companies'
 
-const initialValues = {
-  companyName: 'JobsterLTD',
-  companyRegistrationNumber: '12345678912345',
-  mobilePhone: "381645242122",
-  email: "mail1@m21ail.com",
+const initialDummyValues = {
+  companyName: 'PeraLTD',
+  companyRegistrationNumber: '12349978912345',
+  mobilePhone: "381649942122",
+  email: "mail99@m21ail.com",
   city: "Novi Sad",
   country: "Serbia",
   iso2Code: "SER",
@@ -27,8 +27,36 @@ const initialValues = {
 export const RegisterCompany = ({
   isFetching,
   isError,
-  createCompany
+  createCompany,
+  profile
 }) => {
+
+
+  const useComponentDidMount = func => React.useEffect(func, []);
+
+  const useComponentWillMount = func => {
+    const willMount = React.useRef(true);
+  
+    if (willMount.current) {
+      func();
+    }
+  
+    useComponentDidMount(() => {
+      willMount.current = false;
+    });
+  };
+
+  let initialValues={}
+
+  useComponentWillMount(() => {
+    if (profile) {
+      initialValues={...profile}
+    } else if (initialDummyValues) {
+      initialValues={...initialDummyValues}
+    }
+  })
+
+
   return (
     <Formik
       initialValues={initialValues}
@@ -42,7 +70,7 @@ export const RegisterCompany = ({
         //     formikBag.setErrors({ ...resp.errors })
         //   })
         //   .catch(err => console.log('error: ', err))
-        console.log(values)
+        // console.log(values)
         const payload = {...values}
 
         createCompany(payload).then(() => formikBag.setSubmitting(false))

@@ -19,6 +19,7 @@ import SeeksContainer from './ui/seeks/browse/SeeksContainer';
 import OffersContainer from './ui/offers/browse/OffersContainer';
 import EmployContainer from './ui/employ/EmployContainer';
 import SeekContainer from './ui/seek/SeekContainer';
+import RegisterContainer from './ui/register/RegisterContainer';
 
 
 const defaultTheme = createMuiTheme({
@@ -32,6 +33,7 @@ const defaultTheme = createMuiTheme({
 export const App = ({
   role,
   username,
+  loggedUser,
   verifyUser,
   checkCredentials,
   authReady,
@@ -59,7 +61,7 @@ export const App = ({
           <NavbarGeneric role={role} username={username} />
           <Switch>
             <Route exact path='/'>
-              <HomePage />
+              <HomePage role={role} />
             </Route>
             <Route exact path='/register-account'>
               <RegisterAccount />
@@ -103,6 +105,12 @@ export const App = ({
             <Route exact path='/seek'>
               <SeekContainer />
             </Route>
+            <Route exact path='/register'>
+              <RegisterContainer />
+            </Route>
+            <Route exact path='/profile'>
+              <RegisterContainer profile={loggedUser} />
+            </Route>
           </Switch>
         </Router>
       }
@@ -118,6 +126,7 @@ export const App = ({
 const mapStateToProps = (state) => {
   return {
     role: state.user.role,
+    loggedUser: state.user.loggedUser,
     username: state.user.username,
     authReady: state.user.authReady,
     hasCredentials: state.user.hasCredentials

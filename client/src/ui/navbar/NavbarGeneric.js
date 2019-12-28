@@ -53,7 +53,9 @@ export const NavbarGeneric = ({
     <div className={classes.root}>
       <AppBar position='static'>
         <Toolbar variant="dense" >
-          <NavbarDrawer />
+          { (role==="ROLE_USER" || role==="ROLE_ADMIN") && 
+            <NavbarDrawer />
+          }
           <div className={classes.title}>
             {/* <Typography variant="h6">
               3
@@ -87,13 +89,15 @@ export const NavbarGeneric = ({
 
         </Toolbar>
       </AppBar>
-      <Drawer
-        anchor='left'
-        open={drawer}
-        onClose={toggleDrawer(false)}
-      >
-        <p>THis is a drawer</p>
-      </Drawer>
+      { (role==="ROLE_USER" || role==="ROLE_ADMIN") && 
+        <Drawer
+          anchor='left'
+          open={drawer}
+          onClose={toggleDrawer(false)}
+        >
+          <p>THis is a drawer</p>
+        </Drawer>
+      }
     </div>
   )
 }

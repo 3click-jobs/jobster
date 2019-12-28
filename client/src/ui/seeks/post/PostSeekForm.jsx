@@ -99,8 +99,8 @@ export const PostSeekForm = ({
             />
 
             <CityAPIContainer city={ values.city !== "" ? { 
-                                  name: values.city, 
-                                  countryName: values.country,
+                                  name: values.name, 
+                                  countryName: values.countryName,
                                   city: values.city, 
                                   country: values.country,
                                   iso2Code: values.iso2Code,
@@ -115,6 +115,8 @@ export const PostSeekForm = ({
                                   // values.countryRegion = props.countryRegion; 
                                   // values.longitude = props.longitude; 
                                   // values.latitude = props.latitude;
+                                  setFieldValue('name', props.name)
+                                  setFieldValue('countryName', props.countryName)
                                   setFieldValue('city', props.city)
                                   setFieldValue('country', props.country)
                                   setFieldValue('iso2Code', props.iso2Code)
@@ -128,6 +130,8 @@ export const PostSeekForm = ({
                                   // values.countryRegion = ""; 
                                   // values.longitude = ""; 
                                   // values.latitude = "";
+                                  setFieldValue('name', "")
+                                  setFieldValue('countryName', "")
                                   setFieldValue('city', '')
                                   setFieldValue('country', '')
                                   setFieldValue('iso2Code', '')

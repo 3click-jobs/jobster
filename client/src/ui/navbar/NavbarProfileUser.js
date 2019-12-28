@@ -33,9 +33,9 @@ export const NavbarProfileUser = () => {
       <MenuItem onClick={handleMenuClose} component={RouterLink} to='/profile'>
         Profile
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}  component={RouterLink} to='/account'>
+      {/* <MenuItem onClick={handleMenuClose}  component={RouterLink} to='/account'>
         My Account
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem onClick={handleMenuClose}  component={RouterLink} to='/signout'>
         Sign-out
       </MenuItem>

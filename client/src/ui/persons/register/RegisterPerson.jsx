@@ -6,13 +6,13 @@ import { Formik } from 'formik'
 import { RegisterPersonForm } from './RegisterPersonForm'
 import { persons as personsSchema } from '../../../common/utils/schemas/persons'
 
-const initialValues = {
-  firstName: 'Pera',
-  lastName: 'Peric',
+const initialDummyValues = {
+  firstName: 'Perica',
+  lastName: 'Mitrovic',
   gender: 'GENDER_MALE',
   birthDate: '2000-12-12',
-  mobilePhone: "381605222122",
-  email: "mail@m2ail.com",
+  mobilePhone: "381605229922",
+  email: "mail88@m2ail.com",
   city: "Novi Sad",
   country: "Serbia",
   iso2Code: "SER",
@@ -29,8 +29,35 @@ const initialValues = {
 export const RegisterPerson = ({
   isFetching,
   isError,
-  createPerson
+  createPerson,
+  profile
 }) => {
+
+
+  const useComponentDidMount = func => React.useEffect(func, []);
+
+  const useComponentWillMount = func => {
+    const willMount = React.useRef(true);
+  
+    if (willMount.current) {
+      func();
+    }
+  
+    useComponentDidMount(() => {
+      willMount.current = false;
+    });
+  };
+
+  let initialValues={}
+
+  useComponentWillMount(() => {
+    if (profile) {
+      initialValues={...profile}
+    } else if (initialDummyValues) {
+      initialValues={...initialDummyValues}
+    }
+  })
+
   return (
     <Formik
       initialValues={initialValues}

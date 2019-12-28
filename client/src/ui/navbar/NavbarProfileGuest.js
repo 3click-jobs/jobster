@@ -34,7 +34,7 @@ export const NavbarProfileGuest = () => {
         <RouterLink to='/login'>Login</RouterLink>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
-        <RouterLink to='/signup'>Sign-up</RouterLink>
+        <RouterLink to='/register'>Register</RouterLink>
       </MenuItem>
     </Menu>
   )
