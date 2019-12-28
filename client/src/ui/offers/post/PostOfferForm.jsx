@@ -48,7 +48,7 @@ export const PostOfferForm = ({
   touched,
   errors,
   isSubmitting, 
-  handleReset,
+  handleReset
 }) => {
 
   const { setFieldValue } = useFormikContext()
@@ -99,8 +99,8 @@ export const PostOfferForm = ({
             />
 
             <CityAPIContainer city={ { 
-                                  name: values.city, 
-                                  countryName: values.country,
+                                  name: values.name, 
+                                  countryName: values.countryName,
                                   city: values.city, 
                                   country: values.country,
                                   iso2Code: values.iso2Code,
@@ -109,19 +109,37 @@ export const PostOfferForm = ({
                                   latitude: values.latitude,
                                 } } 
                               setCity = {(props) => { if (props) {
-                                  values.city = props.city; 
-                                  values.country = props.country; 
-                                  values.iso2Code = props.iso2Code;
-                                  values.countryRegion = props.countryRegion; 
-                                  values.longitude = props.longitude; 
-                                  values.latitude = props.latitude
+                                  setFieldValue('name', props.name)
+                                  setFieldValue('countryName', props.countryName)
+                                  setFieldValue('city', props.city)
+                                  setFieldValue('country', props.country)
+                                  setFieldValue('iso2Code', props.iso2Code)
+                                  setFieldValue('countryRegion', props.countryRegion)
+                                  setFieldValue('longitude', props.longitude)
+                                  setFieldValue('latitude', props.latitude)
+                                  // values.name = props.name; 
+                                  // values.countryName = props.countryName; 
+                                  // values.city = props.city; 
+                                  // values.country = props.country; 
+                                  // values.iso2Code = props.iso2Code;
+                                  // values.countryRegion = props.countryRegion; 
+                                  // values.longitude = props.longitude; 
+                                  // values.latitude = props.latitude;
                                 } else {
-                                  values.city = ""; 
-                                  values.country = ""; 
-                                  values.iso2Code = "";
-                                  values.countryRegion = ""; 
-                                  values.longitude = ""; 
-                                  values.latitude = ""
+                                  setFieldValue('name', "")
+                                  setFieldValue('countryName', "")
+                                  setFieldValue('city', "")
+                                  setFieldValue('country', "")
+                                  setFieldValue('iso2Code', "")
+                                  setFieldValue('countryRegion', "")
+                                  setFieldValue('longitude', "")
+                                  setFieldValue('latitude', "")
+                                  // values.city = ""; 
+                                  // values.country = ""; 
+                                  // values.iso2Code = "";
+                                  // values.countryRegion = ""; 
+                                  // values.longitude = ""; 
+                                  // values.latitude = "";
                                 } } } />
 
             <TextField

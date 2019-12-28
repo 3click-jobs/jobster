@@ -36,8 +36,9 @@ export default function CityAPIContainer(props) {
     }
     
     const handleCitySelect = (newValue) => {
+        // console.log(newValue)
         if (newValue && newValue !== "" && newValue !== " ") {
-            props.setCity({name: newValue.name, countryName: newValue.countryName, city: newValue.name, latitude: newValue.lat, longitude: newValue.lng, countryRegion: newValue.adminName1, country: newValue.countryName, iso2Code: newValue.countryCode}) 
+            props.setCity({name: newValue.name, countryName: newValue.countryName, city: newValue.asciiName, latitude: newValue.lat, longitude: newValue.lng, countryRegion: newValue.adminName1, country: newValue.countryName, iso2Code: newValue.countryCode}) 
         } else {
             // props.setCity({name: null, countryName: null, city: null, latitude: null, longitude: null, countryRegion: null, country: null, iso2Code: null}) 
             props.setCity(null) 

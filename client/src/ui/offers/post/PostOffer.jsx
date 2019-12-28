@@ -110,7 +110,9 @@ export const PostOffer = ({
   createOffer,
   loadOffersAll,
   city,
-  jobType
+  jobType,
+  setCity,
+  handleJobType
 }) => {
 
 
@@ -131,6 +133,8 @@ export const PostOffer = ({
   useComponentWillMount(() => {
     if (city && jobType) {
       initialValues.jobType = {...jobType};
+      initialValues.name = city.name; 
+      initialValues.countryName = city.countryName; 
       initialValues.city = city.city;
       initialValues.country = city.country;
       initialValues.countryRegion = city.countryRegion;
@@ -140,7 +144,22 @@ export const PostOffer = ({
     }
   })
 
+  // React.useEffect(() => {
+  //   handleJobType({...initialValues.jobType}); 
+  // }, [initialValues.jobType, handleJobType])
 
+  // React.useEffect(() => {
+  //   setCity({ name: initialValues.name, 
+  //                   countryName: initialValues.countryName, 
+  //                   city: initialValues.city, 
+  //                   country: initialValues.country,
+  //                   iso2Code: initialValues.iso2Code,
+  //                   countryRegion: initialValues.countryRegion,
+  //                   longitude: initialValues.longitude,
+  //                   latitude: initialValues.latitude });
+  // }, [initialValues.city, setCity])
+
+  
   return (
     <Formik
       initialValues={initialValues}
@@ -148,7 +167,7 @@ export const PostOffer = ({
 
           const payload = {...values}
           // console.log("payload")
-          // console.log(payload)
+          console.log(payload)
 
           createOffer(payload).then(() => {formikBag.setSubmitting(false); loadOffersAll()})
           // console.log("DONE")

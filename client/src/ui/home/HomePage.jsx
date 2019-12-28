@@ -1,4 +1,5 @@
 import React from 'react'
+// import { connect } from 'react-redux'
 // import RegisterAccount from '../accounts/RegisterAccount';
 // import NavbarGeneric from '../navbar/NavbarGeneric'
 import LookingForAJobCard from './cards/LookingForAJobCard';
@@ -19,9 +20,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export const HomePage = () => {
+export const HomePage = ({
+  role
+}) => {
 
   const classes = useStyles();
+
 
   return (
     <div className={classes.root} >
@@ -32,12 +36,16 @@ export const HomePage = () => {
         <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
           <LookingForAEmployeeCard />
         </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
-          <OfferingAJobCard />
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
-          <SeekingForAJobCard />
-        </Grid>
+        { (role==="ROLE_USER" || role==="ROLE_ADMIN") && 
+        <React.Fragment>
+          <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
+            <OfferingAJobCard />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6} lg={5} xl={3}>
+            <SeekingForAJobCard />
+          </Grid>
+        </React.Fragment>
+        }
       </Grid>
     </div>
 

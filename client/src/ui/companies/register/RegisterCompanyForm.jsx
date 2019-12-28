@@ -175,21 +175,29 @@ export const RegisterCompanyForm = ({
               }
             />
 
-            <CityAPIContainer city={city} setCity = {(props) => { if (props) {
-                                                                  values.city = props.city; 
-                                                                  values.country = props.country; 
-                                                                  values.iso2Code = props.iso2Code;
-                                                                  values.countryRegion = props.countryRegion; 
-                                                                  values.longitude = props.longitude; 
-                                                                  values.latitude = props.latitude
-                                                                } else {
-                                                                  values.city = ""; 
-                                                                  values.country = ""; 
-                                                                  values.iso2Code = "";
-                                                                  values.countryRegion = ""; 
-                                                                  values.longitude = ""; 
-                                                                  values.latitude = ""
-                                                                } } } />
+            <CityAPIContainer city={ values.city ? { name: values.city,
+                                countryName: values.country,
+                                city: values.city,
+                                country: values.country,
+                                iso2Code: values.iso2Code,
+                                countryRegion: values.countryRegion,
+                                longitude: values.longitude,
+                                latitude: values.latitude } : null } 
+                              setCity = {(props) => { if (props) {
+                                values.city = props.city; 
+                                values.country = props.country; 
+                                values.iso2Code = props.iso2Code;
+                                values.countryRegion = props.countryRegion; 
+                                values.longitude = props.longitude; 
+                                values.latitude = props.latitude
+                              } else {
+                                values.city = ""; 
+                                values.country = ""; 
+                                values.iso2Code = "";
+                                values.countryRegion = ""; 
+                                values.longitude = ""; 
+                                values.latitude = ""
+                              } } } />
 
             {/* <TextField
               label="City"
