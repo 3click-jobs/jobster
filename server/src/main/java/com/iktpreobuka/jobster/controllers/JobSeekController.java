@@ -31,133 +31,133 @@ public class JobSeekController {
 	public JobSeekRepository jobSeekRepository;
 	
 	@Autowired
-	public JobSeekDao jobService;
+	public JobSeekDao jobSeekService;
 	
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekEntity")
 	public JobSeekEntity emptyJobSeekEntity() {
-		return jobService.emptyJobSeekEntity();
+		return jobSeekService.emptyJobSeekEntity();
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekPostDto")
 	public JobSeekPostDto empty() {
-		return jobService.empty();
+		return jobSeekService.empty();
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyWith")
 	public JobSeekPostDto emptyWithEmptyDayHours() {
-		return jobService.emptyWithEmptyDayHours();
+		return jobSeekService.emptyWithEmptyDayHours();
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/newseek")
 	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekPostDto seek, Principal principal, BindingResult result){
-		return jobService.addNewSeek(seek, principal, result);
+		return jobSeekService.addNewSeek(seek, principal, result);
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, value = "/modifySeek/{seekId}")
 	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekPutDto seek, @PathVariable Integer seekId, Principal principal, BindingResult result){
-		return jobService.modifySeek(seek, seekId, principal, result);
+		return jobSeekService.modifySeek(seek, seekId, principal, result);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll() {
-		return jobService.getAll();
+		return jobSeekService.getAll();
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id){
-		return jobService.getById(id);
+		return jobSeekService.getById(id);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/employee/{id}")
 	public ResponseEntity<?> getAllLikeEmployee(@PathVariable Integer id){
-		return jobService.getAllLikeEmployee(id);
+		return jobSeekService.getAllLikeEmployee(id);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/city/{id}")
 	public ResponseEntity<?> getAllLikeCity(@PathVariable Integer id){
-		return jobService.getAllLikeCity(id);
+		return jobSeekService.getAllLikeCity(id);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/jobType/{id}")
 	public ResponseEntity<?> getAllLikeJobType(@PathVariable Integer id){
-		return jobService.getAllLikeJobType(id);
+		return jobSeekService.getAllLikeJobType(id);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/distance")
 	public ResponseEntity<?> getAllJobSeekWhereDistanceIsAndLessThen(@RequestParam Integer distance){
-		return jobService.getAllJobSeekWhereDistanceIsAndLessThen(distance);
+		return jobSeekService.getAllJobSeekWhereDistanceIsAndLessThen(distance);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/beginDate")
 	public ResponseEntity<?> getAllWithBeginnigDate(@RequestParam Date beginDate){
-		return jobService.getAllWithBeginnigDate(beginDate);
+		return jobSeekService.getAllWithBeginnigDate(beginDate);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/endDate")
 	public ResponseEntity<?> getAllWithEndDate(@RequestParam Date endDate){
-		return jobService.getAllWithEndDate(endDate);
+		return jobSeekService.getAllWithEndDate(endDate);
 	}
 	
 			
 	@RequestMapping(method = RequestMethod.GET, value = "/flexDates")
 	public ResponseEntity<?> getAllWithFlexibileDates(@RequestParam boolean flexDates){
-		return jobService.getAllWithFlexibileDates(flexDates);
+		return jobSeekService.getAllWithFlexibileDates(flexDates);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/price")
 	public ResponseEntity<?> getAllWherePriceIsAndMore(@RequestParam Double price){
-		return jobService.getAllWherePriceIsAndMore(price);
+		return jobSeekService.getAllWherePriceIsAndMore(price);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/flexDays")
 	public ResponseEntity<?> getAllWithFlexibileDays(@RequestParam boolean flexDays){
-		return jobService.getAllWithFlexibileDays(flexDays);
+		return jobSeekService.getAllWithFlexibileDays(flexDays);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/status")
 	public ResponseEntity<?> getAllWithStatus(@RequestParam Integer status){
-		return jobService.getAllWithStatus(status);
+		return jobSeekService.getAllWithStatus(status);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/elapse")
 	public ResponseEntity<?> getAllWithElapse(@RequestParam Integer elapse){
-		return jobService.getAllWithElapse(elapse);
+		return jobSeekService.getAllWithElapse(elapse);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/createdBy")
 	public ResponseEntity<?> getAllByCreatedBy(@RequestParam Integer createdBy){
-		return jobService.getAllByCreatedBy(createdBy);
+		return jobSeekService.getAllByCreatedBy(createdBy);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/updatedBy")
 	public ResponseEntity<?> getAllByUpdatedBy(@RequestParam Integer updatedBy){
-		return jobService.getAllByUpdatedBy(updatedBy);
+		return jobSeekService.getAllByUpdatedBy(updatedBy);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/version")
 	public ResponseEntity<?> getAllByVersion(@RequestParam Integer version){
-		return jobService. getAllByVersion(version);
+		return jobSeekService. getAllByVersion(version);
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
 	public ResponseEntity<?> deleteById(@PathVariable Integer id){
-		return jobService.deleteById(id);
+		return jobSeekService.deleteById(id);
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/unDelete/{id}")
 	public ResponseEntity<?> unDeleteById(@PathVariable Integer id){
-		return jobService.unDeleteById(id);
+		return jobSeekService.unDeleteById(id);
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/archive/{id}")
 	public ResponseEntity<?> archiveById(@PathVariable Integer id){
-		return jobService.archiveById(id);
+		return jobSeekService.archiveById(id);
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/unArchive/{id}")
 	public ResponseEntity<?> unArchiveById(@PathVariable Integer id){
-		return jobService.unArchiveById(id);
+		return jobSeekService.unArchiveById(id);
 	}
 
 }
