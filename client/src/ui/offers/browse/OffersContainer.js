@@ -1,10 +1,33 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Grid from '@material-ui/core/Grid'
+import { makeStyles } from '@material-ui/core/styles';
+import NavigationRoundedIcon from '@material-ui/icons/NavigationRounded';
+import Fab from '@material-ui/core/Fab';
+// import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { actions as offersActions } from '../../../redux/actions/offers'
 import { offersSelectors } from '../../../redux/selectors/offers'
 import OfferCard from './OfferCard'
+
+
+const useStyles = makeStyles(theme => ({
+  absolute: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(3),
+  },
+  floatingBottomRight : {
+    margin: 0,
+    top: 'auto',
+    right: 20,
+    bottom: 20,
+    left: 'auto',
+    position: 'fixed',
+    overflowX: 'hidden',
+  },
+}));
 
 
 export const OffersContainer = ({
@@ -20,6 +43,9 @@ export const OffersContainer = ({
 }) => {
 
   const [acceptableOffers, setAcceptableOffers] = React.useState(null)
+  const [windowPosition, setWindowPosition] = React.useState(0)
+
+  const classes = useStyles();
 
   React.useEffect(() => {
     if (offersAll.length === 0)
@@ -34,6 +60,17 @@ export const OffersContainer = ({
       setAcceptableOffers(offersAll)
     }
   }, [offersAll, selectedCity, selectedJobType])
+
+  React.useEffect(() => {
+    function handleScroll() {
+      setWindowPosition(window.pageYOffset);
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    return function cleanup() {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  });
 
 
   return (
@@ -52,6 +89,13 @@ export const OffersContainer = ({
                     })}     
                 </Grid>
             </div>
+            <Tooltip title="Top" aria-label="top" placement="right-end" onClick={ () => { window.scroll(0, 0); }}>
+              {/* <IconButton aria-label="delete"> */}
+              <Fab color="primary" className={classes.floatingBottomRight} style={{ display: windowPosition === 0 ? 'none' : null }} >
+                <NavigationRoundedIcon />
+              </Fab>
+              {/* </IconButton> */}
+            </Tooltip>
         </React.Fragment>
 
       }

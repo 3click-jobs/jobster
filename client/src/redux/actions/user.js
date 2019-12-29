@@ -1,7 +1,8 @@
-// import rest from '../../common/api/rest'
+import { env } from '../../common/api/env'
 import { hasCredentials, setCredentials, removeCredentials, getAuthHeader } from '../../common/auth'
 
-const verifyUrl = 'http://localhost:3001/verify'
+const verifyUrl = env.baseUrl + '/verify'
+console.log(verifyUrl)
 
 const verifyUserFetch = async () => {
   try {
