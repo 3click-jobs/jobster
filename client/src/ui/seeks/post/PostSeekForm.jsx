@@ -13,6 +13,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import JobDayHoursContainer from '../../jobDayHours/JobDayHoursContainer';
+import { green, red } from '@material-ui/core/colors';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
 
 
 const theme = createMuiTheme({
@@ -83,22 +86,24 @@ export const PostSeekForm = ({
                 touched.detailsLink
                   ? Boolean(errors.detailsLink)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.detailsLink)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.detailsLink 
+                    ? Boolean(errors.detailsLink)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
-            <CityAPIContainer city={ values.city !== "" ? { 
+            <CityAPIContainer city={ {  
                                   name: values.name, 
                                   countryName: values.countryName,
                                   city: values.city, 
@@ -107,7 +112,7 @@ export const PostSeekForm = ({
                                   countryRegion: values.countryRegion,
                                   longitude: values.longitude,
                                   latitude: values.latitude,
-                                } : null } 
+                                } } 
                               setCity = {(props) => { if (props) {
                                   // values.city = props.city; 
                                   // values.country = props.country; 
@@ -159,19 +164,21 @@ export const PostSeekForm = ({
                 touched.distanceToJob
                   ? Boolean(errors.distanceToJob)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.distanceToJob)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.distanceToJob 
+                    ? Boolean(errors.distanceToJob)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -193,19 +200,21 @@ export const PostSeekForm = ({
                 touched.price
                   ? Boolean(errors.price)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.price)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.price 
+                    ? Boolean(errors.price)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -228,19 +237,21 @@ export const PostSeekForm = ({
                 touched.beginningDate
                   ? Boolean(errors.beginningDate)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.beginningDate)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.beginningDate 
+                    ? Boolean(errors.beginningDate)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -263,19 +274,21 @@ export const PostSeekForm = ({
                 touched.endDate
                   ? Boolean(errors.endDate)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.endDate)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.endDate 
+                    ? Boolean(errors.endDate)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <FormControl component="fieldset">

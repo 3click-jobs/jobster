@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid'
 import { actions as seeksActions } from '../../../redux/actions/seeks'
 import { seeksSelectors } from '../../../redux/selectors/seeks'
 import SeekCard from './SeekCard'
+import ToTopButton from '../../toTopButton/ToTopButton';
 
 
 export const SeeksContainer = ({
@@ -20,6 +21,7 @@ export const SeeksContainer = ({
 }) => {
 
   const [acceptableSeeks, setAcceptableSeeks] = React.useState(null)
+
 
   React.useEffect(() => {
     if (seeksAll.length === 0)
@@ -52,6 +54,7 @@ export const SeeksContainer = ({
                     })}     
                 </Grid>
             </div>
+            <ToTopButton />
         </React.Fragment>
 
       }

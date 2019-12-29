@@ -57,7 +57,8 @@ export const SeekContainer = ({
   jobTypesAll,
   jobTypesIsLoading,
   jobTypesIsError,
-  loadJobTypesAll
+  loadJobTypesAll,
+  profile
 }) => {
 
   const [city, setCity] = React.useState(null)
@@ -142,7 +143,7 @@ export const SeekContainer = ({
           <TabPanel value={activeTab} index={2}>
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
-                <PostSeek city={city} jobType={jobType} setCity = {setCity} handleJobType={ (jobType)=> { setJobType(jobType); } } />
+                <PostSeek employee={profile} city={city} jobType={jobType} setCity = {setCity} handleJobType={ (jobType)=> { setJobType(jobType); } } />
                 <div>
                   <Button
                     variant="contained"

@@ -13,7 +13,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 1
       },
       {    
         chck: false,
@@ -21,7 +22,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 2
       },
       {    
         chck: false,
@@ -29,7 +31,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 3
       },
       {    
         chck: false,
@@ -37,7 +40,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 4
       },
       {    
         chck: false,
@@ -45,7 +49,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 5
       },
       {    
         chck: false,
@@ -53,7 +58,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 6
       },
       {    
         chck: false,
@@ -61,7 +67,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 7
       },
 ]
 
