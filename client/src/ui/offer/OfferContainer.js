@@ -70,7 +70,8 @@ export const OfferContainer = ({
   jobTypesAll,
   jobTypesIsLoading,
   jobTypesIsError,
-  loadJobTypesAll
+  loadJobTypesAll,
+  profile
 }) => {
 
   const [city, setCity] = React.useState(null)
@@ -277,7 +278,7 @@ export const OfferContainer = ({
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
                 {/* Item Three -> Confirm details & post. (disabled until city & job are chosen). */}
-                <PostOffer city={city} jobType={jobType} setCity = {setCity} handleJobType={ (jobType)=> { setJobType(jobType); } } />
+                <PostOffer employer={profile} city={city} jobType={jobType} setCity = {setCity} handleJobType={ (jobType)=> { setJobType(jobType); } } />
                 <div>
                   <Button
                     variant="contained"

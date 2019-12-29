@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form } from 'formik'
+import { useFormikContext, Form } from 'formik'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import CardActions from '@material-ui/core/CardActions'
@@ -7,6 +7,13 @@ import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import { makeStyles } from '@material-ui/core/styles';
+import { green, red } from '@material-ui/core/colors';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+
 
 // !!! IMPORTANT
 // YOU HAVE WORKING EXAMPLES IN PROJECTS/DESIGN/FORMS etc
@@ -35,6 +42,8 @@ export const LoginForm = ({
   isSubmitting
 }) => {
 
+  const { setFieldValue } = useFormikContext()
+
   const classes = useStyles();
 
 
@@ -61,24 +70,27 @@ export const LoginForm = ({
                 touched.username
                   ? Boolean(errors.username)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.username)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
+                  : values.username 
+                    ? Boolean(errors.username)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
               }
             />
 
             <TextField
               label="Password"
               name="password"
+              type={values.showPassword ? 'text' : 'password'}
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -91,32 +103,36 @@ export const LoginForm = ({
               margin="normal"
               fullWidth={true}
               InputProps={
-                touched.password
-                  ? Boolean(errors.password)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
-                    }
-                  : Boolean(errors.password)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
+                { endAdornment: 
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setFieldValue('showPassword', !values.showPassword)}
+                    >
+                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                    {touched.password
+                      ? Boolean(errors.password)
+                        ?  <ClearIcon style={{ color: red[600] }} />
+                        : <CheckIcon style={{ color: green[600] }} />
+                      : values.password 
+                        ? Boolean(errors.password)
+                          ? <ClearIcon style={{ color: red[600] }} />
+                          : <CheckIcon style={{ color: green[600] }} />
+                        : null}
+                  </InputAdornment>
+                }
               }
             />
 
           </CardContent>
           <CardActions className={classes.actions}>
             <Button color='primary' type='submit' disabled={isSubmitting}>
-              SUBMIT
+              Log In
             </Button>
-            <Button color='secondary'>
+            {/* <Button color='secondary'>
               CLEAR
-          </Button>
+          </Button> */}
 
           </CardActions>
         </Card>

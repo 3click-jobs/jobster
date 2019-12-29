@@ -9,8 +9,8 @@ import RegisterCompany from './ui/companies/register/RegisterCompany';
 
 import { connect } from 'react-redux'
 import { verifyUser, checkCredentials } from './redux/actions/user'
-import Login from './ui/accounts/Login';
-import Signout from './ui/accounts/Signout'
+// import Login from './ui/accounts/Login';
+// import Signout from './ui/accounts/Signout'
 import ApplyContainer from './ui/apply/ApplyContainer';
 import OfferContainer from './ui/offer/OfferContainer';
 import PersonsContainer from './ui/persons/browse/PersonsContainer';
@@ -40,6 +40,7 @@ export const App = ({
   hasCredentials
 }) => {
 
+
   React.useEffect(() => {
     checkCredentials()
   }, [hasCredentials, checkCredentials])
@@ -58,7 +59,7 @@ export const App = ({
       {
         authReady &&
         <Router>
-          <NavbarGeneric role={role} username={username} />
+          <NavbarGeneric role={role} />
           <Switch>
             <Route exact path='/'>
               <HomePage role={role} />
@@ -87,23 +88,23 @@ export const App = ({
             <Route exact path='/offers'>
               <OffersContainer />
             </Route>
-            <Route exact path='/login'>
-              <Login />
+            {/* <Route exact path='/login'>
+                <Login />
             </Route>
             <Route exact path='/signout'>
               <Signout />
-            </Route>
+            </Route> */}
             <Route exact path='/apply'>
               <ApplyContainer />
             </Route>
             <Route exact path='/offer'>
-              <OfferContainer />
+              <OfferContainer profile={loggedUser} />
             </Route>
             <Route exact path='/employ'>
               <EmployContainer />
             </Route>
             <Route exact path='/seek'>
-              <SeekContainer />
+              <SeekContainer profile={loggedUser} />
             </Route>
             <Route exact path='/register'>
               <RegisterContainer />
