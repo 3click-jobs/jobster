@@ -22,6 +22,7 @@ import CityAPIContainer from '../cities/CityAPIContainer';
 //import utf8 from 'utf8'
 import OffersContainer from '../offers/browse/OffersContainer';
 import JobTypesContainer from '../jobTypes/JobTypesContainer';
+import TextField from '@material-ui/core/TextField'
 
 
 const useStyles = makeStyles(theme => ({
@@ -99,6 +100,7 @@ export const ApplyContainer = ({
 }) => {
 
   const [city, setCity] = React.useState(null)
+  const [distance, setDistance] = React.useState(0)
   const [jobType, setJobType] = React.useState(null)
   const [activeTab, setActiveTab] = React.useState(0)
   // const [cityAPI, setCityAPI] = React.useState(null)
@@ -305,6 +307,22 @@ export const ApplyContainer = ({
                 <div className={classes.tabContainer}>
                   <div className={classes.tabPaper}>
                     <CityAPIContainer city={city} setCity = {setCity} />
+                    <TextField
+                      label="Acceptable distance from selected city"
+                      name="distanceToJob"
+                      type="number"
+                      value={distance}
+                      onChange={(event) => {
+                          if (event.target.value < 0) {
+                            setDistance(0);
+                          } else {
+                            setDistance(event.target.value)
+                          }
+                      }}
+                      margin="normal"
+                      variant="outlined"
+                      fullWidth={true}
+                    />
                     <div>
                       <Button
                         disabled={ !city }
@@ -376,7 +394,7 @@ export const ApplyContainer = ({
               </TabPanel>
               <TabPanel value={activeTab} index={2}>
                 {/* Item Three -> Render Job details & apply component. (disabled until city & job are chosen). */}
-                <OffersContainer selectedCity={city} selectedJobType={jobType} />
+                <OffersContainer distance={distance} selectedCity={city} selectedJobType={jobType} />
                 <div className={classes.tabContainer}>
                   <div className={classes.tabPaper}>
                     <div>
