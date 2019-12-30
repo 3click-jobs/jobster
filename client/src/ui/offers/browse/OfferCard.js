@@ -217,10 +217,10 @@ export const OfferCard = (props) => {
                 }
               <Typography gutterBottom variant="subtitle1">Employer:</Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                Name: {props.offer.employer.companyName}
+                Name: {props.offer.employer.companyName ? props.offer.employer.companyName : props.offer.employer.firstName + " " + props.offer.employer.lastName }
               </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                Location: {props.offer.employer.city + ", " + props.offer.employer.country}
+                Place of residence: {props.offer.employer.city + ", " + props.offer.employer.country}
               </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
                 About: {props.offer.employer.about}

@@ -114,16 +114,16 @@ export const JobDayHoursForm = ({
                 required 
                 onBlur={handleBlur}
                 helperText={
-                  (touched.fromHour && Boolean(errors.fromHour))
+                  (touched && touched.fromHour && Boolean(errors.fromHour))
                     ? errors.fromHour
                     : ' '
                 }
-                error={touched.fromHour && Boolean(errors.fromHour)}
+                error={touched && touched.fromHour && Boolean(errors.fromHour)}
                 margin="normal"
                 variant="outlined"
                 // fullWidth={true}
                 InputProps={
-                  touched.fromHour
+                  (touched && touched.fromHour)
                     ? Boolean(errors.fromHour)
                       ? {
                         endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
@@ -157,16 +157,16 @@ export const JobDayHoursForm = ({
                 required 
                 onBlur={handleBlur}
                 helperText={
-                  (touched.toHour && Boolean(errors.toHour))
+                  (touched && touched.toHour && Boolean(errors.toHour))
                     ? errors.toHour
                     : ' '
                 }
-                error={touched.toHour && Boolean(errors.toHour)}
+                error={touched && touched.toHour && Boolean(errors.toHour)}
                 margin="normal"
                 variant="outlined"
                 // fullWidth={true}
                 InputProps={
-                  touched.toHour
+                  (touched && touched.toHour)
                     ? Boolean(errors.toHour)
                       ? {
                         endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
