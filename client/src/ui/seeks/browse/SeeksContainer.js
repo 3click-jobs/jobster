@@ -8,6 +8,33 @@ import SeekCard from './SeekCard'
 import ToTopButton from '../../toTopButton/ToTopButton';
 
 
+const toRadians = (angle) => {
+  return angle * (Math.PI / 180);
+}
+
+const toDegrees = (radians) => {
+  return radians * (180 / Math.PI);
+}
+
+const countDistance = (lat1, lon1, lat2, lon2, unit) => {
+  if ((lat1 === lat2) && (lon1 === lon2)) {
+    return 0;
+  } else {
+    let theta = lon1 - lon2;
+    let dist = Math.sin(toRadians(lat1)) * Math.sin(toRadians(lat2)) + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(toRadians(theta));
+    dist = Math.acos(dist);
+    dist = toDegrees(dist);
+    dist = dist * 60 * 1.1515; //Miles
+    if (unit === "KM") { 
+      dist = dist * 1.609344; //Kilometers
+    } else if (unit === "NM") {
+      dist = dist * 0.8684; //Nautical Miles
+    }
+    return (dist);
+  }
+}
+
+
 export const SeeksContainer = ({
   role,
   seeksAll,
@@ -17,7 +44,7 @@ export const SeeksContainer = ({
   accept,
   decline,
   selectedCity,
-  selectedJobType
+  selectedJobType,
 }) => {
 
   const [acceptableSeeks, setAcceptableSeeks] = React.useState(null)
@@ -30,7 +57,14 @@ export const SeeksContainer = ({
 
   React.useEffect(() => {
     if (selectedCity && selectedJobType) {
-      const byCityAndJob = seeksAll.filter(o => o.city === selectedCity.city && o.country === selectedCity.country && o.jobType.jobTypeName === selectedJobType.jobTypeName )
+      seeksAll.forEach(element => {
+        // console.log(element.city)
+        // console.log(element.latitude + " " + element.longitude)
+        // console.log(element.jobType.jobTypeName)
+        // console.log(countDistance(element.latitude, element.longitude, selectedCity.latitude, selectedCity.longitude, "KM"))
+      });
+      const byCityAndJob = seeksAll.filter(o => o.jobType.jobTypeName === selectedJobType.jobTypeName 
+                                                && countDistance(o.latitude, o.longitude, selectedCity.latitude, selectedCity.longitude, "KM") <= o.distanceToJob)
       setAcceptableSeeks(byCityAndJob)
     } else {
       setAcceptableSeeks(seeksAll)

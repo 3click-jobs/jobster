@@ -133,6 +133,7 @@ export const PostSeek = ({
   city,
   jobType,
   employee,
+  distance,
   setCity,
   handleJobType
 }) => {
@@ -152,7 +153,7 @@ export const PostSeek = ({
   };
 
   useComponentWillMount(() => {
-    if (city && jobType) {
+    if (city && jobType && distance) {
       initialValues.employee = {...employee};
       initialValues.jobType = {...jobType}; 
       initialValues.name = city.name; 
@@ -163,6 +164,7 @@ export const PostSeek = ({
       initialValues.longitude = city.longitude;
       initialValues.latitude = city.latitude;
       initialValues.iso2Code = city.iso2Code;
+      initialValues.distanceToJob = distance;
     }
   })
 

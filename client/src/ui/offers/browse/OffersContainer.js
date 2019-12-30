@@ -8,6 +8,33 @@ import OfferCard from './OfferCard'
 import ToTopButton from '../../toTopButton/ToTopButton';
 
 
+const toRadians = (angle) => {
+  return angle * (Math.PI / 180);
+}
+
+const toDegrees = (radians) => {
+  return radians * (180 / Math.PI);
+}
+
+const countDistance = (lat1, lon1, lat2, lon2, unit) => {
+  if ((lat1 === lat2) && (lon1 === lon2)) {
+    return 0;
+  } else {
+    let theta = lon1 - lon2;
+    let dist = Math.sin(toRadians(lat1)) * Math.sin(toRadians(lat2)) + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(toRadians(theta));
+    dist = Math.acos(dist);
+    dist = toDegrees(dist);
+    dist = dist * 60 * 1.1515; //Miles
+    if (unit === "KM") { 
+      dist = dist * 1.609344; //Kilometers
+    } else if (unit === "NM") {
+      dist = dist * 0.8684; //Nautical Miles
+    }
+    return (dist);
+  }
+}
+
+
 export const OffersContainer = ({
   role,
   offersAll,
@@ -17,7 +44,8 @@ export const OffersContainer = ({
   accept,
   decline,
   selectedCity,
-  selectedJobType
+  selectedJobType,
+  distance
 }) => {
 
   const [acceptableOffers, setAcceptableOffers] = React.useState(null)
@@ -28,13 +56,14 @@ export const OffersContainer = ({
   }, [loadOffersAll, offersAll])
 
   React.useEffect(() => {
-    if (selectedCity && selectedJobType) {
-      const byCityAndJob = offersAll.filter(o => o.city === selectedCity.city && o.country === selectedCity.country && o.jobType.jobTypeName === selectedJobType.jobTypeName )
+    if (selectedCity && selectedJobType && distance) {
+      const byCityAndJob = offersAll.filter(o => o.jobType.jobTypeName === selectedJobType.jobTypeName
+                                                && countDistance(o.latitude, o.longitude, selectedCity.latitude, selectedCity.longitude, "KM") <= distance )
       setAcceptableOffers(byCityAndJob)
     } else {
       setAcceptableOffers(offersAll)
     }
-  }, [offersAll, selectedCity, selectedJobType])
+  }, [offersAll, selectedCity, selectedJobType, distance])
 
   // let windowScrolled = 0
 

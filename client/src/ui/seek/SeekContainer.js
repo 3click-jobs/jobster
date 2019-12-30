@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CityAPIContainer from '../cities/CityAPIContainer';
 import PostSeek from '../seeks/post/PostSeek';
 import JobTypesContainer from '../jobTypes/JobTypesContainer';
+import TextField from '@material-ui/core/TextField'
 
 
 const useStyles = makeStyles(theme => ({
@@ -62,6 +63,7 @@ export const SeekContainer = ({
 }) => {
 
   const [city, setCity] = React.useState(null)
+  const [distance, setDistance] = React.useState(0)
   const [jobType, setJobType] = React.useState(null)
   const [activeTab, setActiveTab] = React.useState(0)
   const classes = useStyles();
@@ -97,6 +99,22 @@ export const SeekContainer = ({
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
                 <CityAPIContainer city={city} setCity = {setCity} />
+                <TextField
+                  label="Acceptable distance to job"
+                  name="distanceToJob"
+                  type="number"
+                  value={distance}
+                  onChange={(event) => {
+                      if (event.target.value < 0) {
+                        setDistance(0);
+                      } else {
+                        setDistance(event.target.value)
+                      }
+                  }}
+                  margin="normal"
+                  variant="outlined"
+                  fullWidth={true}
+                />
                 <div>
                   <Button
                     disabled={ !city }
@@ -143,7 +161,7 @@ export const SeekContainer = ({
           <TabPanel value={activeTab} index={2}>
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
-                <PostSeek employee={profile} city={city} jobType={jobType} setCity = {setCity} handleJobType={ (jobType)=> { setJobType(jobType); } } />
+                <PostSeek distance={distance} employee={profile} city={city} jobType={jobType} setCity = {setCity} handleJobType={ (jobType)=> { setJobType(jobType); } } />
                 <div>
                   <Button
                     variant="contained"
