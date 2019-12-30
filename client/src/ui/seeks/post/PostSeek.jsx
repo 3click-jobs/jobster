@@ -153,7 +153,7 @@ export const PostSeek = ({
   };
 
   useComponentWillMount(() => {
-    if (city && jobType && distance) {
+    if (city && jobType && distance >= 0  ) {
       initialValues.employee = {...employee};
       initialValues.jobType = {...jobType}; 
       initialValues.name = city.name; 

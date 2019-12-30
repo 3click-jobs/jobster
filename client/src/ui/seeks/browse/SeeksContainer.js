@@ -57,14 +57,15 @@ export const SeeksContainer = ({
 
   React.useEffect(() => {
     if (selectedCity && selectedJobType) {
-      seeksAll.forEach(element => {
-        // console.log(element.city)
-        // console.log(element.latitude + " " + element.longitude)
-        // console.log(element.jobType.jobTypeName)
-        // console.log(countDistance(element.latitude, element.longitude, selectedCity.latitude, selectedCity.longitude, "KM"))
-      });
+      // seeksAll.forEach(element => {
+      //   // console.log(element.city)
+      //   // console.log(element.latitude + " " + element.longitude)
+      //   // console.log(element.jobType.jobTypeName)
+      //   // console.log(countDistance(element.latitude, element.longitude, selectedCity.latitude, selectedCity.longitude, "KM"))
+      // });
       const byCityAndJob = seeksAll.filter(o => o.jobType.jobTypeName === selectedJobType.jobTypeName 
-                                                && countDistance(o.latitude, o.longitude, selectedCity.latitude, selectedCity.longitude, "KM") <= o.distanceToJob)
+                                                && ( (o.city === selectedCity.city && o.countryRegion === selectedCity.countryRegion && o.country === selectedCity.country)
+                                                || (countDistance(o.latitude, o.longitude, selectedCity.latitude, selectedCity.longitude, "KM") <= o.distanceToJob) ))
       setAcceptableSeeks(byCityAndJob)
     } else {
       setAcceptableSeeks(seeksAll)

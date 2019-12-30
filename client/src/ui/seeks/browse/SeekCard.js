@@ -204,10 +204,10 @@ export const SeekCard = (props) => {
                 }
               <Typography gutterBottom variant="subtitle1">Employee:</Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                Name: {props.seek.employee.firstName + " " + props.seek.employee.lastName}
+                Name: {props.seek.employee.firstName ? props.seek.employee.firstName + " " + props.seek.employee.lastName : props.seek.employee.companyName }
               </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                Location: {props.seek.employee.city + ", " + props.seek.employee.country}
+                Place of residence: {props.seek.employee.city + ", " + props.seek.employee.country}
               </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
                 About: {props.seek.employee.about}

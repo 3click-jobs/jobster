@@ -100,14 +100,14 @@ export const SeekContainer = ({
               <div className={classes.tabPaper}>
                 <CityAPIContainer city={city} setCity = {setCity} />
                 <TextField
-                  label="Acceptable distance to job"
+                  label="Acceptable distance from selected city"
                   name="distanceToJob"
                   type="number"
                   value={distance}
                   onChange={(event) => {
-                      if (event.target.value < 0) {
-                        setDistance(0);
-                      } else {
+                    if (event.target.value < 0 || event.target.value === null || event.target.value === "" ) {
+                      setDistance("0");
+                    } else {
                         setDistance(event.target.value)
                       }
                   }}

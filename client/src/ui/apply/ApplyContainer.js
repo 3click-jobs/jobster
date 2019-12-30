@@ -313,9 +313,9 @@ export const ApplyContainer = ({
                       type="number"
                       value={distance}
                       onChange={(event) => {
-                          if (event.target.value < 0) {
-                            setDistance(0);
-                          } else {
+                        if (event.target.value < 0 || event.target.value === null || event.target.value === "" ) {
+                          setDistance("0");
+                        } else {
                             setDistance(event.target.value)
                           }
                       }}
