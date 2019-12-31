@@ -18,9 +18,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField'
-import JobDayHoursContainer from '../jobDayHours/JobDayHoursContainer';
-import { Formik } from 'formik'
+// import FilteringJobDaysHoursForm from './FilteringJobDaysHoursForm';
+import { Formik, Form } from 'formik'
 import { offers as offersSchema } from '../../common/utils/schemas/offers'
+import JobDayHoursContainer from '../jobDayHours/JobDayHoursContainer';
 
 
 
@@ -245,17 +246,58 @@ export const FilteringPosts = ({
                             <ListItem button className={classes.nested}>
                                 <Formik
                                     initialValues={ {listJobDayHoursPostDto: listJobDayHours } }
-                                    onSubmit={(values, formikBag) => {
+                                    onSubmit={(values, formikBag ) => {
 
+                                        console.log(values)
                                         listJobDayHours = [...values]
+
                                         handleChangeDayHours([...values])
                                         formikBag.setSubmitting(false)
 
                                     }}
 
                                     validationSchema={offersSchema.create}
-                                    component={JobDayHoursContainer}
-                                />
+                                    // component={FilteringJobDaysHoursForm}
+                                    
+                                    // render={(form) => {
+                                    //   return <React.Fragment>
+                                    //         <Form>
+                                    //             <JobDayHoursContainer listJobDayHours={form.values.listJobDayHoursPostDto} 
+                                    //                                   handleChange={form.handleChange} 
+                                    //                                   handleBlur={form.handleBlur} 
+                                    //                                   touched={form.touched} 
+                                    //                                   errors={form.errors} 
+                                    //                                   setJobDayHoursChange={(props) => 
+                                    //                                     { 
+                                    //                                         // values.listJobDayHoursPostDto = [...props];
+                                    //                                         form.setFieldValue('listJobDayHoursPostDto', [...props])
+                                    //                                         handleChangeDayHours([...props])
+                                    //                                     } } 
+                                    //                                   />
+                                    //         </Form>
+                                    //     </React.Fragment>
+                                    // }}
+
+                                >
+                                    {(form) => {
+                                      return <React.Fragment>
+                                            <Form>
+                                                <JobDayHoursContainer listJobDayHours={form.values.listJobDayHoursPostDto} 
+                                                                      handleChange={form.handleChange} 
+                                                                      handleBlur={form.handleBlur} 
+                                                                      touched={form.touched} 
+                                                                      errors={form.errors} 
+                                                                      setJobDayHoursChange={(props) => 
+                                                                        { 
+                                                                            // values.listJobDayHoursPostDto = [...props];
+                                                                            form.setFieldValue('listJobDayHoursPostDto', [...props])
+                                                                            handleChangeDayHours([...props])
+                                                                        } } 
+                                                                      />
+                                            </Form>
+                                        </React.Fragment>
+                                    }}
+                                </Formik>
                                 {/* <JobDayHoursContainer listJobDayHours={listJobDayHours} 
                                                     setJobDayHoursChange={(props) => 
                                                         { listJobDayHours = [...props]; 
