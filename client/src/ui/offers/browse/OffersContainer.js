@@ -143,7 +143,11 @@ export const OffersContainer = ({
   const handleChangeBeginningDate = (date) => {
     setBeginningDate(date)
     if (acceptableOffersBasic && date ) {
-      const byBeginningDate = acceptableOffersBasic.filter(o => dates.inRange(date, o.beginningDate, o.endDate) )
+      let byBeginningDate
+      if (flexibileDates)
+        byBeginningDate = acceptableOffersBasic.filter(o => dates.inRange(date, o.beginningDate, o.endDate) )
+      else
+        byBeginningDate = acceptableOffersBasic.filter(o => dates.compare(date, o.beginningDate) === 0 ? true : false )
       setAcceptableOffers(byBeginningDate)
     } else if (acceptableOffersBasic && date === "" ) {
       setAcceptableOffers(acceptableOffersBasic)
@@ -153,7 +157,12 @@ export const OffersContainer = ({
   const handleChangeEndDate = (date) => {
     setEndDate(date)
     if (acceptableOffersBasic && date ) {
-      const byEndDate = acceptableOffersBasic.filter(o => dates.inRange(date, o.beginningDate, o.endDate) )
+      let byEndDate
+      if (flexibileDates) {
+        byEndDate = acceptableOffersBasic.filter(o => dates.inRange(date, o.beginningDate, o.endDate) )
+      } else {
+        byEndDate = acceptableOffersBasic.filter(o => dates.compare(date, o.endDate) === 0 )
+      }
       setAcceptableOffers(byEndDate)
     } else if (acceptableOffersBasic && date === "" ) {
       setAcceptableOffers(acceptableOffersBasic)
@@ -183,6 +192,42 @@ export const OffersContainer = ({
   const handleChangeDayHours = (dayHours) => {
     console.log(dayHours)
     setListJobDayHours(dayHours)
+
+    if (acceptableOffersBasic && dayHours ) {
+      let byDaysHours
+      if (flexibileDays) {
+        byDaysHours = acceptableOffersBasic.filter(o => o.listJobDayHoursPostDto.map((item) => { return dayHours.map((day) => {
+                                                                              return (day.day === item.day &&
+                                                                              item.flexibileHours === true ? 
+                                                                                (day.fromHour >= item.fromHour &&
+                                                                                day.fromHour <= item.toHour &&
+                                                                                day.toHour >= item.fromHour &&
+                                                                                day.toHour <= item.toHour)
+                                                                              :
+                                                                                (day.fromHour === item.fromHour &&
+                                                                                day.toHour === item.toHour) 
+                                                                              && day.isMinMax === item.isMinMax) }
+                                                                          ).some((e) => e === true ) }).some((el) => el === true ) )
+      } else {
+        byDaysHours = acceptableOffersBasic.filter(o => o.listJobDayHoursPostDto.map((item) => { return dayHours.map((day) => {
+                                                                              return (day.day === item.day &&
+                                                                              item.flexibileHours === true ? 
+                                                                                (day.fromHour >= item.fromHour &&
+                                                                                day.fromHour <= item.toHour &&
+                                                                                day.toHour >= item.fromHour &&
+                                                                                day.toHour <= item.toHour)
+                                                                              :
+                                                                                (day.fromHour === item.fromHour &&
+                                                                                day.toHour === item.toHour) 
+                                                                              && day.isMinMax === item.isMinMax) }
+                                                                          ).every((e) => e === true ) }).every((el) => el === true ) )
+      }
+      setAcceptableOffers(byDaysHours)
+    } else if (acceptableOffersBasic && dayHours === "" ) {
+      setAcceptableOffers(acceptableOffersBasic)
+    }
+
+
   }
 
 
