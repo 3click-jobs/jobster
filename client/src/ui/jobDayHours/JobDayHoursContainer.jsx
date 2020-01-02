@@ -142,6 +142,7 @@ export const JobDayHoursContainer = (props) => {
         let changedListJobDayHours = inputListJobDayHours.map( day => (newValue.target.value === day.day) ? {...day, chck: !day.chck } : day)
         // console.log(changedListJobDayHours)
         setInputListJobDayHours([...changedListJobDayHours])
+        props.setJobDayHoursChange( changedListJobDayHours.filter( day => (day.chck === true) ).map( day => ( ({chck, ...o }) => o )(day) ) );
     }
     else if (newValue ) {
         // console.log("handleJobDayHoursChange ok")
