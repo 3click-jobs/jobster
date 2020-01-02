@@ -24,6 +24,7 @@ import { offers as offersSchema } from '../../common/utils/schemas/offers'
 import JobDayHoursContainer from '../jobDayHours/JobDayHoursContainer';
 
 
+const drawerWidth = 310;
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -56,8 +57,17 @@ const useStyles = makeStyles(theme => ({
       overflowX: 'hidden',
     },
     nested: {
-        paddingLeft: theme.spacing(4),
+        paddingLeft: theme.spacing(1),
+        justifyContent: 'center',
         // maxWidth: '300px',
+
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
     },
   }))
 
@@ -140,6 +150,10 @@ export const FilteringPosts = ({
             anchor='right'
             open={drawer}
             onClose={toggleDrawer(false)}
+            className={classes.drawer}
+            classes={{
+                paper: classes.drawerPaper,
+            }}
         >
             <div
             role="presentation"
@@ -190,7 +204,7 @@ export const FilteringPosts = ({
                                     label="Beginning date"
                                     name="beginningDate"
                                     type="date"
-                                    value={beginningDate}
+                                    value={beginningDate ? beginningDate : new Date().toISOString().slice(0,10)}
                                     // onChange={handleChange}
                                     onChange={(event) => {
                                         if (event.target.value === null || event.target.value === "" ) {
@@ -209,7 +223,7 @@ export const FilteringPosts = ({
                                     label="End date"
                                     name="endDate"
                                     type="date"
-                                    value={endDate}
+                                    value={endDate ? endDate : new Date().toISOString().slice(0,10)}
                                     // onChange={handleChange}
                                     onChange={(event) => {
                                         if (event.target.value === null || event.target.value === "" ) {
