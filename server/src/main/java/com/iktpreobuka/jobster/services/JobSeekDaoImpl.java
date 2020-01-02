@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.JobDayHoursEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursPostDto;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursPutDto;
@@ -34,13 +33,12 @@ import com.iktpreobuka.jobster.repositories.JobDayHoursRepository;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 import com.iktpreobuka.jobster.repositories.JobTypeRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
-import com.iktpreobuka.jobster.repositories.UserRepository;
 
 @Service
 public class JobSeekDaoImpl implements JobSeekDao {
-	
-	@Autowired
-	private ApplyContactDaoImp applyContactDaoImp;
+
+//	@Autowired
+//	private ApplyContactDaoImp applyContactDaoImp;
 
 	@Autowired
 	private CityRepository cityRepository;
@@ -62,33 +60,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
-	/////////////////// PRAZAN SEEK BEZ DAYANDHOURS///////////////////////
-	
-	@Override
-	public JobSeekEntity emptyJobSeekEntity() {
-		return new JobSeekEntity();
-	}
-
-	@Override
-	public JobSeekPostDto empty() {
-		return new JobSeekPostDto();
-	}
-
-/////////////////// PRAZAN SEEK SA DAYANDHOURS///////////////////////
-
-	@Override
-	public JobSeekPostDto emptyWithEmptyDayHours() {
-		JobSeekPostDto emptyWith = new JobSeekPostDto();
-		JobDayHoursPostDto empty1 = new JobDayHoursPostDto();
-		JobDayHoursPostDto empty2 = new JobDayHoursPostDto();
-		List<JobDayHoursPostDto> list = new ArrayList<JobDayHoursPostDto>();
-		list.add(empty1);
-		list.add(empty2);
-		emptyWith.setListJobDayHoursPostDto(list);
-		return emptyWith;
-	}
-
 	///////////////////////// POST ///////////////////////////////////////
+	
 
 	@Override
 	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekPostDto seek, Principal principal,
@@ -110,22 +83,23 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		UserEntity loggedUser = new UserEntity();
 		try {
 			logger.info("Checking database for account.");
-			if (((userAccountRepository.count()) == 0)
-					|| (userAccountRepository.findUserByUsername(principal.getName())) == null) {
+			if (userAccountRepository.count()==0) {
+				return new ResponseEntity<String>("UserAccount database empty.", HttpStatus.BAD_REQUEST);
+			}
+			if (userAccountRepository.findUserByUsername(principal.getName()) == null) {
 				logger.info("UserAccount doesn't exist.");
 				return new ResponseEntity<String>("UserAccount doesn't exist.", HttpStatus.BAD_REQUEST);
 			} else {
+				logger.info("proslo");
 				loggedUser = userAccountRepository.findUserByUsername(principal.getName());
 			}
 		} catch (Exception e) {
 			logger.info("Error occured during 'Checkin database'.");
+			logger.info("Greska");
 			return new ResponseEntity<String>("Error occured during 'Checkin database'." + e, HttpStatus.BAD_REQUEST);
 		}
-		
-		
-		
-		
-		
+		// Ovde zariba
+
 		// checking city
 		CityEntity city = new CityEntity();
 		try {
@@ -303,8 +277,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		try {
 			logger.info("Mapping atributs.");
 			seekForModify.setEmployee(loggedUser);
-			if (seek.getCityName() != null && (cityRepository.getByCityName(seek.getCityName()) != seekForModify.getCity())) {
-				seekForModify.setCity(city); 
+			if (seek.getCityName() != null
+					&& (cityRepository.getByCityName(seek.getCityName()) != seekForModify.getCity())) {
+				seekForModify.setCity(city);
 				logger.info("City changed.");
 			}
 			if (seek.getJobTypeName() != null && seek.getJobTypeName() != seekForModify.getType().getJobTypeName()) {
@@ -961,7 +936,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			if (wantedJobSeek.getStatus().equals(1)) {
 				logger.info("Deleting entity.");
 				wantedJobSeek.setStatusInactive();
-				//applyContactDaoImp.markApplyAsExpiredBySeek(wantedJobSeek); //DODAO ZA NIDZU
+				// applyContactDaoImp.markApplyAsExpiredBySeek(wantedJobSeek); //DODAO ZA NIDZU
 				logger.info("Entity deleted.");
 			} else if (wantedJobSeek.getStatus().equals(0)) {
 				logger.info("JobSeek status is already deleted.");
@@ -1072,7 +1047,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			if (wantedJobSeek.getStatus().equals(0) || wantedJobSeek.getStatus().equals(1)) {
 				logger.info("Archiving entity.");
 				wantedJobSeek.setStatusArchived();
-				//applyContactDaoImp.markApplyAsExpiredBySeek(wantedJobSeek); // DODAO ZA NIDZU
+				// applyContactDaoImp.markApplyAsExpiredBySeek(wantedJobSeek); // DODAO ZA NIDZU
 				logger.info("Entity archived.");
 			} else if (wantedJobSeek.getStatus().equals(-1)) {
 				logger.info("JobSeek status is already archived.");
