@@ -130,121 +130,367 @@ export const OffersContainer = ({
 
   // let windowScrolled = 0
 
-  const handleChangePrice = (price) => {
-    setPrice(price)
-    if (acceptableOffersBasic && price && price > 0 ) {
-      const byPrice = acceptableOffersBasic.filter(o => o.price <= price)
-      setAcceptableOffers(byPrice)
-    } else if (acceptableOffersBasic && price === 0 ) {
-      setAcceptableOffers(acceptableOffersBasic)
-    }
-  }
-
-  const handleChangeBeginningDate = (date) => {
-    setBeginningDate(date)
-    if (acceptableOffersBasic && date ) {
-      let byBeginningDate
-      if (flexibileDates)
-        byBeginningDate = acceptableOffersBasic.filter(o => dates.inRange(date, o.beginningDate, o.endDate) )
-      else
-        byBeginningDate = acceptableOffersBasic.filter(o => dates.compare(date, o.beginningDate) === 0 ? true : false )
-      setAcceptableOffers(byBeginningDate)
-    } else if (acceptableOffersBasic && date === "" ) {
-      setAcceptableOffers(acceptableOffersBasic)
-    }
-  }
-
-  const handleChangeEndDate = (date) => {
-    setEndDate(date)
-    if (acceptableOffersBasic && date ) {
-      let byEndDate
-      if (flexibileDates) {
-        byEndDate = acceptableOffersBasic.filter(o => dates.inRange(date, o.beginningDate, o.endDate) )
-      } else {
-        byEndDate = acceptableOffersBasic.filter(o => dates.compare(date, o.endDate) === 0 )
+  const handleFiltering = (price, dateStart, dateEnd, flexDates, flexDays, dayHours) => {
+    // setPrice(price)
+    if (acceptableOffersBasic) {
+      let filteredOffers = acceptableOffersBasic
+      if (price && price > 0 ) {
+        filteredOffers = filteredOffers.filter(o => o.price >= price)
       }
-      setAcceptableOffers(byEndDate)
-    } else if (acceptableOffersBasic && date === "" ) {
-      setAcceptableOffers(acceptableOffersBasic)
-    }
-  }
-
-  const handleChangeFlexibileDates = (flDate) => {
-    setFlexibileDates(!flDate)
-    if (acceptableOffersBasic && !flDate === true ) {
-      const byFlexDates = acceptableOffersBasic.filter(o => o.flexibileDates === true)
-      setAcceptableOffers(byFlexDates)
-    } else if (acceptableOffersBasic && !flDate === false ) {
-      setAcceptableOffers(acceptableOffersBasic)
-    }
-  }
-
-  const handleChangeFlexibileDays = (flDay) => {
-    setFlexibileDays(!flDay)
-    if (acceptableOffersBasic && !flDay === true ) {
-      const byFlexDays = acceptableOffersBasic.filter(o => o.flexibileDays === true)
-      setAcceptableOffers(byFlexDays)
-    } else if (acceptableOffersBasic && !flDay === false ) {
-      setAcceptableOffers(acceptableOffersBasic)
-    }
-  }
-
-  const handleChangeDayHours = (dayHours) => {
-    console.log(dayHours)
-    setListJobDayHours(dayHours)
-
-    if (acceptableOffersBasic && dayHours ) {
-      let byDaysHours
-      if (flexibileDays) {
-        byDaysHours = acceptableOffersBasic.filter(o => o.listJobDayHoursPostDto.map((item) => { return dayHours.map((day) => {
-                                                                              return (day.day === item.day &&
-                                                                              item.flexibileHours === true ? 
-                                                                                (day.fromHour >= item.fromHour &&
-                                                                                day.fromHour <= item.toHour &&
-                                                                                day.toHour >= item.fromHour &&
-                                                                                day.toHour <= item.toHour)
-                                                                              :
-                                                                                (day.fromHour === item.fromHour &&
-                                                                                day.toHour === item.toHour) 
-                                                                              && day.isMinMax === item.isMinMax) }
-                                                                          ).some((e) => e === true ) }).some((el) => el === true ) )
-      } else {
-        byDaysHours = acceptableOffersBasic.filter(o => o.listJobDayHoursPostDto.map((item) => { return dayHours.map((day) => {
-                                                                              return (day.day === item.day &&
-                                                                              item.flexibileHours === true ? 
-                                                                                (day.fromHour >= item.fromHour &&
-                                                                                day.fromHour <= item.toHour &&
-                                                                                day.toHour >= item.fromHour &&
-                                                                                day.toHour <= item.toHour)
-                                                                              :
-                                                                                (day.fromHour === item.fromHour &&
-                                                                                day.toHour === item.toHour) 
-                                                                              && day.isMinMax === item.isMinMax) }
-                                                                          ).every((e) => e === true ) }).every((el) => el === true ) )
+      if (dateStart && dateStart !== "" && dateEnd && dateEnd !== "" ) {
+        if (flexDates) {
+          filteredOffers = filteredOffers.filter(o => ( o.flexibileDates === false && dates.inRange(o.beginningDate, dateStart, dateEnd) && dates.inRange(o.endDate, dateStart, dateEnd) )
+                                                            || ( o.flexibileDates === true && 
+                                                              ( ( dates.inRange(dateStart, o.beginningDate, o.endDate) && dates.inRange(dateEnd, o.beginningDate, o.endDate) ) 
+                                                              || ( dates.compare(dateStart, o.beginningDate) === -1 && dates.inRange(dateEnd, o.beginningDate, o.endDate) )
+                                                              || ( dates.compare(dateEnd, o.endDate) === 1 && dates.inRange(dateStart, o.beginningDate, o.endDate) ) 
+                                                              || ( dates.inRange(o.beginningDate, dateStart, dateEnd) && dates.inRange(o.endDate, dateStart, dateEnd) ) ) ) )
+        } else {
+          filteredOffers = filteredOffers.filter(o => ( o.flexibileDates === false && dates.compare(dateStart, o.beginningDate) === 0 && dates.compare(dateEnd, o.endDate) === 0 )
+                                                            || ( o.flexibileDates === true && dates.inRange(dateStart, o.beginningDate, o.endDate) && dates.inRange(dateEnd, o.beginningDate, o.endDate) ) )
+        }
       }
-      setAcceptableOffers(byDaysHours)
-    } else if (acceptableOffersBasic && dayHours === "" ) {
-      setAcceptableOffers(acceptableOffersBasic)
+      if ( dayHours && dayHours.length > 0 ) {
+        if (flexDays) {
+          filteredOffers = filteredOffers.filter( (o) => o.flexibileDays ? 
+                                                        o.listJobDayHoursPostDto.map( (item) => dayHours.map( (day) => day.day === item.day ? 
+                                                                  day.isMinMax === item.isMinMax ?
+                                                                    day.flexibileHours ?
+                                                                      item.flexibileHours ?
+                                                                        ((day.fromHour <= item.fromHour &&
+                                                                          day.fromHour < item.toHour &&
+                                                                          day.toHour > item.fromHour &&
+                                                                          day.toHour >= item.toHour)
+                                                                        || (day.fromHour >= item.fromHour &&
+                                                                          day.fromHour < item.toHour &&
+                                                                          day.toHour <= item.toHour &&
+                                                                          day.toHour > item.fromHour)
+                                                                        || (day.fromHour < item.fromHour &&
+                                                                          day.toHour <= item.toHour && 
+                                                                          day.toHour >= item.fromHour)
+                                                                        || (day.fromHour >= item.fromHour &&
+                                                                          day.fromHour <= item.toHour &&
+                                                                          day.toHour > item.toHour) )
+                                                                      :
+                                                                        (day.fromHour <= item.fromHour &&
+                                                                        day.fromHour < item.toHour &&
+                                                                        day.toHour > item.fromHour &&
+                                                                        day.toHour >= item.toHour)
+                                                                    : item.flexibileHours ?
+                                                                        (day.fromHour >= item.fromHour &&
+                                                                        day.fromHour < item.toHour &&
+                                                                        day.toHour > item.fromHour &&
+                                                                        day.toHour <= item.toHour)
+                                                                      :
+                                                                        (day.fromHour === item.fromHour &&
+                                                                        day.toHour === item.toHour)
+                                                                  : (day.isMinMax === true && item.isMinMax === false) ?
+                                                                      day.flexibileHours ?
+                                                                        (day.fromHour !== "" && day.toHour !== "")
+                                                                        : (day.fromHour <= (item.toHour - item.fromHour) && day.toHour >= (item.toHour - item.fromHour))
+                                                                    : (day.isMinMax === false && item.isMinMax === true) ? 
+                                                                      item.flexibileHours ? 
+                                                                        (day.fromHour !== "" && day.toHour !== "")
+                                                                        : (item.fromHour <= (day.toHour - day.fromHour) && item.toHour >= (day.toHour - day.fromHour))
+                                                                      : false
+                                                                :
+                                                                  false 
+                                                              ).some( (e) => e === true ) 
+                                                          ).some((el) => el === true ) 
+                                                        : o.listJobDayHoursPostDto.map((item) => dayHours.map( (day) => day.day === item.day ? 
+                                                                  day.isMinMax === item.isMinMax ?
+                                                                      day.flexibileHours ?
+                                                                        item.flexibileHours ?
+                                                                          ((day.fromHour <= item.fromHour &&
+                                                                            day.fromHour < item.toHour &&
+                                                                            day.toHour > item.fromHour &&
+                                                                            day.toHour >= item.toHour)
+                                                                          || (day.fromHour >= item.fromHour &&
+                                                                            day.fromHour < item.toHour &&
+                                                                            day.toHour <= item.toHour &&
+                                                                            day.toHour > item.fromHour)
+                                                                          || (day.fromHour < item.fromHour &&
+                                                                            day.toHour <= item.toHour && 
+                                                                            day.toHour >= item.fromHour)
+                                                                          || (day.fromHour >= item.fromHour &&
+                                                                            day.fromHour <= item.toHour &&
+                                                                            day.toHour > item.toHour) )
+                                                                        :
+                                                                          (day.fromHour <= item.fromHour &&
+                                                                          day.fromHour < item.toHour &&
+                                                                          day.toHour > item.fromHour &&
+                                                                          day.toHour >= item.toHour)
+                                                                      : item.flexibileHours ?
+                                                                          (day.fromHour >= item.fromHour &&
+                                                                          day.fromHour < item.toHour &&
+                                                                          day.toHour > item.fromHour &&
+                                                                          day.toHour <= item.toHour)
+                                                                        :
+                                                                          (day.fromHour === item.fromHour &&
+                                                                          day.toHour === item.toHour)
+                                                                  : (day.isMinMax === true && item.isMinMax === false) ?
+                                                                      day.flexibileHours ?
+                                                                        (day.fromHour !== "" && day.toHour !== "")
+                                                                        : (day.fromHour <= (item.toHour - item.fromHour) && day.toHour >= (item.toHour - item.fromHour))
+                                                                    : (day.isMinMax === false && item.isMinMax === true) ? 
+                                                                      item.flexibileHours ? 
+                                                                        (day.fromHour !== "" && day.toHour !== "")
+                                                                        : (item.fromHour <= (day.toHour - day.fromHour) && item.toHour >= (day.toHour - day.fromHour))
+                                                                      : false
+                                                                :
+                                                                  false 
+                                                              ).some( (e) => e === true ) 
+                                                          ).every((el) => el === true ) )
+        } else {
+          filteredOffers = filteredOffers.filter(o => o.flexibileDays ? 
+                                                        dayHours.map( (day) => o.listJobDayHoursPostDto.map( (item) => day.day === item.day ? 
+                                                                  day.isMinMax === item.isMinMax ?
+                                                                      day.flexibileHours ?
+                                                                        item.flexibileHours ?
+                                                                          ((day.fromHour <= item.fromHour &&
+                                                                            day.fromHour < item.toHour &&
+                                                                            day.toHour > item.fromHour &&
+                                                                            day.toHour >= item.toHour)
+                                                                          || (day.fromHour >= item.fromHour &&
+                                                                            day.fromHour < item.toHour &&
+                                                                            day.toHour <= item.toHour &&
+                                                                            day.toHour > item.fromHour)
+                                                                          || (day.fromHour < item.fromHour &&
+                                                                            day.toHour <= item.toHour && 
+                                                                            day.toHour >= item.fromHour)
+                                                                          || (day.fromHour >= item.fromHour &&
+                                                                            day.fromHour <= item.toHour &&
+                                                                            day.toHour > item.toHour) )
+                                                                        :
+                                                                          (day.fromHour <= item.fromHour &&
+                                                                          day.fromHour < item.toHour &&
+                                                                          day.toHour > item.fromHour &&
+                                                                          day.toHour >= item.toHour)
+                                                                      : item.flexibileHours ?
+                                                                          (day.fromHour >= item.fromHour &&
+                                                                          day.fromHour < item.toHour &&
+                                                                          day.toHour > item.fromHour &&
+                                                                          day.toHour <= item.toHour)
+                                                                        :
+                                                                          (day.fromHour === item.fromHour &&
+                                                                          day.toHour === item.toHour)
+                                                                  : (day.isMinMax === true && item.isMinMax === false) ?
+                                                                      day.flexibileHours ?
+                                                                        (day.fromHour !== "" && day.toHour !== "")
+                                                                        : (day.fromHour <= (item.toHour - item.fromHour) && day.toHour >= (item.toHour - item.fromHour))
+                                                                    : (day.isMinMax === false && item.isMinMax === true) ? 
+                                                                      item.flexibileHours ? 
+                                                                        (day.fromHour !== "" && day.toHour !== "")
+                                                                        : (item.fromHour <= (day.toHour - day.fromHour) && item.toHour >= (day.toHour - day.fromHour))
+                                                                      : false
+                                                                :
+                                                                  false 
+                                                              ).some( (e) => e === true ) 
+                                                          ).every((el) => el === true ) 
+                                                        : dayHours.length === o.listJobDayHoursPostDto.length
+                                                          && dayHours.map((day) => o.listJobDayHoursPostDto.map( (item) => day.day === item.day ? 
+                                                                  day.isMinMax === item.isMinMax ?
+                                                                      day.flexibileHours ?
+                                                                        item.flexibileHours ?
+                                                                          ((day.fromHour <= item.fromHour &&
+                                                                            day.fromHour < item.toHour &&
+                                                                            day.toHour > item.fromHour &&
+                                                                            day.toHour >= item.toHour)
+                                                                          || (day.fromHour >= item.fromHour &&
+                                                                            day.fromHour < item.toHour &&
+                                                                            day.toHour <= item.toHour &&
+                                                                            day.toHour > item.fromHour)
+                                                                          || (day.fromHour < item.fromHour &&
+                                                                            day.toHour <= item.toHour && 
+                                                                            day.toHour >= item.fromHour)
+                                                                          || (day.fromHour >= item.fromHour &&
+                                                                            day.fromHour <= item.toHour &&
+                                                                            day.toHour > item.toHour) )
+                                                                        :
+                                                                          (day.fromHour <= item.fromHour &&
+                                                                          day.fromHour < item.toHour &&
+                                                                          day.toHour > item.fromHour &&
+                                                                          day.toHour >= item.toHour)
+                                                                      : item.flexibileHours ?
+                                                                          (day.fromHour >= item.fromHour &&
+                                                                          day.fromHour < item.toHour &&
+                                                                          day.toHour > item.fromHour &&
+                                                                          day.toHour <= item.toHour)
+                                                                        :
+                                                                          (day.fromHour === item.fromHour &&
+                                                                          day.toHour === item.toHour)
+                                                                  : (day.isMinMax === true && item.isMinMax === false) ?
+                                                                      day.flexibileHours ?
+                                                                        (day.fromHour !== "" && day.toHour !== "")
+                                                                        : (day.fromHour <= (item.toHour - item.fromHour) && day.toHour >= (item.toHour - item.fromHour))
+                                                                    : (day.isMinMax === false && item.isMinMax === true) ? 
+                                                                      item.flexibileHours ? 
+                                                                        (day.fromHour !== "" && day.toHour !== "")
+                                                                        : (item.fromHour <= (day.toHour - day.fromHour) && item.toHour >= (day.toHour - day.fromHour))
+                                                                      : false
+                                                                :
+                                                                  false 
+                                                              ).some( (e) => e === true ) 
+                                                          ).every((el) => el === true ) )
+        }
+      }
+      setAcceptableOffers(filteredOffers)
     }
-
-
   }
+
+  // const handleChangePrice = (price) => {
+  //   // setPrice(price)
+  //   if (acceptableOffersBasic && price && price > 0 ) {
+  //     const byPrice = acceptableOffersBasic.filter(o => o.price <= price)
+  //     setAcceptableOffers(byPrice)
+  //   } else if (acceptableOffersBasic && price === 0 ) {
+  //     setAcceptableOffers(acceptableOffersBasic)
+  //   }
+  // }
+
+  // const handleChangeDates = (dateStart, dateEnd, flexDates) => {
+  //   if (acceptableOffersBasic && dateStart && dateStart !== "" && dateEnd && dateEnd !== "" ) {
+  //     let byDates
+  //     if (flexDates) {
+  //       byDates = acceptableOffersBasic.filter(o => ( o.flexibileDates === false && dates.inRange(o.beginningDate, dateStart, dateEnd) && dates.inRange(o.endDate, dateStart, dateEnd) )
+  //                                                         || ( o.flexibileDates === true && 
+  //                                                           ( ( dates.inRange(dateStart, o.beginningDate, o.endDate) && dates.inRange(dateEnd, o.beginningDate, o.endDate) ) 
+  //                                                           || ( dates.compare(dateStart, o.beginningDate) === -1 && dates.inRange(dateEnd, o.beginningDate, o.endDate) )
+  //                                                           || ( dates.compare(dateEnd, o.endDate) === 1 && dates.inRange(dateStart, o.beginningDate, o.endDate) ) 
+  //                                                           || ( dates.inRange(o.beginningDate, dateStart, dateEnd) && dates.inRange(o.endDate, dateStart, dateEnd) ) ) ) )
+  //     } else {
+  //       byDates = acceptableOffersBasic.filter(o => ( o.flexibileDates === false && dates.compare(dateStart, o.beginningDate) === 0 && dates.compare(dateEnd, o.endDate) === 0 )
+  //                                                         || ( o.flexibileDates === true && dates.inRange(dateStart, o.beginningDate, o.endDate) && dates.inRange(dateEnd, o.beginningDate, o.endDate) ) )
+  //     }
+  //     setAcceptableOffers(byDates)
+  //   } else if (acceptableOffersBasic && (dateStart === "" || dateEnd === "") ) {
+  //     setAcceptableOffers(acceptableOffersBasic)
+  //   }
+  // }
+
+  // const handleChangeBeginningDate = (date) => {
+  //   setBeginningDate(date)
+  //   if (acceptableOffersBasic && date && endDate && endDate !== "" ) {
+  //     let byBeginningDate
+  //     if (flexibileDates) {
+  //       // byBeginningDate = acceptableOffersBasic.filter(o => dates.inRange(date, o.beginningDate, o.endDate) )
+  //       byBeginningDate = acceptableOffersBasic.filter(o => ( o.flexibileDates === false && dates.inRange(o.beginningDate, date, endDate) && dates.inRange(o.endDate, date, endDate) )
+  //                                                         || ( o.flexibileDates === true && 
+  //                                                           ( ( dates.inRange(date, o.beginningDate, o.endDate) && dates.inRange(endDate, o.beginningDate, o.endDate) ) 
+  //                                                           || ( dates.compare(date, o.beginningDate) === -1 && dates.inRange(endDate, o.beginningDate, o.endDate) )
+  //                                                           || ( dates.compare(endDate, o.endDate) === 1 && dates.inRange(date, o.beginningDate, o.endDate) ) 
+  //                                                           || ( dates.inRange(o.beginningDate, date, endDate) && dates.inRange(o.endDate, date, endDate) ) ) ) )
+  //     } else {
+  //       // byBeginningDate = acceptableOffersBasic.filter(o => dates.compare(date, o.beginningDate) === 0 )
+  //       byBeginningDate = acceptableOffersBasic.filter(o => ( o.flexibileDates === false && dates.compare(date, o.beginningDate) === 0 && dates.compare(endDate, o.endDate) === 0 )
+  //                                                         || ( o.flexibileDates === true && dates.inRange(date, o.beginningDate, o.endDate) && dates.inRange(endDate, o.beginningDate, o.endDate) ) )
+  //     }
+  //     setAcceptableOffers(byBeginningDate)
+  //   } else if (acceptableOffersBasic && date === "" ) {
+  //     setAcceptableOffers(acceptableOffersBasic)
+  //   }
+  // }
+
+  // const handleChangeEndDate = (date) => {
+  //   setEndDate(date)
+  //   if (acceptableOffersBasic && date && beginningDate && beginningDate !== "" ) {
+  //     let byEndDate
+  //     if (flexibileDates) {
+  //       // byEndDate = acceptableOffersBasic.filter(o => dates.inRange(date, o.beginningDate, o.endDate) )
+  //       byEndDate = acceptableOffersBasic.filter(o => ( o.flexibileDates === false && dates.inRange(o.beginningDate, beginningDate, date) && dates.inRange(o.endDate, beginningDate, date) )
+  //                                                   || ( o.flexibileDates === true && 
+  //                                                     ( ( dates.inRange(beginningDate, o.beginningDate, o.endDate) && dates.inRange(date, o.beginningDate, o.endDate) ) 
+  //                                                     || ( dates.compare(beginningDate, o.beginningDate) === -1 && dates.inRange(date, o.beginningDate, o.endDate) )
+  //                                                     || ( dates.compare(date, o.endDate) === 1 && dates.inRange(beginningDate, o.beginningDate, o.endDate) ) 
+  //                                                     || ( dates.inRange(o.beginningDate, beginningDate, date) && dates.inRange(o.endDate, beginningDate, date) ) ) ) )
+  //     } else {
+  //       // byEndDate = acceptableOffersBasic.filter(o => dates.compare(date, o.endDate) === 0 )
+  //       byEndDate = acceptableOffersBasic.filter(o => ( o.flexibileDates === false && dates.compare(beginningDate, o.beginningDate) === 0 && dates.compare(date, o.endDate) === 0 )
+  //                                                   || ( o.flexibileDates === true && dates.inRange(beginningDate, o.beginningDate, o.endDate) && dates.inRange(date, o.beginningDate, o.endDate) ) )
+  //     }
+  //     setAcceptableOffers(byEndDate)
+  //   } else if (acceptableOffersBasic && date === "" ) {
+  //     setAcceptableOffers(acceptableOffersBasic)
+  //   }
+  // }
+
+  // const handleChangeFlexibileDates = (flDate) => {
+  //   setFlexibileDates(!flDate)
+  //   console.log(flDate)
+  //   if (acceptableOffersBasic && !flDate === true ) {
+  //     const byFlexDates = acceptableOffersBasic.filter(o => o.flexibileDates === true)
+  //     setAcceptableOffers(byFlexDates)
+  //   } else if (acceptableOffersBasic && !flDate === false ) {
+  //     setAcceptableOffers(acceptableOffersBasic)
+  //   }
+  // }
+
+  // const handleChangeFlexibileDays = (flDay) => {
+  //   setFlexibileDays(!flDay)
+  //   console.log(flDay)
+  //   if (acceptableOffersBasic && !flDay === true ) {
+  //     const byFlexDays = acceptableOffersBasic.filter(o => o.flexibileDays === true)
+  //     setAcceptableOffers(byFlexDays)
+  //   } else if (acceptableOffersBasic && !flDay === false ) {
+  //     setAcceptableOffers(acceptableOffersBasic)
+  //   }
+  // }
+
+  // const handleChangeDayHours = (dayHours) => {
+  //   console.log(dayHours)
+  //   // setListJobDayHours(dayHours)
+
+  //   if (acceptableOffersBasic && dayHours ) {
+  //     let byDaysHours
+  //     if (flexibileDays) {
+  //       byDaysHours = acceptableOffersBasic.filter(o => o.listJobDayHoursPostDto.map((item) => { return dayHours.map((day) => {
+  //                                                                             return (day.day === item.day &&
+  //                                                                             item.flexibileHours === true ? 
+  //                                                                               (day.fromHour >= item.fromHour &&
+  //                                                                               day.fromHour <= item.toHour &&
+  //                                                                               day.toHour >= item.fromHour &&
+  //                                                                               day.toHour <= item.toHour)
+  //                                                                             :
+  //                                                                               (day.fromHour === item.fromHour &&
+  //                                                                               day.toHour === item.toHour) 
+  //                                                                             && day.isMinMax === item.isMinMax) }
+  //                                                                         ).some((e) => e === true ) }).some((el) => el === true ) )
+  //     } else {
+  //       byDaysHours = acceptableOffersBasic.filter(o => o.listJobDayHoursPostDto.map((item) => { return dayHours.map((day) => {
+  //                                                                             return (day.day === item.day &&
+  //                                                                             item.flexibileHours === true ? 
+  //                                                                               (day.fromHour >= item.fromHour &&
+  //                                                                               day.fromHour <= item.toHour &&
+  //                                                                               day.toHour >= item.fromHour &&
+  //                                                                               day.toHour <= item.toHour)
+  //                                                                             :
+  //                                                                               (day.fromHour === item.fromHour &&
+  //                                                                               day.toHour === item.toHour) 
+  //                                                                             && day.isMinMax === item.isMinMax) }
+  //                                                                         ).every((e) => e === true ) }).every((el) => el === true ) )
+  //     }
+  //     setAcceptableOffers(byDaysHours)
+  //   } else if (acceptableOffersBasic && dayHours === "" ) {
+  //     setAcceptableOffers(acceptableOffersBasic)
+  //   }
+  // }
 
 
   return (
     <React.Fragment>
       <FilteringPosts price={price}
+                      priceType = "Minimum"
                       beginningDate={beginningDate}
                       endDate={endDate}
                       flexibileDates={flexibileDates}
                       flexibileDays={flexibileDays}
                       listJobDayHours={listJobDayHours}
-                      handleChangePrice={(props) => { handleChangePrice(props); } }
-                      handleChangeBeginningDate={(props) => { handleChangeBeginningDate(props); } }
-                      handleChangeEndDate={(props) => { handleChangeEndDate(props); } }
-                      handleChangeFlexibileDates={(props) => { handleChangeFlexibileDates(props); } }
-                      handleChangeFlexibileDays={(props) => { handleChangeFlexibileDays(props); } }
-                      handleChangeDayHours={(props) => { handleChangeDayHours(props); } }
+                      handleChangePrice={(props) => { setPrice(props); handleFiltering(props, beginningDate, endDate, flexibileDates, flexibileDays, listJobDayHours); } }
+                      handleChangeBeginningDate={(props) => { setBeginningDate(props); handleFiltering(price, props, endDate, flexibileDates, flexibileDays, listJobDayHours); } }
+                      handleChangeEndDate={(props) => { setEndDate(props); handleFiltering(price, beginningDate, props, flexibileDates, flexibileDays, listJobDayHours); } }
+                      handleChangeFlexibileDates={(props) => { setFlexibileDates(!props); handleFiltering(price, beginningDate, endDate, !props, flexibileDays, listJobDayHours); } }
+                      handleChangeFlexibileDays={(props) => { setFlexibileDays(!props); handleFiltering(price, beginningDate, endDate, flexibileDates, !props, listJobDayHours); } }
+                      handleChangeDayHours={(props) => { setListJobDayHours(props); handleFiltering(price, beginningDate, endDate, flexibileDates, flexibileDays, props); } }
       />
       {
         (!offersIsLoading && (acceptableOffers || acceptableOffersBasic)) &&

@@ -28,6 +28,8 @@ import JobDayHoursContainer from '../jobDayHours/JobDayHoursContainer';
 const useStyles = makeStyles(theme => ({
     root: {
       flexGrow: 1,
+    //   width: '100%',
+    //   maxWidth: '200px',
     },
     title: {
       display: 'flex',
@@ -53,6 +55,10 @@ const useStyles = makeStyles(theme => ({
       position: 'fixed',
       overflowX: 'hidden',
     },
+    nested: {
+        paddingLeft: theme.spacing(4),
+        // maxWidth: '300px',
+    },
   }))
 
 // const ConnectedLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} {...props} />);
@@ -64,6 +70,7 @@ const useStyles = makeStyles(theme => ({
 
 export const FilteringPosts = ({
     price,
+    priceType,
     beginningDate,
     endDate,
     flexibileDates,
@@ -143,7 +150,7 @@ export const FilteringPosts = ({
                 <List component="nav" aria-label="Users">
 
                     <ListItem button onClick={handleClickPrice}>
-                        <ListItemText primary="Maximum price" />
+                        <ListItemText primary= {`${priceType} price`} />
                         {openPrice ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={openPrice} timeout="auto" unmountOnExit>
