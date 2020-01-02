@@ -101,6 +101,7 @@ export const JobDayHoursForm = ({
             </FormControl>
 
             {/* <div style = {{display: "inline"}} > */}
+            <FormControl component="fieldset" style = {{display: "inline"}} >
               <TextField
                 label={jobDayHours.isMinMax ? "Min a day" : "From" }
                 name="fromHour"
@@ -186,6 +187,7 @@ export const JobDayHoursForm = ({
                 }
                 style = {{width: 100, marginLeft: 5 }}
               />
+              </FormControl>
 
               <div style = {{width: "100%", justifyContent: "right" }} >
                 <FormControl component="fieldset">
