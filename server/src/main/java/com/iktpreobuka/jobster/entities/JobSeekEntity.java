@@ -19,7 +19,6 @@ import javax.persistence.Version;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -58,7 +57,7 @@ public class JobSeekEntity {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "seek", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
-	private List<ApplyContactEntity> contacts = new ArrayList<>(); //STA JE I GDE JE OVO????????????????????????SLOBO
+	private List<ApplyContactEntity> contacts = new ArrayList<>();
 	
 	
 	@Id
@@ -75,13 +74,13 @@ public class JobSeekEntity {
 	private Integer distanceToJob;
 	
 	//@JsonView(Views.Student.class)
-	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@NotNull (message = "Beginning date must be provided.")
 	@Column(name="beginning_date")
 	private Date beginningDate;
 	
 	//@JsonView(Views.Student.class)
-	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@NotNull (message = "End date must be provided.")
 	@Column(name="end_date")
 	private Date endDate;
