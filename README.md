@@ -1,4 +1,4 @@
-# jobster
+# Jobster - 3ClickJobs
 Web-App for searching and offering part-time and full-time jobs
 
 # DEMO
