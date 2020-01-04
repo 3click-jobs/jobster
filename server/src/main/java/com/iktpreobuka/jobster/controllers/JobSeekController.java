@@ -34,7 +34,7 @@ import com.iktpreobuka.jobster.services.JobSeekDao;
 
 @Controller
 @RestController
-@RequestMapping(value = "/seek")
+@RequestMapping(value = "/jobster/seek")
 public class JobSeekController {
 
 	@Autowired
