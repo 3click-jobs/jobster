@@ -43,6 +43,7 @@ public class AssertTests {
 	@Autowired
 	private	CountryRegionController countryRegionController;
 
+	@Autowired
 	private	CommentController commentController;
 
 	

@@ -78,8 +78,8 @@ public class PersonController {
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(1);
 			if (Iterables.isEmpty(users)) {
-				logger.info("---------------- Companies not found.");
-		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Persons not found.");
+		        return new ResponseEntity<>("Persons not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
@@ -98,8 +98,8 @@ public class PersonController {
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, 1);
 			if (user == null) {
-				logger.info("---------------- Company not found.");
-		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Person not found.");
+		        return new ResponseEntity<>("Person not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
@@ -119,8 +119,8 @@ public class PersonController {
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(0);
 			if (Iterables.isEmpty(users)) {
-				logger.info("---------------- Companies not found.");
-		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Persons not found.");
+		        return new ResponseEntity<>("Persons not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
@@ -139,8 +139,8 @@ public class PersonController {
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, 0);
 			if (user == null) {
-				logger.info("---------------- Company not found.");
-		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Person not found.");
+		        return new ResponseEntity<>("Person not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
@@ -159,8 +159,8 @@ public class PersonController {
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(-1);
 			if (Iterables.isEmpty(users)) {
-				logger.info("---------------- Companies not found.");
-		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Persons not found.");
+		        return new ResponseEntity<>("Persons not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
@@ -179,8 +179,8 @@ public class PersonController {
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, -1);
 			if (user == null) {
-				logger.info("---------------- Company not found.");
-		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Person not found.");
+		        return new ResponseEntity<>("Person not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
@@ -256,6 +256,7 @@ public class PersonController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
+	@SuppressWarnings("unlikely-arg-type")
 	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> modifyPerson(@PathVariable Integer id, @Valid @RequestBody PersonDTO updatePerson, Principal principal, BindingResult result) {
@@ -307,6 +308,12 @@ public class PersonController {
 			logger.info("Person identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
+			UserAccountEntity loggedUserAccount = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user account identified.");
+			if ((loggedUserAccount.getAccessRole().equals("ROLE_USER") || loggedUserAccount.getAccessRole().equals("ROLE_GUEST")) && id != loggedUser.getId()) {
+				logger.info("---------------- Selected Id is not ID of logged User.");
+				return new ResponseEntity<>("Selected Id is not ID of logged User.", HttpStatus.FORBIDDEN);
+		    }
 			if (updatePerson.getFirstName() != null || updatePerson.getLastName() != null || updatePerson.getGender() != null || updatePerson.getBirthDate() != null|| updatePerson.getEmail() != null || updatePerson.getMobilePhone() != null || (updatePerson.getCity() != null && updatePerson.getCountry() != null && updatePerson.getIso2Code() != null && updatePerson.getCountryRegion() != null && updatePerson.getLatitude() != null && updatePerson.getLongitude() != null) || updatePerson.getAbout() != null ) {
 				personDao.modifyPerson(loggedUser, user, updatePerson);
 				logger.info("Person modified.");
@@ -446,6 +453,7 @@ public class PersonController {
 		}
 	}*/
 
+	@SuppressWarnings("unlikely-arg-type")
 	//@Secured("ROLE_ADMIN")
 	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
@@ -466,6 +474,12 @@ public class PersonController {
 				logger.info("---------------- Selected Id is ID of logged User: Cann't archive yourself.");
 				return new ResponseEntity<>("Selected Id is ID of logged User: Cann't archive yourself.", HttpStatus.FORBIDDEN);
 		      }	*/
+			UserAccountEntity loggedUserAccount = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user account identified.");
+			if ((loggedUserAccount.getAccessRole().equals("ROLE_USER") || loggedUserAccount.getAccessRole().equals("ROLE_GUEST")) && id != loggedUser.getId()) {
+				logger.info("---------------- Selected Id is not ID of logged User.");
+				return new ResponseEntity<>("Selected Id is not ID of logged User.", HttpStatus.FORBIDDEN);
+		    }
 			personDao.archivePerson(loggedUser, user);
 			logger.info("Person archived.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLike(user, EUserRole.ROLE_USER);
@@ -492,6 +506,7 @@ public class PersonController {
 	}
 
 	//@Secured("ROLE_ADMIN")
+	@SuppressWarnings("unlikely-arg-type")
 	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 	public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
@@ -507,6 +522,12 @@ public class PersonController {
 			logger.info("Person for undeleting identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
+			UserAccountEntity loggedUserAccount = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user account identified.");
+			if ((loggedUserAccount.getAccessRole().equals("ROLE_USER") || loggedUserAccount.getAccessRole().equals("ROLE_GUEST")) && id != loggedUser.getId()) {
+				logger.info("---------------- Selected Id is not ID of logged User.");
+				return new ResponseEntity<>("Selected Id is not ID of logged User.", HttpStatus.FORBIDDEN);
+		    }
 			personDao.undeletePerson(loggedUser, user);
 			logger.info("Person undeleted.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLikeAndStatusLike(user, EUserRole.ROLE_USER, 1);
@@ -533,6 +554,7 @@ public class PersonController {
 	}
 	
 	//@Secured("ROLE_ADMIN")
+	@SuppressWarnings("unlikely-arg-type")
 	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
@@ -552,6 +574,12 @@ public class PersonController {
 				logger.info("---------------- Selected Id is ID of logged User: Cann't delete yourself.");
 				return new ResponseEntity<>("Selected Id is ID of logged User: Cann't delete yourself.", HttpStatus.FORBIDDEN);
 		      }	*/
+			UserAccountEntity loggedUserAccount = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user account identified.");
+			if ((loggedUserAccount.getAccessRole().equals("ROLE_USER") || loggedUserAccount.getAccessRole().equals("ROLE_GUEST")) && id != loggedUser.getId()) {
+				logger.info("---------------- Selected Id is not ID of logged User.");
+				return new ResponseEntity<>("Selected Id is not ID of logged User.", HttpStatus.FORBIDDEN);
+		    }
 			personDao.deletePerson(loggedUser, user);
 			logger.info("Person deleted.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLikeAndStatusLike(user, EUserRole.ROLE_USER, 1);

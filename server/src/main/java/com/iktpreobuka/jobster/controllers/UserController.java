@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.repositories.UserRepository;
@@ -39,7 +40,7 @@ public class UserController {
 		try {
 			Iterable<UserEntity> users = userRepository.findAll();
 			logger.info("All users (active, deleted, archived).");
-			if (users == null) {
+			if (Iterables.isEmpty(users)) {
 				logger.info("---------------- Users not found.");
 		        return new ResponseEntity<>("Users not found.", HttpStatus.NOT_FOUND);
 		      }

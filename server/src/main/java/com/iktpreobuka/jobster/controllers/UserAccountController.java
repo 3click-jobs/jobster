@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -206,7 +205,7 @@ public class UserAccountController {
 			logger.info("---------------- New user account is null.");
 	        return new ResponseEntity<>("New user account is null", HttpStatus.BAD_REQUEST);
 	      }
-		if (newUserAccount.getUsername() == null || newUserAccount.getAccessRole() == null || (newUserAccount.getPassword() == null && newUserAccount.getConfirmedPassword() == null) || newUserAccount.getUserId() == null) {
+		if (newUserAccount.getUsername() == null || newUserAccount.getAccessRole() == null || (newUserAccount.getPassword() == null || newUserAccount.getConfirmedPassword() == null) || newUserAccount.getUserId() == null) {
 			logger.info("---------------- Some or all atributes are null.");
 			return new ResponseEntity<>("Some or all atributes are null.", HttpStatus.BAD_REQUEST);
 		}
@@ -222,10 +221,10 @@ public class UserAccountController {
 		    }
 			UserEntity user = new UserEntity();
 			EUserRole role = null;
-			if (newUserAccount.getUsername() != null && userAccountRepository.getByUsername(newUserAccount.getUsername()) != null) {
-				logger.info("---------------- Username already exist.");
-		        return new ResponseEntity<>("Username already exist.", HttpStatus.NOT_ACCEPTABLE);
-		    }
+//			if (newUserAccount.getUsername() != null && userAccountRepository.getByUsername(newUserAccount.getUsername()) != null) {
+//				logger.info("---------------- Username already exist.");
+//		        return new ResponseEntity<>("Username already exist.", HttpStatus.NOT_ACCEPTABLE);
+//		    }
 			if (newUserAccount.getUserId() != null) {
 				user = userRepository.getById(Integer.parseInt(newUserAccount.getUserId()));
 				if (user == null) {

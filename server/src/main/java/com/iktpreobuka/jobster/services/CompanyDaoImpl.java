@@ -140,7 +140,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			}
 			logger.info("addNewCompany finished.");
 		} catch (Exception e) {
-			throw new Exception("addNewCompany save failed.");
+			throw new Exception("addNewCompany save failed." + e.getLocalizedMessage());
 		}
 		return user;
 	}
