@@ -31,7 +31,7 @@ public class PersonEntity extends UserEntity {
 	@Pattern(regexp = "^[A-Za-z]{2,}$", message="Last name is not valid.")
 	@NotNull (message = "Last name must be provided.")
 	protected String lastName;
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@Column(name="gender")
 	@Enumerated(EnumType.STRING)
 	@NotNull (message = "Gender must be provided.")

@@ -207,7 +207,7 @@ public class PersonDaoImpl implements PersonDao {
 				personRepository.save(person);
 			}
 		} catch (Exception e) {
-			throw new Exception("modifyPerson faild on saving.");
+			throw new Exception("modifyPerson faild on saving." + e.getLocalizedMessage());
 		}
 	}
 
@@ -232,7 +232,7 @@ public class PersonDaoImpl implements PersonDao {
 			person.setUpdatedById(loggedUser.getId());
 			personRepository.save(person);
 		} catch (Exception e) {
-			throw new Exception("deletePerson failed on saving.");
+			throw new Exception("deletePerson failed on saving." + e.getLocalizedMessage());
 		}
 	}
 	
@@ -243,7 +243,7 @@ public class PersonDaoImpl implements PersonDao {
 			person.setUpdatedById(loggedUser.getId());
 			personRepository.save(person);
 		} catch (Exception e) {
-			throw new Exception("undeletePerson failed on saving.");
+			throw new Exception("undeletePerson failed on saving." + e.getLocalizedMessage());
 		}		
 	}
 	
@@ -264,7 +264,7 @@ public class PersonDaoImpl implements PersonDao {
 			person.setUpdatedById(loggedUser.getId());
 			personRepository.save(person);
 		} catch (Exception e) {
-			throw new Exception("ArchivePerson failed on saving.");
+			throw new Exception("ArchivePerson failed on saving." + e.getLocalizedMessage());
 		}		
 	}
 
