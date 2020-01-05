@@ -198,7 +198,7 @@ public class CompanyDaoImpl implements CompanyDao {
 				companyRepository.save(company);
 			}
 		} catch (Exception e) {
-			throw new Exception("modifyCompany faild on saving.");
+			throw new Exception("modifyCompany faild on saving." + e.getLocalizedMessage());
 		}
 	}
 
@@ -222,7 +222,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			company.setUpdatedById(loggedUser.getId());
 			companyRepository.save(company);
 		} catch (Exception e) {
-			throw new Exception("deleteCompany failed on saving.");
+			throw new Exception("deleteCompany failed on saving." + e.getLocalizedMessage());
 		}
 	}
 
@@ -232,7 +232,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			company.setUpdatedById(loggedUser.getId());
 			companyRepository.save(company);
 		} catch (Exception e) {
-			throw new Exception("undeleteCompany failed on saving.");
+			throw new Exception("undeleteCompany failed on saving." + e.getLocalizedMessage());
 		}		
 	}
 
@@ -252,7 +252,7 @@ public class CompanyDaoImpl implements CompanyDao {
 			company.setUpdatedById(loggedUser.getId());
 			companyRepository.save(company);
 		} catch (Exception e) {
-			throw new Exception("ArchiveCompany failed on saving.");
+			throw new Exception("ArchiveCompany failed on saving." + e.getLocalizedMessage());
 		}		
 	}
 

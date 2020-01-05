@@ -41,7 +41,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			userAccountRepository.save(account);
 			logger.info("addNewUserAccount finished.");
 		} catch (Exception e) {
-			throw new Exception("AddNewUserAccount failed on saving.");
+			throw new Exception("AddNewUserAccount failed on saving." + e.getLocalizedMessage());
 		}
 		return account;
 	}
@@ -71,7 +71,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			}
 			logger.info("modifyAccount finished.");
 		} catch (Exception e) {
-			throw new Exception("ModifyAccount for Admin failed on saving.");
+			throw new Exception("ModifyAccount for Admin failed on saving." + e.getLocalizedMessage());
 		}
 	}
 	
@@ -100,7 +100,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			}
 			logger.info("modifyAccount2 finished.");
 		} catch (Exception e) {
-			throw new Exception("ModifyAccount for Parent failed on saving.");
+			throw new Exception("ModifyAccount for Parent failed on saving." + e.getLocalizedMessage());
 		}
 	}
 
@@ -117,7 +117,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			}
 			logger.info("modifyAccountUsername finished.");
 		} catch (Exception e) {
-			throw new Exception("ModifyAccountUsername failed on saving.");
+			throw new Exception("ModifyAccountUsername failed on saving." + e.getLocalizedMessage());
 		}
 	}
 
@@ -131,7 +131,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			}
 			logger.info("modifyAccountAccessRole finished.");
 		} catch (Exception e) {
-			throw new Exception("modifyAccountAccessRole failed on saving.");
+			throw new Exception("modifyAccountAccessRole failed on saving." + e.getLocalizedMessage());
 		}
 	}
 	
@@ -146,7 +146,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			}
 			logger.info("modifyAccountUserAndAccessRole finished.");
 		} catch (Exception e) {
-			throw new Exception("modifyAccountUserAndAccessRole failed on saving.");
+			throw new Exception("modifyAccountUserAndAccessRole failed on saving." + e.getLocalizedMessage());
 		}
 	}
 	
@@ -160,7 +160,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			}
 			logger.info("modifyAccountUser finished.");
 		} catch (Exception e) {
-			throw new Exception("modifyAccountUser failed on saving.");
+			throw new Exception("modifyAccountUser failed on saving." + e.getLocalizedMessage());
 		}
 	}
 	
@@ -175,7 +175,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			}
 			logger.info("modifyAccountPassword finished.");
 		} catch (Exception e) {
-			throw new Exception("ModifyAccountPassword failed on saving.");
+			throw new Exception("ModifyAccountPassword failed on saving." + e.getLocalizedMessage());
 		}
 	}
 	
@@ -203,7 +203,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			}
 			logger.info("modifyAccount3 finished.");
 		} catch (Exception e) {
-			throw new Exception("ModifyAccountUsername failed on saving.");
+			throw new Exception("ModifyAccountUsername failed on saving." + e.getLocalizedMessage());
 		}
 
 	}
@@ -216,7 +216,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			userAccountRepository.save(account);
 			logger.info("deleteAccount finished.");
 		} catch (Exception e) {
-			throw new Exception("DeleteAccount failed on saving.");
+			throw new Exception("DeleteAccount failed on saving." + e.getLocalizedMessage());
 		}
 	}
 
@@ -228,7 +228,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			userAccountRepository.save(account);
 			logger.info("undeleteAccount finished.");
 		} catch (Exception e) {
-			throw new Exception("UndeleteAccount failed on saving.");
+			throw new Exception("UndeleteAccount failed on saving." + e.getLocalizedMessage());
 		}		
 	}
 	
@@ -240,7 +240,7 @@ public class UserAccountDaoImpl implements UserAccountDao {
 			userAccountRepository.save(account);
 			logger.info("archiveAccount finished.");
 		} catch (Exception e) {
-			throw new Exception("ArchiveDeleteAccount failed on saving.");
+			throw new Exception("ArchiveDeleteAccount failed on saving." + e.getLocalizedMessage());
 		}				
 	}
 
