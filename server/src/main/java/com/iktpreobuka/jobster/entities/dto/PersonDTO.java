@@ -22,7 +22,7 @@ public class PersonDTO {
 	@Pattern(regexp="^(GENDER_MALE|GENDER_FEMALE)$",message="Gender is not valid, must be GENDER_MALE or GENDER_FEMALE")
 	private String gender;
 	@JsonView(Views.User.class)
-	@Pattern(regexp = "^([0][1-9]|[1|2][0-9]|[3][0|1])[./-]([0][1-9]|[1][0-2])[./-]([1-2][0-9]{3})$", message="Enrollment date is not valid, must be in dd-MM-yyyy format.")
+	@Pattern(regexp = "^([0][1-9]|[1|2][0-9]|[3][0|1])[-]([0][1-9]|[1][0-2])[-]([1-2][0-9]{3})$", message="Birth date is not valid, must be in dd-MM-yyyy format.")
 	private String birthDate;
 	@JsonView(Views.User.class)
 	@Pattern(regexp = "^([\\(]{0,1}[\\+]{0,1}[\\(]{0,1}([3][8][1]){0,1}[\\)]{0,1}[- \\.\\/]{0,1}[\\(]{0,1}[0]{0,1}[\\)]{0,1}[6]{1,1}([0-6]|[9]){1,1}[\\)]{0,1}[- \\.\\/]{0,1}(([0-9]{6,7})|([0-9]{2,3}[- \\.\\/]{0,1}[0-9]{2,4}[- \\.\\/]{0,1}[0-9]{0,3})))$", message="Mobile phone number is not valid.")
@@ -38,7 +38,7 @@ public class PersonDTO {
 	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
 	private String country;
 	@JsonView(Views.User.class)
-	@Pattern(regexp = "^[A-Za-z]{2,3}$", message="ISO2 code is not valid.")
+	@Pattern(regexp = "^[A-Za-z]{2,2}$", message="ISO2 code is not valid.")
 	protected String iso2Code;
 	@JsonView(Views.User.class)
 	@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid.")

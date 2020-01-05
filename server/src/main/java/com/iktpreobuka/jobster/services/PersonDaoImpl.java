@@ -139,7 +139,7 @@ public class PersonDaoImpl implements PersonDao {
 				}
 				logger.info("addNewPerson finished.");
 			} catch (Exception e) {
-				throw new Exception("addNewPerson save failed.");
+				throw new Exception("addNewPerson save failed." + e.getLocalizedMessage());
 			}
 			return user;
 	}
