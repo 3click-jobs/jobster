@@ -5,6 +5,7 @@ Web-App for searching and offering part-time and full-time jobs
   
 * http://172.104.141.84:3000/
 * TIP: This is very basic version of the application with fake backend, in a raw stage. It is a proof-of-concept with minimal functionality. That said, it will get better in a few days.
+* USERNAME: person, PASSWORD: password
   
 ## How-to  
   
