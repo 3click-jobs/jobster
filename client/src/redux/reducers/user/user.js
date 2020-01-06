@@ -82,6 +82,7 @@ const authReady = (state = false, action) => {
       }
     case 'SUCCESS_USER_VERIFY':
     case 'FAILURE_USER_CREDENTIALS':
+    case 'FAILURE_USER_VERIFY':
       {
         console.log('AUTH READY: (true) -- ', true)
         return true
