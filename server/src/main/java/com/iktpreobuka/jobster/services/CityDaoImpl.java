@@ -4,14 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
+import com.iktpreobuka.jobster.entities.dto.POSTCityDTO;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
 import com.iktpreobuka.jobster.repositories.CountryRepository;
+
 
 @Service 
 public class CityDaoImpl implements CityDao {
@@ -34,7 +35,10 @@ public class CityDaoImpl implements CityDao {
 	@Autowired
 	private CityDistanceDao cityDistanceDao;
 	
+	
+	
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+	
 	
 	@Override
 	public Iterable<CityEntity> findCityByStatusLike(Integer status) throws Exception {
@@ -120,6 +124,19 @@ public class CityDaoImpl implements CityDao {
 		}
 		return city;
 	}
+	
+	@Override
+	public  CityEntity modifyCityWithLoggedUser(CityEntity city, POSTCityDTO updateCity, UserEntity loggedUser) {
+		city.setCityName(updateCity.getCityName());
+		city.setLongitude(updateCity.getLongitude());
+		city.setLatitude(updateCity.getLatitude());
+		CountryEntity country = countryRepository.getByCountryName(updateCity.getCountry());
+		CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameAndCountry(updateCity.getRegion(), country);
+		city.setRegion(region);
+		city.setUpdatedById(loggedUser.getId());
+		return city;
+		}
+	
 
 	@Override
 	public void deleteCity(UserEntity loggedUser, CityEntity city) throws Exception {
