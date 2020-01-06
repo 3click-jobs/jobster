@@ -173,11 +173,26 @@ export const PostSeek = ({
     <React.Fragment>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values, formikBag) => {
+        onSubmit={(values, actions) => {
 
-            const payload = {...values}
+          console.log('submitting...')
 
-            createSeek(payload).then(() => {formikBag.setSubmitting(false); loadSeeksAll()})
+          actions.setStatus({
+            success: 'Submitting post seek...',
+            code: 'sending' 
+          })
+
+          const payload = {...values}
+
+          createSeek(payload)
+            .then(() => {
+              actions.setSubmitting(false) 
+              loadSeeksAll()
+              actions.setStatus({
+                success: 'Post seek successfully created.',
+                code: 'success'
+              })
+            })
         }}
 
         validationSchema={seeksSchema.create}

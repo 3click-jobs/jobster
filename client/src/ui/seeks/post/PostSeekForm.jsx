@@ -1,4 +1,5 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 import { useFormikContext, Form } from 'formik'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -44,7 +45,6 @@ const useStyles = makeStyles(() => ({
 
 
 export const PostSeekForm = ({
-  handleSubmit,
   handleChange,
   handleBlur,
   values,
@@ -52,20 +52,34 @@ export const PostSeekForm = ({
   errors,
   isSubmitting, 
   handleReset,
+  status
 }) => {
 
   const { setFieldValue } = useFormikContext()
 
   const classes = useStyles();
 
-
   return (
     <ThemeProvider theme={theme}>
     <div className={classes.container}>
+      {
+        status &&
+        <Redirect to='/' />
+      }
       <Form>
         <Card className={classes.card}>
           <CardContent>
-            <JobTypesContainer selectedJobType={values.jobType} handleJobType={ (jobType)=> { if (jobType) { setFieldValue('jobType.id', jobType.id); setFieldValue('jobType.jobTypeName', jobType.jobTypeName); } else { setFieldValue('jobType.id', ''); setFieldValue('jobType.jobTypeName', ''); } } } />
+            <JobTypesContainer 
+              selectedJobType={values.jobType} 
+              handleJobType={ (jobType) => { 
+                if (jobType) { 
+                  setFieldValue('jobType.id', jobType.id); 
+                  setFieldValue('jobType.jobTypeName', jobType.jobTypeName); 
+                } else { 
+                  setFieldValue('jobType.id', ''); 
+                  setFieldValue('jobType.jobTypeName', ''); 
+                }}}
+            />
 
             <TextField
               label="Details about job"
@@ -103,47 +117,48 @@ export const PostSeekForm = ({
             }
             />
 
-            <CityAPIContainer city={ {  
-                                  name: values.name, 
-                                  countryName: values.countryName,
-                                  city: values.city, 
-                                  country: values.country,
-                                  iso2Code: values.iso2Code,
-                                  countryRegion: values.countryRegion,
-                                  longitude: values.longitude,
-                                  latitude: values.latitude,
-                                } } 
-                              setCity = {(props) => { if (props) {
-                                  // values.city = props.city; 
-                                  // values.country = props.country; 
-                                  // values.iso2Code = props.iso2Code;
-                                  // values.countryRegion = props.countryRegion; 
-                                  // values.longitude = props.longitude; 
-                                  // values.latitude = props.latitude;
-                                  setFieldValue('name', props.name)
-                                  setFieldValue('countryName', props.countryName)
-                                  setFieldValue('city', props.city)
-                                  setFieldValue('country', props.country)
-                                  setFieldValue('iso2Code', props.iso2Code)
-                                  setFieldValue('countryRegion', props.countryRegion)
-                                  setFieldValue('longitude', props.longitude)
-                                  setFieldValue('longitude', props.longitude)
-                                } else {
-                                  // values.city = ""; 
-                                  // values.country = ""; 
-                                  // values.iso2Code = "";
-                                  // values.countryRegion = ""; 
-                                  // values.longitude = ""; 
-                                  // values.latitude = "";
-                                  setFieldValue('name', "")
-                                  setFieldValue('countryName', "")
-                                  setFieldValue('city', '')
-                                  setFieldValue('country', '')
-                                  setFieldValue('iso2Code', '')
-                                  setFieldValue('countryRegion', '')
-                                  setFieldValue('longitude', '')
-                                  setFieldValue('longitude', '')
-                                } } } />
+            <CityAPIContainer 
+              city={{  
+                name: values.name, 
+                countryName: values.countryName,
+                city: values.city, 
+                country: values.country,
+                iso2Code: values.iso2Code,
+                countryRegion: values.countryRegion,
+                longitude: values.longitude,
+                latitude: values.latitude,
+              } } 
+            setCity = {(props) => { if (props) {
+                // values.city = props.city; 
+                // values.country = props.country; 
+                // values.iso2Code = props.iso2Code;
+                // values.countryRegion = props.countryRegion; 
+                // values.longitude = props.longitude; 
+                // values.latitude = props.latitude;
+                setFieldValue('name', props.name)
+                setFieldValue('countryName', props.countryName)
+                setFieldValue('city', props.city)
+                setFieldValue('country', props.country)
+                setFieldValue('iso2Code', props.iso2Code)
+                setFieldValue('countryRegion', props.countryRegion)
+                setFieldValue('longitude', props.longitude)
+                setFieldValue('longitude', props.longitude)
+              } else {
+                // values.city = ""; 
+                // values.country = ""; 
+                // values.iso2Code = "";
+                // values.countryRegion = ""; 
+                // values.longitude = ""; 
+                // values.latitude = "";
+                setFieldValue('name', "")
+                setFieldValue('countryName', "")
+                setFieldValue('city', '')
+                setFieldValue('country', '')
+                setFieldValue('iso2Code', '')
+                setFieldValue('countryRegion', '')
+                setFieldValue('longitude', '')
+                setFieldValue('longitude', '')
+              } } } />
 
             <TextField
               label="Distance to job"
@@ -302,15 +317,16 @@ export const PostSeekForm = ({
                 />
             </FormControl>
 
-            <JobDayHoursContainer listJobDayHours={values.listJobDayHoursPostDto} 
-                                  handleChange={handleChange} 
-                                  handleBlur={handleBlur} 
-                                  touched={touched} 
-                                  errors={errors} 
-                                  setJobDayHoursChange={(props) => 
-                                    { values.listJobDayHoursPostDto = [...props]; 
-                                    } } 
-                                  />
+            <JobDayHoursContainer 
+              listJobDayHours={values.listJobDayHoursPostDto} 
+              handleChange={handleChange} 
+              handleBlur={handleBlur} 
+              touched={touched} 
+              errors={errors} 
+              setJobDayHoursChange={(props) => 
+                { values.listJobDayHoursPostDto = [...props]; 
+                } } 
+            />
 
             <FormControl component="fieldset">
                 <FormControlLabel
