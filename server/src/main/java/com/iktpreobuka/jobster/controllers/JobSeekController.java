@@ -7,10 +7,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -34,7 +31,7 @@ import com.iktpreobuka.jobster.services.JobSeekDao;
 
 @Controller
 @RestController
-@RequestMapping(value = "/seek")
+@RequestMapping(value = "/jobster/seek")
 public class JobSeekController {
 
 	@Autowired
@@ -51,7 +48,6 @@ public class JobSeekController {
 		binder.addValidators(userValidator);
 	}
 
-	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	// @Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekEntity")
@@ -74,21 +70,6 @@ public class JobSeekController {
 		list.add(empty2);
 		emptyWith.setListJobDayHoursPostDto(list);
 		return emptyWith;
-	}
-
-	// OVU METODU SAM ISPROBAO I U PERSON CONTROLLERU I RADI BEZ PROBLEMA
-	// METODA NICEMU KONKRETNO NE SLUZI NEGO SAMO DA VIDIM DA LI RADI PRINCIPAL
-	// @Secured("ROLE_ADMIN")
-	@RequestMapping(method = RequestMethod.GET, value = "/principal")
-	public ResponseEntity<?> userNamePrincipal(Principal principal) {
-		logger.info("metoda pocela");
-		try {
-			logger.info("Logged username: " + principal.getName());
-		} catch (Exception e) {
-			return new ResponseEntity<String>("Eror is" + " " + e.getMessage() + " " + e, HttpStatus.BAD_REQUEST);
-		}
-		logger.info("skoro zavrsla");
-		return new ResponseEntity<String>("Metoda prosla " + principal.getName(), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyPersonDto")
