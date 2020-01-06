@@ -127,7 +127,7 @@ public class CityEntity {
 		this.status = getStatusActive();
 	}
 
-	
+
 	public List<UserEntity> getUsers() {
 		return users;
 	}
