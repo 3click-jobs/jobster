@@ -225,15 +225,6 @@ public class CityControllerTests {
 				.header("Authorization", "Bearer " + token))
 			.andExpect(content().string("[]"));
 	}
-
-	@Test 
-	//@WithMockUser(username = "Test1234")
-	public void getCityByIdEndpointExists() throws Exception { 
-		logger.info("getCityByIdEndpointExists");
-		mockMvc.perform(get("/jobster/cities/getById/"+ CityControllerTests.cities.get(0).getId())
-				.header("Authorization", "Bearer " + token)) 
-			.andExpect(status().isOk());
-	}
 		
 	@Test
 	//@WithMockUser(username = "Test1234")
@@ -264,15 +255,6 @@ public class CityControllerTests {
 				.header("Authorization", "Bearer " + token))
 			.andExpect(status().isBadRequest());
 	}
-	
-	@Test 
-	//@WithMockUser(username = "Test1234")
-	public void getCityByNameEndpointExists() throws Exception { 
-		logger.info("getCityByNameEndpointExists");
-		mockMvc.perform(get("/jobster/cities/getByName/" + CityControllerTests.cities.get(0).getCityName())
-				.header("Authorization", "Bearer " + token)) 
-			.andExpect(status().isOk());
-	}
 
 	@Test
 	//@WithMockUser(username = "Test1234")
@@ -282,8 +264,8 @@ public class CityControllerTests {
 				.header("Authorization", "Bearer " + token))
 		.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id", is(CityControllerTests.cities.get(0).getId().intValue())));
-			//.andExpect(jsonPath("$.cityName", is(CityControllerTests.cities.get(0).getCityName().toString()))); 
+			//.andExpect(jsonPath("$.id", is(CityControllerTests.cities.get(0).getId().intValue())));
+			.andExpect(jsonPath("$[0].cityName", is(CityControllerTests.cities.get(0).getCityName().toString()))); 
 	}
 
 	@Test 
@@ -369,7 +351,7 @@ public class CityControllerTests {
 		CityControllerTests.cities.clear();
 		mockMvc.perform(get("/jobster/cities/active")
 				.header("Authorization", "Bearer " + token))
-			.andExpect(content().string(""));
+			.andExpect(content().string("[]"));
 	}
 
 	@Test //@WithMockUser(username = "Test1234")
@@ -391,6 +373,7 @@ public class CityControllerTests {
     		.andExpect(status().isOk())
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
 	}
 
 
