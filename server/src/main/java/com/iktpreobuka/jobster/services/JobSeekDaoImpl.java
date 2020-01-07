@@ -305,7 +305,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			newSeek.setDaysAndHours(listJobDaysAndHours);
 			logger.info("OK");
 			logger.info("Saveing JobSeek.");
-			jobSeekRepository.save(newSeek);
+			newSeek = jobSeekRepository.save(newSeek);
 			logger.info("OK");
 			logger.info("Atributs mapped.");
 
