@@ -216,6 +216,10 @@ public class CityEntity {
 		this.fromDistances = fromDistances;
 	}
 
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}

@@ -65,7 +65,7 @@ public class CityControllerTests {
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	
-	private static CityEntity city;
+	private static CityEntity city, cityA, cityI;
 
 	private static CityEntity cityWhitoutRegion;
 	
@@ -138,6 +138,22 @@ public class CityControllerTests {
 			countryRegions.add(region);
 			city = cityRepository.save(new CityEntity(region, "World city", 33.3, 34.5));
 			cities.add(city);
+			cityA = new CityEntity();
+			cityA.setCityName("Archived");
+			cityA.setLongitude(34.3);
+			cityA.setLatitude(35.5);
+			cityA.setRegion(region);
+			cityA.setStatus(-1);
+			cityRepository.save(cityA);
+			cities.add(cityA);
+			cityI = new CityEntity();
+			cityI.setCityName("Inactive");
+			cityI.setLongitude(35.3);
+			cityI.setLatitude(36.5);
+			cityI.setRegion(region);
+			cityI.setStatus(0);
+			cityRepository.save(cityI);
+			cities.add(cityI);
 			users.add(userRepository.save(new UserEntity(city, "0642345678", "Jobster@mail.com", "About Jobster")));
 			userAccounts.add(userAccountRepository.save(new UserAccountEntity(users.get(0), EUserRole.ROLE_ADMIN, "Test1234", "{bcrypt}$2a$10$FZjQbu7AqcSp0ns.GAxkbu0eKVUtNFTZNdVWwPOtBATLF0Bs9wtW2", users.get(0).getId())));
 			
@@ -210,7 +226,8 @@ public class CityControllerTests {
 		logger.info("getAllCities");
 		mockMvc.perform(get("/jobster/cities/getAll")
 				.header("Authorization", "Bearer " + token)) 
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[1].cityName", is(CityControllerTests.cities.get(1).getCityName())));
 	}
 	
 	@Test 
@@ -232,7 +249,6 @@ public class CityControllerTests {
 		logger.info("getCityById");
 		mockMvc.perform(get("/jobster/cities/getById/" + CityControllerTests.cities.get(0).getId())
 				.header("Authorization", "Bearer " + token))
-		.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.id", is(CityControllerTests.cities.get(0).getId().intValue()))); 
 	}
@@ -241,7 +257,7 @@ public class CityControllerTests {
 	//@WithMockUser(username = "Test1234")
 	public void getCityByIdNotExists() throws Exception { 
 		logger.info("getCityByIdNotExists");
-		mockMvc.perform(get("/jobster/cities/getById/" + (CityControllerTests.cities.get(0).getId()+1))
+		mockMvc.perform(get("/jobster/cities/getById/" + (CityControllerTests.cities.get(0).getId()+5))
 				.header("Authorization", "Bearer " + token))
 			.andExpect(content().string(" City doesn`t exists."));
 	}
@@ -262,9 +278,7 @@ public class CityControllerTests {
 		logger.info("getCityByName");
 		mockMvc.perform(get("/jobster/cities/getByName/" + CityControllerTests.cities.get(0).getCityName())
 				.header("Authorization", "Bearer " + token))
-		.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
-			//.andExpect(jsonPath("$.id", is(CityControllerTests.cities.get(0).getId().intValue())));
 			.andExpect(jsonPath("$[0].cityName", is(CityControllerTests.cities.get(0).getCityName().toString()))); 
 	}
 
@@ -294,7 +308,8 @@ public class CityControllerTests {
 		logger.info("getAllCitiesArchived");
 		mockMvc.perform(get("/jobster/cities/archived")
 				.header("Authorization", "Bearer " + token)) 
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].status", is(CityControllerTests.cities.get(1).getStatus().intValue())));
 	}
 	
 	@Test 
@@ -316,7 +331,9 @@ public class CityControllerTests {
 		logger.info("getAllCitiesInactive");
 		mockMvc.perform(get("/jobster/cities/inactive")
 				.header("Authorization", "Bearer " + token)) 
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].status", is(CityControllerTests.cities.get(2).getStatus().intValue())));
+
 	}
 	
 	@Test 
@@ -338,7 +355,9 @@ public class CityControllerTests {
 		logger.info("getAllCitiesActive");
 		mockMvc.perform(get("/jobster/cities/active")
 				.header("Authorization", "Bearer " + token)) 
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].status", is(CityControllerTests.cities.get(0).getStatus().intValue())));
+
 	}
 	
 	@Test 
@@ -369,12 +388,307 @@ public class CityControllerTests {
     	mockMvc.perform(post("/jobster/cities/addNewCity")
 			.header("Authorization", "Bearer " + token)
 			.contentType(MediaType.APPLICATION_JSON).content(json))
-    		.andDo(MockMvcResultHandlers.print())
+    		.andExpect(status().isOk())
+			.andExpect(content().contentType(contentType)) 
+			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityNullRegion() throws Exception {
+		logger.info("addNewCityNullRegion");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion(null);
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+			.header("Authorization", "Bearer " + token)
+			.contentType(MediaType.APPLICATION_JSON).content(json))
+    		.andExpect(status().isOk())
+			.andExpect(content().contentType(contentType)) 
+			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityEmptyRegion() throws Exception {
+		logger.info("addNewCityNullRegion");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion("");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+			.header("Authorization", "Bearer " + token)
+			.contentType(MediaType.APPLICATION_JSON).content(json))
     		.andExpect(status().isOk())
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
     	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
 	}
 
+
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityNoRegion() throws Exception {
+		logger.info("addNewCityNoRegion");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+			.header("Authorization", "Bearer " + token)
+			.contentType(MediaType.APPLICATION_JSON).content(json))
+    		.andExpect(status().isOk())
+			.andExpect(content().contentType(contentType)) 
+			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityWrongRegion() throws Exception {
+		logger.info("addNewCityWrongRegion");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion("region12");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+			.header("Authorization", "Bearer " + token)
+			.contentType(MediaType.APPLICATION_JSON).content(json))
+    		.andExpect(status().is5xxServerError());
+	}
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityNoName() throws Exception {
+		logger.info("addNewCityNoName");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion(null);
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+			.header("Authorization", "Bearer " + token)
+			.contentType(MediaType.APPLICATION_JSON).content(json))
+    		.andExpect(status().isBadRequest());
+	}
+
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityWrongName() throws Exception {
+		logger.info("addNewCityWrongName");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol22");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion(null);
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+			.header("Authorization", "Bearer " + token)
+			.contentType(MediaType.APPLICATION_JSON).content(json))
+    		.andExpect(status().isBadRequest());
+	}
+
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityEmptyName() throws Exception {
+		logger.info("addNewCityEmptyName");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion(null);
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+			.header("Authorization", "Bearer " + token)
+			.contentType(MediaType.APPLICATION_JSON).content(json))
+    		//.andDo(MockMvcResultHandlers.print())
+    		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityNullName() throws Exception {
+		logger.info("addNewCityNullName");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName(null);
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+			.header("Authorization", "Bearer " + token)
+			.contentType(MediaType.APPLICATION_JSON).content(json))
+    		//.andDo(MockMvcResultHandlers.print())
+    		.andExpect(status().isBadRequest());
+	}
+	
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityEmptyCountry() throws Exception {
+		logger.info("addNewCityEmptyCountry");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityWrongCountry() throws Exception {
+		logger.info("addNewCityWrongCountry");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija44");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityNullCountry() throws Exception {
+		logger.info("addNewCityNullCountry");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry(null);
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityNoCountry() throws Exception {
+		logger.info("addNewCityNoCountry");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setIso2Code("LF");
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	//------------------------------------------------------------------
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityEmptyIso2() throws Exception {
+		logger.info("addNewCityEmptyIso2");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("");
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityWrongIso2() throws Exception {
+		logger.info("addNewCityWrongIso2");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code("L2");
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityNullIso2() throws Exception {
+		logger.info("addNewCityNullIso2");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setIso2Code(null);
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void addNewCityNoIso2() throws Exception {
+		logger.info("addNewCityNoIso2");
+		POSTCityDTO cityDTO = new POSTCityDTO();
+    	cityDTO.setCityName("LFCapitol");
+    	cityDTO.setCountry("Latifundija");
+    	cityDTO.setRegion("LFRegion");
+    	cityDTO.setLongitude(43.1);
+    	cityDTO.setLatitude(43.1);
+		Gson gson = new Gson();
+    	String json = gson.toJson(cityDTO);
+    	mockMvc.perform(post("/jobster/cities/addNewCity")
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	//------------------------------------------------------------------
 
 }
