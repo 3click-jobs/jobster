@@ -40,13 +40,13 @@ public class JobSeekController {
 	@Autowired
 	public JobSeekDao jobSeekService;
 
-	@Autowired
-	private UserCustomValidator userValidator;
-
-	@InitBinder
-	protected void initBinder(final WebDataBinder binder) {
-		binder.addValidators(userValidator);
-	}
+//	@Autowired
+//	private UserCustomValidator userValidator;
+//
+//	@InitBinder
+//	protected void initBinder(final WebDataBinder binder) {
+//		binder.addValidators(userValidator);
+//	}
 
 
 	// @Secured("ROLE_ADMIN")
