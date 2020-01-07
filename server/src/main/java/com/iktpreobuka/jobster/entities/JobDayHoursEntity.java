@@ -99,6 +99,15 @@ public class JobDayHoursEntity {
 	}
 	
 	
+	
+	public JobSeekEntity getSeek() {
+		return seek;
+	}
+
+	public void setSeek(JobSeekEntity seek) {
+		this.seek = seek;
+	}
+
 	public JobOfferEntity getOffer() {
 		return offer;
 	}
