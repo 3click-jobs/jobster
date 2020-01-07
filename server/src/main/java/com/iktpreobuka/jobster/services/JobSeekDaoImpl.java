@@ -72,6 +72,10 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("Starting addNewSeek().---------------------");
 		JobSeekEntity newSeek = new JobSeekEntity();
 
+		boolean seekSaved = false;
+		boolean dayAndHoursSaved = false;
+		List<JobDayHoursEntity> listJobDayHoursEntity = new ArrayList<JobDayHoursEntity>();
+		
 		try {
 
 			// Checking does entry data exist
@@ -189,9 +193,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 					city = cityDao.addNewCityWithLoggedUser(seek.getCityName(), seek.getLongitude(), seek.getLatitude(),
 							seek.getCountryRegionName(), seek.getCountryName(), seek.getIso2Code(), loggedUser);
 				} catch (Exception e) {
-					logger.info("Error occured during 'Checkin database'.");
+					logger.info("Error occurred during 'Checkin database'.");
 					return new ResponseEntity<String>(
-							"Error occured during 'Checkin database'." + e.getMessage() + " " + e,
+							"Error occurred during 'Checkin database'." + e.getMessage() + " " + e,
 							HttpStatus.BAD_REQUEST);
 				}
 			} else {
@@ -259,8 +263,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			logger.info("OK");
 
 			// Mapping atributs
-
-			logger.info("Mapping atributs.");
+	
+			logger.info("Mapping atributs for JobSeek.");
 			newSeek.setEmployee(loggedUser);
 			newSeek.setCity(city);
 			newSeek.setType(jobTypeRepository.getByJobTypeName(seek.getJobTypeName()));
@@ -275,12 +279,13 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			newSeek.setElapseActive();
 			newSeek.setVersion(1);
 			newSeek.setCreatedById(loggedUser.getId());
-			logger.info("Atributs mapped.");
-
-			List<JobDayHoursEntity> listJobDaysAndHours = new ArrayList<JobDayHoursEntity>();
-
-			Integer numberOfDays = 0;
+			logger.info("Saveing JobSeek to database.");
+			newSeek = jobSeekRepository.save(newSeek);
+			logger.info("OK");
+			seekSaved = true;
+					
 			logger.info("Mapping days and hours.");
+			Integer numberOfDays = 0;
 			for (JobDayHoursPostDto i : listJobDayHoursPostDto) {
 				JobDayHoursEntity newDayAndHours = new JobDayHoursEntity();
 				newDayAndHours.setDay(i.getDay());
@@ -290,27 +295,37 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				newDayAndHours.setIsMinMax(i.getIsMinMax());
 				newDayAndHours.setStatusActive();
 				newDayAndHours.setVersion(1);
-				logger.info("Saveing day and hours for day" + i.getDay());///////////////////////////////////
+				newDayAndHours.setSeek(newSeek);
+				logger.info("Saveing day and hours for day" + i.getDay());
 				jobDayHoursRepository.save(newDayAndHours);
+				listJobDayHoursEntity.add(newDayAndHours);
 				logger.info("OK");
-				logger.info("Adding new DayAndHours to list.");
-				listJobDaysAndHours.add(newDayAndHours);
-				logger.info("OK");
+				dayAndHoursSaved = true;
 				numberOfDays++;
 			}
-
 			logger.info("There is " + numberOfDays + " day(s) added.");
 			logger.info("Days and hours mapped.");
-			logger.info("Adding list of days and hours to JobSeek.");
-			newSeek.setDaysAndHours(listJobDaysAndHours);
 			logger.info("OK");
-			logger.info("Saveing JobSeek.");
-			newSeek = jobSeekRepository.save(newSeek);
-			logger.info("OK");
-			logger.info("Atributs mapped.");
+			logger.info("Atributs for JobSeek mapped.");
 
 		} catch (Exception e) {
-			logger.info("Error ocured.");
+			logger.info("Error occurred and data that has been previously added needs to be removed from database.");
+			if(seekSaved == true) {
+				if(jobSeekRepository.findById(newSeek.getId()) != null) {
+					jobSeekRepository.delete(newSeek);
+					logger.info("Job Seek that has been previously added removed from database.");
+				}
+			}
+			if(dayAndHoursSaved == true) {
+				if(!(listJobDayHoursEntity.isEmpty())) {
+					for(JobDayHoursEntity i : listJobDayHoursEntity) {
+						if(jobDayHoursRepository.findById(i.getId()) != null) {
+							jobDayHoursRepository.delete(i);
+							logger.info("JobDayHours that has been previously added removed from database.");
+						}			
+					}
+				}
+			}	
 			return new ResponseEntity<String>("Error ocured.------------------- " + e.getMessage() + " " + e,
 					HttpStatus.BAD_REQUEST);
 		}
@@ -318,7 +333,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("Returning new jobSeek.---------------");
 		return new ResponseEntity<JobSeekEntity>(newSeek, HttpStatus.OK);
 	}
-
+	
+	
 	///////////////////////////// PUT /////////////////////////////
 
 	@Override
@@ -333,8 +349,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking errors.'");
-			return new ResponseEntity<String>("Error occured during 'Checking errors.'" + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking errors.'");
+			return new ResponseEntity<String>("Error occurred during 'Checking errors.'" + e, HttpStatus.BAD_REQUEST);
 		}
 
 		// Checking logged account
@@ -349,8 +365,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				loggedUser = userAccountRepository.findUserByUsername(principal.getName());
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checkin database'.");
-			return new ResponseEntity<String>("Error occured during 'Checkin database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checkin database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checkin database'." + e, HttpStatus.BAD_REQUEST);
 		}
 
 		// checking seek
@@ -364,8 +380,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			}
 
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		// checking city
@@ -380,16 +396,16 @@ public class JobSeekDaoImpl implements JobSeekDao {
 								seek.getLatitude(), seek.getCountryRegionName(), seek.getCountryName(),
 								seek.getIso2Code(), loggedUser);
 					} catch (Exception e) {
-						logger.info("Error occured during 'Checkin database'.");
-						return new ResponseEntity<String>("Error occured during 'Checkin database'." + e,
+						logger.info("Error occurred during 'Checkin database'.");
+						return new ResponseEntity<String>("Error occurred during 'Checkin database'." + e,
 								HttpStatus.BAD_REQUEST);
 					}
 				} else {
 					city = cityRepository.getByCityName(seek.getCityName());
 				}
 			} catch (Exception e) {
-				logger.info("Error occured during 'Checkin database'.");
-				return new ResponseEntity<String>("Error occured during 'Checkin database'." + e,
+				logger.info("Error occurred during 'Checkin database'.");
+				return new ResponseEntity<String>("Error occurred during 'Checkin database'." + e,
 						HttpStatus.BAD_REQUEST);
 			}
 		}
@@ -404,8 +420,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 					return new ResponseEntity<String>("JobType doesn't exist.", HttpStatus.BAD_REQUEST);
 				}
 			} catch (Exception e) {
-				logger.info("Error occured during 'Checkin database'.");
-				return new ResponseEntity<String>("Error occured during 'Checkin database'." + e,
+				logger.info("Error occurred during 'Checkin database'.");
+				return new ResponseEntity<String>("Error occurred during 'Checkin database'." + e,
 						HttpStatus.BAD_REQUEST);
 			}
 		}
@@ -534,8 +550,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		List<JobSeekEntity> list = (List<JobSeekEntity>) jobSeekRepository.findAll();
 		logger.info("Returning result.");
@@ -554,8 +570,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
@@ -572,8 +588,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 
 		try {
@@ -584,8 +600,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -604,8 +620,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 
 		try {
@@ -616,8 +632,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -636,8 +652,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 
 		try {
@@ -648,8 +664,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -668,8 +684,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -684,8 +700,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -703,8 +719,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -719,8 +735,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -738,8 +754,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -754,8 +770,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -773,8 +789,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -789,8 +805,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -808,8 +824,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -824,8 +840,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -843,8 +859,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -859,8 +875,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -878,8 +894,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -894,8 +910,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -913,8 +929,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -929,8 +945,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -948,8 +964,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -964,8 +980,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -983,8 +999,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -999,8 +1015,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -1018,8 +1034,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
@@ -1034,8 +1050,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<List<JobSeekEntity>>(wantedJobSeeks, HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'.", HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 
 		logger.info("JobSeek that you asked for doesn't exist.");
@@ -1053,8 +1069,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		JobSeekEntity wantedJobSeek = new JobSeekEntity();
 		try {
@@ -1065,8 +1081,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("jobSeek that you asked for doesn't exist.", HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			logger.info("Changing activity.");
@@ -1091,8 +1107,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
-			logger.info("Error occured during 'Deleting jobSeek.'");
-			return new ResponseEntity<String>("Error occured during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Deleting jobSeek.'");
+			return new ResponseEntity<String>("Error occurred during 'Deleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning jobSeek.");
 		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
@@ -1109,8 +1125,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		JobSeekEntity wantedJobSeek = new JobSeekEntity();
 		try {
@@ -1121,8 +1137,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			logger.info("Changing activity.");
@@ -1146,8 +1162,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
-			logger.info("Error occured during 'Undeleting jobSeek.'");
-			return new ResponseEntity<String>("Error occured during 'Undeleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Undeleting jobSeek.'");
+			return new ResponseEntity<String>("Error occurred during 'Undeleting jobSeek'." + e, HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning jobSeek.");
 		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
@@ -1164,8 +1180,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		JobSeekEntity wantedJobSeek = new JobSeekEntity();
 		try {
@@ -1176,8 +1192,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			logger.info("Changing activity.");
@@ -1198,8 +1214,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
-			logger.info("Error occured during 'Archiveing jobSeek.'");
-			return new ResponseEntity<String>("Error occured during 'Archiveing jobSeek'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Archiveing jobSeek.'");
+			return new ResponseEntity<String>("Error occurred during 'Archiveing jobSeek'." + e, HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning jobSeek.");
 		return new ResponseEntity<JobSeekEntity>(wantedJobSeek, HttpStatus.OK);
@@ -1216,8 +1232,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		JobSeekEntity wantedJobSeek = new JobSeekEntity();
 		try {
@@ -1228,8 +1244,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			logger.info("Error occured during 'Checking database'.");
-			return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			logger.info("Error occurred during 'Checking database'.");
+			return new ResponseEntity<String>("Error occurred during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
 		}
 		try {
 			logger.info("Changing activity.");
@@ -1249,8 +1265,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			jobSeekRepository.save(wantedJobSeek);
 			logger.info("jobSeek changed.");
 		} catch (Exception e) {
-			logger.info("Error occured during 'Unarchiveing jobSeek.'");
-			return new ResponseEntity<String>("Error occured during 'Unarchiveing jobSeek'." + e,
+			logger.info("Error occurred during 'Unarchiveing jobSeek.'");
+			return new ResponseEntity<String>("Error occurred during 'Unarchiveing jobSeek'." + e,
 					HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Returning jobSeek.");
