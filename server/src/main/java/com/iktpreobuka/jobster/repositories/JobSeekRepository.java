@@ -22,7 +22,4 @@ public interface JobSeekRepository extends CrudRepository<JobSeekEntity, Integer
 
 	public JobSeekEntity findByIdAndStatusLike(Integer id, int i);
 
-	
-		
-
 }

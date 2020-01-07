@@ -142,7 +142,7 @@ export const PostSeekForm = ({
                 setFieldValue('iso2Code', props.iso2Code)
                 setFieldValue('countryRegion', props.countryRegion)
                 setFieldValue('longitude', props.longitude)
-                setFieldValue('longitude', props.longitude)
+                setFieldValue('latitude', props.latitude)
               } else {
                 // values.city = ""; 
                 // values.country = ""; 
@@ -157,7 +157,7 @@ export const PostSeekForm = ({
                 setFieldValue('iso2Code', '')
                 setFieldValue('countryRegion', '')
                 setFieldValue('longitude', '')
-                setFieldValue('longitude', '')
+                setFieldValue('latitude', '')
               } } } />
 
             <TextField
