@@ -44,6 +44,23 @@ public class POSTCityDTO {
 	public POSTCityDTO() {
 		super();
 	}
+	
+	public POSTCityDTO(
+			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
+			@NotNull(message = "Longitude must be provided.") @Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") Double longitude,
+			@NotNull(message = "Latitude must be provided.") @Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") Double latitude,
+			String region,
+			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.") @NotNull (message = "Country must be provided.") String country,
+			@Pattern(regexp = "^[A-Za-z]{2,2}$", message="ISO2 code is not valid.") @NotNull (message = "ISO2 code must be provided.") String iso2Code)
+	{
+		super();
+		this.cityName = cityName;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.region = region;
+		this.country = country;
+		this.iso2Code = iso2Code;
+	}
 
 	public String getCityName() {
 		return cityName;

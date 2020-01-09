@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -769,6 +770,7 @@ public class CityControllerTests {
         	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
 	}
 	
+	@Test //@WithMockUser(username = "Test1234")
 	public void addNewCityMarginalLongitudeMinus() throws Exception {
 		logger.info("addNewCityMarginalLongitudePlus");
 		POSTCityDTO cityDTO = new POSTCityDTO();
@@ -937,5 +939,76 @@ public class CityControllerTests {
 	}
 	//------------------------------------------------------------------
 	
+	@Test //@WithMockUser(username = "Test1234")
+	public void modifyCityName() throws Exception {
+		logger.info("modifyCityName");
+		POSTCityDTO city = new POSTCityDTO("NewName", 47.0, 45.0, "NewRegion", "OldCountry", "OC");
+		Gson gson = new Gson();
+    	String json = gson.toJson(city);
+    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isOk())
+    			.andExpect(content().contentType(contentType)) 
+    			.andExpect(jsonPath("$.cityName", is("NewName")))
+    			.andExpect(jsonPath("$.longitude", is(47.0)));
+    	Integer Id = CityControllerTests.cities.get(0).getId();
+		CityControllerTests.cities.remove(0);
+		CityControllerTests.cities.add(0,cityRepository.findByIdAndStatusLike(Id, 1));
+	}
+
 	
+	@Test //@WithMockUser(username = "Test1234")
+	public void modifyCityMarginalName() throws Exception {
+		logger.info("modifyCityMarginalName");
+		POSTCityDTO city = new POSTCityDTO("NN", 47.0, 45.0, "NewRegion", "OldCountry", "OC");
+		Gson gson = new Gson();
+    	String json = gson.toJson(city);
+    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isOk())
+    			.andExpect(content().contentType(contentType)) 
+    			.andExpect(jsonPath("$.cityName", is("NN")))
+    			.andExpect(jsonPath("$.longitude", is(47.0)));
+    	Integer Id = CityControllerTests.cities.get(0).getId();
+		CityControllerTests.cities.remove(0);
+		CityControllerTests.cities.add(0,cityRepository.findByIdAndStatusLike(Id, 1));
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void modifyCityNullName() throws Exception {
+		logger.info("modifyCityNullName");
+		POSTCityDTO city = new POSTCityDTO(null, 47.0, 45.0, "NewRegion", "OldCountry", "OC");
+		Gson gson = new Gson();
+    	String json = gson.toJson(city);
+    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(1).getId()))
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void modifyCityWrongName() throws Exception {
+		logger.info("modifyCityWrongName");
+		POSTCityDTO city = new POSTCityDTO("city23", 47.0, 45.0, "NewRegion", "OldCountry", "OC");
+		Gson gson = new Gson();
+    	String json = gson.toJson(city);
+    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(1).getId()))
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
+	
+	@Test //@WithMockUser(username = "Test1234")
+	public void modifyCityEmptyName() throws Exception {
+		logger.info("modifyCityEmptyName");
+		POSTCityDTO city = new POSTCityDTO("", 47.0, 45.0, "NewRegion", "OldCountry", "OC");
+		Gson gson = new Gson();
+    	String json = gson.toJson(city);
+    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(1).getId()))
+    			.header("Authorization", "Bearer " + token)
+    			.contentType(MediaType.APPLICATION_JSON).content(json))
+        		.andExpect(status().isBadRequest());
+	}
 }
