@@ -50,9 +50,11 @@ const companies = {
       .oneOf(['ROLE_ADMIN', 'ROLE_USER', 'ROLE_GUEST'], 'Role is not valid, must be ROLE_ADMIN, ROLE_USER or ROLE_GUEST"'),
     password: Yup.string()
       .required('Password must be provided.')
+      .min(5, 'Password must be 5 characters long or higher.')
       // .matches(/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{5,}/, 'Password is not valid, must contain at least 1 upper case letter, 1 lower case letter and 1 digit, no whitespace allowed.')
       .matches(/^[A-Za-z0-9]*$/, 'Password is not valid, must contain only letters and numbers.'),
     confirmedPassword: Yup.string()
+      .required('Password must be provided.')
       .min(5, 'Password must be 5 characters long or higher.')
       .matches(/^[A-Za-z0-9]*$/, 'Password is not valid, must contain only letters and numbers.')
   })

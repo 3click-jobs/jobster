@@ -9,8 +9,8 @@ import RegisterCompany from './ui/companies/register/RegisterCompany';
 
 import { connect } from 'react-redux'
 import { verifyUser, checkCredentials } from './redux/actions/user'
-import Login from './ui/accounts/Login';
-import Signout from './ui/accounts/Signout'
+// import Login from './ui/accounts/Login';
+// import Signout from './ui/accounts/Signout'
 import ApplyContainer from './ui/apply/ApplyContainer';
 import OfferContainer from './ui/offer/OfferContainer';
 import PersonsContainer from './ui/persons/browse/PersonsContainer';
@@ -19,6 +19,7 @@ import SeeksContainer from './ui/seeks/browse/SeeksContainer';
 import OffersContainer from './ui/offers/browse/OffersContainer';
 import EmployContainer from './ui/employ/EmployContainer';
 import SeekContainer from './ui/seek/SeekContainer';
+import RegisterContainer from './ui/register/RegisterContainer';
 
 
 const defaultTheme = createMuiTheme({
@@ -32,11 +33,13 @@ const defaultTheme = createMuiTheme({
 export const App = ({
   role,
   username,
+  loggedUser,
   verifyUser,
   checkCredentials,
   authReady,
   hasCredentials
 }) => {
+
 
   React.useEffect(() => {
     checkCredentials()
@@ -56,10 +59,10 @@ export const App = ({
       {
         authReady &&
         <Router>
-          <NavbarGeneric role={role} username={username} />
+          <NavbarGeneric role={role} />
           <Switch>
             <Route exact path='/'>
-              <HomePage />
+              <HomePage role={role} />
             </Route>
             <Route exact path='/register-account'>
               <RegisterAccount />
@@ -85,23 +88,29 @@ export const App = ({
             <Route exact path='/offers'>
               <OffersContainer />
             </Route>
-            <Route exact path='/login'>
-              <Login />
+            {/* <Route exact path='/login'>
+                <Login />
             </Route>
             <Route exact path='/signout'>
               <Signout />
-            </Route>
+            </Route> */}
             <Route exact path='/apply'>
               <ApplyContainer />
             </Route>
             <Route exact path='/offer'>
-              <OfferContainer />
+              <OfferContainer profile={loggedUser} />
             </Route>
             <Route exact path='/employ'>
               <EmployContainer />
             </Route>
             <Route exact path='/seek'>
-              <SeekContainer />
+              <SeekContainer profile={loggedUser} />
+            </Route>
+            <Route exact path='/register'>
+              <RegisterContainer />
+            </Route>
+            <Route exact path='/profile'>
+              <RegisterContainer profile={loggedUser} />
             </Route>
           </Switch>
         </Router>
@@ -118,6 +127,7 @@ export const App = ({
 const mapStateToProps = (state) => {
   return {
     role: state.user.role,
+    loggedUser: state.user.loggedUser,
     username: state.user.username,
     authReady: state.user.authReady,
     hasCredentials: state.user.hasCredentials

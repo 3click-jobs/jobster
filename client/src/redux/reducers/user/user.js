@@ -32,6 +32,22 @@ const username = (state = '', action) => {
   }
 }
 
+const loggedUser = (state = '', action) => {
+  switch (action.type) {
+    case 'SUCCESS_USER_VERIFY':
+    case 'SUCCESS_USER_LOGIN':
+    case 'SUCCESS_USER_SIGNUP':
+      return action.payload.user
+    case 'FAILURE_USER_VERIFY':
+    case 'FAILURE_USER_LOGIN':
+    case 'FAILURE_USER_SIGNUP':
+    case 'REQUEST_USER_CREDENTIALS_UNASSIGN':
+      return ''
+    default:
+      return state
+  }
+}
+
 const loggedIn = (state = false, action) => {
   switch (action.type) {
     case 'SUCCESS_USER_VERIFY':
@@ -93,6 +109,7 @@ const userReducer = combineReducers({
   loggedIn,
   username,
   role,
+  loggedUser,
   errorMessage,
   isFetching,
   authReady,

@@ -5,7 +5,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 
-export const NavbarProfileGuest = () => {
+export const NavbarProfileGuest = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const isMenuOpen = Boolean(anchorEl)
@@ -30,11 +30,11 @@ export const NavbarProfileGuest = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
-        <RouterLink to='/login'>Login</RouterLink>
+      <MenuItem onClick={ () => { handleMenuClose(); props.setOpen(); } }>
+        Login
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <RouterLink to='/signup'>Sign-up</RouterLink>
+      <MenuItem onClick={handleMenuClose} component={RouterLink} to='/register'>
+        Register
       </MenuItem>
     </Menu>
   )

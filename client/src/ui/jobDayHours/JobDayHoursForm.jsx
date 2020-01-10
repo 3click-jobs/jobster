@@ -8,6 +8,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { RadioGroup, Radio } from '@material-ui/core'
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+import { green, red } from '@material-ui/core/colors';
 
 
 const theme = createMuiTheme({
@@ -72,6 +75,7 @@ export const JobDayHoursForm = ({
               label={jobDayHours.day ? jobDayHours.day.substr(4) : null}
               labelPlacement="end"
               // onChange={handleChange('day')}
+              style = {{width: 100}}
             />
         </FormControl>
 
@@ -89,6 +93,7 @@ export const JobDayHoursForm = ({
                             event.persist()
                             handleJobDayHoursChange(event, jobDayHours.day);
                           }}
+                          style = {{ marginLeft: 30, marginRight: 20 }}
                           >
                 <FormControlLabel value={false} control={<Radio checked={jobDayHours.isMinMax === false} />} label="From-to o'clock" labelPlacement="end" />
                 <FormControlLabel value={true} control={<Radio checked={jobDayHours.isMinMax === true} />} label="Min-max hours" labelPlacement="end" />
@@ -96,6 +101,7 @@ export const JobDayHoursForm = ({
             </FormControl>
 
             {/* <div style = {{display: "inline"}} > */}
+            <FormControl component="fieldset" style = {{display: "inline"}} >
               <TextField
                 label={jobDayHours.isMinMax ? "Min a day" : "From" }
                 name="fromHour"
@@ -109,32 +115,34 @@ export const JobDayHoursForm = ({
                 required 
                 onBlur={handleBlur}
                 helperText={
-                  (touched.fromHour && Boolean(errors.fromHour))
+                  (touched && touched.fromHour && Boolean(errors.fromHour))
                     ? errors.fromHour
                     : ' '
                 }
-                error={touched.fromHour && Boolean(errors.fromHour)}
+                error={touched && touched.fromHour && Boolean(errors.fromHour)}
                 margin="normal"
                 variant="outlined"
                 // fullWidth={true}
                 InputProps={
-                  touched.fromHour
+                  (touched && touched.fromHour)
                     ? Boolean(errors.fromHour)
                       ? {
-                        endAdornment: <InputAdornment position='end'>Er</InputAdornment>
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                       }
                       : {
-                        endAdornment: <InputAdornment position='end'>Ok</InputAdornment>
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                       }
-                    : Boolean(errors.fromHour)
-                      ? {
-                        endAdornment: <InputAdornment position='end'>Er</InputAdornment>
-                      }
-                      : {
-                        endAdornment: null
-                      }
+                    : jobDayHours.fromHour 
+                      ? Boolean(errors.fromHour)
+                        ? {
+                          endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                        }
+                        : {
+                          endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                        }
+                      : null
                 }
-                style = {{width: 90, marginLeft: 5 }}
+                style = {{width: 100 }}
               />
 
               <TextField
@@ -150,33 +158,36 @@ export const JobDayHoursForm = ({
                 required 
                 onBlur={handleBlur}
                 helperText={
-                  (touched.toHour && Boolean(errors.toHour))
+                  (touched && touched.toHour && Boolean(errors.toHour))
                     ? errors.toHour
                     : ' '
                 }
-                error={touched.toHour && Boolean(errors.toHour)}
+                error={touched && touched.toHour && Boolean(errors.toHour)}
                 margin="normal"
                 variant="outlined"
                 // fullWidth={true}
                 InputProps={
-                  touched.toHour
+                  (touched && touched.toHour)
                     ? Boolean(errors.toHour)
                       ? {
-                        endAdornment: <InputAdornment position='end'>Er</InputAdornment>
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                       }
                       : {
-                        endAdornment: <InputAdornment position='end'>Ok</InputAdornment>
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                       }
-                    : Boolean(errors.toHour)
-                      ? {
-                        endAdornment: <InputAdornment position='end'>Er</InputAdornment>
-                      }
-                      : {
-                        endAdornment: null
-                      }
+                    : jobDayHours.toHour
+                      ? Boolean(errors.toHour)
+                        ? {
+                          endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                        }
+                        : {
+                          endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                        }
+                      : null
                 }
-                style = {{width: 90, marginLeft: 5 }}
+                style = {{width: 100, marginLeft: 5 }}
               />
+              </FormControl>
 
               <div style = {{width: "100%", justifyContent: "right" }} >
                 <FormControl component="fieldset">

@@ -107,6 +107,7 @@ const companyDto = [
     name: 'confirmedPassword',
     type: 'password',
     regexp: '^[A-Za-z0-9]*$',
+    min: 5,
     required: true
   }
 ]

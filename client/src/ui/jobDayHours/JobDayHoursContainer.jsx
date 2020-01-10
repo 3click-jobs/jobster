@@ -13,7 +13,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 1
       },
       {    
         chck: false,
@@ -21,7 +22,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 2
       },
       {    
         chck: false,
@@ -29,7 +31,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 3
       },
       {    
         chck: false,
@@ -37,7 +40,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 4
       },
       {    
         chck: false,
@@ -45,7 +49,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 5
       },
       {    
         chck: false,
@@ -53,7 +58,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 6
       },
       {    
         chck: false,
@@ -61,7 +67,8 @@ const days = [
         flexibileHours: false,
         fromHour: "",
         isMinMax: false,
-        toHour: ""
+        toHour: "",
+        id: 7
       },
 ]
 
@@ -135,17 +142,18 @@ export const JobDayHoursContainer = (props) => {
         let changedListJobDayHours = inputListJobDayHours.map( day => (newValue.target.value === day.day) ? {...day, chck: !day.chck } : day)
         // console.log(changedListJobDayHours)
         setInputListJobDayHours([...changedListJobDayHours])
+        props.setJobDayHoursChange( changedListJobDayHours.filter( day => (day.chck === true) ).map( day => ( ({chck, ...o }) => o )(day) ) );
     }
     else if (newValue ) {
         // console.log("handleJobDayHoursChange ok")
         // console.log(newValue)
         // console.log(newValue.target.name)
         // console.log(newValue.target.type)
-        console.log(newValue.target.value)
+        // console.log(newValue.target.value)
         // inputListJobDayHours.map( day => Object.keys(day).map( (elKey, index) => (newValue.target.name === elKey) ? console.log("Key: " + elKey + ", index: " + index + ", values: " + day[elKey] + ", INVERTED: " + !day[elKey]) : null ) )
         // OK JE OVA inputListJobDayHours.map( day => { console.log(Object.assign({}, ...Object.entries(day).map( (elKey, index) => ({[elKey[0]]: elKey[1]}) ))) })
         // let changedListJobDayHours = inputListJobDayHours.map( day => (forDay === day.day) ? (Object.keys(day).map( (elKey, index) => day[elKey] = (newValue.target.name === elKey) ? (newValue.target.type === "checkbox") ? !day[elKey] : day[elKey] = newValue.target.value : day[elKey] ) ) : day)
-        let changedListJobDayHours = inputListJobDayHours.map( day => (forDay === day.day) ? ( Object.assign({}, ...Object.entries(day).map( (elKey, index) => ({ [elKey[0]]: (newValue.target.name === elKey[0]) ? ( (newValue.target.type === "checkbox") ? !elKey[1] : ( (newValue.target.value === "") ? 0 : JSON.parse(newValue.target.value)) ) : elKey[1] })  ) ) ) : day )
+        let changedListJobDayHours = inputListJobDayHours.map( day => (forDay === day.day) ? ( Object.assign({}, ...Object.entries(day).map( (elKey, index) => ({ [elKey[0]]: (newValue.target.name === elKey[0]) ? ( (newValue.target.type === "checkbox") ? !elKey[1] : ( (newValue.target.value === "") ? 0 : JSON.parse(newValue.target.value.replace(/^0+(?=\d)/, ''))) ) : elKey[1] })  ) ) ) : day )
         // console.log(changedListJobDayHours)
         setInputListJobDayHours([...changedListJobDayHours])
         props.setJobDayHoursChange( changedListJobDayHours.filter( day => (day.chck === true) ).map( day => ( ({chck, ...o }) => o )(day) ) );

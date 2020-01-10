@@ -53,6 +53,7 @@ public class UserEntity {
 	@JoinColumn(name="user_account")
     protected UserAccountEntity userAccount;*/
 	
+	@JsonView(Views.User.class)
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "city")
 	@NotNull (message = "City must be provided.")

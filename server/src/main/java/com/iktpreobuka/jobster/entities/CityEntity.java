@@ -127,7 +127,7 @@ public class CityEntity {
 		this.status = getStatusActive();
 	}
 
-	
+
 	public List<UserEntity> getUsers() {
 		return users;
 	}
@@ -214,6 +214,10 @@ public class CityEntity {
 
 	public void setFromDistances(List<CityDistanceEntity> fromDistances) {
 		this.fromDistances = fromDistances;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public Integer getStatus() {

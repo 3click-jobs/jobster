@@ -28,11 +28,11 @@ public class JobSeekPostDto {
 		private Integer distanceToJob;
 	
 		@NotNull (message = "Beginning date must be provided.")
-		//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 		private Date beginningDate;
 		
 		@NotNull (message = "End date must be provided.")
-		//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 		private Date endDate;
 				
 		private Boolean flexibileDates;
@@ -44,9 +44,10 @@ public class JobSeekPostDto {
 		private Double price;
 		
 	    @Size(min = 0, max = 250, message = "Text can have 250 character max.")
+	    @NotNull (message = "Details must be provided.")
 		private String detailsLink;
 		
-		@NotNull (message = "List must be provided.")
+		@NotNull (message = "List DayHours must be provided.")
 		protected List<JobDayHoursPostDto> listJobDayHoursPostDto;
 		
 		@NotNull (message = "Contry name must be provided.")
@@ -71,18 +72,18 @@ public class JobSeekPostDto {
 		private Double latitude;
 		
 		public JobSeekPostDto() {}
+
 		
-	
 		public JobSeekPostDto(
 				@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
 				@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Job type name is not valid.") @NotNull(message = "Job type name must be provided.") String jobTypeName,
-				@NotNull(message = "Distance to job must be provided.") /*@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")*/ @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
+				@NotNull(message = "Distance to job must be provided.") @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
 				@NotNull(message = "Beginning date must be provided.") Date beginningDate,
 				@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
 				Boolean flexibileDays,
 				@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
-				@Size(min = 0, max = 250, message = "Text can have 250 character max.") String detailsLink,
-				@NotNull(message = "List must be provided.") List<JobDayHoursPostDto> listJobDayHoursPostDto,
+				@Size(min = 0, max = 250, message = "Text can have 250 character max.") @NotNull(message = "Details must be provided.") String detailsLink,
+				@NotNull(message = "List DayHours must be provided.") List<JobDayHoursPostDto> listJobDayHoursPostDto,
 				@NotNull(message = "Contry name must be provided.") @Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") String countryName,
 				@Pattern(regexp = "^[A-Za-z]{2,3}$", message = "ISO2 code is not valid.") @NotNull(message = "Contry Iso2Code must be provided.") String iso2Code,
 				@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message = "Country region name is not valid.") String countryRegionName,
@@ -227,9 +228,6 @@ public class JobSeekPostDto {
 		public void setLatitude(Double latitude) {
 			this.latitude = latitude;
 		}
-
-		
-		
-		
+	
 
 }

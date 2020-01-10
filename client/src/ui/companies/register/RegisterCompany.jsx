@@ -5,52 +5,104 @@ import { companiesSelectors } from '../../../redux/selectors/companies'
 import { Formik } from 'formik'
 import { RegisterCompanyForm } from './RegisterCompanyForm'
 import { companies as companiesSchema } from '../../../common/utils/schemas/companies'
+import ToTopButton from '../../toTopButton/ToTopButton'
 
-const initialValues = {
-  companyName: 'JobsterLTD',
-  companyRegistrationNumber: '12345678912345',
-  mobilePhone: "381645242122",
-  email: "mail1@m21ail.com",
-  city: "Novi Sad",
-  country: "Serbia",
-  iso2Code: "SER",
-  countryRegion: "Vojvodina",
-  longitude: "45.5",
-  latitude: "45.6",
-  about: "Something about Jobster",
-  username: "jobster",
+// const initialDummyValues = {
+//   companyName: 'PeraLTD',
+//   companyRegistrationNumber: '12349978912345',
+//   mobilePhone: "381649942122",
+//   email: "mail99@m21ail.com",
+//   city: "Novi Sad",
+//   country: "Serbia",
+//   iso2Code: "SER",
+//   countryRegion: "Vojvodina",
+//   longitude: "45.5",
+//   latitude: "45.6",
+//   about: "Something about Jobster",
+//   username: "jobster",
+//   accessRole: "ROLE_USER",
+//   password: "password",
+//   confirmedPassword: "password",
+// }
+
+const initialDummyValues = {
+  companyName: '',
+  companyRegistrationNumber: '',
+  mobilePhone: "",
+  email: "",
+  city: "",
+  country: "",
+  iso2Code: "",
+  countryRegion: "",
+  longitude: "",
+  latitude: "",
+  about: "",
+  username: "",
   accessRole: "ROLE_USER",
-  password: "password",
-  confirmedPassword: "password",
+  password: "",
+  confirmedPassword: "",
 }
 
 export const RegisterCompany = ({
   isFetching,
   isError,
-  createCompany
+  createCompany,
+  profile
 }) => {
+
+
+  const useComponentDidMount = func => React.useEffect(func, []);
+
+  const useComponentWillMount = func => {
+    const willMount = React.useRef(true);
+  
+    if (willMount.current) {
+      func();
+    }
+  
+    useComponentDidMount(() => {
+      willMount.current = false;
+    });
+  };
+
+  let initialValues={}
+  let showPassword = false
+  let showConfirmedPassword = false
+
+  useComponentWillMount(() => {
+    if (profile) {
+      initialValues={...profile, showPassword: showPassword, showConfirmedPassword: showConfirmedPassword}
+    } else if (initialDummyValues) {
+      initialValues={...initialDummyValues, showPassword: showPassword, showConfirmedPassword: showConfirmedPassword}
+    }
+  })
+
+
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={(values, formikBag) => {
+    <React.Fragment>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values, formikBag) => {
 
 
-        // registerCompany(values)
-        //   .then(resp => {
-        //     console.log('not err: ', resp)
-        //     // if resp.errors -> you know its well formed so you can render it, else, depending on if it is 200 or 201 etc...
-        //     formikBag.setErrors({ ...resp.errors })
-        //   })
-        //   .catch(err => console.log('error: ', err))
-        console.log(values)
-        const payload = {...values}
+          // registerCompany(values)
+          //   .then(resp => {
+          //     console.log('not err: ', resp)
+          //     // if resp.errors -> you know its well formed so you can render it, else, depending on if it is 200 or 201 etc...
+          //     formikBag.setErrors({ ...resp.errors })
+          //   })
+          //   .catch(err => console.log('error: ', err))
+          // console.log(values)
+          const payload = {...values}
 
-        createCompany(payload).then(() => formikBag.setSubmitting(false))
-      }}
+          createCompany(payload).then(() => formikBag.setSubmitting(false))
+        }}
 
-      validationSchema={companiesSchema.create}
-      component={RegisterCompanyForm}
-    />
+        validationSchema={companiesSchema.create}
+        component={RegisterCompanyForm}
+      />
+      <ToTopButton />
+    </React.Fragment>
   )
 }
 

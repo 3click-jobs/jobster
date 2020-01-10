@@ -1,7 +1,4 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { withRouter } from 'react-router-dom'
+import React from 'react'
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,15 +6,17 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { unassignCredentials } from '../../redux/actions/user'
+// import { unassignCredentials } from '../../redux/actions/user'
 
 export const Signout = ({
   username,
-  // role,
   unassignCredentials,
-  history
+  history,
+  open,
+  setOpen
 }) => {
-  const [open, setOpen] = useState(true);
+  
+  // const [open, setOpen] = useState(false);
 
   // const handleClose = () => {
   //   setOpen(false);
@@ -34,21 +33,21 @@ export const Signout = ({
   return (
       <Dialog
         open={open}
-        onClose={() => { setOpen(false); history.goBack() }}
+        onClose={() => { setOpen(false) }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{"Sign out"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-          Are you sure you want to sign out as {username}?.
+          Are you sure you want to sign out as {username}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => history.goBack() } color="primary">
+          <Button onClick={() => setOpen(false) } color="primary">
             Cancel
           </Button>
-          <Button onClick={() => { unassignCredentials(); history.push('/') }} color="primary" autoFocus>
+          <Button onClick={() => { unassignCredentials(); history.push('/'); setOpen(false) }} color="primary" autoFocus>
             Ok
           </Button>
         </DialogActions>
@@ -56,23 +55,5 @@ export const Signout = ({
   )
 }
 
-const mapStateToProps = (state) => ({
-  // isFetching: accountsSelectors.isFetching(state),
-  // isError: accountsSelectors.error(state),
-  username: state.user.username,
-  // role: state.user.accessRole
-})
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    unassignCredentials: () => dispatch(unassignCredentials()),
-  }
-}
-
-export default compose(
-  withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-)(Signout)
+export default Signout

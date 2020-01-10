@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
@@ -31,11 +34,13 @@ import com.iktpreobuka.jobster.entities.dto.CompanyDTO;
 import com.iktpreobuka.jobster.enumerations.EUserRole;
 import com.iktpreobuka.jobster.repositories.CompanyRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
+import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.CompanyDao;
 import com.iktpreobuka.jobster.services.UserAccountDao;
 
 @Controller
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value= "/jobster/users/companies")
 public class CompanyController {
 
@@ -69,8 +74,8 @@ public class CompanyController {
 		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
 		}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/users/companies/getAll started.");
@@ -89,8 +94,8 @@ public class CompanyController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/companies/getById started.");
@@ -110,8 +115,8 @@ public class CompanyController {
 	}
 
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted")
 	public ResponseEntity<?> getAllDeleted(Principal principal) {
 		logger.info("################ /jobster/users/companies/deleted/getAllDeleted started.");
@@ -130,8 +135,8 @@ public class CompanyController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted/{id}")
 	public ResponseEntity<?> getDeletedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/companies/deleted/getDeletedById started.");
@@ -150,8 +155,8 @@ public class CompanyController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/users/companies/archived/getAllArchived started.");
@@ -170,8 +175,8 @@ public class CompanyController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}")
 	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/companies/archived/getArchivedById started.");
@@ -254,9 +259,9 @@ public class CompanyController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
 	@SuppressWarnings("unlikely-arg-type")
-	//@JsonView(Views.Admin.class)
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@JsonView(Views.User.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> modifyCompany(@PathVariable Integer id, @Valid @RequestBody CompanyDTO updateCompany, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/users/companies/{id}/modifyCompany started.");
@@ -343,9 +348,9 @@ public class CompanyController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
 	@SuppressWarnings("unlikely-arg-type")
-	//@JsonView(Views.Admin.class)
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@JsonView(Views.User.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 	public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/companies/archive/archive started.");
@@ -392,9 +397,9 @@ public class CompanyController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
 	@SuppressWarnings("unlikely-arg-type")
-	//@JsonView(Views.Admin.class)
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@JsonView(Views.User.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 	public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/companies/undelete/{id}/unDelete started.");
@@ -441,9 +446,9 @@ public class CompanyController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
 	@SuppressWarnings("unlikely-arg-type")
-	//@JsonView(Views.Admin.class)
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@JsonView(Views.User.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/companies/{id}/delete started.");

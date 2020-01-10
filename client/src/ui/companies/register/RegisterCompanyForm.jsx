@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form } from 'formik'
+import { useFormikContext, Form } from 'formik'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import CardActions from '@material-ui/core/CardActions'
@@ -8,6 +8,13 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import { makeStyles } from '@material-ui/core/styles';
 import CityAPIContainer from '../../cities/CityAPIContainer'
+import { green, red } from '@material-ui/core/colors';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -19,7 +26,8 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center"
   },
   actions: {
-    float: "right"
+    float: "right",
+    marginBottom: "50px"
   }
 }))
 
@@ -35,6 +43,8 @@ export const RegisterCompanyForm = ({
   handleReset,
   city
 }) => {
+
+  const { setFieldValue } = useFormikContext()
 
   const classes = useStyles();
 
@@ -61,19 +71,21 @@ export const RegisterCompanyForm = ({
                 touched.companyName
                   ? Boolean(errors.companyName)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.companyName)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.companyName 
+                    ? Boolean(errors.companyName)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -94,19 +106,21 @@ export const RegisterCompanyForm = ({
                 touched.companyRegistrationNumber
                   ? Boolean(errors.companyRegistrationNumber)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.companyRegistrationNumber)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.companyRegistrationNumber 
+                    ? Boolean(errors.companyRegistrationNumber)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -127,19 +141,21 @@ export const RegisterCompanyForm = ({
                 touched.mobilePhone
                   ? Boolean(errors.mobilePhone)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.mobilePhone)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.mobilePhone 
+                    ? Boolean(errors.mobilePhone)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -160,36 +176,58 @@ export const RegisterCompanyForm = ({
                 touched.email
                   ? Boolean(errors.email)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.email)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.email 
+                    ? Boolean(errors.email)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
-            <CityAPIContainer city={city} setCity = {(props) => { if (props) {
-                                                                  values.city = props.city; 
-                                                                  values.country = props.country; 
-                                                                  values.iso2Code = props.iso2Code;
-                                                                  values.countryRegion = props.countryRegion; 
-                                                                  values.longitude = props.longitude; 
-                                                                  values.latitude = props.latitude
-                                                                } else {
-                                                                  values.city = ""; 
-                                                                  values.country = ""; 
-                                                                  values.iso2Code = "";
-                                                                  values.countryRegion = ""; 
-                                                                  values.longitude = ""; 
-                                                                  values.latitude = ""
-                                                                } } } />
+            <CityAPIContainer city={ values.city ? { name: values.city,
+                                countryName: values.country,
+                                city: values.city,
+                                country: values.country,
+                                iso2Code: values.iso2Code,
+                                countryRegion: values.countryRegion,
+                                longitude: values.longitude,
+                                latitude: values.latitude } : null } 
+                              setCity = {(props) => { if (props) {
+                                setFieldValue('city', props.city)
+                                setFieldValue('country', props.country)
+                                setFieldValue('iso2Code', props.iso2Code)
+                                setFieldValue('countryRegion', props.countryRegion)
+                                setFieldValue('longitude', props.longitude)
+                                setFieldValue('latitude', props.latitude)
+                                // values.city = props.city; 
+                                // values.country = props.country; 
+                                // values.iso2Code = props.iso2Code;
+                                // values.countryRegion = props.countryRegion; 
+                                // values.longitude = props.longitude; 
+                                // values.latitude = props.latitude
+                              } else {
+                                setFieldValue('city', '')
+                                setFieldValue('country', '')
+                                setFieldValue('iso2Code', '')
+                                setFieldValue('countryRegion', '')
+                                setFieldValue('longitude', '')
+                                setFieldValue('latitude', '')
+                                // values.city = ""; 
+                                // values.country = ""; 
+                                // values.iso2Code = "";
+                                // values.countryRegion = ""; 
+                                // values.longitude = ""; 
+                                // values.latitude = ""
+                              } } } />
 
             {/* <TextField
               label="City"
@@ -409,22 +447,22 @@ export const RegisterCompanyForm = ({
                 touched.about
                   ? Boolean(errors.about)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.about)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.about 
+                    ? Boolean(errors.about)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
-
-
 
             <TextField
               label="User name"
@@ -444,24 +482,27 @@ export const RegisterCompanyForm = ({
                 touched.username
                   ? Boolean(errors.username)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.username)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.username 
+                    ? Boolean(errors.username)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
               label="Password"
               name="password"
+              type={values.showPassword ? 'text' : 'password'}
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -474,27 +515,32 @@ export const RegisterCompanyForm = ({
               margin="normal"
               fullWidth={true}
               InputProps={
-                touched.password
-                  ? Boolean(errors.password)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
-                    }
-                  : Boolean(errors.password)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
+                { endAdornment: 
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setFieldValue('showPassword', !values.showPassword)}
+                    >
+                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                    {touched.password
+                      ? Boolean(errors.password)
+                        ?  <ClearIcon style={{ color: red[600] }} />
+                        : <CheckIcon style={{ color: green[600] }} />
+                      : values.password 
+                        ? Boolean(errors.password)
+                          ? <ClearIcon style={{ color: red[600] }} />
+                          : <CheckIcon style={{ color: green[600] }} />
+                        : null}
+                  </InputAdornment>
+                }
               }
             />
 
             <TextField
               label="Confirm password"
               name="confirmedPassword"
+              type={values.showConfirmedPassword ? 'text' : 'password'}
               value={values.confirmedPassword}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -507,21 +553,25 @@ export const RegisterCompanyForm = ({
               margin="normal"
               fullWidth={true}
               InputProps={
-                touched.confirmedPassword
-                  ? Boolean(errors.confirmedPassword)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
-                    }
-                  : Boolean(errors.confirmedPassword)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
+                { endAdornment: 
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle confirmed password visibility"
+                      onClick={() => setFieldValue('showConfirmedPassword', !values.showConfirmedPassword)}
+                    >
+                      {values.showConfirmedPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                    {touched.confirmedPassword
+                      ? Boolean(errors.confirmedPassword)
+                        ?  <ClearIcon style={{ color: red[600] }} />
+                        : <CheckIcon style={{ color: green[600] }} />
+                      : values.confirmedPassword 
+                        ? Boolean(errors.confirmedPassword)
+                          ? <ClearIcon style={{ color: red[600] }} />
+                          : <CheckIcon style={{ color: green[600] }} />
+                        : null}
+                  </InputAdornment>
+                }
               }
             />
 

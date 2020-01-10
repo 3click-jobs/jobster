@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
@@ -33,10 +35,12 @@ import com.iktpreobuka.jobster.repositories.CompanyRepository;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
+import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.UserAccountDao;
 
 @Controller
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value= "/jobster/accounts")
 public class UserAccountController {
 
@@ -71,8 +75,8 @@ public class UserAccountController {
 		}
 
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/accounts/getAll started.");
@@ -91,8 +95,8 @@ public class UserAccountController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/getById started.");
@@ -112,8 +116,8 @@ public class UserAccountController {
 	}
 
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted")
 	public ResponseEntity<?> getAllDeleted(Principal principal) {
 		logger.info("################ /jobster/accounts/deleted/getAllDeleted started.");
@@ -132,8 +136,8 @@ public class UserAccountController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted/{id}")
 	public ResponseEntity<?> getDeletedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/deleted/{id}/getDeletedById started.");
@@ -152,8 +156,8 @@ public class UserAccountController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/accounts/archived/getAllArchived started.");
@@ -172,8 +176,8 @@ public class UserAccountController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}")
 	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/archived/{id}/getArchivedById started.");
@@ -192,8 +196,8 @@ public class UserAccountController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNew(@Valid @RequestBody UserAccountDTO newUserAccount, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/accounts/addNew started.");
@@ -206,7 +210,7 @@ public class UserAccountController {
 			logger.info("---------------- New user account is null.");
 	        return new ResponseEntity<>("New user account is null", HttpStatus.BAD_REQUEST);
 	      }
-		if (newUserAccount.getUsername() == null || newUserAccount.getAccessRole() == null || (newUserAccount.getPassword() == null && newUserAccount.getConfirmedPassword() == null) || newUserAccount.getUserId() == null) {
+		if (newUserAccount.getUsername() == null || newUserAccount.getAccessRole() == null || (newUserAccount.getPassword() == null || newUserAccount.getConfirmedPassword() == null) || newUserAccount.getUserId() == null) {
 			logger.info("---------------- Some or all atributes are null.");
 			return new ResponseEntity<>("Some or all atributes are null.", HttpStatus.BAD_REQUEST);
 		}
@@ -222,10 +226,10 @@ public class UserAccountController {
 		    }
 			UserEntity user = new UserEntity();
 			EUserRole role = null;
-			if (newUserAccount.getUsername() != null && userAccountRepository.getByUsername(newUserAccount.getUsername()) != null) {
-				logger.info("---------------- Username already exist.");
-		        return new ResponseEntity<>("Username already exist.", HttpStatus.NOT_ACCEPTABLE);
-		    }
+//			if (newUserAccount.getUsername() != null && userAccountRepository.getByUsername(newUserAccount.getUsername()) != null) {
+//				logger.info("---------------- Username already exist.");
+//		        return new ResponseEntity<>("Username already exist.", HttpStatus.NOT_ACCEPTABLE);
+//		    }
 			if (newUserAccount.getUserId() != null) {
 				user = userRepository.getById(Integer.parseInt(newUserAccount.getUserId()));
 				if (user == null) {
@@ -280,8 +284,8 @@ public class UserAccountController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> modify(@PathVariable Integer id, @Valid @RequestBody UserAccountDTO updateUserAccount, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/accounts/{id}/modify started.");
@@ -389,8 +393,8 @@ public class UserAccountController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 	public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/archive/{id}/archive started.");
@@ -421,8 +425,8 @@ public class UserAccountController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 	public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/undelete/{id}/unDelete started.");
@@ -449,8 +453,8 @@ public class UserAccountController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/accounts/{id}/delete started.");

@@ -153,6 +153,7 @@ const companyDtoObject = {
     type: 'password',
     regexp: '^[A-Za-z0-9]*$',
     required: true,
+    min: 5,
     default: 'Test12345678901'
   }
 }

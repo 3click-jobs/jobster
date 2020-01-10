@@ -13,6 +13,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import JobDayHoursContainer from '../../jobDayHours/JobDayHoursContainer';
+import { green, red } from '@material-ui/core/colors';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
 
 
 const theme = createMuiTheme({
@@ -48,7 +51,7 @@ export const PostOfferForm = ({
   touched,
   errors,
   isSubmitting, 
-  handleReset,
+  handleReset
 }) => {
 
   const { setFieldValue } = useFormikContext()
@@ -83,24 +86,26 @@ export const PostOfferForm = ({
                 touched.detailsLink
                   ? Boolean(errors.detailsLink)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.detailsLink)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.detailsLink 
+                    ? Boolean(errors.detailsLink)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <CityAPIContainer city={ { 
-                                  name: values.city, 
-                                  countryName: values.country,
+                                  name: values.name, 
+                                  countryName: values.countryName,
                                   city: values.city, 
                                   country: values.country,
                                   iso2Code: values.iso2Code,
@@ -109,19 +114,37 @@ export const PostOfferForm = ({
                                   latitude: values.latitude,
                                 } } 
                               setCity = {(props) => { if (props) {
-                                  values.city = props.city; 
-                                  values.country = props.country; 
-                                  values.iso2Code = props.iso2Code;
-                                  values.countryRegion = props.countryRegion; 
-                                  values.longitude = props.longitude; 
-                                  values.latitude = props.latitude
+                                  setFieldValue('name', props.name)
+                                  setFieldValue('countryName', props.countryName)
+                                  setFieldValue('city', props.city)
+                                  setFieldValue('country', props.country)
+                                  setFieldValue('iso2Code', props.iso2Code)
+                                  setFieldValue('countryRegion', props.countryRegion)
+                                  setFieldValue('longitude', props.longitude)
+                                  setFieldValue('latitude', props.latitude)
+                                  // values.name = props.name; 
+                                  // values.countryName = props.countryName; 
+                                  // values.city = props.city; 
+                                  // values.country = props.country; 
+                                  // values.iso2Code = props.iso2Code;
+                                  // values.countryRegion = props.countryRegion; 
+                                  // values.longitude = props.longitude; 
+                                  // values.latitude = props.latitude;
                                 } else {
-                                  values.city = ""; 
-                                  values.country = ""; 
-                                  values.iso2Code = "";
-                                  values.countryRegion = ""; 
-                                  values.longitude = ""; 
-                                  values.latitude = ""
+                                  setFieldValue('name', "")
+                                  setFieldValue('countryName', "")
+                                  setFieldValue('city', "")
+                                  setFieldValue('country', "")
+                                  setFieldValue('iso2Code', "")
+                                  setFieldValue('countryRegion', "")
+                                  setFieldValue('longitude', "")
+                                  setFieldValue('latitude', "")
+                                  // values.city = ""; 
+                                  // values.country = ""; 
+                                  // values.iso2Code = "";
+                                  // values.countryRegion = ""; 
+                                  // values.longitude = ""; 
+                                  // values.latitude = "";
                                 } } } />
 
             <TextField
@@ -143,19 +166,21 @@ export const PostOfferForm = ({
                 touched.numberOfEmployees
                   ? Boolean(errors.numberOfEmployees)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.numberOfEmployees)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.numberOfEmployees 
+                    ? Boolean(errors.numberOfEmployees)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -177,19 +202,21 @@ export const PostOfferForm = ({
                 touched.price
                   ? Boolean(errors.price)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.price)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.price 
+                    ? Boolean(errors.price)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -212,19 +239,21 @@ export const PostOfferForm = ({
                 touched.beginningDate
                   ? Boolean(errors.beginningDate)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.beginningDate)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
-              }
+                  : values.beginningDate 
+                    ? Boolean(errors.beginningDate)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
+            }
             />
 
             <TextField
@@ -247,18 +276,20 @@ export const PostOfferForm = ({
                 touched.endDate
                   ? Boolean(errors.endDate)
                     ? {
-                      endAdornment: <InputAdornment position='end'>Touched with errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
                     }
                     : {
-                      endAdornment: <InputAdornment position='end'>Touched and no errors</InputAdornment>
+                      endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
                     }
-                  : Boolean(errors.endDate)
-                    ? {
-                      endAdornment: <InputAdornment position='end'>Untouched with errors</InputAdornment>
-                    }
-                    : {
-                      endAdornment: <InputAdornment position='end'>Untouched without errors</InputAdornment>
-                    }
+                  : values.endDate 
+                    ? Boolean(errors.endDate)
+                      ? {
+                        endAdornment: <InputAdornment position='end'><ClearIcon style={{ color: red[600] }} /></InputAdornment>
+                      }
+                      : {
+                        endAdornment: <InputAdornment position='end'><CheckIcon style={{ color: green[600] }} /></InputAdornment>
+                      }
+                    : null
               }
             />
 

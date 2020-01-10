@@ -1,4 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { assignCredentials, verifyUser } from '../../redux/actions/user'
+import { unassignCredentials } from '../../redux/actions/user'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 // import Typography from '@material-ui/core/Typography'
@@ -12,6 +17,8 @@ import NavbarProfileGuest from './NavbarProfileGuest';
 import NavbarProfileUser from './NavbarProfileUser';
 import NavbarProfileAdmin from './NavbarProfileAdmin';
 import { Link } from 'react-router-dom'
+import Signout from '../accounts/Signout'
+import Login from '../accounts/Login'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,11 +43,18 @@ const useStyles = makeStyles(theme => ({
 
 export const NavbarGeneric = ({
   role,
-  username
+  username,
+  history,
+  assignCredentials, 
+  verifyUser,
+  unassignCredentials
 }) => {
   const classes = useStyles()
   const [drawer, setDrawer] = React.useState(false)
+  const [openedSignout, setOpenedSignout] = React.useState(false)
+  const [openedLogin, setOpenedLogin] = React.useState(false)
 
+  
   const toggleDrawer = state => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -49,11 +63,14 @@ export const NavbarGeneric = ({
     setDrawer(state);
   }
 
+
   return (
     <div className={classes.root}>
       <AppBar position='static'>
         <Toolbar variant="dense" >
-          <NavbarDrawer />
+          { (role==="ROLE_USER" || role==="ROLE_ADMIN") && 
+            <NavbarDrawer />
+          }
           <div className={classes.title}>
             {/* <Typography variant="h6">
               3
@@ -74,28 +91,57 @@ export const NavbarGeneric = ({
 
           {
             (role === 'ROLE_GUEST') &&
-            <NavbarProfileGuest role={role} username={username} />
+            <React.Fragment>
+              <NavbarProfileGuest role={role} username={username} setOpen={() => setOpenedLogin(true)} />
+              <Login username={username} open={openedLogin} setOpen={setOpenedLogin} verifyUser={verifyUser} assignCredentials={assignCredentials} history={history} />
+            </React.Fragment>
           }
           {
             (role === 'ROLE_USER') &&
-            <NavbarProfileUser role={role} username={username} />
+            <NavbarProfileUser role={role} username={username} setOpen={() => setOpenedSignout(true)} />
           }
           {
             (role === 'ROLE_ADMIN') &&
-            <NavbarProfileAdmin role={role} username={username} />
+            <NavbarProfileAdmin role={role} username={username} setOpen={() => setOpenedSignout(true)} />
           }
 
         </Toolbar>
       </AppBar>
-      <Drawer
-        anchor='left'
-        open={drawer}
-        onClose={toggleDrawer(false)}
-      >
-        <p>THis is a drawer</p>
-      </Drawer>
+      { (role==="ROLE_USER" || role==="ROLE_ADMIN") && 
+        <React.Fragment>
+          <Drawer
+            anchor='left'
+            open={drawer}
+            onClose={toggleDrawer(false)}
+          >
+            <p>3 Click Jobs</p>
+          </Drawer>
+          <Signout username={username} open={openedSignout} setOpen={setOpenedSignout} unassignCredentials={unassignCredentials} history={history} />
+        </React.Fragment>
+      }
     </div>
   )
 }
 
-export default NavbarGeneric
+const mapStateToProps = (state) => ({
+  // isFetching: accountsSelectors.isFetching(state),
+  // isError: accountsSelectors.error(state),
+  username: state.user.username,
+  // role: state.user.accessRole
+})
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    assignCredentials: (username, password) => dispatch(assignCredentials(username, password)),
+    verifyUser: () => dispatch(verifyUser()),
+    unassignCredentials: () => dispatch(unassignCredentials()),
+  }
+}
+
+export default compose(
+  withRouter,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
+)(NavbarGeneric)

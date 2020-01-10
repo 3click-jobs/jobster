@@ -1,6 +1,8 @@
 package com.iktpreobuka.jobster;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,11 +19,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.oauth2.common.util.JacksonJsonParser;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.iktpreobuka.jobster.entities.CityEntity;
@@ -39,7 +45,6 @@ import com.iktpreobuka.jobster.repositories.UserRepository;
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration 
-//@WithMockUser(username = "Test1234", roles = { "EUserRole.ROLE_USER" })
 public class UserControllerTests {
  
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(), 
@@ -47,12 +52,10 @@ public class UserControllerTests {
 			Charset.forName("utf8"));
 	
 	private static MockMvc mockMvc;
-	/*@Autowired 
-	private MockMvc mockMvc;
-	
-	@MockBean 
-	private UserDao mockUserDao;*/
-	
+
+    @Autowired
+    private FilterChainProxy springSecurityFilterChain;
+    
 	@Autowired 
 	private WebApplicationContext webApplicationContext;
 	
@@ -79,12 +82,11 @@ public class UserControllerTests {
 	private static List<CountryRegionEntity> countryRegions = new ArrayList<>();
 
 	private static List<CityEntity> cities = new ArrayList<>();
+	
+	private String token;
 
 	@Autowired 
 	private UserRepository userRepository;
-	
-	/*@Autowired
-	private UserDao userDao;*/
 	
 	@Autowired 
 	private CityRepository cityRepository;
@@ -97,10 +99,7 @@ public class UserControllerTests {
 	
 	@Autowired
 	private UserAccountRepository userAccountRepository;
-	
-	/*@Autowired
-	private CityDistanceRepository cityDistanceRepository;*/
-	
+		
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	private boolean dbInit = false;
@@ -108,8 +107,11 @@ public class UserControllerTests {
 	@Before
 	public void setUp() throws Exception { 
 		logger.info("DBsetUp");
-		if(!dbInit) { mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build(); 
-			country = countryRepository.save(new CountryEntity("World Union", "XXX"));
+		if(!dbInit) { mockMvc = MockMvcBuilders
+				.webAppContextSetup(webApplicationContext)
+				.addFilter(springSecurityFilterChain)
+				.build(); 
+			country = countryRepository.save(new CountryEntity("World Union", "XX"));
 			countries.add(country);
 			region = countryRegionRepository.save(new CountryRegionEntity(country, "World region"));	
 			countryRegions.add(region);
@@ -128,16 +130,34 @@ public class UserControllerTests {
 			user = new UserEntity(city, "0644567898", "Jobstery2@mail.com", "About Jobstery");
 			user.setStatusArchived();
 			UserControllerTests.users.add(userRepository.save(user));
-			UserControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(UserControllerTests.users.get(0), EUserRole.ROLE_USER, "Test1234", "Test1234", UserControllerTests.users.get(0).getId())));
-			UserControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(UserControllerTests.users.get(1), EUserRole.ROLE_USER, "Test1235", "Test1234", UserControllerTests.users.get(0).getId())));
-			UserControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(UserControllerTests.users.get(2), EUserRole.ROLE_USER, "Test1236", "Test1234", UserControllerTests.users.get(0).getId())));
-			userAccount = new UserAccountEntity(UserControllerTests.users.get(3), EUserRole.ROLE_USER, "Test1237", "Test1234", UserControllerTests.users.get(0).getId());
+			UserControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(UserControllerTests.users.get(0), EUserRole.ROLE_USER, "Test1234", "{bcrypt}$2a$10$FZjQbu7AqcSp0ns.GAxkbu0eKVUtNFTZNdVWwPOtBATLF0Bs9wtW2", UserControllerTests.users.get(0).getId())));
+			UserControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(UserControllerTests.users.get(1), EUserRole.ROLE_ADMIN, "Test1235", "{bcrypt}$2a$10$FZjQbu7AqcSp0ns.GAxkbu0eKVUtNFTZNdVWwPOtBATLF0Bs9wtW2", UserControllerTests.users.get(0).getId())));
+			UserControllerTests.userAccounts.add(userAccountRepository.save(new UserAccountEntity(UserControllerTests.users.get(2), EUserRole.ROLE_USER, "Test1236", "{bcrypt}$2a$10$FZjQbu7AqcSp0ns.GAxkbu0eKVUtNFTZNdVWwPOtBATLF0Bs9wtW2", UserControllerTests.users.get(0).getId())));
+			userAccount = new UserAccountEntity(UserControllerTests.users.get(3), EUserRole.ROLE_USER, "Test1237", "{bcrypt}$2a$10$FZjQbu7AqcSp0ns.GAxkbu0eKVUtNFTZNdVWwPOtBATLF0Bs9wtW2", UserControllerTests.users.get(0).getId());
 			userAccount.setStatusInactive();
 			UserControllerTests.userAccounts.add(userAccountRepository.save(userAccount));
-			userAccount = new UserAccountEntity(UserControllerTests.users.get(4), EUserRole.ROLE_USER, "Test1238", "Test1234", UserControllerTests.users.get(0).getId());
+			userAccount = new UserAccountEntity(UserControllerTests.users.get(4), EUserRole.ROLE_USER, "Test1238", "{bcrypt}$2a$10$FZjQbu7AqcSp0ns.GAxkbu0eKVUtNFTZNdVWwPOtBATLF0Bs9wtW2", UserControllerTests.users.get(0).getId());
 			userAccount.setStatusArchived();
 			UserControllerTests.userAccounts.add(userAccountRepository.save(userAccount));
 			dbInit = true;
+			
+			//GET TOKEN
+			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		    params.add("grant_type", "password");
+		    params.add("client_id", "my-trusted-client");
+		    params.add("username", "Test1235");
+		    params.add("password", "admin");
+		    ResultActions result 
+		      = mockMvc.perform(post("/oauth/token")
+		        .params(params)
+		        .with(httpBasic("my-trusted-client","secret"))
+		        .accept("application/json;charset=UTF-8"))
+		        .andExpect(status().isOk())
+		        .andExpect(content().contentType("application/json;charset=UTF-8"));
+		    String resultString = result.andReturn().getResponse().getContentAsString();
+		    JacksonJsonParser jsonParser = new JacksonJsonParser();
+		    token = jsonParser.parseMap(resultString).get("access_token").toString();
+
 			logger.info("DBsetUp ok");
 		} 
 	}
@@ -146,8 +166,6 @@ public class UserControllerTests {
 	public void tearDown() throws Exception {
 		logger.info("DBtearDown");
 		if(dbInit) {
-			/*if (userAccount != null)
-				userAccountRepository.delete(userAccount);*/
 			for (UserAccountEntity acc : UserControllerTests.userAccounts) {
 				userAccountRepository.delete(acc);
 			}
@@ -157,10 +175,6 @@ public class UserControllerTests {
 			}
 			UserControllerTests.users.clear();
 			for (CityEntity cty : UserControllerTests.cities) {
-				/*Iterable<CityDistanceEntity> lcde = cityDistanceRepository.findByFromCity(cty);
-				for (CityDistanceEntity cde : lcde) {
-					cityDistanceRepository.delete(cde);
-				}*/
 				cityRepository.delete(cty); 
 			}
 			UserControllerTests.cities.clear();
@@ -173,30 +187,35 @@ public class UserControllerTests {
 			}
 			UserControllerTests.countries.clear();	
 			dbInit = false;
+			token = null;
 			logger.info("DBtearDown ok");
 		}
 	}
 
-	@Test @WithMockUser(username = "Test1234")
+	@Test
 	public void userServiceNotFound() throws Exception { 
-		mockMvc.perform(get("/jobster/users/users/readallusers/"))
+		mockMvc.perform(get("/jobster/users/users/readallusers/")
 			//.andDo(MockMvcResultHandlers.print())
+			.header("Authorization", "Bearer " + token))
 			.andExpect(status().isNotFound());
 	}
 
-	@Test @WithMockUser(username = "Test1234")
+	@Test
 	public void userServiceFound() throws Exception { 
-		mockMvc.perform(get("/jobster/users/users/")).andExpect(status().isOk()); 
+		mockMvc.perform(get("/jobster/users/users/")
+			.header("Authorization", "Bearer " + token))
+			.andExpect(status().isOk()); 
 	}
 
-	@Test @WithMockUser(username = "Test1234")
+	@Test
 	public void readAllUsers() throws Exception { 
-		mockMvc.perform(get("/jobster/users/users/")) 
+		mockMvc.perform(get("/jobster/users/users/")
+			.header("Authorization", "Bearer " + token)) 
 			.andExpect(status().isOk()) 
 			.andExpect(content().contentType(contentType));
 		}
 
-	@Test @WithMockUser(username = "Test1234")
+	@Test
 	public void readAllUsersNotFound() throws Exception { 	
 		for (UserAccountEntity acc : UserControllerTests.userAccounts) {
 			userAccountRepository.delete(acc);
@@ -206,7 +225,8 @@ public class UserControllerTests {
 			userRepository.delete(cmpny);
 		}
 		UserControllerTests.users.clear();
-		mockMvc.perform(get("/jobster/users/users/"))
+		mockMvc.perform(get("/jobster/users/users/")
+			.header("Authorization", "Bearer " + token))
 			.andExpect(status().isNotFound()); 
 	}
 

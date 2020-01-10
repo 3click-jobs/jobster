@@ -32,7 +32,7 @@ public class CompanyDTO {
 	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
 	private String country;
 	@JsonView(Views.User.class)
-	@Pattern(regexp = "^[A-Za-z]{2,3}$", message="ISO2 code is not valid.")
+	@Pattern(regexp = "^[A-Za-z]{2,2}$", message="ISO2 code is not valid.")
 	protected String iso2Code;
 	@JsonView(Views.User.class)
 	@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid.")
