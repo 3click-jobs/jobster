@@ -4,29 +4,34 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.iktpreobuka.jobster.enumerations.EDay;
 
-public class JobDayHoursPutDto {
+public class JobDayHoursDTO {
 
 	@Enumerated(EnumType.STRING)
+	@NotNull(message = "Day must be provided.")
 	private EDay day;
-	
-	@Min(value=0, message = "From/minimum hour/s must be {value} or higher!")
-	@Max(value=24, message = "From/minimum hour/s must be {value} or lower!")
+
+	@NotNull(message = "From/minimum hour/s must be provided.")
+	@Min(value = 0, message = "From/minimum hour/s must be {value} or higher!")
+	@Max(value = 24, message = "From/minimum hour/s must be {value} or lower!")
 	private Integer fromHour;
-	
-	@Min(value=0, message = "To/maximum hour/s must be {value} or higher!")
-	@Max(value=24, message = "To/maximum hour/s must be {value} or lower!")
+
+	@NotNull(message = "To/maximum hour/s must be provided.")
+	@Min(value = 0, message = "To/maximum hour/s must be {value} or higher!")
+	@Max(value = 24, message = "To/maximum hour/s must be {value} or lower!")
 	private Integer toHour;
-	
+
 	private Boolean flexibileHours;
-	
+
 	private Boolean isMinMax;
 
-	public JobDayHoursPutDto() {}
+	public JobDayHoursDTO() {
+	};
 
-	public JobDayHoursPutDto(EDay day,
+	public JobDayHoursDTO(EDay day,
 			@Min(value = 0, message = "From/minimum hour/s must be {value} or higher!") @Max(value = 24, message = "From/minimum hour/s must be {value} or lower!") Integer fromHour,
 			@Min(value = 0, message = "To/maximum hour/s must be {value} or higher!") @Max(value = 24, message = "To/maximum hour/s must be {value} or lower!") Integer toHour,
 			Boolean flexibileHours, Boolean isMinMax) {
@@ -76,8 +81,6 @@ public class JobDayHoursPutDto {
 
 	public void setIsMinMax(Boolean isMinMax) {
 		this.isMinMax = isMinMax;
-	};
-	
-	
-	
+	}
+
 }
