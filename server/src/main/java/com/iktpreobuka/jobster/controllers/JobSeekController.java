@@ -22,9 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.dto.JobDayHoursPostDto;
-import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
-import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
+import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
+import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
 import com.iktpreobuka.jobster.entities.dto.PersonDTO;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 import com.iktpreobuka.jobster.services.JobSeekDao;
@@ -55,20 +54,20 @@ public class JobSeekController {
 		return new JobSeekEntity();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekPostDto")
-	public JobSeekPostDto empty() {
-		return new JobSeekPostDto();
+	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekDto")
+	public JobSeekDTO empty() {
+		return new JobSeekDTO();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyWith")
-	public JobSeekPostDto emptyWithEmptyDayHours() {
-		JobSeekPostDto emptyWith = new JobSeekPostDto();
-		JobDayHoursPostDto empty1 = new JobDayHoursPostDto();
-		JobDayHoursPostDto empty2 = new JobDayHoursPostDto();
-		List<JobDayHoursPostDto> list = new ArrayList<JobDayHoursPostDto>();
+	public JobSeekDTO emptyWithEmptyDayHours() {
+		JobSeekDTO emptyWith = new JobSeekDTO();
+		JobDayHoursDTO empty1 = new JobDayHoursDTO();
+		JobDayHoursDTO empty2 = new JobDayHoursDTO();
+		List<JobDayHoursDTO> list = new ArrayList<JobDayHoursDTO>();
 		list.add(empty1);
 		list.add(empty2);
-		emptyWith.setListJobDayHoursPostDto(list);
+		emptyWith.setListJobDayHoursDto(list);
 		return emptyWith;
 	}
 
@@ -78,13 +77,13 @@ public class JobSeekController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/newseek")
-	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekPostDto seek, Principal principal,
+	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekDTO seek, Principal principal,
 			BindingResult result) {
 		return jobSeekService.addNewSeek(seek, principal, result);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/modifySeek/{seekId}")
-	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekPutDto seek, @PathVariable Integer seekId,
+	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId,
 			Principal principal, BindingResult result) {
 		return jobSeekService.modifySeek(seek, seekId, principal, result);
 	}
