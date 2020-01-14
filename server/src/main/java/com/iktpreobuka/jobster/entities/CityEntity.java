@@ -66,7 +66,7 @@ public class CityEntity {
 	protected Integer id;
 	//@JsonView(Views.Student.class)
 	//@Column(name="city_name")
-	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="City name is not valid.")
+	@Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message="City name is not valid.")
 	@NotNull (message = "City name must be provided.")
 	protected String cityName;
 	//@JsonView(Views.Student.class)
@@ -102,7 +102,7 @@ public class CityEntity {
 	}
 	
 	public CityEntity(@NotNull(message = "Country region must be provided.") CountryRegionEntity region,
-			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
+			@Pattern(regexp = "^^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
 			@NotNull(message = "Longitude must be provided.") @Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") Double longitude,
 			@NotNull(message = "Latitude must be provided.") @Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") Double latitude,
 			Integer createdById) {
@@ -116,7 +116,7 @@ public class CityEntity {
 	}
 	
 	public CityEntity(@NotNull(message = "Country region must be provided.") CountryRegionEntity region,
-			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
+			@Pattern(regexp = "^^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
 			@NotNull(message = "Longitude must be provided.") @Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") Double longitude,
 			@NotNull(message = "Latitude must be provided.") @Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") Double latitude) {
 		super();

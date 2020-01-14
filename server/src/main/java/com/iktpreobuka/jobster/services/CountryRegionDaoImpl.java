@@ -48,8 +48,8 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 	}
 	
 	public CountryRegionEntity addNewCountryRegionWithLoggedUser(String countryRegionName, CountryEntity country, UserEntity loggedUser) throws Exception {
-		if ( countryRegionName == null || country == null || loggedUser == null ) {
-			throw new Exception("Country region name and/or country name and/or logged user is null.");
+		if (country == null || loggedUser == null ) {
+			throw new Exception("Country name and/or logged user is null.");
 		}
 		CountryRegionEntity countryRegion = new CountryRegionEntity();
 		try {

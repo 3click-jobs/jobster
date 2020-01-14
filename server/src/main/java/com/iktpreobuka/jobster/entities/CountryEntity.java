@@ -43,7 +43,7 @@ public class CountryEntity {
 	
 	//@JsonView(Views.Student.class)
 	//@Column(name="coutry_name", unique=true)
-	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
+	@Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message="Country name is not valid.")
 	@NotNull (message = "Country name must be provided.")
 	protected String countryName;
 	
@@ -77,7 +77,7 @@ public class CountryEntity {
 	}
 	
 	public CountryEntity(
-			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
+			@Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
 			@Pattern(regexp = "^[A-Za-z]{2,2}$", message = "ISO2 code is not valid.") @NotNull(message = "ISO2 code must be provided.") String iso2Code,
 			Integer createdById) {
 		super();
@@ -88,7 +88,7 @@ public class CountryEntity {
 	}
 
 	public CountryEntity(
-			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
+			@Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
 			@Pattern(regexp = "^[A-Za-z]{2,2}$", message = "ISO2 code is not valid.") @NotNull(message = "ISO2 code must be provided.") String iso2Code) {
 		super();
 		this.countryName = countryName;

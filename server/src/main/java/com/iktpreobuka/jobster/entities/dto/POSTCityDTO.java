@@ -14,7 +14,7 @@ public class POSTCityDTO {
 	
 
 	//@JsonView(Views.Student.class)
-		@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="City name is not valid.")
+		@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="City name is not valid.")
 		@NotNull (message = "City name must be provided.")
 		protected String cityName;
 		
@@ -30,9 +30,10 @@ public class POSTCityDTO {
 		@Max(value=90, message = "Latitude must be {value} or lower!")
 		private Double latitude;
 		
+		@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="Country region name is not valid.")
 		private String region;
 		
-		@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
+		@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="Country name is not valid.")
 		@NotNull (message = "Country must be provided.")
 		private String country;
 		
@@ -46,11 +47,11 @@ public class POSTCityDTO {
 	}
 	
 	public POSTCityDTO(
-			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
 			@NotNull(message = "Longitude must be provided.") @Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") Double longitude,
 			@NotNull(message = "Latitude must be provided.") @Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") Double latitude,
-			String region,
-			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.") @NotNull (message = "Country must be provided.") String country,
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="Country region name is not valid.") String region,
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="Country name is not valid.") @NotNull (message = "Country must be provided.") String country,
 			@Pattern(regexp = "^[A-Za-z]{2,2}$", message="ISO2 code is not valid.") @NotNull (message = "ISO2 code must be provided.") String iso2Code)
 	{
 		super();
