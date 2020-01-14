@@ -50,7 +50,7 @@ public class CountryRegionEntity {
 	protected Integer id;
 	//@JsonView(Views.Student.class)
 	//@Column(name="coutry_region_name")
-	@Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message="Country region name is not valid.")
+	@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="Country region name is not valid.")
 	//@NotNull (message = "Country region name must be provided.")
 	protected String countryRegionName;
 	//@JsonView(Views.Admin.class)
@@ -76,7 +76,7 @@ public class CountryRegionEntity {
 	
 
 	public CountryRegionEntity(@NotNull(message = "Country must be provided.") CountryEntity country,
-			@Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message = "Country region name is not valid.")/* @NotNull(message = "Country region name must be provided.") */String countryRegionName,
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country region name is not valid.")/* @NotNull(message = "Country region name must be provided.") */String countryRegionName,
 			Integer createdById) {
 		super();
 		this.country = country;
@@ -86,7 +86,7 @@ public class CountryRegionEntity {
 	}
 
 	public CountryRegionEntity(@NotNull(message = "Country must be provided.") CountryEntity country,
-			@Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z_]+)*{2,}$", message = "Country region name is not valid.")/* @NotNull(message = "Country region name must be provided.")*/ String countryRegionName) {
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country region name is not valid.")/* @NotNull(message = "Country region name must be provided.")*/ String countryRegionName) {
 		super();
 		this.country = country;
 		this.countryRegionName = countryRegionName;

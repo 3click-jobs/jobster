@@ -1,14 +1,9 @@
 package com.iktpreobuka.jobster.entities.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Version;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 
 public class POSTCityDTO {
 	
