@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,10 +72,13 @@ public class ApplyContactController {
 	private String createErrorMessage(BindingResult result) {
 		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
 	}
-
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/all") // get all comments
+	
+	//***************   GET ALL *************
+	
+    // *************  get all applications ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/all") 
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/apply/all/getAll started.");
 		logger.info("Logged username: " + principal.getName());
@@ -93,9 +97,10 @@ public class ApplyContactController {
 		}
 	}
 
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET) // get all comments
+	// *************  get all active applications ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAllActive(Principal principal) {
 		logger.info("################ /jobster/apply/getAllActive started.");
 		logger.info("Logged username: " + principal.getName());
@@ -113,10 +118,10 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/inactive") // get all inactive
+	// *************  get all inactive applications ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive") 
 	public ResponseEntity<?> getAllInactive(Principal principal) {
 		logger.info("################ /jobster/apply/getAllInactive started.");
 		logger.info("Logged username: " + principal.getName());
@@ -135,9 +140,10 @@ public class ApplyContactController {
 		}
 	}
 
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/archived") // get all archived
+	// *************  get all archived applications ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/apply/getAllArchived started.");
 		logger.info("Logged username: " + principal.getName());
@@ -156,10 +162,12 @@ public class ApplyContactController {
 		}
 	}
 
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/active/{id}") // get active by ID
-	public ResponseEntity<?> getActivedById(@PathVariable Integer id, Principal principal) {
+	//***************   GET BY ID  *************
+	// *************  get active application by ID ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/active/{id}")
+	public ResponseEntity<?> getActiveById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/getActivedById started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
@@ -177,9 +185,10 @@ public class ApplyContactController {
 		}
 	}
 
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/inactive/{id}") // get inactive by ID
+	// ************* get inactive application by id************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive/{id}")
 	public ResponseEntity<?> getInactivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/getInactivedById started.");
 		logger.info("Logged username: " + principal.getName());
@@ -197,10 +206,11 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}") // get archived by ID
+	
+	// *************  get archived application by id************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}")
 	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/getArchivedById started.");
 		logger.info("Logged username: " + principal.getName());
@@ -218,10 +228,12 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
 
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/all/{id}") // get by ID
+	// *************  get application by id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/all/{id}")
 	public ResponseEntity<?> getByIdAll(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/all/getByIdAll started.");
 		logger.info("Logged username: " + principal.getName());
@@ -240,8 +252,10 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//***************   GET BY OFFER *************
+	// *************  get active applications by active offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/offerActive/{id}")
 	public ResponseEntity<?> getActiveApplicationsByActiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/offerActive/getActiveApplicationsByActiveOffer started.");
@@ -266,8 +280,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get inactive applications by active offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/offerActive/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByActiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/offerActive/getInactiveApplicationsByActiveOffer started.");
@@ -292,8 +307,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get archived applications by active offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/offerActive/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByActiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/offerActive/getArchivedApplicationsByActiveOffer started.");
@@ -318,8 +334,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get applications by active offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/offerActive/{id}")
 	public ResponseEntity<?> getByActiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/offerActive/getByActiveOffer started.");
@@ -344,8 +361,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get active applications by inactive offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/offerInactive/{id}")
 	public ResponseEntity<?> getActiveApplicationsByInactiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/offerInactive/getActiveApplicationsByInactiveOffer started.");
@@ -370,8 +388,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get inactive applications by inactive offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/offerInactive/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByInactiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/offerInactive/getInactiveApplicationsByInactiveOffer started.");
@@ -396,8 +415,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//*************  get archived applications by inactive offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/offerInactive/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByInactiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/offerInactive/getArchivedApplicationsByInactiveOffer started.");
@@ -422,8 +442,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get applications by inactive offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/offerInactive/{id}")
 	public ResponseEntity<?> getByInactiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/offerInactive/getByInactiveOffer started.");
@@ -448,8 +469,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get active applications by archived offer id ************
+	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/offerArchived/{id}")
 	public ResponseEntity<?> getActiveApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/offerArchived/getActiveApplicationsByArchivedOffer started.");
@@ -474,8 +496,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get inactive applications by archived offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/offerArchived/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/offerArchived/getInactiveApplicationsByArchivedOffer started.");
@@ -500,8 +523,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get archived applications by archived offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/offerArchived/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/offerArchived/getArchivedApplicationsByArchivedOffer started.");
@@ -526,8 +550,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get applications by archived offer id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/offerArchived/{id}")
 	public ResponseEntity<?> getByArchivedOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/offerArchived/getByArchivedOffer started.");
@@ -553,11 +578,11 @@ public class ApplyContactController {
 	}
 
 	
-
-	//OVDE KRECE PAKAO
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//***************   GET BY SEEK *************
+	// *************  get active applications by active seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/seekActive/{id}")
 	public ResponseEntity<?> getActiveApplicationsByActiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/seekActive/getActiveApplicationsByActiveSeek started.");
@@ -582,8 +607,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get inactive applications by active seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/seekActive/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByActiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/seekActive/getInactiveApplicationsByActiveSeek started.");
@@ -608,8 +634,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get archived applications by active seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/seekActive/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByActiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/seekActive/getArchivedApplicationsByActiveSeek started.");
@@ -634,8 +661,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get applications by active seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/seekActive/{id}")
 	public ResponseEntity<?> getByActiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/seekActive/getByActiveSeek started.");
@@ -660,8 +688,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get active applications by inactive seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/seekInactive/{id}")
 	public ResponseEntity<?> getActiveApplicationsByInactiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/seekInactive/getActiveApplicationsByInactiveSeek started.");
@@ -686,8 +715,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get inactive applications by inactive seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/seekInactive/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByInactiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/seekInactive/getInactiveApplicationsByInactiveSeek started.");
@@ -712,8 +742,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get archived applications by inactive seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/seekInactive/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByInactiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/seekInactive/getArchivedApplicationsByInactiveSeek started.");
@@ -738,8 +769,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get applications by inactive seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/seekInactive/{id}")
 	public ResponseEntity<?> getByInactiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/seekInactive/getByInactiveSeek started.");
@@ -764,8 +796,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get active applications by archived seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/seekArchived/{id}")
 	public ResponseEntity<?> getActiveApplicationsByArchivedSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/seekArchived/getActiveApplicationsByArchivedSeek started.");
@@ -790,8 +823,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get inactive applications by archived seek id ************	
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/seekArchived/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByArchivedSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/seekArchived/getInactiveApplicationsByArchivedSeek started.");
@@ -816,8 +850,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get archived applications by archived seek id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/seekArchived/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByArchivedSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/seekArchived/getArchivedApplicationsByArchivedSeek started.");
@@ -842,8 +877,9 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	// *************  get applications by archived seek id ************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/seekArchived/{id}")
 	public ResponseEntity<?> getByArchivedSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/seekArchived/getByArchivedSeek started.");
@@ -868,14 +904,18 @@ public class ApplyContactController {
 		}
 	}
 	
-	// @Secured("ROLE_ADMIN")
+	
+	
+	
+	// *************  GET MY ************
+	@Secured("ROLE_ADMIN")
 	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/myApplies")
 	public ResponseEntity<?> getMyAppliesQuery( Principal principal, 
 			@RequestParam(required = false) Boolean commentable,
 			@RequestParam(required = false) Boolean rejected,
 			@RequestParam(required = false) Boolean connected,
-			@RequestParam(required = false) Boolean expired) {
+			@RequestParam(required = false) Boolean expired){
 		logger.info("################ /jobster/apply/myApplies/getMyAppliesQuery started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
