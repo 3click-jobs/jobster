@@ -38,18 +38,16 @@ public class CountryEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	//@JsonView(Views.Parent.class)
-	//@Column(name="coutry_id")
 	protected Integer id;
 	
 	//@JsonView(Views.Student.class)
-	//@Column(name="coutry_name", unique=true)
-	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="Country name is not valid.")
+	@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="Country name is not valid.")
 	@NotNull (message = "Country name must be provided.")
 	protected String countryName;
 	
 	//@JsonView(Views.Student.class)
-	//@Column(name="iso2", unique=true)
-	//@Pattern(regexp = "^[A-Za-z]{2,2}$", message="ISO2 code is not valid.")
+	@Column(unique=true)
+	@Pattern(regexp = "^[A-Za-z]{2,2}$", message="ISO2 code is not valid.")
 	@NotNull (message = "ISO2 code must be provided.")
 	protected String iso2Code;
 	
@@ -60,11 +58,10 @@ public class CountryEntity {
 	private Integer status;
 	
 	//@JsonView(Views.Admin.class)
-    //@Column(name = "created_by", updatable = false)
+    @Column(updatable = false)
 	private Integer createdById;
     
     //@JsonView(Views.Admin.class)
-    //@Column(name = "updated_by")
     private Integer updatedById;
     
 	@JsonIgnore
@@ -77,7 +74,7 @@ public class CountryEntity {
 	}
 	
 	public CountryEntity(
-			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
 			@Pattern(regexp = "^[A-Za-z]{2,2}$", message = "ISO2 code is not valid.") @NotNull(message = "ISO2 code must be provided.") String iso2Code,
 			Integer createdById) {
 		super();
@@ -88,7 +85,7 @@ public class CountryEntity {
 	}
 
 	public CountryEntity(
-			@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
 			@Pattern(regexp = "^[A-Za-z]{2,2}$", message = "ISO2 code is not valid.") @NotNull(message = "ISO2 code must be provided.") String iso2Code) {
 		super();
 		this.countryName = countryName;

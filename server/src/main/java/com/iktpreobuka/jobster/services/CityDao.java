@@ -21,6 +21,6 @@ public interface CityDao {
 
 	public void unarchiveCity(UserEntity loggedUser, CityEntity city) throws Exception;
 
-	CityEntity modifyCityWithLoggedUser(CityEntity city, POSTCityDTO updateCity, UserEntity loggedUser);
+	CityEntity modifyCityWithLoggedUser(CityEntity city, POSTCityDTO updateCity, UserEntity loggedUser) throws Exception;
 
 }

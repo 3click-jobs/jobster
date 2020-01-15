@@ -50,5 +50,7 @@ public interface CityRepository extends CrudRepository<CityEntity, Integer> {
 
 	public CityEntity findByCityNameAndRegion(String city, CountryRegionEntity countryRegion);
 
+	public CityEntity findByCityNameAndStatusLike(String cityName, int i);
+
 }
 
