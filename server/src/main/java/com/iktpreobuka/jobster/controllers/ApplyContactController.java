@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
@@ -29,7 +28,6 @@ import com.iktpreobuka.jobster.repositories.JobOfferRepository;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
-import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.ApplyContactDao;
 import com.iktpreobuka.jobster.services.CommentDao;
 import com.iktpreobuka.jobster.services.EmailDao;
@@ -49,10 +47,10 @@ public class ApplyContactController {
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	JobOfferRepository jobOfferRepository;
-	
+
 	@Autowired
 	JobSeekRepository jobSeekRepository;
 
@@ -64,29 +62,28 @@ public class ApplyContactController {
 
 	@Autowired
 	EmailDao emailDao;
-	
-	
 
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
-	private String createErrorMessage(BindingResult result) {
+	@SuppressWarnings("unused")
+	private String createErrorMessage(BindingResult result) { 
 		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
-	}
-	
-	//***************   GET ALL *************
-	
-    // *************  get all applications ************
+		}
+
+	// *************** GET ALL *************
+
+	// ************* get all applications ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/all") 
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/all")
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/apply/all/getAll started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<ApplyContactEntity> applications = applyContactRepository.findAll();
-			if(Iterables.isEmpty(applications)) {
+			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ No applications found");
-				return new ResponseEntity<>("No applications found.",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("No applications found.", HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found applications - OK.");
 			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
@@ -97,18 +94,18 @@ public class ApplyContactController {
 		}
 	}
 
-	// *************  get all active applications ************
+	// ************* get all active applications ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAllActive(Principal principal) {
 		logger.info("################ /jobster/apply/getAllActive started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<ApplyContactEntity> applications = applyContactRepository.findByStatusLike(1);
-			if(Iterables.isEmpty(applications)) {
+			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ No active applications found");
-				return new ResponseEntity<>("No activeapplications found.",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("No activeapplications found.", HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found active applications - OK.");
 			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
@@ -118,18 +115,19 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	// *************  get all inactive applications ************
+
+	// ************* get all inactive applications ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/inactive") 
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive")
 	public ResponseEntity<?> getAllInactive(Principal principal) {
 		logger.info("################ /jobster/apply/getAllInactive started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<ApplyContactEntity> applications = applyContactRepository.findByStatusLike(0);
-			if(Iterables.isEmpty(applications)) {
+			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ No inactive applications found");
-				return new ResponseEntity<>("No inactive applications found.",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("No inactive applications found.", HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found inactive applications - OK.");
 			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
@@ -140,18 +138,18 @@ public class ApplyContactController {
 		}
 	}
 
-	// *************  get all archived applications ************
+	// ************* get all archived applications ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/apply/getAllArchived started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<ApplyContactEntity> applications = applyContactRepository.findByStatusLike(-1);
-			if(Iterables.isEmpty(applications)) {
+			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ No archived applications found");
-				return new ResponseEntity<>("No archived applications found.",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("No archived applications found.", HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found archived applications - OK.");
 			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
@@ -162,10 +160,10 @@ public class ApplyContactController {
 		}
 	}
 
-	//***************   GET BY ID  *************
-	// *************  get active application by ID ************
+	// *************** GET BY ID *************
+	// ************* get active application by ID ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/{id}")
 	public ResponseEntity<?> getActiveById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/getActivedById started.");
@@ -174,7 +172,7 @@ public class ApplyContactController {
 			ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, 1);
 			if (application == null) {
 				logger.info("++++++++++++++++ Active application not found");
-				return new ResponseEntity<>("Active application not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Active application not found", HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found application - OK.");
 			return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
@@ -187,7 +185,7 @@ public class ApplyContactController {
 
 	// ************* get inactive application by id************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/{id}")
 	public ResponseEntity<?> getInactivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/getInactivedById started.");
@@ -196,7 +194,7 @@ public class ApplyContactController {
 			ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, 0);
 			if (application == null) {
 				logger.info("++++++++++++++++ Inactive application not found");
-				return new ResponseEntity<>("Inactive application not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Inactive application not found", HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found inactive application - OK.");
 			return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
@@ -206,10 +204,10 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get archived application by id************
+
+	// ************* get archived application by id************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}")
 	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/getArchivedById started.");
@@ -218,7 +216,7 @@ public class ApplyContactController {
 			ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, -1);
 			if (application == null) {
 				logger.info("++++++++++++++++ Archived application not found");
-				return new ResponseEntity<>("Archived applicaiton not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Archived applicaiton not found", HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found archived application - OK.");
 			return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
@@ -228,11 +226,10 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
 
-	// *************  get application by id ************
+	// ************* get application by id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/all/{id}")
 	public ResponseEntity<?> getByIdAll(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/all/getByIdAll started.");
@@ -251,22 +248,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	//***************   GET BY OFFER *************
-	// *************  get active applications by active offer id ************
+
+	// *************** GET BY OFFER *************
+	// ************* get active applications by active offer id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/offerActive/{id}")
 	public ResponseEntity<?> getActiveApplicationsByActiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/offerActive/getActiveApplicationsByActiveOffer started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 1);
-			if(offer==null) {
+			if (offer == null) {
 				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Active applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -279,21 +276,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get inactive applications by active offer id ************
+
+	// ************* get inactive applications by active offer id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/offerActive/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByActiveOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/inactive/offerActive/getInactiveApplicationsByActiveOffer started.");
+		logger.info(
+				"################ /jobster/apply/inactive/offerActive/getInactiveApplicationsByActiveOffer started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 1);
-			if(offer==null) {
+			if (offer == null) {
 				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 0);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 0);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Inactive applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -306,21 +304,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get archived applications by active offer id ************
+
+	// ************* get archived applications by active offer id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/offerActive/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByActiveOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/archived/offerActive/getArchivedApplicationsByActiveOffer started.");
+		logger.info(
+				"################ /jobster/apply/archived/offerActive/getArchivedApplicationsByActiveOffer started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 1);
-			if(offer==null) {
+			if (offer == null) {
 				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, -1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, -1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Archived applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -333,21 +332,21 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get applications by active offer id ************
+
+	// ************* get applications by active offer id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/offerActive/{id}")
 	public ResponseEntity<?> getByActiveOffer(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/offerActive/getByActiveOffer started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 1);
-			if(offer==null) {
+			if (offer == null) {
 				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOffer(offer);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOffer(offer);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -360,21 +359,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get active applications by inactive offer id ************
+
+	// ************* get active applications by inactive offer id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/offerInactive/{id}")
 	public ResponseEntity<?> getActiveApplicationsByInactiveOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/active/offerInactive/getActiveApplicationsByInactiveOffer started.");
+		logger.info(
+				"################ /jobster/apply/active/offerInactive/getActiveApplicationsByInactiveOffer started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
-			if(offer==null) {
+			if (offer == null) {
 				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Active applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -387,183 +387,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get inactive applications by inactive offer id ************
-	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/inactive/offerInactive/{id}")
-	public ResponseEntity<?> getInactiveApplicationsByInactiveOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/inactive/offerInactive/getInactiveApplicationsByInactiveOffer started.");
-		logger.info("Logged username: " + principal.getName());
-		try {
-			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
-			if(offer==null) {
-				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
-			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 0);
-			if (Iterables.isEmpty(applications)) {
-				logger.info("++++++++++++++++ Applications not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-			logger.info("---------------- Found pplications application - OK.");
-			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	//*************  get archived applications by inactive offer id ************
-	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/archived/offerInactive/{id}")
-	public ResponseEntity<?> getArchivedApplicationsByInactiveOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/archived/offerInactive/getArchivedApplicationsByInactiveOffer started.");
-		logger.info("Logged username: " + principal.getName());
-		try {
-			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
-			if(offer==null) {
-				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
-			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, -1);
-			if (Iterables.isEmpty(applications)) {
-				logger.info("++++++++++++++++ Applications not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-			logger.info("---------------- Found pplications application - OK.");
-			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	// *************  get applications by inactive offer id ************
-	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/offerInactive/{id}")
-	public ResponseEntity<?> getByInactiveOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/offerInactive/getByInactiveOffer started.");
-		logger.info("Logged username: " + principal.getName());
-		try {
-			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
-			if(offer==null) {
-				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
-			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOffer(offer);
-			if (Iterables.isEmpty(applications)) {
-				logger.info("++++++++++++++++ Applications not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-			logger.info("---------------- Found applications - OK.");
-			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	// *************  get active applications by archived offer id ************
+
+	// ************* get inactive applications by inactive offer id ************
 	@Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/active/offerArchived/{id}")
-	public ResponseEntity<?> getActiveApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/active/offerArchived/getActiveApplicationsByArchivedOffer started.");
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive/offerInactive/{id}")
+	public ResponseEntity<?> getInactiveApplicationsByInactiveOffer(@PathVariable Integer id, Principal principal) {
+		logger.info(
+				"################ /jobster/apply/inactive/offerInactive/getInactiveApplicationsByInactiveOffer started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
-			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
-			if(offer==null) {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
+			if (offer == null) {
 				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 1);
-			if (Iterables.isEmpty(applications)) {
-				logger.info("++++++++++++++++ Applications not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-			logger.info("---------------- Found pplications application - OK.");
-			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	// *************  get inactive applications by archived offer id ************
-	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/inactive/offerArchived/{id}")
-	public ResponseEntity<?> getInactiveApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/inactive/offerArchived/getInactiveApplicationsByArchivedOffer started.");
-		logger.info("Logged username: " + principal.getName());
-		try {
-			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
-			if(offer==null) {
-				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
-			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 0);
-			if (Iterables.isEmpty(applications)) {
-				logger.info("++++++++++++++++ Applications not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-			logger.info("---------------- Found pplications application - OK.");
-			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	// *************  get archived applications by archived offer id ************
-	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/archived/offerArchived/{id}")
-	public ResponseEntity<?> getArchivedApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/archived/offerArchived/getArchivedApplicationsByArchivedOffer started.");
-		logger.info("Logged username: " + principal.getName());
-		try {
-			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
-			if(offer==null) {
-				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
-			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, -1);
-			if (Iterables.isEmpty(applications)) {
-				logger.info("++++++++++++++++ Applications not found");
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
-			logger.info("---------------- Found pplications application - OK.");
-			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	// *************  get applications by archived offer id ************
-	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/offerArchived/{id}")
-	public ResponseEntity<?> getByArchivedOffer(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/offerArchived/getByArchivedOffer started.");
-		logger.info("Logged username: " + principal.getName());
-		try {
-			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
-			if(offer==null) {
-				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
-			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findByOffer(offer);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 0);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -577,23 +416,187 @@ public class ApplyContactController {
 		}
 	}
 
-	
-	
-	//***************   GET BY SEEK *************
-	// *************  get active applications by active seek id ************	
+	// ************* get archived applications by inactive offer id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archived/offerInactive/{id}")
+	public ResponseEntity<?> getArchivedApplicationsByInactiveOffer(@PathVariable Integer id, Principal principal) {
+		logger.info(
+				"################ /jobster/apply/archived/offerInactive/getArchivedApplicationsByInactiveOffer started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
+			if (offer == null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
+			}
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, -1);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// ************* get applications by inactive offer id ************
+	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/offerInactive/{id}")
+	public ResponseEntity<?> getByInactiveOffer(@PathVariable Integer id, Principal principal) {
+		logger.info("################ /jobster/apply/offerInactive/getByInactiveOffer started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
+			if (offer == null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
+			}
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOffer(offer);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// ************* get active applications by archived offer id ************
+	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/active/offerArchived/{id}")
+	public ResponseEntity<?> getActiveApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
+		logger.info(
+				"################ /jobster/apply/active/offerArchived/getActiveApplicationsByArchivedOffer started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
+			if (offer == null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
+			}
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 1);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// ************* get inactive applications by archived offer id ************
+	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive/offerArchived/{id}")
+	public ResponseEntity<?> getInactiveApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
+		logger.info(
+				"################ /jobster/apply/inactive/offerArchived/getInactiveApplicationsByArchivedOffer started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
+			if (offer == null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
+			}
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, 0);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// ************* get archived applications by archived offer id ************
+	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archived/offerArchived/{id}")
+	public ResponseEntity<?> getArchivedApplicationsByArchivedOffer(@PathVariable Integer id, Principal principal) {
+		logger.info(
+				"################ /jobster/apply/archived/offerArchived/getArchivedApplicationsByArchivedOffer started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
+			if (offer == null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
+			}
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOfferAndStatusLike(offer, -1);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// ************* get applications by archived offer id ************
+	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/offerArchived/{id}")
+	public ResponseEntity<?> getByArchivedOffer(@PathVariable Integer id, Principal principal) {
+		logger.info("################ /jobster/apply/offerArchived/getByArchivedOffer started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
+			if (offer == null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
+			}
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findByOffer(offer);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// *************** GET BY SEEK *************
+	// ************* get active applications by active seek id ************
+	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/seekActive/{id}")
 	public ResponseEntity<?> getActiveApplicationsByActiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/seekActive/getActiveApplicationsByActiveSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 1);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Active applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -606,21 +609,21 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get inactive applications by active seek id ************	
+
+	// ************* get inactive applications by active seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/seekActive/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByActiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/inactive/seekActive/getInactiveApplicationsByActiveSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 1);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 0);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 0);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Inactive applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -633,21 +636,21 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get archived applications by active seek id ************	
+
+	// ************* get archived applications by active seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/seekActive/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByActiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/archived/seekActive/getArchivedApplicationsByActiveSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 1);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, -1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, -1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Archived applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -660,21 +663,21 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get applications by active seek id ************	
+
+	// ************* get applications by active seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/seekActive/{id}")
 	public ResponseEntity<?> getByActiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/seekActive/getByActiveSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 1);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeek(seek);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeek(seek);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -687,21 +690,21 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get active applications by inactive seek id ************	
+
+	// ************* get active applications by inactive seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/seekInactive/{id}")
 	public ResponseEntity<?> getActiveApplicationsByInactiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/seekInactive/getActiveApplicationsByInactiveSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 0);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Active applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -714,21 +717,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get inactive applications by inactive seek id ************	
+
+	// ************* get inactive applications by inactive seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/seekInactive/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByInactiveSeek(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/inactive/seekInactive/getInactiveApplicationsByInactiveSeek started.");
+		logger.info(
+				"################ /jobster/apply/inactive/seekInactive/getInactiveApplicationsByInactiveSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 0);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 0);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 0);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -741,21 +745,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get archived applications by inactive seek id ************	
+
+	// ************* get archived applications by inactive seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/seekInactive/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByInactiveSeek(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/archived/seekInactive/getArchivedApplicationsByInactiveSeek started.");
+		logger.info(
+				"################ /jobster/apply/archived/seekInactive/getArchivedApplicationsByInactiveSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 0);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, -1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, -1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -768,21 +773,21 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get applications by inactive seek id ************	
+
+	// ************* get applications by inactive seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/seekInactive/{id}")
 	public ResponseEntity<?> getByInactiveSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/seekInactive/getByInactiveSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 0);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeek(seek);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeek(seek);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -795,21 +800,21 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get active applications by archived seek id ************	
+
+	// ************* get active applications by archived seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/active/seekArchived/{id}")
 	public ResponseEntity<?> getActiveApplicationsByArchivedSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/active/seekArchived/getActiveApplicationsByArchivedSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, -1);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -822,21 +827,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get inactive applications by archived seek id ************	
+
+	// ************* get inactive applications by archived seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/inactive/seekArchived/{id}")
 	public ResponseEntity<?> getInactiveApplicationsByArchivedSeek(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/inactive/seekArchived/getInactiveApplicationsByArchivedSeek started.");
+		logger.info(
+				"################ /jobster/apply/inactive/seekArchived/getInactiveApplicationsByArchivedSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, -1);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 0);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, 0);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -849,21 +855,22 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get archived applications by archived seek id ************
+
+	// ************* get archived applications by archived seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/seekArchived/{id}")
 	public ResponseEntity<?> getArchivedApplicationsByArchivedSeek(@PathVariable Integer id, Principal principal) {
-		logger.info("################ /jobster/apply/archived/seekArchived/getArchivedApplicationsByArchivedSeek started.");
+		logger.info(
+				"################ /jobster/apply/archived/seekArchived/getArchivedApplicationsByArchivedSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, -1);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Seek not found");
-				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Seek not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, -1);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeekAndStatusLike(seek, -1);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -876,21 +883,21 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	// *************  get applications by archived seek id ************
+
+	// ************* get applications by archived seek id ************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/seekArchived/{id}")
 	public ResponseEntity<?> getByArchivedSeek(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/apply/seekArchived/getByArchivedSeek started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, -1);
-			if(seek==null) {
+			if (seek == null) {
 				logger.info("++++++++++++++++ Offer not found");
-				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>("Offer not found", HttpStatus.NOT_FOUND);
 			}
-			Iterable <ApplyContactEntity> applications = applyContactRepository.findBySeek(seek);
+			Iterable<ApplyContactEntity> applications = applyContactRepository.findBySeek(seek);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -903,24 +910,51 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
-	
-	
-	// *************  GET MY APPLICATIONS WITH FILTER************
+
+	// ************* GET MY APPLICATIONS WITH FILTER************
 	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/myApplies")
-	public ResponseEntity<?> getMyAppliesQuery( Principal principal, 
-			@RequestParam(required = false) Boolean commentable,
-			@RequestParam(required = false) Boolean rejected,
-			@RequestParam(required = false) Boolean connected,
-			@RequestParam(required = false) Boolean expired){
+	public ResponseEntity<?> getMyAppliesQuery(Principal principal, @RequestParam(required = false) Boolean commentable,
+			@RequestParam(required = false) Boolean rejected, @RequestParam(required = false) Boolean connected,
+			@RequestParam(required = false) Boolean expired) {
 		logger.info("################ /jobster/apply/myApplies/getMyAppliesQuery started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Integer loggedInUserId = userAccountRepository.getByUsername(principal.getName()).getUser().getId();
-			Iterable <ApplyContactEntity> applications = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,rejected,connected,expired,commentable);
+			Iterable<ApplyContactEntity> applications = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,1,
+					rejected, connected, expired, commentable);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// ************* GET APPLICATIONS WITH FILTER************
+	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/applications")
+	public ResponseEntity<?> getApplicationsByQuery(Principal principal, @RequestParam(required = false) Integer status,
+			@RequestParam(required = false) Boolean commentable, @RequestParam(required = false) Boolean rejected,
+			@RequestParam(required = false) Boolean connected, @RequestParam(required = false) Boolean expired) {
+		logger.info("################ /jobster/apply/applications/getApplicationsByQuery started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			if (status != null) {
+				if (!(status == -1 || status == 0 || status == 1)) {
+					logger.info("++++++++++++++++ Status " + status + " is not acceptable");
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				}
+			}
+			Iterable<ApplyContactEntity> applications = applyContactDao.findByQuery(status, rejected, connected,
+					expired, commentable);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -934,19 +968,24 @@ public class ApplyContactController {
 		}
 	}
 	
-	//*************  GET APPLICATIONS WITH FILTER************
-	@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/applications/")
-	public ResponseEntity<?> getApplicationsByQuery( Principal principal, 
-			@RequestParam(required = false) Boolean commentable,
-			@RequestParam(required = false) Boolean rejected,
-			@RequestParam(required = false) Boolean connected,
-			@RequestParam(required = false) Boolean expired){
-		logger.info("################ /jobster/apply/applications/getApplicationsByQuery started.");
+	// ************* GET APPLICATIONS BY USER ID WITH FILTER************ NOT CORRECT
+	/*@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/user/{id}")
+	public ResponseEntity<?> getMyAppliesQuery(Principal principal, @PathVariable Integer id, @RequestParam(required = false) Integer status,@RequestParam(required = false) Boolean commentable,
+			@RequestParam(required = false) Boolean rejected, @RequestParam(required = false) Boolean connected,
+			@RequestParam(required = false) Boolean expired) {
+		logger.info("################ /jobster/apply/myApplies/getMyAppliesQuery started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
-			Iterable <ApplyContactEntity> applications = applyContactDao.findByQuery(rejected,connected,expired,commentable);
+			if (status != null) {
+				if (status != -1 || status != 0 || status != 1) {
+					logger.info("++++++++++++++++ Status " + status + " is not acceptable");
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				}
+			}
+			Iterable<ApplyContactEntity> applications = applyContactDao.findByQueryForUser(id,status,
+					rejected, connected, expired, commentable);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -958,6 +997,6 @@ public class ApplyContactController {
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
+	}*/
 
 }
