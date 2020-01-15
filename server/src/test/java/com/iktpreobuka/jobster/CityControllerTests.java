@@ -2,6 +2,7 @@ package com.iktpreobuka.jobster;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -28,6 +29,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -912,7 +914,7 @@ public class CityControllerTests {
 		POSTCityDTO cityDTO = new POSTCityDTO();
     	cityDTO.setCityName("LFCapitol");
     	cityDTO.setCountry("Co");
-    	cityDTO.setIso2Code("LF");
+    	cityDTO.setIso2Code("Fl");
     	cityDTO.setRegion("LFRegion");
     	cityDTO.setLongitude(43.1);
     	cityDTO.setLatitude(43.1);
@@ -921,8 +923,8 @@ public class CityControllerTests {
     	mockMvc.perform(post("/jobster/cities/addNewCity")
     			.header("Authorization", "Bearer " + token)
     			.contentType(MediaType.APPLICATION_JSON).content(json))
-        		.andExpect(status().isOk())
-        		.andExpect(status().isOk())
+    	.andDo(MockMvcResultHandlers.print())        		
+    			.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.region.country.countryName", is("Co")));
         	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
@@ -2372,7 +2374,90 @@ public class CityControllerTests {
 			        		.andExpect(status().isBadRequest());
 				}
 				
+		//----------------------------- DELETE/UNDELETE CITY--------------------------------
+				
+				@Test 
+				public void deleteCity() throws Exception {
+					logger.info("deleteCity");
+					CityEntity city=CityControllerTests.cities.get(0);
+					city.setStatus(0);
+					Gson gson = new Gson();
+			    	String json = gson.toJson(city);
+			    	mockMvc.perform(delete("/jobster/cities/delete/" + (CityControllerTests.cities.get(0).getId()))
+			    			.header("Authorization", "Bearer " + token)
+			    			.contentType(MediaType.APPLICATION_JSON).content(json))
+			    	//.andDo(MockMvcResultHandlers.print())
+			    	.andExpect(status().isOk())
+	    			.andExpect(content().contentType(contentType)) 
+	    			.andExpect(jsonPath("$.cityName", is("World city")))
+	    			.andExpect(jsonPath("$.status", is(0)));
+			    	Integer Id = CityControllerTests.cities.get(0).getId();
+					CityControllerTests.cities.remove(0);
+					CityControllerTests.cities.add(0,cityRepository.findByIdAndStatusLike(Id, 0));
+				}
+				
+				@Test 
+				public void undeleteCity() throws Exception {
+					logger.info("undeleteCity");
+					CityEntity city=CityControllerTests.cities.get(2);
+					city.setStatus(1);
+					Gson gson = new Gson();
+			    	String json = gson.toJson(city);
+			    	mockMvc.perform(put("/jobster/cities/undelete/" + (CityControllerTests.cities.get(2).getId()))
+			    			.header("Authorization", "Bearer " + token)
+			    			.contentType(MediaType.APPLICATION_JSON).content(json))
+			    	.andDo(MockMvcResultHandlers.print())
+			    	.andExpect(status().isOk())
+	    			.andExpect(content().contentType(contentType)) 
+	    			.andExpect(jsonPath("$.cityName", is("Inactive")))
+	    			.andExpect(jsonPath("$.status", is(1)));
+			    	Integer Id = CityControllerTests.cities.get(2).getId();
+					CityControllerTests.cities.remove(2);
+					CityControllerTests.cities.add(2,cityRepository.findByIdAndStatusLike(Id, 1));
+				}
+				
+//----------------------------- ARCHIVE/UNARCHIVE CITY--------------------------------
+				
+				@Test 
+				public void unarchiveCity() throws Exception {
+					logger.info("unarchiveCity");
+					CityEntity city=CityControllerTests.cities.get(1);
+					city.setStatus(1);
+					Gson gson = new Gson();
+			    	String json = gson.toJson(city);
+			    	mockMvc.perform(put("/jobster/cities/unarchive/" + (CityControllerTests.cities.get(1).getId()))
+			    			.header("Authorization", "Bearer " + token)
+			    			.contentType(MediaType.APPLICATION_JSON).content(json))
+			    	.andDo(MockMvcResultHandlers.print())
+			    	.andExpect(status().isOk())
+	    			.andExpect(content().contentType(contentType)) 
+	    			.andExpect(jsonPath("$.cityName", is("Archived")))
+	    			.andExpect(jsonPath("$.status", is(1)));
+	    	Integer Id = CityControllerTests.cities.get(1).getId();
+			CityControllerTests.cities.remove(1);
+			CityControllerTests.cities.add(1,cityRepository.findByIdAndStatusLike(Id, 1));
+				}
+				
+				@Test 
+				public void archiveCity() throws Exception {
+					logger.info("archiveCity");
+					CityEntity city=CityControllerTests.cities.get(2);
+					city.setStatus(-1);
+					Gson gson = new Gson();
+			    	String json = gson.toJson(city);
+			    	mockMvc.perform(put("/jobster/cities/archive/" + (CityControllerTests.cities.get(2).getId()))
+			    			.header("Authorization", "Bearer " + token)
+			    			.contentType(MediaType.APPLICATION_JSON).content(json))
+			    	.andDo(MockMvcResultHandlers.print())
+			    	.andExpect(status().isOk())
+	    			.andExpect(content().contentType(contentType)) 
+	    			.andExpect(jsonPath("$.cityName", is("Inactive")))
+	    			.andExpect(jsonPath("$.status", is(-1)));
+	    	Integer Id = CityControllerTests.cities.get(2).getId();
+			CityControllerTests.cities.remove(2);
+			CityControllerTests.cities.add(2,cityRepository.findByIdAndStatusLike(Id, -1));
+				}
+				
 				//-------------------------------------- EOF -----------------------------------------
-
 		}
 
