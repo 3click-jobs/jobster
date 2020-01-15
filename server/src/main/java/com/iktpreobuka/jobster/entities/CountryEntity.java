@@ -76,7 +76,8 @@ public class CountryEntity {
 	public CountryEntity(
 			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
 			@Pattern(regexp = "^[A-Za-z]{2,2}$", message = "ISO2 code is not valid.") @NotNull(message = "ISO2 code must be provided.") String iso2Code,
-			Integer createdById) {
+			Integer createdById,
+			@Max(1) @Min(-1)  Integer status) {
 		super();
 		this.countryName = countryName;
 		this.iso2Code = iso2Code;
@@ -91,6 +92,16 @@ public class CountryEntity {
 		this.countryName = countryName;
 		this.iso2Code = iso2Code;
 		this.status = getStatusActive();
+	}
+	
+	public CountryEntity(
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country name is not valid.") @NotNull(message = "Country name must be provided.") String countryName,
+			@Pattern(regexp = "^[A-Za-z]{2,2}$", message = "ISO2 code is not valid.") @NotNull(message = "ISO2 code must be provided.") String iso2Code,
+			@Max(1) @Min(-1)  Integer status ) {
+		super();
+		this.countryName = countryName;
+		this.iso2Code = iso2Code;
+		this.status = status;
 
 	}
 
@@ -153,6 +164,10 @@ public class CountryEntity {
 
 	public Integer getStatus() {
 		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public void setStatusInactive() {

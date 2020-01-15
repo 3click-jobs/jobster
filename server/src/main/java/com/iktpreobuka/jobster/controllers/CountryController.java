@@ -316,7 +316,7 @@ public class CountryController {
 	
 	//@Secured("ROLE_ADMIN")
 	//@JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.PUT, value = "/delete/{id}")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/countries/{id} Delete started.");
 		//logger.info("Logged user: " + principal.getName());
