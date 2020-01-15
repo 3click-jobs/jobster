@@ -42,11 +42,15 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<ApplyContactEntity> findByQueryForLoggedInUser(Integer loggedInUserId, 
+	public Iterable<ApplyContactEntity> findByQueryForLoggedInUser(Integer loggedInUserId, Integer status, 
 			Boolean rejected, Boolean connected, Boolean expired,Boolean commentable) {
 		logger.info("++++++++++++++++ Service for finding applicaitons for a logged in user by params started");
 		String sql = "select a from ApplyContactEntity a where a.createdById = " + loggedInUserId;
 		logger.info("++++++++++++++++ Basic query created");
+		if(status !=null) {
+			sql = sql + " and a.status = " + status;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
 		if(rejected !=null) {
 			sql = sql + " and a.rejected = " + rejected;
 			logger.info("++++++++++++++++ Added condition for rejected applications");
@@ -80,12 +84,21 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<ApplyContactEntity> findByQuery(Boolean rejected, Boolean connected, Boolean expired,Boolean commentable) {
+	public Iterable<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected, Boolean expired,Boolean commentable) {
 		logger.info("++++++++++++++++ Service for finding applicaitons by params started");
 		String sql = "select a from ApplyContactEntity a";
 		Boolean firstParam = true;
 		logger.info("++++++++++++++++ Basic query created");
-		
+		if(status != null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.status = " + status;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
 		if(rejected !=null) {
 			if(!firstParam) {
 				sql = sql + " and";
@@ -118,7 +131,7 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 				sql = sql + " where";
 				firstParam = false;
 			}
-			sql = sql + " and a.expired = " + expired;
+			sql = sql + " a.expired = " + expired;
 			logger.info("++++++++++++++++ Added condition for expired applications");
 		}
 		
@@ -129,7 +142,7 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 				sql = sql + " where";
 				firstParam = false;
 			}
-			sql = sql + " and a.commentable = " + commentable;
+			sql = sql + " a.commentable = " + commentable;
 			logger.info("++++++++++++++++ Added condition for commentable applications");
 		}
 		
