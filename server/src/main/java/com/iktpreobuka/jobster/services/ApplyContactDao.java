@@ -16,4 +16,7 @@ public interface ApplyContactDao {
 
 
 	void markApplyAsExpiredByOffer(JobOfferEntity offer);
+
+
+	Iterable<ApplyContactEntity> findByQuery(Boolean rejected, Boolean connected, Boolean expired, Boolean commentable);
 }

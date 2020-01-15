@@ -39,11 +39,12 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 		else {return null;}
 	}
 
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<ApplyContactEntity> findByQueryForLoggedInUser(Integer loggedInUserId, 
 			Boolean rejected, Boolean connected, Boolean expired,Boolean commentable) {
-		logger.info("++++++++++++++++ Service for finding applicaitons by params started");
+		logger.info("++++++++++++++++ Service for finding applicaitons for a logged in user by params started");
 		String sql = "select a from ApplyContactEntity a where a.createdById = " + loggedInUserId;
 		logger.info("++++++++++++++++ Basic query created");
 		if(rejected !=null) {
@@ -65,6 +66,69 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 		}
 		
 		if(commentable !=null) {
+			sql = sql + " and a.commentable = " + commentable;
+			logger.info("++++++++++++++++ Added condition for commentable applications");
+		}
+		
+		Query query = em.createQuery(sql);
+		logger.info("++++++++++++++++ Query created");
+		Iterable<ApplyContactEntity> result = query.getResultList();
+		logger.info("++++++++++++++++ Result of the query returned ok");
+		return result;
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterable<ApplyContactEntity> findByQuery(Boolean rejected, Boolean connected, Boolean expired,Boolean commentable) {
+		logger.info("++++++++++++++++ Service for finding applicaitons by params started");
+		String sql = "select a from ApplyContactEntity a";
+		Boolean firstParam = true;
+		logger.info("++++++++++++++++ Basic query created");
+		
+		if(rejected !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.rejected = " + rejected;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
+		if(connected !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.areConnected = " + connected;	
+			if(connected) {
+				logger.info("++++++++++++++++ Added condition for connected applications");
+			}
+			else {
+				logger.info("++++++++++++++++ Added condition for pending applications");
+			}
+		}
+		if(expired !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " and a.expired = " + expired;
+			logger.info("++++++++++++++++ Added condition for expired applications");
+		}
+		
+		if(commentable !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
 			sql = sql + " and a.commentable = " + commentable;
 			logger.info("++++++++++++++++ Added condition for commentable applications");
 		}
