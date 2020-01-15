@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
 
-
+//@Ignore
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration
@@ -2386,7 +2387,6 @@ public class CityControllerTests {
 			    	mockMvc.perform(delete("/jobster/cities/delete/" + (CityControllerTests.cities.get(0).getId()))
 			    			.header("Authorization", "Bearer " + token)
 			    			.contentType(MediaType.APPLICATION_JSON).content(json))
-			    	//.andDo(MockMvcResultHandlers.print())
 			    	.andExpect(status().isOk())
 	    			.andExpect(content().contentType(contentType)) 
 	    			.andExpect(jsonPath("$.cityName", is("World city")))
@@ -2406,7 +2406,6 @@ public class CityControllerTests {
 			    	mockMvc.perform(put("/jobster/cities/undelete/" + (CityControllerTests.cities.get(2).getId()))
 			    			.header("Authorization", "Bearer " + token)
 			    			.contentType(MediaType.APPLICATION_JSON).content(json))
-			    	.andDo(MockMvcResultHandlers.print())
 			    	.andExpect(status().isOk())
 	    			.andExpect(content().contentType(contentType)) 
 	    			.andExpect(jsonPath("$.cityName", is("Inactive")))
@@ -2428,7 +2427,6 @@ public class CityControllerTests {
 			    	mockMvc.perform(put("/jobster/cities/unarchive/" + (CityControllerTests.cities.get(1).getId()))
 			    			.header("Authorization", "Bearer " + token)
 			    			.contentType(MediaType.APPLICATION_JSON).content(json))
-			    	.andDo(MockMvcResultHandlers.print())
 			    	.andExpect(status().isOk())
 	    			.andExpect(content().contentType(contentType)) 
 	    			.andExpect(jsonPath("$.cityName", is("Archived")))
@@ -2448,7 +2446,6 @@ public class CityControllerTests {
 			    	mockMvc.perform(put("/jobster/cities/archive/" + (CityControllerTests.cities.get(2).getId()))
 			    			.header("Authorization", "Bearer " + token)
 			    			.contentType(MediaType.APPLICATION_JSON).content(json))
-			    	.andDo(MockMvcResultHandlers.print())
 			    	.andExpect(status().isOk())
 	    			.andExpect(content().contentType(contentType)) 
 	    			.andExpect(jsonPath("$.cityName", is("Inactive")))
