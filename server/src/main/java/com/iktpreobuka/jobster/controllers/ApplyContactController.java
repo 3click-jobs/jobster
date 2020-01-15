@@ -907,7 +907,7 @@ public class ApplyContactController {
 	
 	
 	
-	// *************  GET MY ************
+	// *************  GET MY APPLICATIONS WITH FILTER************
 	@Secured("ROLE_ADMIN")
 	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/myApplies")
@@ -921,6 +921,32 @@ public class ApplyContactController {
 		try {
 			Integer loggedInUserId = userAccountRepository.getByUsername(principal.getName()).getUser().getId();
 			Iterable <ApplyContactEntity> applications = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,rejected,connected,expired,commentable);
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	//*************  GET APPLICATIONS WITH FILTER************
+	@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/applications/")
+	public ResponseEntity<?> getApplicationsByQuery( Principal principal, 
+			@RequestParam(required = false) Boolean commentable,
+			@RequestParam(required = false) Boolean rejected,
+			@RequestParam(required = false) Boolean connected,
+			@RequestParam(required = false) Boolean expired){
+		logger.info("################ /jobster/apply/applications/getApplicationsByQuery started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Iterable <ApplyContactEntity> applications = applyContactDao.findByQuery(rejected,connected,expired,commentable);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
