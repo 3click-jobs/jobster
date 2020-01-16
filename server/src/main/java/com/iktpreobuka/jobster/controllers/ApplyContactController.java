@@ -943,7 +943,9 @@ public class ApplyContactController {
 	@RequestMapping(method = RequestMethod.GET, value = "/applications")
 	public ResponseEntity<?> getApplicationsByQuery(Principal principal, @RequestParam(required = false) Integer status,
 			@RequestParam(required = false) Boolean commentable, @RequestParam(required = false) Boolean rejected,
-			@RequestParam(required = false) Boolean connected, @RequestParam(required = false) Boolean expired) {
+			@RequestParam(required = false) Boolean connected, @RequestParam(required = false) Boolean expired,
+			@RequestParam(required = false) String connectionDateBottom,@RequestParam(required = false) String connectionDateTop,
+			@RequestParam(required = false) String contactDateBottom,@RequestParam(required = false) String contactDateTop) {
 		logger.info("################ /jobster/apply/applications/getApplicationsByQuery started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
@@ -953,8 +955,13 @@ public class ApplyContactController {
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				}
 			}
+			if(applyContactDao.stringDateFormatNotCorrect(connectionDateBottom, connectionDateTop, contactDateBottom, contactDateTop)){
+				logger.info("++++++++++++++++ Date format not correct");
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			
 			Iterable<ApplyContactEntity> applications = applyContactDao.findByQuery(status, rejected, connected,
-					expired, commentable);
+					expired, commentable,connectionDateBottom,connectionDateTop,contactDateBottom,contactDateTop);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -19,4 +19,13 @@ public interface ApplyContactDao {
 
 
 	Iterable<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected, Boolean expired, Boolean commentable);
+
+
+	public boolean stringDateFormatNotCorrect(String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop);
+
+
+	public Iterable<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected,
+			Boolean expired, Boolean commentable, String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop);
 }

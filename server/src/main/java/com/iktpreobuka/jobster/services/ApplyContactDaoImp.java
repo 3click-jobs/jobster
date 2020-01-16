@@ -1,5 +1,6 @@
 package com.iktpreobuka.jobster.services;
 
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -14,6 +15,7 @@ import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
+import com.iktpreobuka.jobster.util.StringDateFormatValidator;
 
 
 
@@ -155,6 +157,127 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 	}
 	
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterable<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected,
+			Boolean expired, Boolean commentable, String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop) {
+		logger.info("++++++++++++++++ Service for finding applicaitons by params started - date params included");
+		String sql = "select a from ApplyContactEntity a";
+		Boolean firstParam = true;
+		logger.info("++++++++++++++++ Basic query created");
+		if(status != null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.status = " + status;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
+		if(rejected !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.rejected = " + rejected;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
+		if(connected !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.areConnected = " + connected;	
+			if(connected) {
+				logger.info("++++++++++++++++ Added condition for connected applications");
+			}
+			else {
+				logger.info("++++++++++++++++ Added condition for pending applications");
+			}
+		}
+		if(expired !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.expired = " + expired;
+			logger.info("++++++++++++++++ Added condition for expired applications");
+		}
+		
+		if(commentable !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.commentable = " + commentable;
+			logger.info("++++++++++++++++ Added condition for commentable applications");
+		}
+		
+		if(connectionDateBottom !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.connectionDate >= " + connectionDateBottom;
+			logger.info("++++++++++++++++ Added condition for all applications where connection is younger than" + connectionDateBottom);
+		}
+		
+		if(connectionDateTop !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.connectionDate <= " + connectionDateTop;
+			logger.info("++++++++++++++++ Added condition for all applications where conncetion is older than" + connectionDateTop);
+		}
+		
+		if(contactDateTop !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.contactDate <= " + contactDateTop;
+			logger.info("++++++++++++++++ Added condition for all applications where contact is older than " + contactDateTop);
+		}
+		
+		if(contactDateBottom !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.contactDate >= " + contactDateBottom;
+			logger.info("++++++++++++++++ Added condition for all applications where contact is younger than " + contactDateBottom);
+		}
+		
+		
+		
+		Query query = em.createQuery(sql);
+		logger.info("++++++++++++++++ Query created");
+		Iterable<ApplyContactEntity> result = query.getResultList();
+		logger.info("++++++++++++++++ Result of the query returned ok");
+		return result;
+		
+	}
+	
+	
 	@Override
 	public void markApplyAsExpiredBySeek(JobSeekEntity seek) {
 		logger.info("++++++++++++++++ mark all applies as expired by seek started");
@@ -196,4 +319,35 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 			}
 		}
 	}
+
+	
+	//checks if the provided string is correct data format applicable to use in query
+	@Override
+	public boolean stringDateFormatNotCorrect(String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop) {
+		if(connectionDateBottom != null) {
+			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(connectionDateBottom)) {
+				return true;
+			}
+		}
+		if(connectionDateTop != null) {
+			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(connectionDateBottom)) {
+				return true;
+			}
+		}
+		if(contactDateBottom != null) {
+			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(connectionDateBottom)) {
+				return true;
+			}
+		}
+		if(contactDateTop != null) {
+			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(connectionDateBottom)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
 }
