@@ -230,7 +230,7 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 				sql = sql + " where";
 				firstParam = false;
 			}
-			sql = sql + " a.connectionDate >= " + connectionDateBottom;
+			sql = sql + " a.connectionDate >= '" + connectionDateBottom + "'";
 			logger.info("++++++++++++++++ Added condition for all applications where connection is younger than" + connectionDateBottom);
 		}
 		
@@ -241,7 +241,7 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 				sql = sql + " where";
 				firstParam = false;
 			}
-			sql = sql + " a.connectionDate <= " + connectionDateTop;
+			sql = sql + " a.connectionDate <= '" + connectionDateTop + "'";
 			logger.info("++++++++++++++++ Added condition for all applications where conncetion is older than" + connectionDateTop);
 		}
 		
@@ -252,7 +252,7 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 				sql = sql + " where";
 				firstParam = false;
 			}
-			sql = sql + " a.contactDate <= " + contactDateTop;
+			sql = sql + " a.contactDate <= '" + contactDateTop + "'";
 			logger.info("++++++++++++++++ Added condition for all applications where contact is older than " + contactDateTop);
 		}
 		
@@ -263,7 +263,7 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 				sql = sql + " where";
 				firstParam = false;
 			}
-			sql = sql + " a.contactDate >= " + contactDateBottom;
+			sql = sql + " a.contactDate >= '" + contactDateBottom + "'";
 			logger.info("++++++++++++++++ Added condition for all applications where contact is younger than " + contactDateBottom);
 		}
 		
@@ -331,17 +331,17 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 			}
 		}
 		if(connectionDateTop != null) {
-			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(connectionDateBottom)) {
+			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(connectionDateTop)) {
 				return true;
 			}
 		}
 		if(contactDateBottom != null) {
-			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(connectionDateBottom)) {
+			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(contactDateBottom)) {
 				return true;
 			}
 		}
 		if(contactDateTop != null) {
-			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(connectionDateBottom)) {
+			if(!StringDateFormatValidator.checkIfStringIsValidDateFormat(contactDateTop)) {
 				return true;
 			}
 		}
