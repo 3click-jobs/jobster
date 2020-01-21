@@ -97,7 +97,7 @@ public class CityDaoImpl implements CityDao {
 		logger.info("addNewCity validation Ok.");
 		CityEntity city = new CityEntity();
 		try {
-			CountryEntity country = countryRepository.getByIso2Code(iso2Code);
+			CountryEntity country = countryRepository.getByCountryNameIgnoreCase(countryName);
 			if( country == null ) {
 				country = countryDao.addNewCountryWithIso2CodeAndLoggedUser(countryName, iso2Code, loggedUser);
 			}
@@ -126,7 +126,21 @@ public class CityDaoImpl implements CityDao {
 	}
 	
 	@Override
-	public  CityEntity modifyCityWithLoggedUser(CityEntity city, POSTCityDTO updateCity, UserEntity loggedUser) {
+	public  CityEntity modifyCityWithLoggedUser(CityEntity city, POSTCityDTO updateCity, UserEntity loggedUser) throws Exception {
+		try {
+			
+		
+		if(!(countryRepository.existsByCountryNameIgnoreCase(updateCity.getCountry()))) {
+			String countryName=updateCity.getCountry();
+			String iso2Code=updateCity.getIso2Code();
+			countryDao.addNewCountryWithIso2CodeAndLoggedUser(countryName, iso2Code, loggedUser);
+		}
+		if(!(countryRegionRepository.existsByCountryRegionNameIgnoreCase(updateCity.getCountry()))) {
+			CountryEntity country=countryRepository.getByCountryNameIgnoreCase(updateCity.getCountry());
+			String countryRegionName=updateCity.getRegion();
+			countryRegionDao.addNewCountryRegionWithLoggedUser(countryRegionName, country, loggedUser);
+			}
+		
 		city.setCityName(updateCity.getCityName());
 		city.setLongitude(updateCity.getLongitude());
 		city.setLatitude(updateCity.getLatitude());
@@ -134,8 +148,11 @@ public class CityDaoImpl implements CityDao {
 		CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameAndCountry(updateCity.getRegion(), country);
 		city.setRegion(region);
 		city.setUpdatedById(loggedUser.getId());
-		return city;
+		} catch (Exception e) {
+			throw new Exception("Modify City failed");
 		}
+		return city;
+	}
 	
 
 	@Override

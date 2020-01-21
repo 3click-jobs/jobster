@@ -8,7 +8,7 @@ public interface ApplyContactDao {
 	public Integer otherPartyFromApply(Integer idIn,ApplyContactEntity apply);
 
 
-	Iterable<ApplyContactEntity> findByQueryForLoggedInUser(Integer loggedInUserId, Boolean rejected, Boolean connected,
+	Iterable<ApplyContactEntity> findByQueryForLoggedInUser(Integer loggedInUserId, Integer status, Boolean rejected, Boolean connected,
 			Boolean expired,Boolean commentable);
 
 
@@ -16,4 +16,16 @@ public interface ApplyContactDao {
 
 
 	void markApplyAsExpiredByOffer(JobOfferEntity offer);
+
+
+	Iterable<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected, Boolean expired, Boolean commentable);
+
+
+	public boolean stringDateFormatNotCorrect(String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop);
+
+
+	public Iterable<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected,
+			Boolean expired, Boolean commentable, String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop);
 }
