@@ -23,7 +23,6 @@ public class JobSeekDTO {
 		protected String jobTypeName;
 	
 		@NotNull (message = "Distance to job must be provided.")
-		//@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")
 		@Min(value=0, message = "Distance to job must be {value} or higher!")
 		private Integer distanceToJob;
 	

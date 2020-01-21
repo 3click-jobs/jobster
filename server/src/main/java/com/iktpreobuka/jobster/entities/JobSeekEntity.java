@@ -69,7 +69,6 @@ public class JobSeekEntity {
 	//@JsonView(Views.Student.class)
 	@Column(name="distance_to_job")
 	@NotNull (message = "Distance to job must be provided.")
-	//@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")
 	@Min(value=0, message = "Distance to job must be {value} or higher!")
 	private Integer distanceToJob;
 	
