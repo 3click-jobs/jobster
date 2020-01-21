@@ -711,14 +711,13 @@ public class JobSeekDaoImpl implements JobSeekDao {
 					return new ResponseEntity<String>("You have duplicate days.", HttpStatus.BAD_REQUEST);
 				}
 
-				///////////////////////// ODAVDE POPRAVLJATI
-				// registrovao je promenu u ponedeljku ali je dulirao utorak
-
 				// --------------------- STARA LISTA ------------------------------
+				// provera da li je doslo do izmene sati ili drugih atributa za neki dan
+				// ako jeste na stari entitet mapirati nove atribute
+				// takodje provera i da li treba vec neki postojeci dan staviti da bude neaktivan
+				
 				List<JobDayHoursEntity> oldListJobDayHours = new ArrayList<JobDayHoursEntity>();
 				oldListJobDayHours = seekForModify.getDaysAndHours();
-
-				//
 
 				boolean missing;
 				for (JobDayHoursEntity i : oldListJobDayHours) {
@@ -747,7 +746,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				}
 
 				// --------------------- NOVA LISTA ------------------------------
-
+				// provera da li ima neki novi dan koji treba napraviti
+				// i ako ima pravljenje novog dana
+				
 				Integer difrenDayCount;
 				Integer allDaysCount;
 				for (JobDayHoursDTO z : listJobDayHoursDto) {
@@ -773,7 +774,6 @@ public class JobSeekDaoImpl implements JobSeekDao {
 						logger.info("New created day saved.");
 					}
 				}
-
 				logger.info("Saveing JobSeek.");
 				jobSeekRepository.save(seekForModify);
 				seekSaved = true;
@@ -782,7 +782,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		} catch (Exception e) {
 			logger.info("Error occurred and data that has been previously added needs to be removed from database.");
 			if (dayAndHoursSaved == true) {
-				logger.info("Removing changed and added JobDaysAndHours.");
+				logger.info("Correcting change JobDaysAndHours.");
+				// ovaj array bi mozda mogao praviti problem 
 				Integer[] ids = new Integer[6];
 				Integer position = 0;
 				if (!(seekForModify.getDaysAndHours().isEmpty())) {
@@ -791,12 +792,13 @@ public class JobSeekDaoImpl implements JobSeekDao {
 							if (i.getId().equals(j.getId())) {
 								i = j;
 								jobDayHoursRepository.save(i);
-								logger.info(position + 1 + " jobDayAndHours has been returned to previos state");
+								logger.info(position + 1 + " jobDayAndHours has been returned to previous state");
 								ids[position] = i.getId();
 								position++;
 							}
 						}
 					}
+					logger.info("Deleting added JobDaysAndHours.");
 					JobDayHoursEntity jobDayHoursForDelete = new JobDayHoursEntity();
 					for (Integer x = 0; x <= ids.length; x++) {
 						Integer countForCurcles = 0;
@@ -804,14 +806,14 @@ public class JobSeekDaoImpl implements JobSeekDao {
 						for (JobDayHoursEntity y : seekForModify.getDaysAndHours()) {
 							jobDayHoursForDelete = y;
 							countForCurcles++;
+							// ovde bi mozda array mogao da napravi problem
 							if (ids[x] != null && ids[x] != y.getId()) {
 								countDifrentIds++;
-							}							
+							}
 						}
-						if(countForCurcles == countDifrentIds) {
+						if (countForCurcles == countDifrentIds) {
 							jobDayHoursRepository.delete(jobDayHoursForDelete);
 							logger.info(x + 1 + " jobDayAndHours has been deleted");
-
 						}
 					}
 				}
