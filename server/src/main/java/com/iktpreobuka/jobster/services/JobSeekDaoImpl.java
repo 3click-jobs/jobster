@@ -2,7 +2,6 @@ package com.iktpreobuka.jobster.services;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +33,6 @@ import com.iktpreobuka.jobster.repositories.JobDayHoursRepository;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 import com.iktpreobuka.jobster.repositories.JobTypeRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
-import com.iktpreobuka.jobster.repositories.UserRepository;
 
 @Service
 public class JobSeekDaoImpl implements JobSeekDao {
@@ -218,6 +216,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 					return new ResponseEntity<String>("JobType doesn't exist.", HttpStatus.BAD_REQUEST);
 				}
 			}
+			
 			// checking size of list of checked days, and are there duplicate days, and
 
 			List<JobDayHoursDTO> listJobDayHoursPostDto = new ArrayList<JobDayHoursDTO>();
@@ -367,7 +366,6 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 		boolean seekSaved = false;
 		boolean dayAndHoursSaved = false;
-		List<JobDayHoursEntity> listJobDayHoursEntity = new ArrayList<JobDayHoursEntity>();
 
 		try {
 
