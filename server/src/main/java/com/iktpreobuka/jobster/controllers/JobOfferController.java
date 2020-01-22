@@ -37,6 +37,12 @@ public class JobOfferController {
 		return jobOfferService.addNewOffer(offer, principal, result);
 	}
 	
+	@RequestMapping(method = RequestMethod.PUT, value = "/modifyOffer/{offerId}")
+	public ResponseEntity<?> modifyOffer(@Valid @RequestBody JobOfferDTO offer, @PathVariable Integer offerId,
+			Principal principal, BindingResult result) {
+		return jobOfferService.modifyOffer(offer, offerId, principal, result);
+	}
+	
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobOfferEntity")
 	public JobOfferEntity emptyJobOfferEntity() {

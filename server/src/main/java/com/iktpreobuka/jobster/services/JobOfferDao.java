@@ -18,6 +18,8 @@ public interface JobOfferDao {
 	
 	public ResponseEntity<?> addNewOffer(@Valid @RequestBody JobOfferDTO offer, Principal principal, BindingResult result);
 	
+	public ResponseEntity<?> modifyOffer(@Valid @RequestBody JobOfferDTO offer, @PathVariable Integer offerId, Principal principal, BindingResult result);
+	
 	public ResponseEntity<?> getAll();
 	
 	public ResponseEntity<?> getById(@PathVariable Integer id);
@@ -29,6 +31,7 @@ public interface JobOfferDao {
 	public ResponseEntity<?> unDeleteById(@PathVariable Integer id);
 
 	public ResponseEntity<?> unArchiveById(@PathVariable Integer id);
+
 
 
 }
