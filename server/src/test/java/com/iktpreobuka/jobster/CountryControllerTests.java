@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -29,7 +30,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -41,7 +41,6 @@ import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
-import com.iktpreobuka.jobster.entities.dto.POSTCityDTO;
 import com.iktpreobuka.jobster.enumerations.EUserRole;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
@@ -65,7 +64,7 @@ public class CountryControllerTests {
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	
-	private static CityEntity city, cityA, cityI;
+	private static CityEntity city;
 	
 	private static CountryEntity country, countryA, countryI;
 	
@@ -101,16 +100,12 @@ public class CountryControllerTests {
 	@Autowired 
 	private UserRepository userRepository;
 	
-	/*@Autowired
-	private CityDistanceRepository cityDistanceRepository;*/
-	
 
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	private boolean dbInit = false;
 	
 	@Before
-	
 	public void setUp() throws Exception { 
 		logger.info("DBsetUp");
 		if(!dbInit) { mockMvc = MockMvcBuilders
@@ -196,7 +191,9 @@ public class CountryControllerTests {
 		mockMvc.perform(get("/jobster/countries/getAll")
 				.header("Authorization", "Bearer " + token)) 
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$[1].countryName", is("Archived")));
+			.andExpect(jsonPath("$[0].countryName", is("Inactive")))
+			.andExpect(jsonPath("$[1].countryName", is("Archived")))
+			.andExpect(jsonPath("$[2].countryName", is("Active")));
 	}
 	
 	@Test 

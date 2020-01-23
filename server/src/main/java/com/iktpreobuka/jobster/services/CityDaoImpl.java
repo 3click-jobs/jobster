@@ -127,18 +127,21 @@ public class CityDaoImpl implements CityDao {
 	
 	@Override
 	public  CityEntity modifyCityWithLoggedUser(CityEntity city, POSTCityDTO updateCity, UserEntity loggedUser) throws Exception {
+		logger.info("CityDaoImpl: modifyCityWithLoggedUser started");
 		try {
-			
-		
 		if(!(countryRepository.existsByCountryNameIgnoreCase(updateCity.getCountry()))) {
+			logger.info("CityDaoImp: Country doesn't exists - creating new country");
 			String countryName=updateCity.getCountry();
 			String iso2Code=updateCity.getIso2Code();
 			countryDao.addNewCountryWithIso2CodeAndLoggedUser(countryName, iso2Code, loggedUser);
+			logger.info("CityDaoImp: New country created.");
 		}
-		if(!(countryRegionRepository.existsByCountryRegionNameIgnoreCase(updateCity.getCountry()))) {
+		if(!(countryRegionRepository.existsByCountryRegionNameIgnoreCase(updateCity.getRegion()))) {
+			logger.info("CityDaoImp: Region doesn't exists - creating new region");
 			CountryEntity country=countryRepository.getByCountryNameIgnoreCase(updateCity.getCountry());
 			String countryRegionName=updateCity.getRegion();
 			countryRegionDao.addNewCountryRegionWithLoggedUser(countryRegionName, country, loggedUser);
+			logger.info("CityDaoImp: New region created.");
 			}
 		
 		city.setCityName(updateCity.getCityName());
@@ -149,7 +152,7 @@ public class CityDaoImpl implements CityDao {
 		city.setRegion(region);
 		city.setUpdatedById(loggedUser.getId());
 		} catch (Exception e) {
-			throw new Exception("Modify City failed");
+			throw new Exception(e.getMessage());
 		}
 		return city;
 	}
