@@ -50,7 +50,7 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
 
-//@Ignore
+
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration
@@ -923,8 +923,7 @@ public class CityControllerTests {
     	String json = gson.toJson(cityDTO);
     	mockMvc.perform(post("/jobster/cities/addNewCity")
     			.header("Authorization", "Bearer " + token)
-    			.contentType(MediaType.APPLICATION_JSON).content(json))
-    	.andDo(MockMvcResultHandlers.print())        		
+    			.contentType(MediaType.APPLICATION_JSON).content(json))    		
     			.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.region.country.countryName", is("Co")));
@@ -1632,7 +1631,7 @@ public class CityControllerTests {
 	@Test 
 	public void modifyCityMarginalName() throws Exception {
 		logger.info("modifyCityMarginalName");
-		POSTCityDTO city = new POSTCityDTO("NN", 47.0, 45.0, "NewRegion", "OldCountry", "OC");
+		POSTCityDTO city = new POSTCityDTO("NN", 47.0, 45.0, "World Region", "World Union", "RS");
 		Gson gson = new Gson();
     	String json = gson.toJson(city);
     	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
@@ -1721,7 +1720,7 @@ public class CityControllerTests {
 	@Test 
 	public void modifyCityNameMiddleSpace() throws Exception {
 		logger.info("modifyCityNameMiddleSpace");
-		POSTCityDTO city = new POSTCityDTO("ci ty", 47.0, 45.0, "NewRegion", "OldCountry", "OC");
+		POSTCityDTO city = new POSTCityDTO("New Name", 47.0, 45.0, "World Region", "World Union", "RS");
 		Gson gson = new Gson();
     	String json = gson.toJson(city);
     	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
@@ -1729,7 +1728,7 @@ public class CityControllerTests {
     			.contentType(MediaType.APPLICATION_JSON).content(json))
     			.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
-    			.andExpect(jsonPath("$.cityName", is("ci ty")));
+    			.andExpect(jsonPath("$.cityName", is("New Name")));
     	Integer Id = CityControllerTests.cities.get(0).getId();
     	CityControllerTests.cities.remove(0);
     	CityControllerTests.cities.add(0,cityRepository.findByIdAndStatusLike(Id, 1));
@@ -1800,7 +1799,7 @@ public class CityControllerTests {
 	@Test 
 	public void modifyCityMarginalLongitudePlus() throws Exception {
 		logger.info("modifyCityMarginalLongitudePlus");
-		POSTCityDTO city = new POSTCityDTO("NN", 180.0, 45.0, "NewRegion", "OldCountry", "OC");
+		POSTCityDTO city = new POSTCityDTO("NN", 180.0, 45.0, "World region", "World Union", "RS");
 		Gson gson = new Gson();
     	String json = gson.toJson(city);
     	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
@@ -1818,7 +1817,7 @@ public class CityControllerTests {
 	@Test 
 	public void modifyCityMarginalLongitudeMinus() throws Exception {
 		logger.info("modifyCityMarginalLongitudeMinus");
-		POSTCityDTO city = new POSTCityDTO("NN", -180.0, 45.0, "NewRegion", "OldCountry", "OC");
+		POSTCityDTO city = new POSTCityDTO("NN", -180.0, 45.0, "World Region", "World Union", "RS");
 		Gson gson = new Gson();
     	String json = gson.toJson(city);
     	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
@@ -1873,8 +1872,8 @@ public class CityControllerTests {
 
 		@Test 
 		public void modifyCityMarginalLatitudePlus() throws Exception {
-			logger.info("modifyCityMarginalLongitudePlus");
-			POSTCityDTO city = new POSTCityDTO("NN", 180.0, 90.0, "NewRegion", "OldCountry", "OC");
+			logger.info("modifyCityMarginalLatitudePlus");
+			POSTCityDTO city = new POSTCityDTO("NN", 47.0, 90.0, "World Region", "World Union", "RS");
 			Gson gson = new Gson();
 	    	String json = gson.toJson(city);
 	    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
@@ -1892,7 +1891,7 @@ public class CityControllerTests {
 		@Test
 		public void modifyCityMarginalLatitudeMinus() throws Exception {
 			logger.info("modifyCityMarginalLatitudeMinus");
-			POSTCityDTO city = new POSTCityDTO("NN", -180.0, -90.0, "NewRegion", "OldCountry", "OC");
+			POSTCityDTO city = new POSTCityDTO("NN", 47.0, -90.0, "World Region", "World Union", "RS");
 			Gson gson = new Gson();
 	    	String json = gson.toJson(city);
 	    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
@@ -1954,31 +1953,21 @@ public class CityControllerTests {
 	    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
 	    			.header("Authorization", "Bearer " + token)
 	    			.contentType(MediaType.APPLICATION_JSON).content(json))
-	        		.andExpect(status().isOk())
-	    			.andExpect(content().contentType(contentType)) 
-	    			.andExpect(jsonPath("$.cityName", is("World city")))
-	    			.andExpect(jsonPath("$.region.countryRegionName", is("RC")));
-	    	
-	    	Integer Id = CityControllerTests.cities.get(0).getId();
-			CityControllerTests.cities.remove(0);
-			CityControllerTests.cities.add(0,cityRepository.findByIdAndStatusLike(Id, 1));
+	        		.andExpect(status().isBadRequest())
+	        		.andExpect(content().string("Country Region needs update."));
 		}
 		
 		@Test 
 		public void modifyCityNulllRegionName() throws Exception {
 			logger.info("modifyCityNullRegionName");
-			POSTCityDTO city = new POSTCityDTO("World city", 47.0, 45.0, null, "World Union", "RS");
+			POSTCityDTO city = new POSTCityDTO("NN", 180.0, 45.0, null, "World Union", "RS");
 			Gson gson = new Gson();
 	    	String json = gson.toJson(city);
 	    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
 	    			.header("Authorization", "Bearer " + token)
 	    			.contentType(MediaType.APPLICATION_JSON).content(json))
-	        		.andExpect(status().isOk())
-	    			.andExpect(content().contentType(contentType)) 
-	    			.andExpect(jsonPath("$.cityName", is("World city")));
-	    	Integer Id = CityControllerTests.cities.get(0).getId();
-			CityControllerTests.cities.remove(0);
-			CityControllerTests.cities.add(0,cityRepository.findByIdAndStatusLike(Id, 1));
+	    				.andExpect(status().isBadRequest())
+	    				.andExpect(content().string("Country Region needs update."));
 		}
 		
 		@Test 
@@ -2094,19 +2083,14 @@ public class CityControllerTests {
 				@Test 
 				public void modifyCityMarginalCountryName() throws Exception {
 					logger.info("modifyCityMarginalCountryName");
-					POSTCityDTO city = new POSTCityDTO("World city", 47.0, 45.0, "ReC", "CN", "CN");
+					POSTCityDTO city = new POSTCityDTO("World city", 180.0, 45.0, "World region", "WU", "WU");
 					Gson gson = new Gson();
 			    	String json = gson.toJson(city);
 			    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))
 			    			.header("Authorization", "Bearer " + token)
 			    			.contentType(MediaType.APPLICATION_JSON).content(json))
-			        		.andExpect(status().isOk())
-			    			.andExpect(content().contentType(contentType)) 
-			    			.andExpect(jsonPath("$.cityName", is("World city")))
-			    			.andExpect(jsonPath("$.region.country.countryName", is("CN")));
-			    	Integer Id = CityControllerTests.cities.get(0).getId();
-					CityControllerTests.cities.remove(0);
-					CityControllerTests.cities.add(0,cityRepository.findByIdAndStatusLike(Id, 1));
+			    				.andExpect(status().isBadRequest())
+			    				.andExpect(content().string("Country needs update."));
 				}
 				
 				@Test 
