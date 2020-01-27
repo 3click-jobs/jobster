@@ -62,6 +62,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 	///////////////////////// POST ///////////////////////////////////////
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekDTO seek, Principal principal,
 			BindingResult result) {
@@ -350,6 +351,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 ///////////////////////////// PUT /////////////////////////////
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId,
 			Principal principal, BindingResult result) {
