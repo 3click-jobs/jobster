@@ -63,6 +63,7 @@ public class JobOfferDaoImpl implements JobOfferDao {
 	}
 //////////////////////////// POST /////////////////////////////////
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public ResponseEntity<?> addNewOffer(@Valid @RequestBody JobOfferDTO offer, Principal principal,
 			BindingResult result) {
@@ -355,6 +356,7 @@ public class JobOfferDaoImpl implements JobOfferDao {
 
 ///////////////////////////// PUT /////////////////////////////
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public ResponseEntity<?> modifyOffer(@Valid @RequestBody JobOfferDTO offer, @PathVariable Integer offerId,
 			Principal principal, BindingResult result) {
