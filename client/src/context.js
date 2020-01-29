@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { jobStore, jobDetails } from './data';
 
+//
+// A quick find in files reveals that this file is loaded only in index.old.js
+// a prime candidate for deletion when refactoring
+//
+
 const JobContext = React.createContext();
 
 class JobProvider extends Component {

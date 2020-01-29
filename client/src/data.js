@@ -1,3 +1,7 @@
+//
+// used by context.js, which is used only in the old index.js.old
+//
+
 export const jobStore = [
     {
       id: 1,

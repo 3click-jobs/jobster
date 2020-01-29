@@ -3,12 +3,16 @@ import React from 'react'
 
 // import { assignCredentials, verifyUser } from '../../redux/actions/user'
 
+import PropTypes from 'prop-types'
+
 import { Formik } from 'formik'
 import { LoginForm } from './LoginForm'
 import { accounts as accountsSchema } from '../../common/utils/schemas/accounts'
 import Dialog from '@material-ui/core/Dialog';
 
-
+/**
+ * Login component. Using a Dialog component.
+ */
 export const Login = ({
   isFetching,
   isError,
@@ -80,5 +84,40 @@ export const Login = ({
 //   mapStateToProps,
 //   mapDispatchToProps
 // )(Login)
+
+Login.propTypes = {
+  /**
+   * True if fetching data is in process.
+   */  
+  isFetching: PropTypes.bool,
+  /**
+   * If fetching returns with an error the flag will be set to true.
+   */
+  isError: PropTypes.bool,
+  /**
+   * The currently logged in users username
+   */
+  username: PropTypes.string,
+  /**
+   * Callback function to assign credentials
+   */
+  assignCredentials: PropTypes.func,
+  /**
+   * Verify user callback.
+   */
+  verifyUser: PropTypes.func,
+  /**
+   * Browsing history
+   */
+  history: PropTypes.object,
+  /**
+   * Dialog flag.
+   */
+  open: PropTypes.bool,
+  /**
+   * Callback function to set the open flag to false, called on Dialog close.
+   */
+  setOpen: PropTypes.func
+}
 
 export default Login
