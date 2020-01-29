@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
+import PropTypes from 'prop-types'
 
 // !!! IMPORTANT
 // YOU HAVE WORKING EXAMPLES IN PROJECTS/DESIGN/FORMS etc
@@ -31,7 +32,9 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-
+/**
+ * Login form component, used by the Login component.
+ */
 export const LoginForm = ({
   handleSubmit,
   handleChange,
@@ -139,4 +142,35 @@ export const LoginForm = ({
       </Form>
     </div>
   )
+}
+
+LoginForm.propTypes = {
+  /**
+   * Submit handler callback, provided by Formik.
+   */
+  handleSubmit: PropTypes.func,
+  /**
+   * Input value change handler callback, provided by Formik.
+   */
+  handleChange: PropTypes.func,
+  /**
+   * Blur (element has lost focus) handler, provided by Formik.
+   */
+  handleBlur: PropTypes.func,
+  /**
+   * Container object holding values managed by Formik.
+   */
+  values: PropTypes.object,
+  /**
+   * Container object holding data about what inputs are touched.
+   */
+  touched: PropTypes.bool,
+  /**
+   * Container object holding data about validation etc. errors.
+   */
+  errors: PropTypes.object,
+  /**
+   * If the form is being submitted the flag will be true.
+   */
+  isSubmitting: PropTypes.bool
 }
