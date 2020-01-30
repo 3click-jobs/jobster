@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import org.cactoos.list.*;
+//import org.cactoos.list.*;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;

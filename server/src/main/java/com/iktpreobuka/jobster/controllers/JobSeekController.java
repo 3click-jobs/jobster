@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -54,6 +56,8 @@ public class JobSeekController {
 //	protected void initBinder(final WebDataBinder binder) {
 //		binder.addValidators(userValidator);
 //	}
+
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 
 	// @Secured("ROLE_ADMIN")

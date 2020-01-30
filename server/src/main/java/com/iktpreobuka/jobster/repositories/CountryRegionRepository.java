@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 @Repository
-public interface CountryRegionRepository extends CrudRepository<CountryRegionEntity, Integer> {
+public interface CountryRegionRepository extends PagingAndSortingRepository<CountryRegionEntity, Integer> {
 
 	CountryRegionEntity getByCountryRegionNameAndCountry(String countryRegionName, Integer id);
 	
