@@ -32,8 +32,8 @@ import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
+import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
-import com.iktpreobuka.jobster.repositories.UserRepository;
 import com.iktpreobuka.jobster.services.CountryRegionDao;
 
 @Controller
@@ -42,35 +42,30 @@ import com.iktpreobuka.jobster.services.CountryRegionDao;
 
 public class CountryRegionController {
 
-	// @Autowired
-	// private UserCustomValidator userValidator;
-
-	@Autowired
+	
+	@Autowired 	
 	private CountryRegionRepository countryRegionRepository;
-
-	@Autowired
+	
+	@Autowired 	
+	private CountryRepository countryRepository;
+		
+	@Autowired 
 	private CountryRegionDao countryRegionDao;
 
 	@Autowired
 	private UserAccountRepository userAccountRepository;
-
-	@Autowired
-	private UserRepository userRepository;
-
-	/*
-	 * @InitBinder protected void initBinder(final WebDataBinder binder) {
-	 * binder.addValidators(userValidator); }
-	 */
+  
 
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	private String createErrorMessage(BindingResult result) {
 		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
-	}
 
-	// @Secured("ROLE_ADMIN")
-	// @JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+		}
+	
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/getById/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/regions/getById started.");
 		logger.info("Logged username: " + principal.getName());
@@ -85,9 +80,10 @@ public class CountryRegionController {
 		}
 	}
 
-	// @Secured("ROLE_ADMIN")
-	// @JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET)
+
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/getAll")
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/regions/getAll started.");
 		logger.info("Logged username: " + principal.getName());
@@ -153,10 +149,10 @@ public class CountryRegionController {
 		}
 	}
 
-	// Vraca listu svih regiona sa datim imenom
-	// @Secured("ROLE_ADMIN")
-	// @JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/All/{name}")
+			
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/getByName/{name}")
 	public ResponseEntity<?> getByNameAll(@PathVariable String name, Principal principal) {
 		logger.info("################ /jobster/regions/getByName started.");
 		logger.info("Logged username: " + principal.getName());
@@ -177,8 +173,9 @@ public class CountryRegionController {
 	public ResponseEntity<?> addNewRegion(@Valid @RequestBody CountryRegionEntity newRegion, Principal principal,
 			BindingResult result) {
 		logger.info("################ /jobster/regions/addNewRegion started.");
-		// logger.info("Logged user: " + principal.getName());
-		if (result.hasErrors()) {
+
+		logger.info("Logged user: " + principal.getName());
+		if (result.hasErrors()) { 
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
 		}
@@ -186,20 +183,23 @@ public class CountryRegionController {
 			logger.info("---------------- New region is null.");
 			return new ResponseEntity<>("New region is null.", HttpStatus.BAD_REQUEST);
 		}
-		if (newRegion.getCountryRegionName() == null || newRegion.getCountry() == null) {
+
+		if (newRegion.getCountry() == null ) {
 			logger.info("---------------- Some atributes are null.");
 			return new ResponseEntity<>("Some atributes are null", HttpStatus.BAD_REQUEST);
 		}
+		
+		if (countryRegionRepository.existsByCountryRegionNameAndCountry(newRegion.getCountryRegionName(), countryRepository.getByCountryName(newRegion.getCountry().getCountryName()))) {
+		logger.info("---------------- Region already exists.");
+        return new ResponseEntity<>("Region already exists.", HttpStatus.NOT_ACCEPTABLE);
+		}
+		
 		try {
-			if (countryRegionRepository.existsByCountry(newRegion.getCountry())
-					&& countryRegionRepository.existsByCountryRegionName(newRegion.getCountryRegionName())) {
-				logger.info("---------------- Country already exists.");
-				return new ResponseEntity<>("Country already exists.", HttpStatus.NOT_ACCEPTABLE);
-			}
-			String countryRegionName = newRegion.getCountryRegionName();
-			CountryEntity country = newRegion.getCountry();
-			UserAccountEntity loggedUserAccount = userAccountRepository.getByUsername(principal.getName());
-			UserEntity loggedUser = loggedUserAccount.getUser();
+
+			String countryRegionName=newRegion.getCountryRegionName();
+			CountryEntity country= newRegion.getCountry();
+			UserAccountEntity loggedUserAccount=userAccountRepository.getByUsername(principal.getName());
+			UserEntity loggedUser=loggedUserAccount.getUser();
 			countryRegionDao.addNewCountryRegionWithLoggedUser(countryRegionName, country, loggedUser);
 			logger.info("New region created.");
 			logger.info("---------------- Finished OK.");
@@ -219,34 +219,36 @@ public class CountryRegionController {
 	// @Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/modify/{id}")
-	public ResponseEntity<?> modifyRegion(@PathVariable Integer id,
-			@Valid @RequestBody CountryRegionEntity updateRegion, /* Principal principal, */BindingResult result) {
+
+	public ResponseEntity<?> modifyRegion(@PathVariable Integer id, @Valid @RequestBody CountryRegionEntity updateRegion, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/regions/modify/{id} started.");
 		try {
-			CountryRegionEntity region = countryRegionRepository.getById(id);
-			// logger.info("Logged user: " + principal.getName());
-			if (region == null) {
-				logger.info("---------------- Region doesn't exists.");
-				return new ResponseEntity<>("Region doesn't exists.", HttpStatus.BAD_REQUEST);
-			}
+			CountryRegionEntity region=countryRegionRepository.getById(id);
+			logger.info("Logged user: " + principal.getName());
+		if (region == null) {
+			logger.info("---------------- Region doesn't exists.");
+	        return new ResponseEntity<>("Region doesn't exists.", HttpStatus.BAD_REQUEST);
+	      }
+		
+		region.setCountryRegionName(updateRegion.getCountryRegionName());
+		CountryEntity country=updateRegion.getCountry();
+		region.setCountry((countryRepository.getByCountryNameIgnoreCase(country.getCountryName())));
 
-			region.setCountryRegionName(updateRegion.getCountryRegionName());
-			region.setCountry(updateRegion.getCountry());
-
-			if (result.hasErrors()) {
-				logger.info("---------------- Validation has errors - " + createErrorMessage(result));
-				return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
+		if (result.hasErrors()) { 
+			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
+			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
 			}
-
-			if (updateRegion.getCountryRegionName() == null || updateRegion.getCountry() == null) {
-				logger.info("---------------- Some or all atributes are null.");
-				return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
-			}
-			countryRegionRepository.save(region);
-			logger.info("Country updated.");
-			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<>(updateRegion, HttpStatus.OK);
-		} catch (Exception e) {
+		
+		if ( updateRegion.getCountry() == null ) {
+			logger.info("---------------- Some or all atributes are null.");
+			return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
+		}
+		countryRegionRepository.save(region);
+		logger.info("Region updated.");
+		logger.info("---------------- Finished OK.");
+		return new ResponseEntity<>(updateRegion, HttpStatus.OK);
+		}
+		catch(Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
 					HttpStatus.INTERNAL_SERVER_ERROR);
@@ -295,10 +297,11 @@ public class CountryRegionController {
 		try {
 			region = countryRegionRepository.findByIdAndStatusLike(id, -1);
 			if (region == null) {
-				logger.info("---------------- Country not found.");
-				return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
-			}
-			logger.info("Country for unarchiving identified.");
+
+				logger.info("---------------- Region not found.");
+		        return new ResponseEntity<>("Region not found.", HttpStatus.NOT_FOUND);
+		      }
+			logger.info("Region for unarchiving identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
 			countryRegionDao.unarchiveRegion(loggedUser, region);
@@ -347,10 +350,11 @@ public class CountryRegionController {
 		}
 	}
 
-	// @Secured("ROLE_ADMIN")
-	// @JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
+	
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.DELETE, value = "delete/{id}")
+	public ResponseEntity<?> deleteRegion(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/regions/{id} Delete started.");
 		logger.info("Logged user: " + principal.getName());
 		CountryRegionEntity region = new CountryRegionEntity();

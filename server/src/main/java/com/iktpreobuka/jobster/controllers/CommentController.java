@@ -304,7 +304,7 @@ public class CommentController {
 		}
 
 	// @Secured("ROLE_ADMIN")
-	//@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewComment(@Valid @RequestBody AddCommentDTO newComment, Principal principal,
 			BindingResult result) {
 		logger.info("################ /jobster/comment/{id}/addNewComment started.");

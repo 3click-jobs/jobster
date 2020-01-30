@@ -57,30 +57,39 @@ export const RegisterContainer = (props) => {
     setActiveTab(newActiveTab)
   }
 
-  const useComponentDidMount = func => React.useEffect(func, []);
-
-  const useComponentWillMount = func => {
-    const willMount = React.useRef(true);
+  const loggedUser = React.useMemo(() => {
+    console.log('profile: ', {...props.profile})
+    return {...props.profile}
+  }, [props.profile])
   
-    if (willMount.current) {
-      func();
-    }
+//
+// The code below needs refactoring, I guess..
+//
+
+  // const useComponentDidMount = func => React.useEffect(func, []);
+
+  // const useComponentWillMount = func => {
+  //   const willMount = React.useRef(true);
   
-    useComponentDidMount(() => {
-      willMount.current = false;
-    });
-  };
+  //   if (willMount.current) {
+  //     func();
+  //   }
+  
+  //   useComponentDidMount(() => {
+  //     willMount.current = false;
+  //   });
+  // };
 
-  let loggedUser = null
+  // let loggedUser = null
 
-  useComponentWillMount(() => {
-    if (props.profile) {
-      loggedUser = {...props.profile}
-      // if (Object.keys(props.profile).includes("companyName")) {
-      //   setActiveTab(1)
-      // } 
-    }
-  })
+  // useComponentWillMount(() => {
+  //   if (props.profile) {
+  //     loggedUser = {...props.profile}
+  //     // if (Object.keys(props.profile).includes("companyName")) {
+  //     //   setActiveTab(1)
+  //     // } 
+  //   }
+  // })
 
   
   return (

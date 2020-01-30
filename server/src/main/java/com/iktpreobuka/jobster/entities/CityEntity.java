@@ -47,7 +47,6 @@ public class CityEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "region")
-	//@NotNull (message = "Country region must be provided.")
 	private CountryRegionEntity region;
 	
 	@JsonIgnore
@@ -65,8 +64,7 @@ public class CityEntity {
 	@Column(name="city_id")
 	protected Integer id;
 	//@JsonView(Views.Student.class)
-	//@Column(name="city_name")
-	@Pattern(regexp = "^[A-Za-z\\s]{2,}$", message="City name is not valid.")
+	@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="City name is not valid.")
 	@NotNull (message = "City name must be provided.")
 	protected String cityName;
 	//@JsonView(Views.Student.class)
@@ -87,7 +85,7 @@ public class CityEntity {
     @Column(name = "status", nullable = false)
 	private Integer status;
 	//@JsonView(Views.Admin.class)
-    @Column(name = "created_by"/*, updatable = false*/)
+    @Column(name = "created_by")
 	private Integer createdById;
     //@JsonView(Views.Admin.class)
     @Column(name = "updated_by")
@@ -101,8 +99,8 @@ public class CityEntity {
 		super();
 	}
 	
-	public CityEntity(@NotNull(message = "Country region must be provided.") CountryRegionEntity region,
-			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
+	public CityEntity(CountryRegionEntity region,
+			@Pattern(regexp = "^^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
 			@NotNull(message = "Longitude must be provided.") @Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") Double longitude,
 			@NotNull(message = "Latitude must be provided.") @Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") Double latitude,
 			Integer createdById) {
@@ -115,8 +113,8 @@ public class CityEntity {
 		this.createdById = createdById;
 	}
 	
-	public CityEntity(@NotNull(message = "Country region must be provided.") CountryRegionEntity region,
-			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
+	public CityEntity(CountryRegionEntity region,
+			@Pattern(regexp = "^^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "City name is not valid.") @NotNull(message = "City name must be provided.") String cityName,
 			@NotNull(message = "Longitude must be provided.") @Min(value = -180, message = "Longitude  must be {value} or higher!") @Max(value = 180, message = "Longitude must be {value} or lower!") Double longitude,
 			@NotNull(message = "Latitude must be provided.") @Min(value = -90, message = "Latitude  must be {value} or higher!") @Max(value = 90, message = "Latitude must be {value} or lower!") Double latitude) {
 		super();
@@ -127,7 +125,7 @@ public class CityEntity {
 		this.status = getStatusActive();
 	}
 
-	
+
 	public List<UserEntity> getUsers() {
 		return users;
 	}
@@ -214,6 +212,10 @@ public class CityEntity {
 
 	public void setFromDistances(List<CityDistanceEntity> fromDistances) {
 		this.fromDistances = fromDistances;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public Integer getStatus() {

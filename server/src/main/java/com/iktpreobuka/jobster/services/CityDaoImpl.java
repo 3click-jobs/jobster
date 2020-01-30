@@ -1,43 +1,44 @@
+
 package com.iktpreobuka.jobster.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
+import com.iktpreobuka.jobster.entities.dto.POSTCityDTO;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
 import com.iktpreobuka.jobster.repositories.CountryRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+
 
 @Service 
 public class CityDaoImpl implements CityDao {
 
 	@Autowired
 	private CityRepository cityRepository;
-
 	@Autowired
 	private CountryRegionRepository countryRegionRepository;
-
 	@Autowired
 	private CountryRepository countryRepository;
-
 	@Autowired
 	private CountryDao countryDao;
-
 	@Autowired
 	private CountryRegionDao countryRegionDao;
-
 	@Autowired
 	private CityDistanceDao cityDistanceDao;
 	
+	
+	
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+	
 	
 	@Override
 	public Iterable<CityEntity> findCityByStatusLike(Integer status) throws Exception {
@@ -96,7 +97,7 @@ public class CityDaoImpl implements CityDao {
 		logger.info("addNewCity validation Ok.");
 		CityEntity city = new CityEntity();
 		try {
-			CountryEntity country = countryRepository.getByIso2Code(iso2Code);
+			CountryEntity country = countryRepository.getByCountryNameIgnoreCase(countryName);
 			if( country == null ) {
 				country = countryDao.addNewCountryWithIso2CodeAndLoggedUser(countryName, iso2Code, loggedUser);
 			}
@@ -123,6 +124,39 @@ public class CityDaoImpl implements CityDao {
 		}
 		return city;
 	}
+	
+	@Override
+	public  CityEntity modifyCityWithLoggedUser(CityEntity city, POSTCityDTO updateCity, UserEntity loggedUser) throws Exception {
+		logger.info("CityDaoImpl: modifyCityWithLoggedUser started");
+		try {
+		if(!(countryRepository.existsByCountryNameIgnoreCase(updateCity.getCountry()))) {
+			logger.info("CityDaoImp: Country doesn't exists - creating new country");
+			String countryName=updateCity.getCountry();
+			String iso2Code=updateCity.getIso2Code();
+			countryDao.addNewCountryWithIso2CodeAndLoggedUser(countryName, iso2Code, loggedUser);
+			logger.info("CityDaoImp: New country created.");
+		}
+		if(!(countryRegionRepository.existsByCountryRegionNameIgnoreCase(updateCity.getRegion()))) {
+			logger.info("CityDaoImp: Region doesn't exists - creating new region");
+			CountryEntity country=countryRepository.getByCountryNameIgnoreCase(updateCity.getCountry());
+			String countryRegionName=updateCity.getRegion();
+			countryRegionDao.addNewCountryRegionWithLoggedUser(countryRegionName, country, loggedUser);
+			logger.info("CityDaoImp: New region created.");
+			}
+		
+		city.setCityName(updateCity.getCityName());
+		city.setLongitude(updateCity.getLongitude());
+		city.setLatitude(updateCity.getLatitude());
+		CountryEntity country = countryRepository.getByCountryName(updateCity.getCountry());
+		CountryRegionEntity region=countryRegionRepository.getByCountryRegionNameAndCountry(updateCity.getRegion(), country);
+		city.setRegion(region);
+		city.setUpdatedById(loggedUser.getId());
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		return city;
+	}
+	
 
 	@Override
 	public void deleteCity(UserEntity loggedUser, CityEntity city) throws Exception {
@@ -172,12 +206,10 @@ public class CityDaoImpl implements CityDao {
 		}		
 	}
 
-
-
-	@Override
+  //pagination:
+  	@Override
 	public Page<CityEntity> findAll(int page, int pageSize, Direction direction, String sortBy) {
 		return cityRepository.findAll(PageRequest.of(page, pageSize, direction, sortBy));
 	}
-
 
 }

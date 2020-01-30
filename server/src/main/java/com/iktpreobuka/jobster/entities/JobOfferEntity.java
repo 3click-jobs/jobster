@@ -64,52 +64,64 @@ public class JobOfferEntity {
 	//@JsonView(Views.Parent.class)
 	@Column(name="offer_id")
 	protected Integer id;
+	
 	//@JsonView(Views.Student.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@NotNull (message = "Beginning date must be provided.")
 	@Column(name="beginning_date")
 	private Date beginningDate;
+	
 	//@JsonView(Views.Student.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@NotNull (message = "End date must be provided.")
 	@Column(name="end_date")
 	private Date endDate;
+	
 	@Column(name="flexibile_dates")
 	//@JsonView(Views.Admin.class)
 	private Boolean flexibileDates;
+	
 	//@JsonView(Views.Student.class)
 	@Column(name="number_of_employees")
 	@NotNull (message = "Number of employees must be provided.")
 	@Min(value=1, message = "Number of employees must be {value} or higher!")
 	private Integer numberOfEmployees;
+	
 	//@JsonView(Views.Student.class)
 	@Column(name="price")
 	@NotNull (message = "Price must be provided.")
 	@Min(value=0, message = "Price must be {value} or higher!")
 	private Double price;
+	
 	//@JsonView(Views.Teacher.class)
 	@Column(name="details_link")
 	@NotNull (message = "Details must be provided.")
 	private String detailsLink;
+	
 	@Column(name="flexibile_days")
 	//@JsonView(Views.Admin.class)
 	private Boolean flexibileDays;
+	
 	//@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
+	
 	//@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(0)
     @Column(name = "elapse", nullable = false)
 	private Integer elapse;
+	
 	//@JsonView(Views.Admin.class)
     @Column(name = "created_by", nullable = false, updatable = false)
 	private Integer createdById;
+    
     //@JsonView(Views.Admin.class)
     @Column(name = "updated_by")
     private Integer updatedById;
+    
 	@JsonIgnore
 	@Version
 	private Integer version;

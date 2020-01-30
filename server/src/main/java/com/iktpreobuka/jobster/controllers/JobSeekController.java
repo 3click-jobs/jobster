@@ -8,19 +8,16 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
 import com.iktpreobuka.jobster.entities.CountryEntity;
+
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.dto.JobDayHoursPostDto;
-import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
-import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
+import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
+import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
 import com.iktpreobuka.jobster.entities.dto.PersonDTO;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 import com.iktpreobuka.jobster.services.JobSeekDao;
@@ -50,15 +47,14 @@ public class JobSeekController {
 	@Autowired
 	public JobSeekDao jobSeekService;
 
-	@Autowired
-	private UserCustomValidator userValidator;
+//	@Autowired
+//	private UserCustomValidator userValidator;
+//
+//	@InitBinder
+//	protected void initBinder(final WebDataBinder binder) {
+//		binder.addValidators(userValidator);
+//	}
 
-	@InitBinder
-	protected void initBinder(final WebDataBinder binder) {
-		binder.addValidators(userValidator);
-	}
-
-	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	// @Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekEntity")
@@ -66,36 +62,21 @@ public class JobSeekController {
 		return new JobSeekEntity();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekPostDto")
-	public JobSeekPostDto empty() {
-		return new JobSeekPostDto();
+	@RequestMapping(method = RequestMethod.GET, value = "/emptyJobSeekDto")
+	public JobSeekDTO empty() {
+		return new JobSeekDTO();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyWith")
-	public JobSeekPostDto emptyWithEmptyDayHours() {
-		JobSeekPostDto emptyWith = new JobSeekPostDto();
-		JobDayHoursPostDto empty1 = new JobDayHoursPostDto();
-		JobDayHoursPostDto empty2 = new JobDayHoursPostDto();
-		List<JobDayHoursPostDto> list = new ArrayList<JobDayHoursPostDto>();
+	public JobSeekDTO emptyWithEmptyDayHours() {
+		JobSeekDTO emptyWith = new JobSeekDTO();
+		JobDayHoursDTO empty1 = new JobDayHoursDTO();
+		JobDayHoursDTO empty2 = new JobDayHoursDTO();
+		List<JobDayHoursDTO> list = new ArrayList<JobDayHoursDTO>();
 		list.add(empty1);
 		list.add(empty2);
-		emptyWith.setListJobDayHoursPostDto(list);
+		emptyWith.setListJobDayHoursDto(list);
 		return emptyWith;
-	}
-
-	// OVU METODU SAM ISPROBAO I U PERSON CONTROLLERU I RADI BEZ PROBLEMA
-	// METODA NICEMU KONKRETNO NE SLUZI NEGO SAMO DA VIDIM DA LI RADI PRINCIPAL
-	// @Secured("ROLE_ADMIN")
-	@RequestMapping(method = RequestMethod.GET, value = "/principal")
-	public ResponseEntity<?> userNamePrincipal(Principal principal) {
-		logger.info("metoda pocela");
-		try {
-			logger.info("Logged username: " + principal.getName());
-		} catch (Exception e) {
-			return new ResponseEntity<String>("Eror is" + " " + e.getMessage() + " " + e, HttpStatus.BAD_REQUEST);
-		}
-		logger.info("skoro zavrsla");
-		return new ResponseEntity<String>("Metoda prosla " + principal.getName(), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyPersonDto")
@@ -104,13 +85,13 @@ public class JobSeekController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/newseek")
-	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekPostDto seek, Principal principal,
+	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekDTO seek, Principal principal,
 			BindingResult result) {
 		return jobSeekService.addNewSeek(seek, principal, result);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/modifySeek/{seekId}")
-	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekPutDto seek, @PathVariable Integer seekId,
+	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId,
 			Principal principal, BindingResult result) {
 		return jobSeekService.modifySeek(seek, seekId, principal, result);
 	}

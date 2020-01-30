@@ -69,7 +69,6 @@ public class JobSeekEntity {
 	//@JsonView(Views.Student.class)
 	@Column(name="distance_to_job")
 	@NotNull (message = "Distance to job must be provided.")
-	//@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")
 	@Min(value=0, message = "Distance to job must be {value} or higher!")
 	private Integer distanceToJob;
 	
@@ -132,6 +131,42 @@ public class JobSeekEntity {
 	public JobSeekEntity() {
 		super();
 	}
+	
+	
+
+	public JobSeekEntity(@NotNull(message = "Employee must be provided.") UserEntity employee,
+			@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Job type must be provided.") JobTypeEntity type, List<JobDayHoursEntity> daysAndHours,
+			List<ApplyContactEntity> contacts, Integer id,
+			@NotNull(message = "Distance to job must be provided.") @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
+			@NotNull(message = "Beginning date must be provided.") Date beginningDate,
+			@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
+			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
+			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
+			@Max(1) @Min(-1) Integer status, @Max(1) @Min(0) Integer elapse, Integer createdById, Integer updatedById,
+			Integer version) {
+		super();
+		this.employee = employee;
+		this.city = city;
+		this.type = type;
+		this.daysAndHours = daysAndHours;
+		this.contacts = contacts;
+		this.id = id;
+		this.distanceToJob = distanceToJob;
+		this.beginningDate = beginningDate;
+		this.endDate = endDate;
+		this.flexibileDates = flexibileDates;
+		this.price = price;
+		this.detailsLink = detailsLink;
+		this.flexibileDays = flexibileDays;
+		this.status = status;
+		this.elapse = elapse;
+		this.createdById = createdById;
+		this.updatedById = updatedById;
+		this.version = version;
+	}
+
+
 
 	public JobSeekEntity(@NotNull(message = "Employee must be provided.") UserEntity employee,
 			@NotNull(message = "City must be provided.") CityEntity city,

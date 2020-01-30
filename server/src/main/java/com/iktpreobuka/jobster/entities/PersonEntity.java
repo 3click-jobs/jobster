@@ -31,14 +31,14 @@ public class PersonEntity extends UserEntity {
 	@Pattern(regexp = "^[A-Za-z]{2,}$", message="Last name is not valid.")
 	@NotNull (message = "Last name must be provided.")
 	protected String lastName;
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@Column(name="gender")
 	@Enumerated(EnumType.STRING)
 	@NotNull (message = "Gender must be provided.")
 	protected EGender gender;
 	@JsonView(Views.User.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-	//@Pattern(regexp = "^([0][1-9]|[1|2][0-9]|[3][0|1])[./-]([0][1-9]|[1][0-2])[./-]([1-2][0-9]{3})$", message="Enrollment date is not valid, must be in dd-MM-yyyy format.")
+	//@Pattern(regexp = "^([0][1-9]|[1|2][0-9]|[3][0|1])[./-]([0][1-9]|[1][0-2])[./-]([1-2][0-9]{3})$", message="Birth date is not valid, must be in dd-MM-yyyy format.")
 	@Column(name="birth_date")
 	@NotNull (message = "Birth date must be provided.")
 	protected Date birthDate;

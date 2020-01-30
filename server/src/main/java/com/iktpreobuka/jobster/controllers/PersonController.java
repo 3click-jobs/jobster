@@ -15,10 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
@@ -38,11 +41,13 @@ import com.iktpreobuka.jobster.entities.dto.PersonDTO;
 import com.iktpreobuka.jobster.enumerations.EUserRole;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
+import com.iktpreobuka.jobster.security.Views;
 import com.iktpreobuka.jobster.services.PersonDao;
 import com.iktpreobuka.jobster.services.UserAccountDao;
 
 @Controller
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value= "/jobster/users/persons")
 public class PersonController {
 
@@ -76,8 +81,8 @@ public class PersonController {
 		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(" "));
 		}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<?> getAll(Principal principal) {
 		logger.info("################ /jobster/users/persons/getAll started.");
@@ -85,8 +90,8 @@ public class PersonController {
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(1);
 			if (Iterables.isEmpty(users)) {
-				logger.info("---------------- Companies not found.");
-		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Persons not found.");
+		        return new ResponseEntity<>("Persons not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
@@ -96,8 +101,8 @@ public class PersonController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/getById started.");
@@ -105,8 +110,8 @@ public class PersonController {
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, 1);
 			if (user == null) {
-				logger.info("---------------- Company not found.");
-		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Person not found.");
+		        return new ResponseEntity<>("Person not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
@@ -117,8 +122,8 @@ public class PersonController {
 	}
 
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted")
 	public ResponseEntity<?> getAllDeleted(Principal principal) {
 		logger.info("################ /jobster/users/persons/deleted/getAllDeleted started.");
@@ -126,8 +131,8 @@ public class PersonController {
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(0);
 			if (Iterables.isEmpty(users)) {
-				logger.info("---------------- Companies not found.");
-		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Persons not found.");
+		        return new ResponseEntity<>("Persons not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
@@ -137,8 +142,8 @@ public class PersonController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/deleted/{id}")
 	public ResponseEntity<?> getDeletedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/deleted/getDeletedById started.");
@@ -146,8 +151,8 @@ public class PersonController {
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, 0);
 			if (user == null) {
-				logger.info("---------------- Company not found.");
-		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Person not found.");
+		        return new ResponseEntity<>("Person not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
@@ -157,8 +162,8 @@ public class PersonController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/users/persons/archived/getAllArchived started.");
@@ -166,8 +171,8 @@ public class PersonController {
 		try {
 			Iterable<PersonEntity> users= personRepository.findByStatusLike(-1);
 			if (Iterables.isEmpty(users)) {
-				logger.info("---------------- Companies not found.");
-		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Persons not found.");
+		        return new ResponseEntity<>("Persons not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
@@ -177,8 +182,8 @@ public class PersonController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived/{id}")
 	public ResponseEntity<?> getArchivedById(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/archived/getArchivedById started.");
@@ -186,8 +191,8 @@ public class PersonController {
 		try {
 			PersonEntity user= personRepository.findByIdAndStatusLike(id, -1);
 			if (user == null) {
-				logger.info("---------------- Company not found.");
-		        return new ResponseEntity<>("Company not found.", HttpStatus.NOT_FOUND);
+				logger.info("---------------- Person not found.");
+		        return new ResponseEntity<>("Person not found.", HttpStatus.NOT_FOUND);
 		      }
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<PersonEntity>(user, HttpStatus.OK);
@@ -262,8 +267,9 @@ public class PersonController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@SuppressWarnings("unlikely-arg-type")
+	@JsonView(Views.User.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> modifyPerson(@PathVariable Integer id, @Valid @RequestBody PersonDTO updatePerson, Principal principal, BindingResult result) {
 		logger.info("################ /jobster/users/persons/{id}/modifyPerson started.");
@@ -314,6 +320,12 @@ public class PersonController {
 			logger.info("Person identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
+			UserAccountEntity loggedUserAccount = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user account identified.");
+			if ((loggedUserAccount.getAccessRole().equals("ROLE_USER") || loggedUserAccount.getAccessRole().equals("ROLE_GUEST")) && id != loggedUser.getId()) {
+				logger.info("---------------- Selected Id is not ID of logged User.");
+				return new ResponseEntity<>("Selected Id is not ID of logged User.", HttpStatus.FORBIDDEN);
+		    }
 			if (updatePerson.getFirstName() != null || updatePerson.getLastName() != null || updatePerson.getGender() != null || updatePerson.getBirthDate() != null|| updatePerson.getEmail() != null || updatePerson.getMobilePhone() != null || (updatePerson.getCity() != null && updatePerson.getCountry() != null && updatePerson.getIso2Code() != null && updatePerson.getCountryRegion() != null && updatePerson.getLatitude() != null && updatePerson.getLongitude() != null) || updatePerson.getAbout() != null ) {
 				personDao.modifyPerson(loggedUser, user, updatePerson);
 				logger.info("Person modified.");
@@ -453,8 +465,9 @@ public class PersonController {
 		}
 	}*/
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@SuppressWarnings("unlikely-arg-type")
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@JsonView(Views.User.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 	public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/archive/archive started.");
@@ -473,6 +486,12 @@ public class PersonController {
 				logger.info("---------------- Selected Id is ID of logged User: Cann't archive yourself.");
 				return new ResponseEntity<>("Selected Id is ID of logged User: Cann't archive yourself.", HttpStatus.FORBIDDEN);
 		      }	*/
+			UserAccountEntity loggedUserAccount = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user account identified.");
+			if ((loggedUserAccount.getAccessRole().equals("ROLE_USER") || loggedUserAccount.getAccessRole().equals("ROLE_GUEST")) && id != loggedUser.getId()) {
+				logger.info("---------------- Selected Id is not ID of logged User.");
+				return new ResponseEntity<>("Selected Id is not ID of logged User.", HttpStatus.FORBIDDEN);
+		    }
 			personDao.archivePerson(loggedUser, user);
 			logger.info("Person archived.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLike(user, EUserRole.ROLE_USER);
@@ -498,8 +517,9 @@ public class PersonController {
 		}
 	}
 
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@SuppressWarnings("unlikely-arg-type")
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@JsonView(Views.User.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}")
 	public ResponseEntity<?> unDelete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/undelete/{id}/unDelete started.");
@@ -514,6 +534,12 @@ public class PersonController {
 			logger.info("Person for undeleting identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
+			UserAccountEntity loggedUserAccount = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user account identified.");
+			if ((loggedUserAccount.getAccessRole().equals("ROLE_USER") || loggedUserAccount.getAccessRole().equals("ROLE_GUEST")) && id != loggedUser.getId()) {
+				logger.info("---------------- Selected Id is not ID of logged User.");
+				return new ResponseEntity<>("Selected Id is not ID of logged User.", HttpStatus.FORBIDDEN);
+		    }
 			personDao.undeletePerson(loggedUser, user);
 			logger.info("Person undeleted.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLikeAndStatusLike(user, EUserRole.ROLE_USER, 1);
@@ -539,8 +565,9 @@ public class PersonController {
 		}
 	}
 	
-	//@Secured("ROLE_ADMIN")
-	//@JsonView(Views.Admin.class)
+	@SuppressWarnings("unlikely-arg-type")
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@JsonView(Views.User.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/users/persons/{id}/delete started.");
@@ -559,6 +586,12 @@ public class PersonController {
 				logger.info("---------------- Selected Id is ID of logged User: Cann't delete yourself.");
 				return new ResponseEntity<>("Selected Id is ID of logged User: Cann't delete yourself.", HttpStatus.FORBIDDEN);
 		      }	*/
+			UserAccountEntity loggedUserAccount = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1);
+			logger.info("Logged user account identified.");
+			if ((loggedUserAccount.getAccessRole().equals("ROLE_USER") || loggedUserAccount.getAccessRole().equals("ROLE_GUEST")) && id != loggedUser.getId()) {
+				logger.info("---------------- Selected Id is not ID of logged User.");
+				return new ResponseEntity<>("Selected Id is not ID of logged User.", HttpStatus.FORBIDDEN);
+		    }
 			personDao.deletePerson(loggedUser, user);
 			logger.info("Person deleted.");
 			UserAccountEntity account = userAccountRepository.findByUserAndAccessRoleLikeAndStatusLike(user, EUserRole.ROLE_USER, 1);

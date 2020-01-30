@@ -6,6 +6,12 @@ import { Formik } from 'formik'
 import { RegisterAccountForm } from './RegisterAccountForm'
 import { accounts as accountsSchema } from '../../common/utils/schemas/accounts'
 
+import PropTypes from 'prop-types'
+
+/**
+ * Component for account registration. Servers as a container component with meat in the RegisterAccountForm component.
+ * Will get data from redux and feed it into the inner component.
+ */
 export const RegisterAccount = ({
   isFetching,
   isError,
@@ -51,6 +57,20 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+RegisterAccount.propTypes = {
+  /**
+   * Flag for data fetching.
+   */
+  isFetching: PropTypes.bool,
+  /**
+   * Flag for errors with fetching.
+   */
+  isError: PropTypes.bool,
+  /**
+   * Callback function for account creation.
+   */
+  createAccount: PropTypes.func
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps

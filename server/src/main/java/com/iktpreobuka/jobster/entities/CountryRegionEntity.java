@@ -46,37 +46,38 @@ public class CountryRegionEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	//@JsonView(Views.Parent.class)
-	//@Column(name="coutry_region__id")
 	protected Integer id;
+	
 	//@JsonView(Views.Student.class)
-	//@Column(name="coutry_region_name")
-	@Pattern(regexp = "^[A-Za-z\\s]{0,}$", message="Country region name is not valid.")
-	//@NotNull (message = "Country region name must be provided.")
+	@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="Country region name is not valid.")
 	protected String countryRegionName;
+	
+	@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message="Country name is not valid.")
+	private String countryName;
+	
 	//@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
+	
 	//@JsonView(Views.Admin.class)
-
-    //@Column(name = "created_by"/*, updatable = false*/)
 	private Integer createdById;
+	
     //@JsonView(Views.Admin.class)
-    //@Column(name = "updated_by")
     private Integer updatedById;
-	@JsonIgnore
+	
+    @JsonIgnore
 	@Version
 	private Integer version;
 
-	
 	public CountryRegionEntity() {
 		super();
 	}
 	
 
 	public CountryRegionEntity(@NotNull(message = "Country must be provided.") CountryEntity country,
-			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Country region name is not valid.") @NotNull(message = "Country region name must be provided.") String countryRegionName,
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country region name is not valid.") String countryRegionName,
 			Integer createdById) {
 		super();
 		this.country = country;
@@ -85,8 +86,17 @@ public class CountryRegionEntity {
 		this.createdById = createdById;
 	}
 
+	public CountryRegionEntity(
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country name is not valid.") @NotNull(message = "Country must be provided.") String countryName,
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country region name is not valid.") String countryRegionName) {
+		super();
+		this.countryName = countryName;
+		this.countryRegionName = countryRegionName;
+		this.status = getStatusActive();
+	}
+	
 	public CountryRegionEntity(@NotNull(message = "Country must be provided.") CountryEntity country,
-			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Country region name is not valid.") @NotNull(message = "Country region name must be provided.") String countryRegionName) {
+			@Pattern(regexp = "^[a-zA-Z]{2,}+( [a-zA-Z_]+)*$", message = "Country region name is not valid.") String countryRegionName) {
 		super();
 		this.country = country;
 		this.countryRegionName = countryRegionName;
@@ -126,6 +136,16 @@ public class CountryRegionEntity {
 		this.countryRegionName = countryRegionName;
 	}
 
+	public String getCountryName() {
+		return countryName;
+	}
+
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+
+
 	public Integer getCreatedById() {
 		return createdById;
 	}
@@ -153,6 +173,11 @@ public class CountryRegionEntity {
 	public Integer getStatus() {
 		return status;
 	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 
 	public void setStatusInactive() {
 		this.status = getStatusInactive();

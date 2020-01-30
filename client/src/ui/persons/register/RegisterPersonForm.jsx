@@ -258,7 +258,7 @@ export const RegisterPersonForm = ({
                                 setFieldValue('iso2Code', props.iso2Code)
                                 setFieldValue('countryRegion', props.countryRegion)
                                 setFieldValue('longitude', props.longitude)
-                                setFieldValue('longitude', props.longitude)
+                                setFieldValue('latitude', props.latitude)
                                 // values.city = props.city; 
                                 // values.country = props.country; 
                                 // values.iso2Code = props.iso2Code;
@@ -271,7 +271,7 @@ export const RegisterPersonForm = ({
                                 setFieldValue('iso2Code', '')
                                 setFieldValue('countryRegion', '')
                                 setFieldValue('longitude', '')
-                                setFieldValue('longitude', '')
+                                setFieldValue('latitude', '')
                                 // values.city = ""; 
                                 // values.country = ""; 
                                 // values.iso2Code = "";

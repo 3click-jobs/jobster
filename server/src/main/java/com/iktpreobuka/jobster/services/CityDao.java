@@ -3,8 +3,10 @@ package com.iktpreobuka.jobster.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 
+
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
+import com.iktpreobuka.jobster.entities.dto.POSTCityDTO;
 
 public interface CityDao {
 
@@ -22,7 +24,10 @@ public interface CityDao {
 	void archiveCity(UserEntity loggedUser, CityEntity city) throws Exception;
 
 	public void unarchiveCity(UserEntity loggedUser, CityEntity city) throws Exception;
+  
+  CityEntity modifyCityWithLoggedUser(CityEntity city, POSTCityDTO updateCity, UserEntity loggedUser) throws Exception;
 
+//pagination:
 	public Page<CityEntity> findAll(int page, int pageSize, Direction direction,String sortBy);
 
 }

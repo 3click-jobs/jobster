@@ -59,5 +59,7 @@ public interface CityRepository extends PagingAndSortingRepository<CityEntity, I
 	public Page<CityEntity> getByCityNameIgnoreCase(String name, Pageable pageable);
 
 
+	public CityEntity findByCityNameAndStatusLike(String cityName, int i);
+
 }
 

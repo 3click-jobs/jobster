@@ -1,5 +1,9 @@
 package com.iktpreobuka.jobster;
 
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
+
 import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -44,5 +48,11 @@ public class JobsterApplication {
     public ExceptionResolver exceptionResolver() {
         return new ExceptionResolver();
     }*/
+	
+	@PostConstruct
+    public void init(){
+      // Setting Spring Boot SetTimeZone
+      TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
 		
 }

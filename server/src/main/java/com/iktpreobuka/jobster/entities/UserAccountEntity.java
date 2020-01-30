@@ -38,31 +38,32 @@ public class UserAccountEntity {
 	@NotNull (message = "User must be provided.")
 	private UserEntity user;*/
 	
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@OneToOne
 	@JoinColumn(name="user")
     protected UserEntity user;
 	
 	
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="account_id")
 	private Integer id;
 	@Column(name="access_role")
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@Enumerated(EnumType.STRING)
 	@NotNull (message = "User role must be provided.")
 	private EUserRole accessRole;
 	@Column(name="username", unique=true, length=50)
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@NotNull (message = "Username must be provided.")
 	@Size(min=5, max=20, message = "Username must be between {min} and {max} characters long.")
 	private String username;
+	@JsonView(Views.User.class)
 	@Column(name="password")
 	@NotNull (message = "Password must be provided.")
 	private String password;
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.User.class)
 	@Max(1)
     @Min(-1)
     @Column(name = "status", nullable = false)

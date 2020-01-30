@@ -16,14 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
+import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
 
 
 
 public interface JobSeekDao {
 	
-	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekPostDto seek, Principal principal, BindingResult result);
+	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekDTO seek, Principal principal, BindingResult result);
 
-	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekPutDto seek, @PathVariable Integer seekId, Principal principal,
+	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId, Principal principal,
 			BindingResult result);
 	
 	public ResponseEntity<?> deleteById(@PathVariable Integer id);
