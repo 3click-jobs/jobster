@@ -1,5 +1,8 @@
 package com.iktpreobuka.jobster.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort.Direction;
+
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 
@@ -19,5 +22,7 @@ public interface CityDao {
 	void archiveCity(UserEntity loggedUser, CityEntity city) throws Exception;
 
 	public void unarchiveCity(UserEntity loggedUser, CityEntity city) throws Exception;
+
+	public Page<CityEntity> findAll(int page, int pageSize, Direction direction,String sortBy);
 
 }

@@ -1,13 +1,18 @@
 package com.iktpreobuka.jobster.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 
+
 @Repository
-public interface CountryRegionRepository extends CrudRepository<CountryRegionEntity, Integer> {
+public interface CountryRegionRepository extends PagingAndSortingRepository<CountryRegionEntity, Integer> {
+
 
 	CountryRegionEntity getByCountryRegionNameAndCountry(String countryRegionName, Integer id);
 	
@@ -36,6 +41,10 @@ public interface CountryRegionRepository extends CrudRepository<CountryRegionEnt
 
 	boolean existsByCountryRegionNameIgnoreCase(String country);
 	CountryRegionEntity findByCountryRegionNameAndCountry(String countryRegion, CountryEntity country);
+	
+//pagination:
+	Page<CountryRegionEntity> findCountryRegionByStatusLike(int i, Pageable pageable);
+	Page<CountryRegionEntity> getByCountryRegionNameIgnoreCase(String name, Pageable pageable);
 
 
 }

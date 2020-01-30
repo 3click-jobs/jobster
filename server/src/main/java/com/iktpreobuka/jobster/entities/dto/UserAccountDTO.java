@@ -11,12 +11,15 @@ public class UserAccountDTO {
 	@JsonView(Views.Admin.class)
 	@Size(min=5, max=20, message = "Username must be between {min} and {max} characters long.")
 	private String username;
+	
 	@JsonView(Views.Admin.class)
 	@Pattern(regexp="^(ROLE_ADMIN|ROLE_USER|ROLE_GUEST)$",message="Role is not valid, must be ROLE_ADMIN, ROLE_USER or ROLE_GUEST")
 	private String accessRole;
+	
 	@Size(min=5, message = "Password must be {min} characters long or higher.")
 	@Pattern(regexp = "^[A-Za-z0-9]*$", message="Password is not valid, must contain only letters and numbers.")
 	private String password;
+	
 	@Size(min=5, message = "Password must be {min} characters long or higher.")
 	@Pattern(regexp = "^[A-Za-z0-9]*$", message="Password is not valid, must contain only letters and numbers.")
 	private String confirmedPassword;

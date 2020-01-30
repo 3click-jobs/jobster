@@ -3,6 +3,7 @@ package com.iktpreobuka.jobster.controllers;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -10,6 +11,10 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,12 +23,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CommentEntity;
+import com.iktpreobuka.jobster.entities.CountryEntity;
+import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.AddCommentDTO;
 import com.iktpreobuka.jobster.entities.dto.ShowCommentDTO;
@@ -590,8 +598,181 @@ public class CommentController {
 			}
 		}
 		
+//pagination:
+		// @Secured("ROLE_ADMIN")
+		//@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/allPaginated") // get all comments
+		public ResponseEntity<?> getAllPAginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction,
+				@RequestParam Optional<String> sortBy, 
+				Principal principal) {
+			logger.info("################ /jobster/comment/all/getAllPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				Page<CommentEntity> commentsPage= commentDao.findAll(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("commentTitle"));// sortBy);
+				Iterable<CommentEntity> comments = commentsPage.getContent();
+				logger.info("---------------- Found comments - OK.");
+				logger.info("---------------- Comments to DTOs service starting ");
+				ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
+				logger.info("---------------- Finished OK.");
+				return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+
+		//@Secured("ROLE_ADMIN")
+		//@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value="/activePaginated") // get all active comments
+		public ResponseEntity<?> getAllActivePaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction,
+				@RequestParam Optional<String> sortBy, 
+				Principal principal) {
+			logger.info("################ /jobster/comment/getAllActivePaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("commentTitle"));
+				Page<CommentEntity> commentsPage= commentRepository.findByStatusLike(1,pageable);
+				Iterable<CommentEntity> comments = commentsPage.getContent();
+				logger.info("---------------- Found comments - OK.");
+				logger.info("---------------- Comments to DTOs service starting ");
+				ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
+				logger.info("---------------- Finished OK.");
+				return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+
+		// @Secured("ROLE_ADMIN")
+		//@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/inactivePaginated") // get all inactive comments
+		public ResponseEntity<?> getAllInactivePaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction,
+				@RequestParam Optional<String> sortBy, 
+				Principal principal) {
+			logger.info("################ /jobster/comment/inactive/getAllInactivePaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("commentTitle"));
+				Page<CommentEntity> commentsPage= commentRepository.findByStatusLike(0,pageable);
+				Iterable<CommentEntity> comments = commentsPage.getContent();
+				logger.info("---------------- Found comments - OK.");
+				logger.info("---------------- Comments to DTOs service starting ");
+				ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
+				logger.info("---------------- Finished OK.");
+				return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
+
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+
+		// @Secured("ROLE_ADMIN")
+		//@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/archivedPaginated") // get all archived comments
+		public ResponseEntity<?> getAllArchivedPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction,
+				@RequestParam Optional<String> sortBy, 
+				Principal principal) {
+			logger.info("################ /jobster/comment/archived/getAllArchivedPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("commentTitle"));
+				Page<CommentEntity> commentsPage= commentRepository.findByStatusLike(-1,pageable);
+				Iterable<CommentEntity> comments = commentsPage.getContent();
+				logger.info("---------------- Found comments - OK.");
+				logger.info("---------------- Comments to DTOs service starting ");
+				ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
+				logger.info("---------------- Finished OK.");
+				return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
+
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 
 
-	
+		// @Secured("ROLE_ADMIN")
+		// @JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/user/{id}/paginated") // Get comments received by user
+		public ResponseEntity<?> getUsersCommentPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction,
+				@RequestParam Optional<String> sortBy, 
+				@PathVariable Integer id,
+				Principal principal) {
+			logger.info("################ /jobster/comment/getUsersCommentPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("commentTitle"));
+				Page<CommentEntity> commentsPage= commentRepository.findByCommentReceiverAndStatusLike(id, 1, pageable);
+				Iterable<CommentEntity> comments = commentsPage.getContent();
+				if(Iterables.isEmpty(comments)) {
+					logger.info("++++++++++++++++ User has no comments");
+					return new ResponseEntity<>("User has no comments.",HttpStatus.NOT_FOUND);
+				}
+				
+				logger.info("---------------- Found comments - OK.");
+				logger.info("---------------- Comments to DTOs service starting ");
+				ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
+				logger.info("---------------- Finished OK.");
+				return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+			// @JsonView(Views.Admin.class)
+			@RequestMapping(method = RequestMethod.GET, value = "/apply/{id}/paginated") // Get comments by apply
+			public ResponseEntity<?> getApplicationCommentPaginated(
+					@RequestParam Optional<Integer> page,
+					@RequestParam Optional<Integer> pageSize,
+					@RequestParam Optional<Sort.Direction> direction,
+					@RequestParam Optional<String> sortBy, 
+					@PathVariable Integer id, 
+					Principal principal) {
+				logger.info("################ /jobster/comment/getApplicationCommentPaginated started.");
+				logger.info("Logged username: " + principal.getName());
+				try {
+					ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, 1);
+					Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("commentTitle"));
+					Page<CommentEntity> commentsPage = commentRepository.findByApplicationAndStatusLike(application, 1, pageable);
+					Iterable<CommentEntity> comments = commentsPage.getContent();
+					if(Iterables.isEmpty(comments)) {
+						logger.info("++++++++++++++++ Application has no comments");
+						return new ResponseEntity<>("Application has no comments.",HttpStatus.NOT_FOUND);
+					}
+					logger.info("---------------- Found comments - OK.");
+					logger.info("---------------- Comments to DTOs service starting ");
+					ArrayList<ShowCommentDTO> commentDTOs = commentDao.fromCommentsToDTOs(comments);
+					logger.info("---------------- Finished OK.");
+					return new ResponseEntity<ArrayList<ShowCommentDTO>>(commentDTOs, HttpStatus.OK);
+				} catch (Exception e) {
+					logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+					return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+							HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			}
 
 }

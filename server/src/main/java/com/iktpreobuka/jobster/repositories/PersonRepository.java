@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +29,11 @@ public interface PersonRepository extends CrudRepository<PersonEntity, Integer> 
 	public PersonEntity getByMobilePhone(String mobilePhone);
 	public PersonEntity getByIdAndStatusLike(Integer userId, Integer status);
 	public UserEntity findByEmailAndStatusLike(String email, Integer status);
+
+//pagination:
+	public Page<PersonEntity> findByStatusLike(int i, Pageable pageable);
+	
+	
 
 }
 

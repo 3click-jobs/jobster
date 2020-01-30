@@ -3,6 +3,9 @@ package com.iktpreobuka.jobster.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.iktpreobuka.jobster.entities.CityEntity;
@@ -167,6 +170,13 @@ public class CityDaoImpl implements CityDao {
 		} catch (Exception e) {
 			throw new Exception("UnarchiveCity failed on saving.");
 		}		
+	}
+
+
+
+	@Override
+	public Page<CityEntity> findAll(int page, int pageSize, Direction direction, String sortBy) {
+		return cityRepository.findAll(PageRequest.of(page, pageSize, direction, sortBy));
 	}
 
 

@@ -1,6 +1,7 @@
 package com.iktpreobuka.jobster.controllers;
 
 import java.security.Principal;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -8,6 +9,10 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,11 +24,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
+import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.PersonEntity;
 import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
@@ -573,6 +580,90 @@ public class PersonController {
 				personRepository.save(user);
 				logger.error("++++++++++++++++ Because of exeption person with Id " + user.getId().toString() + " activated.");
 			}
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+
+//pagination:
+	
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value="/allPaginated")
+	public ResponseEntity<?> getAllPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			Principal principal) {
+		logger.info("################ /jobster/users/persons/getAllPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("lastName"));
+			Page<PersonEntity> userssPage = personRepository.findByStatusLike(1, pageable);
+			Iterable<PersonEntity> users = userssPage.getContent();
+			if (Iterables.isEmpty(users)) {
+				logger.info("---------------- Companies not found.");
+		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+		      }
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
+		} catch(Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value="/deletedPaginated")
+	public ResponseEntity<?> getAllDeletedPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			Principal principal) {
+		logger.info("################ /jobster/users/persons/getAllDeletedPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("lastName"));
+			Page<PersonEntity> userssPage = personRepository.findByStatusLike(0, pageable);
+			Iterable<PersonEntity> users = userssPage.getContent();
+			if (Iterables.isEmpty(users)) {
+				logger.info("---------------- Companies not found.");
+		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+		      }
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
+		} catch(Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value="/archivedPaginated")
+	public ResponseEntity<?> getAllArchivedPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			Principal principal) {
+		logger.info("################ /jobster/users/persons/getAllArchivedPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("lastName"));
+			Page<PersonEntity> userssPage = personRepository.findByStatusLike(-1, pageable);
+			Iterable<PersonEntity> users = userssPage.getContent();
+			if (Iterables.isEmpty(users)) {
+				logger.info("---------------- Companies not found.");
+		        return new ResponseEntity<>("Companies not found.", HttpStatus.NOT_FOUND);
+		      }
+			logger.info("---------------- Finished OK.");
+			return new ResponseEntity<Iterable<PersonEntity>>(users, HttpStatus.OK);
+		} catch(Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

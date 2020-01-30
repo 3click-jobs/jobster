@@ -1,5 +1,7 @@
 package com.iktpreobuka.jobster.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -42,6 +44,9 @@ public interface UserAccountRepository extends CrudRepository<UserAccountEntity,
 	public UserAccountEntity findByUserAndStatusLike(CompanyEntity companyEntity, int i);
 	public UserAccountEntity findByUserAndStatusLike(PersonEntity personEntity, int i);
 	public UserAccountEntity findByUsernameAndStatusLikeAndAccessRoleLike(String name, int i, EUserRole roleAdmin);
+	
+//pagination:
+	public Page<UserAccountEntity> findByStatusLike(int i, Pageable pageable);
 
 
 }

@@ -1,5 +1,8 @@
 package com.iktpreobuka.jobster.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort.Direction;
+
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 
@@ -30,5 +33,15 @@ public interface CountryDao {
 	void undeleteCountryWithLoggedUser(UserEntity loggedUser, CountryEntity country) throws Exception;
 
 	void deleteCountryWIthLoggedUser(UserEntity loggedUser, CountryEntity country) throws Exception;
+	
+	
+	
+//pagination:
+/*version1:
+	public Page<CountryEntity> findAll(int page);
+*/
+	public Page<CountryEntity> findAll(int page, int pageSize, Direction direction,String sortBy);
+
+//	public Page<CountryEntity> findCountryByStatusLike(int i, int page, int pageSize, Direction direction,String sortBy);
 
 }
