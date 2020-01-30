@@ -1,7 +1,13 @@
 package com.iktpreobuka.jobster.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,4 +186,20 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 			throw new Exception("DeleteCountry failed on saving.");
 		}
 	}
+
+//pagination:
+	@Override
+	public Page<CountryRegionEntity> findAll(int page,  int pageSize, Direction direction,
+			String sortBy) {
+		return countryRegionRepository.findAll(PageRequest.of(page, pageSize, direction, sortBy));
+	}
+/*	
+	public Page<CountryRegionEntity> findAll(int page,  int pageSize) {
+		return countryRegionRepository.findAll(new PageRequest(page, pageSize));
+	}
+	
+	public Page<CountryRegionEntity> findAll(int page,  int pageSize, Direction direction) {
+		return countryRegionRepository.findAll(new PageRequest(page, pageSize, direction));
+	}
+	*/
 }

@@ -5,17 +5,24 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.iktpreobuka.jobster.entities.CommentEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.ShowCommentDTO;
+import com.iktpreobuka.jobster.repositories.CommentRepository;
 import com.iktpreobuka.jobster.repositories.CompanyRepository;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
 
 @Service
 public class CommentDaoImpl implements CommentDao {
+	
+	@Autowired
+	CommentRepository commentRepository;
 	
 	@Autowired
 	PersonRepository personRepository;
@@ -86,6 +93,12 @@ public class CommentDaoImpl implements CommentDao {
 		user.setRating(totalRating/numberOfRatings);
 		logger.info("---------------- Updating rating .... updated ratings saved to user. Saving user into the repo...");
 		userRepository.save(user);		
+	}
+
+
+	@Override
+	public Page<CommentEntity> findAll(int page, int pageSize, Direction direction, String sortBy) {
+		return commentRepository.findAll(PageRequest.of(page, pageSize, direction, sortBy));
 	}
 
 

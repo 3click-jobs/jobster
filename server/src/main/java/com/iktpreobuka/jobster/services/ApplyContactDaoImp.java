@@ -1,5 +1,6 @@
 package com.iktpreobuka.jobster.services;
 
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -8,10 +9,17 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import org.cactoos.list.*;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
+import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
@@ -319,8 +327,8 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 			}
 		}
 	}
-
-	
+  
+  
 	//checks if the provided string is correct data format applicable to use in query
 	@Override
 	public boolean stringDateFormatNotCorrect(String connectionDateBottom, String connectionDateTop,
@@ -347,6 +355,61 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 		}
 		return false;
 	}
+	
+	
+
+//pagination:
+	
+	@Override
+	public Page<ApplyContactEntity> findAll(int page, int pageSize, Direction direction, String sortBy) {
+		return applyContactRepository.findAll(PageRequest.of(page, pageSize, direction, sortBy));
+	}
+
+	@Override
+	public Page<ApplyContactEntity> findByQueryForLoggedInUser(Integer loggedInUserId, Boolean rejected,
+			Boolean connected, Boolean expired, Boolean commentable, Pageable pageable) {
+		logger.info("++++++++++++++++ Service for finding applicaitons by params started");
+		String sql = "select a from ApplyContactEntity a where a.createdById = " + loggedInUserId;
+		logger.info("++++++++++++++++ Basic query created");
+		if(rejected !=null) {
+			sql = sql + " and a.rejected = " + rejected;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
+		if(connected !=null) {
+			sql = sql + " and a.areConnected = " + connected;	
+			if(connected) {
+				logger.info("++++++++++++++++ Added condition for connected applications");
+			}
+			else {
+				logger.info("++++++++++++++++ Added condition for pending applications");
+			}
+		}
+		if(expired !=null) {
+			sql = sql + " and a.expired = " + expired;
+			logger.info("++++++++++++++++ Added condition for expired applications");
+		}
+		
+		if(commentable !=null) {
+			sql = sql + " and a.commentable = " + commentable;
+			logger.info("++++++++++++++++ Added condition for commentable applications");
+		}
+		
+		Query query = em.createQuery(sql);
+		logger.info("++++++++++++++++ Query created");
+		
+		@SuppressWarnings("unchecked")
+		Iterable<ApplyContactEntity> result = query.getResultList();
+		
+		List<ApplyContactEntity> resultList = (List<ApplyContactEntity>) result;
+		Page<ApplyContactEntity> resultPage = new PageImpl<>(resultList, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), resultList.size() );
+	//	Page<ApplyContactEntity> resultPage = new PageImpl<>(content, pageable, total);
+
+		logger.info("++++++++++++++++ Result of the query returned ok");
+		return resultPage;
+	}
+	
+
+	
 
 
 

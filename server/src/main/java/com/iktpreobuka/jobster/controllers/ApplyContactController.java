@@ -1,11 +1,16 @@
 package com.iktpreobuka.jobster.controllers;
 
 import java.security.Principal;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -20,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
+import com.iktpreobuka.jobster.entities.CountryEntity;
+import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
@@ -93,6 +100,7 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 
 	// ************* get all active applications ************
 	@Secured("ROLE_ADMIN")
@@ -277,6 +285,7 @@ public class ApplyContactController {
 		}
 	}
 
+
 	// ************* get inactive applications by active offer id ************
 	@Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
@@ -304,6 +313,7 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 
 	// ************* get archived applications by active offer id ************
 	@Secured("ROLE_ADMIN")
@@ -581,6 +591,7 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 
 	// *************** GET BY SEEK *************
 	// ************* get active applications by active seek id ************
@@ -936,6 +947,973 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+//***************************************** pagination:	
+
+
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/allPaginated") // get all comments
+	public ResponseEntity<?> getAllPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize, //Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, // Optional<Direction> direction,
+			@RequestParam Optional<String> sortBy,
+			Principal principal) {
+		logger.info("################ /jobster/apply/all/getAllPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Page<ApplyContactEntity> applicationsPage = applyContactDao.findAll(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if(Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ No applications found");
+				return new ResponseEntity<>("No applications found.",HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value="/activePaginated") // get all active comments
+	public ResponseEntity<?> getAllActivePaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			Principal principal) {
+		logger.info("################ /jobster/apply/getAllActivePaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByStatusLike(1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+
+			if(Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ No active applications found");
+				return new ResponseEntity<>("No activeapplications found.",HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found active applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactivePaginated") // get all inactive
+	public ResponseEntity<?> getAllInactivePaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			Principal principal) {
+		logger.info("################ /jobster/apply/getAllInactivePaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByStatusLike(0, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if(Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ No inactive applications found");
+				return new ResponseEntity<>("No inactive applications found.",HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found inactive applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archivedPaginated") // get all archived
+	public ResponseEntity<?> getAllArchivedPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			Principal principal) {
+		logger.info("################ /jobster/apply/getAllArchivedPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByStatusLike(-1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if(Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ No archived applications found");
+				return new ResponseEntity<>("No archived applications found.",HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found archived applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/activePaginated/offerActive/{id}")
+	public ResponseEntity<?> getActiveApplicationsByActiveOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id,
+			Principal principal) {
+		logger.info("################ /jobster/apply/active/offerActive/getActiveApplicationsByActiveOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 1);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer, 1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Active applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found active applications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactivePaginated/offerActive/{id}")
+	public ResponseEntity<?> getInactiveApplicationsByActiveOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/inactive/offerActive/getInactiveApplicationsByActiveOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 1);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer, 0, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Inactive applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found inactive applications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archivedPaginated/offerActive/{id}")
+	public ResponseEntity<?> getArchivedApplicationsByActiveOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/archived/offerActive/getArchivedApplicationsByActiveOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 1);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer, -1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();			
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Archived applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found archived applications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/offerActivePaginated/{id}")
+	public ResponseEntity<?> getByActiveOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/offerActive/getByActiveOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 1);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}			
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();	
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found archived applications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/activePaginated/offerInactive/{id}")
+	public ResponseEntity<?> getActiveApplicationsByInactiveOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, Principal principal) {
+		logger.info("################ /jobster/apply/active/offerInactive/getActiveApplicationsByInactiveOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer,1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();	
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Active applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found active applications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactivePaginated/offerInactive/{id}")
+	public ResponseEntity<?> getInactiveApplicationsByInactiveOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/inactive/offerInactive/getInactiveApplicationsByInactiveOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer,0, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archivedPaginated/offerInactive/{id}")
+	public ResponseEntity<?> getArchivedApplicationsByInactiveOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id,
+			Principal principal) {
+		logger.info("################ /jobster/apply/archived/offerInactive/getArchivedApplicationsByInactiveOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer,-1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/offerInactivePaginated/{id}")
+	public ResponseEntity<?> getByInactiveOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/offerInactive/getByInactiveOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, 0);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found applications - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/activePaginated/offerArchived/{id}")
+	public ResponseEntity<?> getActiveApplicationsByArchivedOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/active/offerArchived/getActiveApplicationsByArchivedOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer,1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactivePaginated/offerArchived/{id}")
+	public ResponseEntity<?> getInactiveApplicationsByArchivedOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id,
+			Principal principal) {
+		logger.info("################ /jobster/apply/inactive/offerArchived/getInactiveApplicationsByArchivedOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer,0, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archivedPaginated/offerArchived/{id}")
+	public ResponseEntity<?> getArchivedApplicationsByArchivedOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/archived/offerArchived/getArchivedApplicationsByArchivedOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer,1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/offerArchivedPaginated/{id}")
+	public ResponseEntity<?> getByArchivedOfferPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/offerArchived/getByArchivedOfferPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobOfferEntity offer = jobOfferRepository.findByIdAndStatusLike(id, -1);
+			if(offer==null) {
+				logger.info("++++++++++++++++ Offer not found");
+				return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findByOfferAndStatusLike(offer, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found pplications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/activePaginated/seekActive/{id}")
+	public ResponseEntity<?> getActiveApplicationsByActiveSeekPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/active/seekActive/getActiveApplicationsByActiveSeekPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 1);
+			if(seek==null) {
+				logger.info("++++++++++++++++ Seek not found");
+				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Active applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found active applications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactivePaginated/seekActive/{id}")
+	public ResponseEntity<?> getInactiveApplicationsByActiveSeekPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/inactive/seekActive/getInactiveApplicationsByActiveSeekPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 1);
+			if(seek==null) {
+				logger.info("++++++++++++++++ Seek not found");
+				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,0, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Inactive applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found inactive applications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archivedPaginated/seekActive/{id}")
+	public ResponseEntity<?> getArchivedApplicationsByActiveSeekPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id, 
+			Principal principal) {
+		logger.info("################ /jobster/apply/archived/seekActive/getArchivedApplicationsByActiveSeekPaginated started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 1);
+			if(seek==null) {
+				logger.info("++++++++++++++++ Seek not found");
+				return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+			}
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,-1, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			if (Iterables.isEmpty(applications)) {
+				logger.info("++++++++++++++++ Archived applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found archived applications application - OK.");
+			return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/seekActivePaginated/{id}")
+		public ResponseEntity<?> getByActiveSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/seekActive/getByActiveSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 1);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Seek not found");
+					return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found archived applications application - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/activePaginated/seekInactive/{id}")
+		public ResponseEntity<?> getActiveApplicationsByInactiveSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/active/seekInactive/getActiveApplicationsByInactiveSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 0);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Seek not found");
+					return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,1, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Active applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found active applications application - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/inactivePaginated/seekInactive/{id}")
+		public ResponseEntity<?> getInactiveApplicationsByInactiveSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/inactive/seekInactive/getInactiveApplicationsByInactiveSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 0);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Seek not found");
+					return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,0, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found pplications application - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/archivedPaginated/seekInactive/{id}")
+		public ResponseEntity<?> getArchivedApplicationsByInactiveSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/archived/seekInactive/getArchivedApplicationsByInactiveSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 0);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Seek not found");
+					return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,-1, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found pplications application - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/seekInactivePaginated/{id}")
+		public ResponseEntity<?> getByInactiveSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/seekInactive/getByInactiveSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, 0);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Seek not found");
+					return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found applications - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/activePaginated/seekArchived/{id}")
+		public ResponseEntity<?> getActiveApplicationsByArchivedSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/active/seekArchived/getActiveApplicationsByArchivedSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, -1);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Seek not found");
+					return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,1, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found pplications application - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/inactivePaginated/seekArchived/{id}")
+		public ResponseEntity<?> getInactiveApplicationsByArchivedSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/inactive/seekArchived/getInactiveApplicationsByArchivedSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, -1);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Seek not found");
+					return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,0, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found pplications application - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/archivedPaginated/seekArchived/{id}")
+		public ResponseEntity<?> getArchivedApplicationsByArchivedSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/archived/seekArchived/getArchivedApplicationsByArchivedSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, -1);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Seek not found");
+					return new ResponseEntity<>("Seek not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek,-1, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found pplications application - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
+		// @Secured("ROLE_ADMIN")
+		@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/seekArchivedPagianted/{id}")
+		public ResponseEntity<?> getByArchivedSeekPaginated(
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				@PathVariable Integer id, 
+				Principal principal) {
+			logger.info("################ /jobster/apply/seekArchived/getByArchivedSeekPaginated started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				JobSeekEntity seek = jobSeekRepository.findByIdAndStatusLike(id, -1);
+				if(seek==null) {
+					logger.info("++++++++++++++++ Offer not found");
+					return new ResponseEntity<>("Offer not found",HttpStatus.NOT_FOUND);
+				}
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found applications - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+//	TREBA LI PAGINACIJA?	
+		// @Secured("ROLE_ADMIN")
+		//@JsonView(Views.Admin.class)
+		@RequestMapping(method = RequestMethod.GET, value = "/myAppliesPaginated")
+		public ResponseEntity<?> getMyAppliesQueryPaginated( 
+				@RequestParam Optional<Integer> page,
+				@RequestParam Optional<Integer> pageSize,
+				@RequestParam Optional<Sort.Direction> direction, 
+				@RequestParam Optional<String> sortBy,
+				Principal principal, 
+				@RequestParam(required = false) Boolean commentable,
+				@RequestParam(required = false) Boolean rejected,
+				@RequestParam(required = false) Boolean connected,
+				@RequestParam(required = false) Boolean expired) {
+			logger.info("################ /jobster/apply/myApplies/getMyAppliesQueryPagianted started.");
+			logger.info("Logged username: " + principal.getName());
+			try {
+				Integer loggedInUserId = userAccountRepository.getByUsername(principal.getName()).getUser().getId();
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,rejected,connected,expired,commentable, pageable);
+				Iterable <ApplyContactEntity> applications =  applicationsPage.getContent();
+				if (Iterables.isEmpty(applications)) {
+					logger.info("++++++++++++++++ Applications not found");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
+				logger.info("---------------- Found applications - OK.");
+				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+			} catch (Exception e) {
+				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+
 
 	// ************* GET APPLICATIONS WITH FILTER************
 	@Secured("ROLE_ADMIN")

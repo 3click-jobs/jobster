@@ -1,3 +1,4 @@
+
 package com.iktpreobuka.jobster.services;
 
 import org.slf4j.Logger;
@@ -13,25 +14,24 @@ import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
 import com.iktpreobuka.jobster.repositories.CountryRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+
 
 @Service 
 public class CityDaoImpl implements CityDao {
 
 	@Autowired
 	private CityRepository cityRepository;
-
 	@Autowired
 	private CountryRegionRepository countryRegionRepository;
-
 	@Autowired
 	private CountryRepository countryRepository;
-
 	@Autowired
 	private CountryDao countryDao;
-
 	@Autowired
 	private CountryRegionDao countryRegionDao;
-
 	@Autowired
 	private CityDistanceDao cityDistanceDao;
 	
@@ -206,5 +206,10 @@ public class CityDaoImpl implements CityDao {
 		}		
 	}
 
+  //pagination:
+  	@Override
+	public Page<CityEntity> findAll(int page, int pageSize, Direction direction, String sortBy) {
+		return cityRepository.findAll(PageRequest.of(page, pageSize, direction, sortBy));
+	}
 
 }

@@ -4,10 +4,17 @@ import java.security.Principal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -17,6 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.iktpreobuka.jobster.controllers.util.RESTError;
+import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
+import com.iktpreobuka.jobster.entities.CountryEntity;
 
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
@@ -184,5 +195,197 @@ public class JobSeekController {
 	public ResponseEntity<?> unArchiveById(@PathVariable Integer id) {
 		return jobSeekService.unArchiveById(id);
 	}
+
+//pagination:
+	
+	
+	//@Secured("ROLE_ADMIN")
+	//@JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/AllPaginated")
+	public ResponseEntity<?> getAllPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy) {
+			logger.info("################ /jobster/seek/getAllPaginated started.");
+			//logger.info("Logged username: " + principal.getName());
+			try {
+				logger.info("Checking database for JobSeek.");
+				if (((jobSeekRepository.count() == 0))) {
+					logger.info("Database empty.");
+					return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
+				}
+			} catch (Exception e) {
+				logger.info("Error occured during 'Checking database'.");
+				return new ResponseEntity<String>("Error occured during 'Checking database'." + e, HttpStatus.BAD_REQUEST);
+			}
+			try {
+				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<JobSeekEntity> jobSeekEntityPage= jobSeekService.getAll(pageable);
+				Iterable<JobSeekEntity> jobSeeks = jobSeekEntityPage.getContent();
+				logger.info("---------------- Finished OK.");
+				return new ResponseEntity<Iterable<JobSeekEntity>>(jobSeeks, HttpStatus.OK);
+				} catch(Exception e) {
+					logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+					return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+	}
+
+
+
+	@RequestMapping(method = RequestMethod.GET, value = "/employeePaginated/{id}")
+	public ResponseEntity<?> getAllLikeEmployeePaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllLikeEmployee(id, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/cityPaginated/{id}")
+	public ResponseEntity<?> getAllLikeCityPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllLikeCity(id, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/jobTypePaginated/{id}")
+	public ResponseEntity<?> getAllLikeJobType(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@PathVariable Integer id) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllLikeJobType(id, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/distancePaginated")
+	public ResponseEntity<?> getAllJobSeekWhereDistanceIsAndLessThenPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Integer distance) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllJobSeekWhereDistanceIsAndLessThen(distance, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/beginDatePaginated")
+	public ResponseEntity<?> getAllWithBeginnigDatePaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Date beginDate) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllWithBeginnigDate(beginDate, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/endDatePaginated")
+	public ResponseEntity<?> getAllWithEndDatePaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Date endDate) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllWithEndDate(endDate, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/flexDatesPaginated")
+	public ResponseEntity<?> getAllWithFlexibileDatesPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam boolean flexDates) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllWithFlexibileDates(flexDates, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/pricePaginated")
+	public ResponseEntity<?> getAllWherePriceIsAndMorePaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Double price) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllWherePriceIsAndMore(price, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/flexDaysPaginated")
+	public ResponseEntity<?> getAllWithFlexibileDaysPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam boolean flexDays) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllWithFlexibileDays(flexDays, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/statusPaginated")
+	public ResponseEntity<?> getAllWithStatusPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Integer status) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllWithStatus(status, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/elapsePaginated")
+	public ResponseEntity<?> getAllWithElapsePaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Integer elapse) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllWithElapse(elapse, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/createdByPaginated")
+	public ResponseEntity<?> getAllByCreatedByPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Integer createdBy) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllByCreatedBy(createdBy, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/updatedByPaginated")
+	public ResponseEntity<?> getAllByUpdatedByPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Integer updatedBy) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllByUpdatedBy(updatedBy, pageable);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/versionPaginated")
+	public ResponseEntity<?> getAllByVersionPaginated(
+			@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,
+			@RequestParam Integer version) {
+		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+		return jobSeekService.getAllByVersion(version, pageable);
+	}
+
 
 }

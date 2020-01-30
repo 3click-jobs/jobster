@@ -1,5 +1,10 @@
 package com.iktpreobuka.jobster.services;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort.Direction;
+
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
@@ -24,4 +29,11 @@ public interface CountryRegionDao {
 
 	void deleteRegion(UserEntity loggedUser, CountryRegionEntity region) throws Exception;
 
+//pagination:
+	public Page<CountryRegionEntity> findAll(int page, int pageSize, Direction direction,String sortBy);
+/*
+	public Page<CountryRegionEntity> findAll(int page, int pageSize);
+	
+	public Page<CountryRegionEntity> findAll(int page, int pageSize, Direction direction);
+*/
 }

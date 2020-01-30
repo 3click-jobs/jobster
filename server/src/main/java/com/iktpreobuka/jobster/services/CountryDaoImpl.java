@@ -1,6 +1,9 @@
 package com.iktpreobuka.jobster.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -222,4 +225,28 @@ public class CountryDaoImpl implements CountryDao {
 			throw new Exception("DeleteCountry failed on saving.");
 		}
 	}
+
+
+//pagination:
+	
+/*version1:
+	@SuppressWarnings("deprecation")
+	@Override
+	public Page<CountryEntity> findAll(int pageNum) {
+		return countryRepository.findAll(new PageRequest(pageNum, 4));
+	}
+*/
+
+	@Override
+	public Page<CountryEntity> findAll(int page, int pageSize, Direction direction, String sortBy) {
+		return countryRepository.findAll(PageRequest.of(page, pageSize, direction, sortBy));
+	}
+
+
+/*
+	@Override
+	public Page<CountryEntity> findCountryByStatusLike(int i, int page, int pageSize, Direction direction, String sortBy) {
+		return countryRepository.findCountryByStatusLike(i, new PageRequest(page, pageSize, direction, sortBy));
+	}
+	*/
 }
