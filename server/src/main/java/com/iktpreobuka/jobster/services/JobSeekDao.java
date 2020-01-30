@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
-import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
+//import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
+//import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
 
 
