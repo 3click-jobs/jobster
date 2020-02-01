@@ -60,6 +60,7 @@ public class PersonDaoImpl implements PersonDao {
 			if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getIso2Code() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null ) {
 				throw new Exception("Some data is null.");
 			}
+			logger.info("addNewPerson validation Ok.");
 			UserEntity user = new PersonEntity();
 			CityEntity city = new CityEntity();
 			CountryEntity country = new CountryEntity();
