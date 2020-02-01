@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.jobster.controllers.util.RESTError;
-import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
@@ -99,15 +98,18 @@ public class CityController {
 
 	// @JsonView(Views.Admin.class)
 
-	@RequestMapping(method = RequestMethod.GET, value = "/byId/{id}")
+	@RequestMapping(method = RequestMethod.GET, value = "/getById/{id}")
 
 	public ResponseEntity<?> getById(@PathVariable Integer id, Principal principal) {
 
 		logger.info("################ /jobster/cities/getById started.");
 
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 
 		try {
+			if (!(cityRepository.existsById(id))) {
+				return new ResponseEntity<>("City doesn`t exists.", HttpStatus.BAD_REQUEST);
+			}
 
 			CityEntity city = cityRepository.getById(id);
 
@@ -130,13 +132,13 @@ public class CityController {
 
 	// @JsonView(Views.Admin.class)
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, value="/getAll")
 
 	public ResponseEntity<?> getAll(Principal principal) {
 
 		logger.info("################ /jobster/cities/getAll started.");
 
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 
 		try {
 
@@ -167,7 +169,7 @@ public class CityController {
 
 		logger.info("################ /jobster/cities/getAllActive started.");
 
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 
 		try {
 
@@ -198,7 +200,7 @@ public class CityController {
 
 		logger.info("################ /jobster/cities/getAllInactive started.");
 
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 
 		try {
 
@@ -229,7 +231,7 @@ public class CityController {
 
 		logger.info("################ /jobster/cities/getAllArchived started.");
 
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 
 		try {
 
@@ -254,17 +256,20 @@ public class CityController {
 
 	// @JsonView(Views.Admin.class)
 
-	@RequestMapping(method = RequestMethod.GET, value = "/byName/{name}")
+	@RequestMapping(method = RequestMethod.GET, value = "/getByName/{name}")
 
 	public ResponseEntity<?> getByName(@PathVariable String name, Principal principal) {
 
 		logger.info("################ /jobster/cities/getByName started.");
 
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 
 		try {
 
 			List<CityEntity> city = cityRepository.getByCityNameIgnoreCase(name);
+			if (city.isEmpty()) {
+				return new ResponseEntity<>("No city with given name.", HttpStatus.BAD_REQUEST);
+			}
 
 			logger.info("---------------- Finished OK.");
 
@@ -287,7 +292,7 @@ public class CityController {
 	public ResponseEntity<?> addNewCity(@Valid @RequestBody POSTCityDTO newCity, Principal principal,
 			BindingResult result) {
 		logger.info("################ /jobster/cities/addNewCity started.");
-		// logger.info("Logged user: " + principal.getName());
+		logger.info("Logged user: " + principal.getName());
 		if (result.hasErrors()) {
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
@@ -361,11 +366,40 @@ public class CityController {
 		logger.info("################ /jobster/cities/modify/{id} started.");
 		try {
 			CityEntity city = cityRepository.getById(id);
-			// logger.info("Logged user: " + principal.getName());
+			
 			if (city == null) {
 				logger.info("---------------- City doesn't exists.");
 				return new ResponseEntity<>("City doesn't exists.", HttpStatus.BAD_REQUEST);
 			}
+			
+			logger.info("Logged user: " + principal.getName());
+			
+			
+			if (updateCity.getCityName() == null || updateCity.getLongitude() == null
+					|| updateCity.getLatitude() == null) {
+				logger.info("---------------- Some or all atributes are null.");
+				return new ResponseEntity<>("Some or all atributes are null.", HttpStatus.BAD_REQUEST);
+			}
+			if(updateCity.getRegion()==null) {
+				return new ResponseEntity<>("Country Region needs update.", HttpStatus.BAD_REQUEST);
+			}
+			
+			CountryRegionEntity regionN=countryRegionRepository.getByCountryRegionName(city.getRegion().getCountryRegionName());
+			if(!(regionN.getCountryRegionName().equalsIgnoreCase(updateCity.getRegion()))) {
+				return new ResponseEntity<>("Country Region needs update.", HttpStatus.BAD_REQUEST);
+			}
+			
+			CountryEntity countryN= countryRepository.findByCountryNameIgnoreCase(city.getRegion().getCountry().getCountryName());
+			if(!(countryN.getIso2Code().equalsIgnoreCase(updateCity.getIso2Code()))) {
+				return new ResponseEntity<>("Country needs update.", HttpStatus.BAD_REQUEST);
+			}
+			
+			CountryEntity countryI= countryRepository.getByIso2Code(city.getRegion().getCountry().getIso2Code());
+			if(!(countryI.getCountryName().equalsIgnoreCase(updateCity.getCountry()))) {
+				return new ResponseEntity<>("Country needs update.", HttpStatus.BAD_REQUEST);
+			}
+			
+			
 
 			city.setCityName(updateCity.getCityName());
 			city.setLongitude(updateCity.getLongitude());
@@ -380,15 +414,11 @@ public class CityController {
 				return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
 			}
 
-			if (updateCity.getCityName() == null || updateCity.getLongitude() == null
-					|| updateCity.getLatitude() == null || updateCity.getRegion() == null) {
-				logger.info("---------------- Some or all atributes are null.");
-				return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
-			}
+			
 			cityRepository.save(city);
 			logger.info("City updated.");
 			logger.info("---------------- Finished OK.");
-			return new ResponseEntity<>(updateCity, HttpStatus.OK);
+			return new ResponseEntity<>(city, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
@@ -401,7 +431,7 @@ public class CityController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}")
 	public ResponseEntity<?> archive(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/cities/archive/{id}/archive started.");
-		// logger.info("Logged user: " + principal.getName());
+		logger.info("Logged user: " + principal.getName());
 		CityEntity city = new CityEntity();
 		try {
 			city = cityRepository.getById(id);
@@ -410,11 +440,9 @@ public class CityController {
 				return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
 			}
 			logger.info("City for archiving identified.");
-			// UserEntity loggedUser =
-			// userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(),
-			// 1);
-			// logger.info("Logged user identified.");
-			// cityDao.archiveCity(loggedUser, city);
+			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(),1);
+			logger.info("Logged user identified.");
+			cityDao.archiveCity(loggedUser, city);
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<CityEntity>(city, HttpStatus.OK);
 		} catch (NumberFormatException e) {
@@ -493,7 +521,7 @@ public class CityController {
 
 	// @Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
 	public ResponseEntity<?> delete(@PathVariable Integer id, Principal principal) {
 		logger.info("################ /jobster/cities/{id}/delete started.");
 		logger.info("Logged user: " + principal.getName());
@@ -531,7 +559,7 @@ public class CityController {
 			@RequestParam Optional<Integer> pageSize, @RequestParam Optional<Sort.Direction> direction,
 			@RequestParam Optional<String> sortBy, Principal principal) {
 		logger.info("################ /jobster/cities/getAllPaginated started.");
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 		try {
 			Page<CityEntity> citiesPage = cityDao.findAll(page.orElse(0), pageSize.orElse(5),
 					direction.orElse(Sort.Direction.ASC), sortBy.orElse("cityName"));
@@ -554,7 +582,7 @@ public class CityController {
 			@RequestParam Optional<Integer> pageSize, @RequestParam Optional<Sort.Direction> direction,
 			@RequestParam Optional<String> sortBy, Principal principal) {
 		logger.info("################ /jobster/cities/getAllActivePaginated started.");
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 		try {
 			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC),
 					sortBy.orElse("cityName"));
@@ -578,7 +606,7 @@ public class CityController {
 			@RequestParam Optional<Integer> pageSize, @RequestParam Optional<Sort.Direction> direction,
 			@RequestParam Optional<String> sortBy, Principal principal) {
 		logger.info("################ /jobster/cities/getAllinactivePaginated started.");
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 		try {
 			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC),
 					sortBy.orElse("cityName"));
@@ -602,7 +630,7 @@ public class CityController {
 			@RequestParam Optional<Integer> pageSize, @RequestParam Optional<Sort.Direction> direction,
 			@RequestParam Optional<String> sortBy, Principal principal) {
 		logger.info("################ /jobster/cities/getAllArchivedPaginated started.");
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 		try {
 			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC),
 					sortBy.orElse("cityName"));
@@ -626,7 +654,7 @@ public class CityController {
 			@RequestParam Optional<Integer> pageSize, @RequestParam Optional<Sort.Direction> direction,
 			@RequestParam Optional<String> sortBy, @PathVariable String name, Principal principal) {
 		logger.info("################ /jobster/cities/getByName started.");
-		// logger.info("Logged username: " + principal.getName());
+		logger.info("Logged username: " + principal.getName());
 		try {
 			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC),
 					sortBy.orElse("cityName"));

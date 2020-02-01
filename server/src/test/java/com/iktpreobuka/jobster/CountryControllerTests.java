@@ -191,9 +191,9 @@ public class CountryControllerTests {
 		mockMvc.perform(get("/jobster/countries/getAll")
 				.header("Authorization", "Bearer " + token)) 
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$[0].countryName", is("Inactive")))
+			.andExpect(jsonPath("$[0].countryName", is("Active")))
 			.andExpect(jsonPath("$[1].countryName", is("Archived")))
-			.andExpect(jsonPath("$[2].countryName", is("Active")));
+			.andExpect(jsonPath("$[2].countryName", is("Inactive")));
 	}
 	
 	@Test 
@@ -230,7 +230,7 @@ public class CountryControllerTests {
 	public void getCountryByIdWrongId() throws Exception { 
 		logger.info("getCountryByIdWrongId");
 		String wrongId="test";
-		mockMvc.perform(get("/jobster/cities/getById/" + wrongId)
+		mockMvc.perform(get("/jobster/countries/getById/" + wrongId)
 				.header("Authorization", "Bearer " + token))
 			.andExpect(status().isBadRequest());
 	}

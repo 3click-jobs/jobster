@@ -48,6 +48,9 @@ public interface CountryRepository extends PagingAndSortingRepository<CountryEnt
 	//public Page<CountryEntity> findCountryByStatusLike(int i, PageRequest pageRequest);
 	public Page<CountryEntity> findCountryByStatusLike(int i, Pageable pageable);
 
+	public Iterable<CountryEntity> findAllByOrderByCountryName();
+
+
 
 	
 
