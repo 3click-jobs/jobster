@@ -240,7 +240,7 @@ public class CityControllerTests {
 		logger.info("getCityByIdNotExists");
 		mockMvc.perform(get("/jobster/cities/getById/" + (CityControllerTests.cities.get(0).getId()+5))
 				.header("Authorization", "Bearer " + token))
-			.andExpect(content().string(" City doesn`t exists."));
+			.andExpect(content().string("City doesn`t exists."));
 	}
 	
 	@Test 
@@ -2083,7 +2083,7 @@ public class CityControllerTests {
 				@Test 
 				public void modifyCityMarginalCountryName() throws Exception {
 					logger.info("modifyCityMarginalCountryName");
-					POSTCityDTO city = new POSTCityDTO("World city", 180.0, 45.0, "World region", "WU", "WU");
+					POSTCityDTO city = new POSTCityDTO("World city", 180.0, 45.0, "World region", "WU", "RS");
 					Gson gson = new Gson();
 			    	String json = gson.toJson(city);
 			    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))

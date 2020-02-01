@@ -54,4 +54,8 @@ public interface CountryRegionRepository extends PagingAndSortingRepository<Coun
 	Page<CountryRegionEntity> findCountryRegionByStatusLike(int i, Pageable pageable);
 	Page<CountryRegionEntity> getByCountryRegionNameIgnoreCase(String name, Pageable pageable);
 
+	Iterable<CountryRegionEntity> findByStatusLikeOrderById(Integer status);
+
+	CountryRegionEntity getByCountryRegionNameAndCountry(String region, String country);
+
 }

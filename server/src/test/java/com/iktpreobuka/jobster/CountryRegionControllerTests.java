@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -279,8 +280,8 @@ public class CountryRegionControllerTests {
 			mockMvc.perform(get("/jobster/regions/archived")
 					.header("Authorization", "Bearer " + token)) 
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$[1].countryRegionName", is("RAOne")))
-				.andExpect(jsonPath("$[0].countryRegionName", is("RATwo")));
+				.andExpect(jsonPath("$[1].countryRegionName", is("RATwo")))
+				.andExpect(jsonPath("$[0].countryRegionName", is("RAOne")));
 		}
 		
 		@Test 

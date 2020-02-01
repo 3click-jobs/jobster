@@ -83,7 +83,7 @@ public class CountryController {
 			logger.info("################ /jobster/countries/getAll started.");
 			logger.info("Logged username: " + principal.getName());
 			try {
-				Iterable<CountryEntity> countries= countryRepository.findAll();
+				Iterable<CountryEntity> countries= countryRepository.findAllByOrderByCountryName();
 				logger.info("---------------- Finished OK.");
 				return new ResponseEntity<Iterable<CountryEntity>>(countries, HttpStatus.OK);
 				} catch(Exception e) {

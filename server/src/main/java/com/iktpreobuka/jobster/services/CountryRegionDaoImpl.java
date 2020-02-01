@@ -34,7 +34,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 	
 	@Override
 	public Iterable<CountryRegionEntity> findRegionByStatusLike(Integer status) throws Exception {
-		return countryRegionRepository.findByStatusLike(status);
+		return countryRegionRepository.findByStatusLikeOrderById(status);
 	}
 
 
