@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -444,6 +443,7 @@ public class CompanyControllerTests {
 			.andExpect(jsonPath("$.user.companyRegistrationNumber", is("11231231231236")));
 		CompanyControllerTests.companies.add(companyRepository.getByEmailAndStatusLike(companyDTO.getEmail(), 1));
 		userAccountRepository.delete(userAccountRepository.getByUser(companyRepository.getByEmailAndStatusLike(companyDTO.getEmail(), 1)));
+		cities.add(cityRepository.getByCityName("World city without"));	
 		}
 
 	@Test 
