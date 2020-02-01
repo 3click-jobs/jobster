@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 //import org.cactoos.list.*;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
-import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;

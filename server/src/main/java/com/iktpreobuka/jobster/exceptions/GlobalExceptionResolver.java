@@ -6,7 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 //@Order(Ordered.HIGHEST_PRECEDENCE)
 //@EnableWebMvc
@@ -21,5 +23,11 @@ public class GlobalExceptionResolver extends ResponseEntityExceptionHandler {
         response.put("message", e.getMessage());
         return response;
     }
+	
+	@ExceptionHandler(MultipartException.class) 
+	public String handleError1(MultipartException e, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("message", e.getCause().getMessage()); 
+		return "redirect:/uploadStatus";
+		}
 	
 }
