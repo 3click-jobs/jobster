@@ -1,38 +1,15 @@
 package com.iktpreobuka.jobster.controllers;
 
 import java.security.Principal;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.google.common.collect.Iterables;
-import com.iktpreobuka.jobster.controllers.util.RESTError;
-import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
-import com.iktpreobuka.jobster.entities.PersonEntity;
-import com.iktpreobuka.jobster.entities.UserAccountEntity;
-import com.iktpreobuka.jobster.entities.UserEntity;
-import com.iktpreobuka.jobster.entities.dto.PersonDTO;
-import com.iktpreobuka.jobster.enumerations.EUserRole;
-import com.iktpreobuka.jobster.repositories.PersonRepository;
-import com.iktpreobuka.jobster.repositories.UserAccountRepository;
-import com.iktpreobuka.jobster.services.PersonDao;
-import com.iktpreobuka.jobster.services.UserAccountDao;
 
 @Controller
 @RestController
