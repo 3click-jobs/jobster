@@ -51,8 +51,9 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<ApplyContactEntity> findByQueryForLoggedInUser(Integer loggedInUserId, Integer status, 
-			Boolean rejected, Boolean connected, Boolean expired,Boolean commentable) {
+	public Iterable<ApplyContactEntity> findByQueryAndUser(Integer loggedInUserId, Integer status, Boolean rejected, Boolean connected,
+			Boolean expired, Boolean commentable, String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop) {
 		logger.info("++++++++++++++++ Service for finding applicaitons for a logged in user by params started");
 		String sql = "select a from ApplyContactEntity a where a.createdById = " + loggedInUserId;
 		logger.info("++++++++++++++++ Basic query created");
@@ -82,6 +83,28 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 			sql = sql + " and a.commentable = " + commentable;
 			logger.info("++++++++++++++++ Added condition for commentable applications");
 		}
+		
+		
+		if(connectionDateBottom !=null) {
+			sql = sql + " and a.connectionDate >= '" + connectionDateBottom + "'";
+			logger.info("++++++++++++++++ Added condition for applications where connection is younger than" + connectionDateBottom);
+		}
+		
+		if(connectionDateTop !=null) {
+			sql = sql + " and a.connectionDate <= '" + connectionDateTop + "'";
+			logger.info("++++++++++++++++ Added condition for applications where conncetion is older than" + connectionDateTop);
+		}
+		
+		if(contactDateTop !=null) {
+			sql = sql + " and a.contactDate <= '" + contactDateTop + "'";
+			logger.info("++++++++++++++++ Added condition for all applications where contact is older than " + contactDateTop);
+		}
+		
+		if(contactDateBottom !=null) {
+			sql = sql + " and a.contactDate >= '" + contactDateBottom + "'";
+			logger.info("++++++++++++++++ Added condition for all applications where contact is younger than " + contactDateBottom);
+		}
+		
 		
 		Query query = em.createQuery(sql);
 		logger.info("++++++++++++++++ Query created");
@@ -365,11 +388,16 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 	}
 
 	@Override
-	public Page<ApplyContactEntity> findByQueryForLoggedInUser(Integer loggedInUserId, Boolean rejected,
-			Boolean connected, Boolean expired, Boolean commentable, Pageable pageable) {
-		logger.info("++++++++++++++++ Service for finding applicaitons by params started");
+	public Page<ApplyContactEntity> findByQueryAndUser(Integer loggedInUserId,Integer status, Boolean rejected, Boolean connected,
+			Boolean expired, Boolean commentable, String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop, Pageable pageable) {
+		logger.info("++++++++++++++++ Service for finding applicaitons for a logged in user by params started");
 		String sql = "select a from ApplyContactEntity a where a.createdById = " + loggedInUserId;
 		logger.info("++++++++++++++++ Basic query created");
+		if(status !=null) {
+			sql = sql + " and a.status = " + status;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
 		if(rejected !=null) {
 			sql = sql + " and a.rejected = " + rejected;
 			logger.info("++++++++++++++++ Added condition for rejected applications");
@@ -393,6 +421,27 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 			logger.info("++++++++++++++++ Added condition for commentable applications");
 		}
 		
+		
+		if(connectionDateBottom !=null) {
+			sql = sql + " and a.connectionDate >= '" + connectionDateBottom + "'";
+			logger.info("++++++++++++++++ Added condition for applications where connection is younger than" + connectionDateBottom);
+		}
+		
+		if(connectionDateTop !=null) {
+			sql = sql + " and a.connectionDate <= '" + connectionDateTop + "'";
+			logger.info("++++++++++++++++ Added condition for applications where conncetion is older than" + connectionDateTop);
+		}
+		
+		if(contactDateTop !=null) {
+			sql = sql + " and a.contactDate <= '" + contactDateTop + "'";
+			logger.info("++++++++++++++++ Added condition for all applications where contact is older than " + contactDateTop);
+		}
+		
+		if(contactDateBottom !=null) {
+			sql = sql + " and a.contactDate >= '" + contactDateBottom + "'";
+			logger.info("++++++++++++++++ Added condition for all applications where contact is younger than " + contactDateBottom);
+		}
+		
 		Query query = em.createQuery(sql);
 		logger.info("++++++++++++++++ Query created");
 		
@@ -405,6 +454,130 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 
 		logger.info("++++++++++++++++ Result of the query returned ok");
 		return resultPage;
+	}
+
+
+	@Override
+	public Page<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected, Boolean expired,
+			Boolean commentable, String connectionDateBottom, String connectionDateTop, String contactDateBottom,
+			String contactDateTop, Pageable pageable) {
+
+		logger.info("++++++++++++++++ Service for finding applicaitons by params started - date params included");
+		String sql = "select a from ApplyContactEntity a";
+		Boolean firstParam = true;
+		logger.info("++++++++++++++++ Basic query created");
+		if(status != null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.status = " + status;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
+		if(rejected !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.rejected = " + rejected;
+			logger.info("++++++++++++++++ Added condition for rejected applications");
+		}
+		if(connected !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.areConnected = " + connected;	
+			if(connected) {
+				logger.info("++++++++++++++++ Added condition for connected applications");
+			}
+			else {
+				logger.info("++++++++++++++++ Added condition for pending applications");
+			}
+		}
+		if(expired !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.expired = " + expired;
+			logger.info("++++++++++++++++ Added condition for expired applications");
+		}
+		
+		if(commentable !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.commentable = " + commentable;
+			logger.info("++++++++++++++++ Added condition for commentable applications");
+		}
+		
+		if(connectionDateBottom !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.connectionDate >= '" + connectionDateBottom + "'";
+			logger.info("++++++++++++++++ Added condition for all applications where connection is younger than" + connectionDateBottom);
+		}
+		
+		if(connectionDateTop !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.connectionDate <= '" + connectionDateTop + "'";
+			logger.info("++++++++++++++++ Added condition for all applications where conncetion is older than" + connectionDateTop);
+		}
+		
+		if(contactDateTop !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.contactDate <= '" + contactDateTop + "'";
+			logger.info("++++++++++++++++ Added condition for all applications where contact is older than " + contactDateTop);
+		}
+		
+		if(contactDateBottom !=null) {
+			if(!firstParam) {
+				sql = sql + " and";
+			} else {
+				sql = sql + " where";
+				firstParam = false;
+			}
+			sql = sql + " a.contactDate >= '" + contactDateBottom + "'";
+			logger.info("++++++++++++++++ Added condition for all applications where contact is younger than " + contactDateBottom);
+		}
+		
+		Query query = em.createQuery(sql);
+		logger.info("++++++++++++++++ Query created");
+		
+		@SuppressWarnings("unchecked")
+		Iterable<ApplyContactEntity> result = query.getResultList();
+		
+		List<ApplyContactEntity> resultList = (List<ApplyContactEntity>) result;
+		Page<ApplyContactEntity> resultPage = new PageImpl<>(resultList,pageable, resultList.size() );
+		logger.info("++++++++++++++++ Result of the query returned ok");
+		return resultPage;
+		
 	}
 	
 

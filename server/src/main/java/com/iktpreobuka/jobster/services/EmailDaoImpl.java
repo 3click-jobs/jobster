@@ -63,6 +63,17 @@ public class EmailDaoImpl implements EmailDao {
 
 	}
 	
+
+	public void testEmailSending() throws Exception {
+		MimeMessage mail = emailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mail, true);
+		helper.setTo("jobster.testing@gmail.com");
+		helper.setSubject("Email Sending Test!");
+		String text = "<h1>NICE!!!!</h1>";
+		helper.setText(text, true);
+		emailSender.send(mail);
+	}
+	
 	
 
 }

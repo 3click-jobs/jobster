@@ -924,6 +924,8 @@ public class ApplyContactController {
 	}
 
 	// ************* GET MY APPLICATIONS WITH FILTER************
+	
+	//not using this one, use the pagable
 	@Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/myApplies")
@@ -934,8 +936,8 @@ public class ApplyContactController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Integer loggedInUserId = userAccountRepository.getByUsername(principal.getName()).getUser().getId();
-			Iterable<ApplyContactEntity> applications = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,1,
-					rejected, connected, expired, commentable);
+			Iterable<ApplyContactEntity> applications = applyContactDao.findByQueryAndUser(loggedInUserId,1,
+					rejected, connected, expired, commentable,null,null,null,null);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -953,7 +955,7 @@ public class ApplyContactController {
 
 
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/allPaginated") // get all comments
 	public ResponseEntity<?> getAllPaginated(
 			@RequestParam Optional<Integer> page,
@@ -1881,8 +1883,10 @@ public class ApplyContactController {
 						HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
+		
+
 //	TREBA LI PAGINACIJA?	
-		// @Secured("ROLE_ADMIN")
+		@Secured("ROLE_ADMIN")
 		//@JsonView(Views.Admin.class)
 		@RequestMapping(method = RequestMethod.GET, value = "/myAppliesPaginated")
 		public ResponseEntity<?> getMyAppliesQueryPaginated( 
@@ -1891,16 +1895,27 @@ public class ApplyContactController {
 				@RequestParam Optional<Sort.Direction> direction, 
 				@RequestParam Optional<String> sortBy,
 				Principal principal, 
-				@RequestParam(required = false) Boolean commentable,
-				@RequestParam(required = false) Boolean rejected,
-				@RequestParam(required = false) Boolean connected,
-				@RequestParam(required = false) Boolean expired) {
+				@RequestParam(required = false) Integer status,
+				@RequestParam(required = false) Boolean commentable, @RequestParam(required = false) Boolean rejected,
+				@RequestParam(required = false) Boolean connected, @RequestParam(required = false) Boolean expired,
+				@RequestParam(required = false) String connectionDateBottom,@RequestParam(required = false) String connectionDateTop,
+				@RequestParam(required = false) String contactDateBottom,@RequestParam(required = false) String contactDateTop) {
 			logger.info("################ /jobster/apply/myApplies/getMyAppliesQueryPagianted started.");
 			logger.info("Logged username: " + principal.getName());
 			try {
 				Integer loggedInUserId = userAccountRepository.getByUsername(principal.getName()).getUser().getId();
+				if (status != null) {
+					if (!( status == 0 || status == 1)) {
+						logger.info("++++++++++++++++ Status " + status + " is not acceptable");
+						return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+					}
+				}
+				if(applyContactDao.stringDateFormatNotCorrect(connectionDateBottom, connectionDateTop, contactDateBottom, contactDateTop)){
+					logger.info("++++++++++++++++ Date format not correct");
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				}
 				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
-				Page<ApplyContactEntity> applicationsPage = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,rejected,connected,expired,commentable, pageable);
+				Page<ApplyContactEntity> applicationsPage = applyContactDao.findByQueryAndUser(loggedInUserId,status, rejected,connected,expired,commentable,connectionDateBottom,connectionDateTop,contactDateBottom,contactDateTop, pageable);
 				Iterable <ApplyContactEntity> applications =  applicationsPage.getContent();
 				if (Iterables.isEmpty(applications)) {
 					logger.info("++++++++++++++++ Applications not found");
@@ -1920,7 +1935,10 @@ public class ApplyContactController {
 	@Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/applications")
-	public ResponseEntity<?> getApplicationsByQuery(Principal principal, @RequestParam(required = false) Integer status,
+	public ResponseEntity<?> getApplicationsByQuery(@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,Principal principal, @RequestParam(required = false) Integer status,
 			@RequestParam(required = false) Boolean commentable, @RequestParam(required = false) Boolean rejected,
 			@RequestParam(required = false) Boolean connected, @RequestParam(required = false) Boolean expired,
 			@RequestParam(required = false) String connectionDateBottom,@RequestParam(required = false) String connectionDateTop,
@@ -1939,8 +1957,17 @@ public class ApplyContactController {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
-			Iterable<ApplyContactEntity> applications = applyContactDao.findByQuery(status, rejected, connected,
-					expired, commentable,connectionDateBottom,connectionDateTop,contactDateBottom,contactDateTop);
+			/*
+			 * 	Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek, pageable);
+				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			 * 
+			 */
+			
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			Page<ApplyContactEntity> applicationsPage = applyContactDao.findByQuery(status, rejected, connected, expired, commentable, connectionDateBottom, connectionDateTop, contactDateBottom, contactDateTop, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
