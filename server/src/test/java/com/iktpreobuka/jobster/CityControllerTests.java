@@ -365,6 +365,8 @@ public class CityControllerTests {
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
     	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.delete(countryRegionRepository.getByCountryRegionName("LFRegion"));
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -427,7 +429,8 @@ public class CityControllerTests {
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
     	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
-	}
+    	countryRegionRepository.deleteAll();
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));	}
 	
 	@Test 
 	public void addNewCityMarginalRegion() throws Exception {
@@ -448,6 +451,8 @@ public class CityControllerTests {
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
     	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.delete(countryRegionRepository.getByCountryRegionName("RC"));
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -486,6 +491,9 @@ public class CityControllerTests {
     		.andExpect(status().isOk())
     		.andExpect(content().contentType(contentType)) 
     		.andExpect(jsonPath("$.cityName", is("LFCapitol")));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.deleteAll();
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -850,7 +858,9 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LC")));
-        	cityRepository.delete(cityRepository.getByCityName("LC"));
+    	cityRepository.delete(cityRepository.getByCityName("LC"));
+    	countryRegionRepository.deleteAll();
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 
 	@Test 
@@ -928,6 +938,7 @@ public class CityControllerTests {
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.region.country.countryName", is("Co")));
         	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+        	countryRepository.delete(countryRepository.getByCountryName("Co"));
 	}
 	
 	@Test 
@@ -1437,7 +1448,8 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
-        	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.delete(countryRegionRepository.getByCountryRegionName("LFRegion"));
 	}
 	
 	@Test
@@ -1458,7 +1470,9 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
-        	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.delete(countryRegionRepository.getByCountryRegionName("LFRegion"));
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -1550,7 +1564,9 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
-        	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.deleteAll();
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -1571,8 +1587,8 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
-        	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
-	}
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	}
 	
 	@Test 
 	public void addNewCityNullLatitude() throws Exception {
