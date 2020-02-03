@@ -1,6 +1,8 @@
 package com.iktpreobuka.jobster.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,6 +11,9 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.beans.support.SortDefinition;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -458,7 +463,7 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 
 
 	@Override
-	public Page<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected, Boolean expired,
+	public PagedListHolder<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected, Boolean expired,
 			Boolean commentable, String connectionDateBottom, String connectionDateTop, String contactDateBottom,
 			String contactDateTop, Pageable pageable) {
 
@@ -574,11 +579,25 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 		Iterable<ApplyContactEntity> result = query.getResultList();
 		
 		List<ApplyContactEntity> resultList = (List<ApplyContactEntity>) result;
-		Page<ApplyContactEntity> resultPage = new PageImpl<>(resultList,pageable, resultList.size() );
+		PagedListHolder<ApplyContactEntity> listHolder = new PagedListHolder<ApplyContactEntity>(resultList);
+		MutableSortDefinition srt = new MutableSortDefinition("id", true, false);
+		listHolder.setSort(srt);
+		listHolder.setPage(pageable.getPageNumber());
+		listHolder.setPageSize(pageable.getPageSize());
+		String sss = pageable.getSort().stream()
+			    .map(order -> order.getProperty()).collect(Collectors.joining(""));
+		String srtName = pageable.getSort().stream().map(sortName -> sortName.getDirection().name()).collect(Collectors.joining(""));
+		Boolean isAsc = (srtName.equalsIgnoreCase("ASC"));
+		System.out.println(sss);
+		System.out.println(srtName);
+		System.out.println(isAsc);
+		//Page<ApplyContactEntity> resultPage = new PageImpl<>(listHolder, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), resultList.size() );
 		logger.info("++++++++++++++++ Result of the query returned ok");
-		return resultPage;
+		return listHolder;
 		
 	}
+
+
 	
 
 	

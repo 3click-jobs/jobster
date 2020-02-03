@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -1965,8 +1966,8 @@ public class ApplyContactController {
 			 */
 			
 			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
-			Page<ApplyContactEntity> applicationsPage = applyContactDao.findByQuery(status, rejected, connected, expired, commentable, connectionDateBottom, connectionDateTop, contactDateBottom, contactDateTop, pageable);
-			Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
+			PagedListHolder<ApplyContactEntity> applicationsPage = applyContactDao.findByQuery(status, rejected, connected, expired, commentable, connectionDateBottom, connectionDateTop, contactDateBottom, contactDateTop, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getPageList();
 			
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
