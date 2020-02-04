@@ -23,8 +23,6 @@ import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.PersonEntity;
-import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
 import com.iktpreobuka.jobster.util.StringDateFormatValidator;
 
