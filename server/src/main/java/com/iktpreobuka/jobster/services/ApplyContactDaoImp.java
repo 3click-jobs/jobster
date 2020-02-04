@@ -577,20 +577,21 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 		
 		@SuppressWarnings("unchecked")
 		Iterable<ApplyContactEntity> result = query.getResultList();
-		
 		List<ApplyContactEntity> resultList = (List<ApplyContactEntity>) result;
+		
+		String srtProp = pageable.getSort().stream()
+			    .map(order -> order.getProperty()).collect(Collectors.joining(""));
+		String srtDirection = pageable.getSort().stream().map(sortName -> sortName.getDirection().name()).collect(Collectors.joining(""));
+		Boolean isAsc = srtDirection.equalsIgnoreCase("ASC");
+		MutableSortDefinition srt = new MutableSortDefinition(srtProp, true, isAsc); //attributes: String property, boolean ignoreCase, boolean ascending
+		
 		PagedListHolder<ApplyContactEntity> listHolder = new PagedListHolder<ApplyContactEntity>(resultList);
-		MutableSortDefinition srt = new MutableSortDefinition("id", true, false);
 		listHolder.setSort(srt);
+		listHolder.resort();
 		listHolder.setPage(pageable.getPageNumber());
 		listHolder.setPageSize(pageable.getPageSize());
-		String sss = pageable.getSort().stream()
-			    .map(order -> order.getProperty()).collect(Collectors.joining(""));
-		String srtName = pageable.getSort().stream().map(sortName -> sortName.getDirection().name()).collect(Collectors.joining(""));
-		Boolean isAsc = (srtName.equalsIgnoreCase("ASC"));
-		System.out.println(sss);
-		System.out.println(srtName);
-		System.out.println(isAsc);
+
+		
 		//Page<ApplyContactEntity> resultPage = new PageImpl<>(listHolder, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), resultList.size() );
 		logger.info("++++++++++++++++ Result of the query returned ok");
 		return listHolder;
