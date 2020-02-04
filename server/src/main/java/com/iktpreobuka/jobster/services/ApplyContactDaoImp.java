@@ -630,4 +630,37 @@ public class ApplyContactDaoImp implements ApplyContactDao {
 
 	}
 
+	@Override
+	public void deleteApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception {
+		try {
+			application.setStatusInactive();
+			application.setUpdatedById(loggedUserId);
+			applyContactRepository.save(application);
+		} catch (Exception e) {
+			throw new Exception("deleteApplication failed on saving." + e.getLocalizedMessage());
+		}
+	}
+
+	@Override
+	public void undeleteApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception {
+		try {
+			application.setStatusActive();
+			application.setUpdatedById(loggedUserId);
+			applyContactRepository.save(application);
+		} catch (Exception e) {
+			throw new Exception("undeleteApplication failed on saving." + e.getLocalizedMessage());
+		}
+	}
+
+	@Override
+	public void archiveApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception {
+		try {
+			application.setStatusArchived();
+			application.setUpdatedById(loggedUserId);
+			applyContactRepository.save(application);
+		} catch (Exception e) {
+			throw new Exception("ArchiveApplication failed on saving." + e.getLocalizedMessage());
+		}
+	}
+
 }

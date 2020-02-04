@@ -48,4 +48,13 @@ public interface ApplyContactDao {
 			String contactDateBottom, String contactDateTop, Pageable pageable);
 
 
+	void deleteApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception;
+
+
+	void undeleteApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception;
+
+
+	void archiveApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception;
+
+
 }
