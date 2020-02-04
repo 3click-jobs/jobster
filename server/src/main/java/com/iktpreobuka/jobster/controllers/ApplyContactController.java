@@ -1915,15 +1915,23 @@ public class ApplyContactController {
 					logger.info("++++++++++++++++ Date format not correct");
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				}
+				
 				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
-				Page<ApplyContactEntity> applicationsPage = applyContactDao.findByQueryAndUser(loggedInUserId,status, rejected,connected,expired,commentable,connectionDateBottom,connectionDateTop,contactDateBottom,contactDateTop, pageable);
-				Iterable <ApplyContactEntity> applications =  applicationsPage.getContent();
+				
+				PagedListHolder<ApplyContactEntity> applicationsPage = applyContactDao.findByQueryAndUser(loggedInUserId,status,
+						rejected,connected,expired,commentable,connectionDateBottom,connectionDateTop,contactDateBottom,contactDateTop, pageable);
+				Iterable <ApplyContactEntity> applications =  applicationsPage.getPageList();
 				if (Iterables.isEmpty(applications)) {
 					logger.info("++++++++++++++++ Applications not found");
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				}
+				if(applicationsPage.getPageCount() < pageable.getPageNumber()) {
+					logger.info("++++++++++++++++ Selected page out of bound");
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				}
 				logger.info("---------------- Found applications - OK.");
 				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
+				
 			} catch (Exception e) {
 				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
@@ -1958,19 +1966,16 @@ public class ApplyContactController {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
-			/*
-			 * 	Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
-				Page<ApplyContactEntity> applicationsPage = applyContactRepository.findBySeekAndStatusLike(seek, pageable);
-				Iterable<ApplyContactEntity> applications = applicationsPage.getContent();
-			 * 
-			 */
-			
 			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
-			PagedListHolder<ApplyContactEntity> applicationsPage = applyContactDao.findByQuery(status, rejected, connected, expired, commentable, connectionDateBottom, connectionDateTop, contactDateBottom, contactDateTop, pageable);
+			PagedListHolder<ApplyContactEntity> applicationsPage = applyContactDao.findByQuery(status, rejected, connected, expired,
+					commentable, connectionDateBottom, connectionDateTop, contactDateBottom, contactDateTop, pageable);
 			Iterable<ApplyContactEntity> applications = applicationsPage.getPageList();
-			
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			if(applicationsPage.getPageCount() < pageable.getPageNumber()) {
+				logger.info("++++++++++++++++ Selected page out of bound");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found applications - OK.");
