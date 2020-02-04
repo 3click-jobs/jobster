@@ -578,22 +578,33 @@ public class ApplyContactDaoImp implements ApplyContactDao{
 		@SuppressWarnings("unchecked")
 		Iterable<ApplyContactEntity> result = query.getResultList();
 		List<ApplyContactEntity> resultList = (List<ApplyContactEntity>) result;
+		logger.info("++++++++++++++++ Result of the query returned ok and converted to list");
 		
 		String srtProp = pageable.getSort().stream()
 			    .map(order -> order.getProperty()).collect(Collectors.joining(""));
+		logger.info("++++++++++++++++ sort property extracted from pageable");
+
 		String srtDirection = pageable.getSort().stream().map(sortName -> sortName.getDirection().name()).collect(Collectors.joining(""));
+		logger.info("++++++++++++++++ sort direction extracted from pageable");
+
 		Boolean isAsc = srtDirection.equalsIgnoreCase("ASC");
 		MutableSortDefinition srt = new MutableSortDefinition(srtProp, true, isAsc); //attributes: String property, boolean ignoreCase, boolean ascending
-		
-		PagedListHolder<ApplyContactEntity> listHolder = new PagedListHolder<ApplyContactEntity>(resultList);
-		listHolder.setSort(srt);
-		listHolder.resort();
-		listHolder.setPage(pageable.getPageNumber());
-		listHolder.setPageSize(pageable.getPageSize());
+		logger.info("++++++++++++++++ Sort Definition created");
 
 		
-		//Page<ApplyContactEntity> resultPage = new PageImpl<>(listHolder, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), resultList.size() );
-		logger.info("++++++++++++++++ Result of the query returned ok");
+		PagedListHolder<ApplyContactEntity> listHolder = new PagedListHolder<ApplyContactEntity>(resultList);
+		logger.info("++++++++++++++++ Paged List Holder created");
+		listHolder.setSort(srt);
+		listHolder.resort();
+		logger.info("++++++++++++++++ sort definition applied and source list resorted");
+
+		listHolder.setPage(pageable.getPageNumber());
+		logger.info("++++++++++++++++ page number added");
+
+		listHolder.setPageSize(pageable.getPageSize());
+		logger.info("++++++++++++++++ sort size added");
+		
+		logger.info("++++++++++++++++ page returned ");
 		return listHolder;
 		
 	}
