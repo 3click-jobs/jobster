@@ -23,6 +23,8 @@ import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
+import com.iktpreobuka.jobster.entities.PersonEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.repositories.ApplyContactRepository;
 import com.iktpreobuka.jobster.util.StringDateFormatValidator;
 
@@ -628,6 +630,39 @@ public class ApplyContactDaoImp implements ApplyContactDao {
 		logger.info("++++++++++++++++ page returned ");
 		return listHolder;
 
+	}
+
+	@Override
+	public void deleteApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception {
+		try {
+			application.setStatusInactive();
+			application.setUpdatedById(loggedUserId);
+			applyContactRepository.save(application);
+		} catch (Exception e) {
+			throw new Exception("deleteApplication failed on saving." + e.getLocalizedMessage());
+		}
+	}
+
+	@Override
+	public void undeleteApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception {
+		try {
+			application.setStatusActive();
+			application.setUpdatedById(loggedUserId);
+			applyContactRepository.save(application);
+		} catch (Exception e) {
+			throw new Exception("undeleteApplication failed on saving." + e.getLocalizedMessage());
+		}
+	}
+
+	@Override
+	public void archiveApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception {
+		try {
+			application.setStatusArchived();
+			application.setUpdatedById(loggedUserId);
+			applyContactRepository.save(application);
+		} catch (Exception e) {
+			throw new Exception("ArchiveApplication failed on saving." + e.getLocalizedMessage());
+		}
 	}
 
 }
