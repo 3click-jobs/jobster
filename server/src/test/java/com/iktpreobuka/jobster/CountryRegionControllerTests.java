@@ -47,7 +47,7 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
 
-
+//@Ignore
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration
@@ -279,8 +279,8 @@ public class CountryRegionControllerTests {
 			mockMvc.perform(get("/jobster/regions/archived")
 					.header("Authorization", "Bearer " + token)) 
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$[1].countryRegionName", is("RAOne")))
-				.andExpect(jsonPath("$[0].countryRegionName", is("RATwo")));
+				.andExpect(jsonPath("$[1].countryRegionName", is("RATwo")))
+				.andExpect(jsonPath("$[0].countryRegionName", is("RAOne")));
 		}
 		
 		@Test 

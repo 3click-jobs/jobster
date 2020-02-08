@@ -1,7 +1,5 @@
 package com.iktpreobuka.jobster.services;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 

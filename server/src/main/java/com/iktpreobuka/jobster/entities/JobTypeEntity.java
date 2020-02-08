@@ -20,6 +20,8 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.jobster.security.Views;
 
 @Entity
 @Table(name = "job_types")
@@ -41,23 +43,23 @@ public class JobTypeEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	//@JsonView(Views.Parent.class)
+	@JsonView(Views.Admin.class)
 	@Column(name="job_type_id")
 	protected Integer id;
-	//@JsonView(Views.Student.class)
+	@JsonView(Views.Guest.class)
 	@Column(name="job_type_name")
-	@Pattern(regexp = "^[A-Za-z]{2,}$", message="Job type name is not valid.")
+	@Pattern(regexp = "^[A-Za-z-, \\.\\/\\(\\)]{2,}$", message="Job type name is not valid.")
 	@NotNull (message = "Job type name must be provided.")
 	protected String jobTypeName;
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
 	@Max(1)
     @Min(-1)
     @Column(name = "status", nullable = false)
 	private Integer status;
-	//@JsonView(Views.Admin.class)
+	@JsonView(Views.Admin.class)
     @Column(name = "created_by", nullable = false, updatable = false)
 	private Integer createdById;
-    //@JsonView(Views.Admin.class)
+    @JsonView(Views.Admin.class)
     @Column(name = "updated_by")
     private Integer updatedById;
 	@JsonIgnore
@@ -70,8 +72,17 @@ public class JobTypeEntity {
 	}
 
 	public JobTypeEntity(
-			@Pattern(regexp = "^[A-Za-z]{2,}$", message = "Job type name is not valid.") @NotNull(message = "Job type name must be provided.") String jobTypeName,
+			@Pattern(regexp = "^[A-Za-z-, \\.\\/\\(\\)]{2,}$", message = "Job type name is not valid.") @NotNull(message = "Job type name must be provided.") String jobTypeName,
 			@Max(1) @Min(-1) Integer status, Integer createdById) {
+		super();
+		this.jobTypeName = jobTypeName;
+		this.status = status;
+		this.createdById = createdById;
+	}
+	
+	public JobTypeEntity(
+			@Pattern(regexp = "^[A-Za-z-, \\.\\/\\(\\)]{2,}$", message = "Job type name is not valid.") @NotNull(message = "Job type name must be provided.") String jobTypeName,
+			Integer createdById) {
 		super();
 		this.jobTypeName = jobTypeName;
 		this.status = getStatusActive();

@@ -1,9 +1,7 @@
 package com.iktpreobuka.jobster.controllers;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
-
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -15,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -83,7 +80,7 @@ public class CountryController {
 			logger.info("################ /jobster/countries/getAll started.");
 			logger.info("Logged username: " + principal.getName());
 			try {
-				Iterable<CountryEntity> countries= countryRepository.findAll();
+				Iterable<CountryEntity> countries= countryRepository.findAllByOrderByCountryName();
 				logger.info("---------------- Finished OK.");
 				return new ResponseEntity<Iterable<CountryEntity>>(countries, HttpStatus.OK);
 				} catch(Exception e) {

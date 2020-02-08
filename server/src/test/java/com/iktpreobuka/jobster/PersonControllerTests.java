@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -51,6 +50,7 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 
+//@Ignore
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration 
@@ -410,7 +410,7 @@ public class PersonControllerTests {
     	personDTO.setGender("GENDER_MALE");
     	personDTO.setCity("City without");
     	personDTO.setCountry("World Union");
-    	personDTO.setCountryRegion("");
+//    	personDTO.setCountryRegion(null);
     	personDTO.setAccessRole("ROLE_USER");
     	personDTO.setIso2Code("XX");
     	personDTO.setLongitude(43.1);
@@ -418,18 +418,20 @@ public class PersonControllerTests {
     	personDTO.setUsername("Test123");
     	personDTO.setPassword("Test123");
     	personDTO.setConfirmedPassword("Test123");
+    	
     	Gson gson = new Gson();
     	String json = gson.toJson(personDTO);
+    	
     	mockMvc.perform(post("/jobster/users/persons/")
-			.header("Authorization", "Bearer " + token)
-    		.contentType(MediaType.APPLICATION_JSON).content(json))
-    		//.andDo(MockMvcResultHandlers.print())
+    		.contentType(MediaType.APPLICATION_JSON).content(json)
+			.header("Authorization", "Bearer " + token))
+//    		.andDo(MockMvcResultHandlers.print())
     		.andExpect(status().isOk())
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.user.email", is("Jobsteries@mail.com")));
 		PersonControllerTests.persons.add(personRepository.getByEmailAndStatusLike(personDTO.getEmail(), 1));
 		userAccountRepository.delete(userAccountRepository.getByUser(personRepository.getByEmailAndStatusLike(personDTO.getEmail(), 1)));
-    	PersonControllerTests.countryRegions.add(countryRegionRepository.getByCountryRegionName(""));	
+//    	PersonControllerTests.countryRegions.add(countryRegionRepository.getByCountryRegionName(""));	
     	PersonControllerTests.cities.add(cityRepository.getByCityName("City without"));	
 	}
 

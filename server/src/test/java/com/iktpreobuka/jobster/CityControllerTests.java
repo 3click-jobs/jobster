@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -30,7 +29,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -50,7 +48,7 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
 
-
+//@Ignore
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration
@@ -240,7 +238,7 @@ public class CityControllerTests {
 		logger.info("getCityByIdNotExists");
 		mockMvc.perform(get("/jobster/cities/getById/" + (CityControllerTests.cities.get(0).getId()+5))
 				.header("Authorization", "Bearer " + token))
-			.andExpect(content().string(" City doesn`t exists."));
+			.andExpect(content().string("City doesn`t exists."));
 	}
 	
 	@Test 
@@ -365,6 +363,8 @@ public class CityControllerTests {
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
     	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.delete(countryRegionRepository.getByCountryRegionName("LFRegion"));
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -427,7 +427,8 @@ public class CityControllerTests {
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
     	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
-	}
+    	countryRegionRepository.deleteAll();
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));	}
 	
 	@Test 
 	public void addNewCityMarginalRegion() throws Exception {
@@ -448,6 +449,8 @@ public class CityControllerTests {
 			.andExpect(content().contentType(contentType)) 
 			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
     	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.delete(countryRegionRepository.getByCountryRegionName("RC"));
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -486,6 +489,9 @@ public class CityControllerTests {
     		.andExpect(status().isOk())
     		.andExpect(content().contentType(contentType)) 
     		.andExpect(jsonPath("$.cityName", is("LFCapitol")));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.deleteAll();
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -850,7 +856,9 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LC")));
-        	cityRepository.delete(cityRepository.getByCityName("LC"));
+    	cityRepository.delete(cityRepository.getByCityName("LC"));
+    	countryRegionRepository.deleteAll();
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 
 	@Test 
@@ -928,6 +936,7 @@ public class CityControllerTests {
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.region.country.countryName", is("Co")));
         	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+        	countryRepository.delete(countryRepository.getByCountryName("Co"));
 	}
 	
 	@Test 
@@ -1437,7 +1446,8 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
-        	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.delete(countryRegionRepository.getByCountryRegionName("LFRegion"));
 	}
 	
 	@Test
@@ -1458,7 +1468,9 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
-        	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.delete(countryRegionRepository.getByCountryRegionName("LFRegion"));
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -1550,7 +1562,9 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
-        	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	countryRegionRepository.deleteAll();
+    	countryRepository.delete(countryRepository.getByCountryName("Latifundija"));
 	}
 	
 	@Test 
@@ -1571,8 +1585,8 @@ public class CityControllerTests {
         		.andExpect(status().isOk())
     			.andExpect(content().contentType(contentType)) 
     			.andExpect(jsonPath("$.cityName", is("LFCapitol")));
-        	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
-	}
+    	cityRepository.delete(cityRepository.getByCityName("LFCapitol"));
+    	}
 	
 	@Test 
 	public void addNewCityNullLatitude() throws Exception {
@@ -2083,7 +2097,7 @@ public class CityControllerTests {
 				@Test 
 				public void modifyCityMarginalCountryName() throws Exception {
 					logger.info("modifyCityMarginalCountryName");
-					POSTCityDTO city = new POSTCityDTO("World city", 180.0, 45.0, "World region", "WU", "WU");
+					POSTCityDTO city = new POSTCityDTO("World city", 180.0, 45.0, "World region", "WU", "RS");
 					Gson gson = new Gson();
 			    	String json = gson.toJson(city);
 			    	mockMvc.perform(put("/jobster/cities/modify/" + (CityControllerTests.cities.get(0).getId()))

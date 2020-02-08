@@ -10,4 +10,7 @@ public interface EmailDao {
 	void sendCommentDeletedEmail(UserEntity u) throws Exception;
 
 	void sendCommentUndeleteEmail(UserEntity u) throws Exception;
+	
+	void testEmailSending() throws Exception;
+
 }

@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -48,7 +47,7 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
 
-
+//@Ignore
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration
@@ -191,9 +190,9 @@ public class CountryControllerTests {
 		mockMvc.perform(get("/jobster/countries/getAll")
 				.header("Authorization", "Bearer " + token)) 
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$[0].countryName", is("Inactive")))
+			.andExpect(jsonPath("$[0].countryName", is("Active")))
 			.andExpect(jsonPath("$[1].countryName", is("Archived")))
-			.andExpect(jsonPath("$[2].countryName", is("Active")));
+			.andExpect(jsonPath("$[2].countryName", is("Inactive")));
 	}
 	
 	@Test 
@@ -230,7 +229,7 @@ public class CountryControllerTests {
 	public void getCountryByIdWrongId() throws Exception { 
 		logger.info("getCountryByIdWrongId");
 		String wrongId="test";
-		mockMvc.perform(get("/jobster/cities/getById/" + wrongId)
+		mockMvc.perform(get("/jobster/countries/getById/" + wrongId)
 				.header("Authorization", "Bearer " + token))
 			.andExpect(status().isBadRequest());
 	}

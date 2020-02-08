@@ -30,8 +30,6 @@ import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CommentEntity;
-import com.iktpreobuka.jobster.entities.CountryEntity;
-import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.AddCommentDTO;
 import com.iktpreobuka.jobster.entities.dto.ShowCommentDTO;

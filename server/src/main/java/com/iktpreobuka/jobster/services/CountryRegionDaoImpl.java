@@ -1,15 +1,12 @@
 package com.iktpreobuka.jobster.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.CountryRegionEntity;
@@ -34,7 +31,7 @@ public class CountryRegionDaoImpl implements CountryRegionDao {
 	
 	@Override
 	public Iterable<CountryRegionEntity> findRegionByStatusLike(Integer status) throws Exception {
-		return countryRegionRepository.findByStatusLike(status);
+		return countryRegionRepository.findByStatusLikeOrderById(status);
 	}
 
 

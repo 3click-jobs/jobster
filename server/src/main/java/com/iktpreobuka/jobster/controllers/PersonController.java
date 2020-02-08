@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
-import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.PersonEntity;
 import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
@@ -211,15 +210,15 @@ public class PersonController {
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
 			}
-		if (newPerson == null) {
+		if (newPerson.equals(null)) {
 			logger.info("---------------- New person is null.");
 	        return new ResponseEntity<>("New person is null.", HttpStatus.BAD_REQUEST);
 	      }
-		if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getAccessRole() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getIso2Code() == null || newPerson.getCountryRegion() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null || newPerson.getUsername() == null || newPerson.getPassword() == null || newPerson.getConfirmedPassword() == null ) {
+		if (newPerson.getFirstName() == null || newPerson.getLastName() == null || newPerson.getAccessRole() == null || newPerson.getGender() == null || newPerson.getBirthDate() == null || newPerson.getEmail() == null || newPerson.getMobilePhone() == null || newPerson.getCity() == null || newPerson.getCountry() == null || newPerson.getIso2Code() == null || newPerson.getLatitude() == null || newPerson.getLongitude() == null || newPerson.getUsername() == null || newPerson.getPassword() == null || newPerson.getConfirmedPassword() == null ) {
 			logger.info("---------------- Some atributes are null.");
 			return new ResponseEntity<>("Some atributes are null", HttpStatus.BAD_REQUEST);
 		}
-		if (newPerson.getFirstName().equals(" ") || newPerson.getFirstName().equals("") || newPerson.getLastName().equals(" ") || newPerson.getLastName().equals("") || newPerson.getGender().equals(" ") || newPerson.getGender().equals("") || newPerson.getBirthDate().equals(" ") || newPerson.getBirthDate().equals("") || newPerson.getAccessRole().equals(" ") || newPerson.getAccessRole().equals("") || newPerson.getEmail().equals(" ") || newPerson.getEmail().equals("") || newPerson.getMobilePhone().equals(" ") || newPerson.getMobilePhone().equals("") || newPerson.getCity().equals(" ") || newPerson.getCity().equals("") || newPerson.getCountry().equals(" ") || newPerson.getCountry().equals("") || newPerson.getIso2Code().equals(" ") || newPerson.getIso2Code().equals("") || newPerson.getUsername().equals(" ") || newPerson.getUsername().equals("") || newPerson.getPassword().equals(" ") || newPerson.getPassword().equals("") || newPerson.getConfirmedPassword().equals(" ") || newPerson.getConfirmedPassword().equals("") ) {
+		if (newPerson.getFirstName().equals(" ") || newPerson.getFirstName().equals("") || newPerson.getLastName().equals(" ") || newPerson.getLastName().equals("") || newPerson.getGender().equals(" ") || newPerson.getGender().equals("") || (newPerson.getCountryRegion() != null && ( newPerson.getCountryRegion().equals(" ") || newPerson.getCountryRegion().equals("") ) ) || newPerson.getBirthDate().equals(" ") || newPerson.getBirthDate().equals("") || newPerson.getAccessRole().equals(" ") || newPerson.getAccessRole().equals("") || newPerson.getEmail().equals(" ") || newPerson.getEmail().equals("") || newPerson.getMobilePhone().equals(" ") || newPerson.getMobilePhone().equals("") || newPerson.getCity().equals(" ") || newPerson.getCity().equals("") || newPerson.getCountry().equals(" ") || newPerson.getCountry().equals("") || newPerson.getIso2Code().equals(" ") || newPerson.getIso2Code().equals("") || newPerson.getUsername().equals(" ") || newPerson.getUsername().equals("") || newPerson.getPassword().equals(" ") || newPerson.getPassword().equals("") || newPerson.getConfirmedPassword().equals(" ") || newPerson.getConfirmedPassword().equals("") ) {
 			logger.info("---------------- Some atributes are blanks.");
 			return new ResponseEntity<>("Some atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
@@ -245,6 +244,7 @@ public class PersonController {
 				logger.info("---------------- Username already exists.");
 		        return new ResponseEntity<>("Username already exists.", HttpStatus.NOT_ACCEPTABLE);
 		      }
+			logger.info("+++++++++++++++++++++++++++");
 			user = personDao.addNewPerson(newPerson);
 			logger.info("Person created.");
 			if (newPerson.getUsername() != null && newPerson.getPassword() != null && newPerson.getConfirmedPassword() != null && newPerson.getPassword().equals(newPerson.getConfirmedPassword())) {

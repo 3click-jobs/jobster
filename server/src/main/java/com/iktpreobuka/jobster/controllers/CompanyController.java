@@ -33,9 +33,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Iterables;
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.controllers.util.UserCustomValidator;
-import com.iktpreobuka.jobster.entities.CommentEntity;
 import com.iktpreobuka.jobster.entities.CompanyEntity;
-import com.iktpreobuka.jobster.entities.CountryEntity;
 import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.CompanyDTO;
@@ -219,7 +217,7 @@ public class CompanyController {
 			logger.info("---------------- Some or all atributes are null.");
 			return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
 		}
-		if (newCompany.getCompanyName().equals(" ") || newCompany.getCompanyName().equals("") || newCompany.getCompanyRegistrationNumber().equals(" ") || newCompany.getCompanyRegistrationNumber().equals("") || newCompany.getAccessRole().equals(" ") || newCompany.getAccessRole().equals("") || newCompany.getEmail().equals(" ") || newCompany.getEmail().equals("") || newCompany.getMobilePhone().equals(" ") || newCompany.getMobilePhone().equals("") || newCompany.getCity().equals(" ") || newCompany.getCity().equals("") || newCompany.getCountry().equals(" ") || newCompany.getCountry().equals("") || newCompany.getIso2Code().equals(" ") || newCompany.getIso2Code().equals("") || newCompany.getUsername().equals(" ") || newCompany.getUsername().equals("") || newCompany.getPassword().equals(" ") || newCompany.getPassword().equals("") || newCompany.getConfirmedPassword().equals(" ") || newCompany.getConfirmedPassword().equals("") ) {
+		if (newCompany.getCompanyName().equals(" ") || newCompany.getCompanyName().equals("") || newCompany.getCompanyRegistrationNumber().equals(" ") || newCompany.getCompanyRegistrationNumber().equals("") || newCompany.getAccessRole().equals(" ") || newCompany.getAccessRole().equals("") || newCompany.getEmail().equals(" ") || newCompany.getEmail().equals("") || newCompany.getMobilePhone().equals(" ") || newCompany.getMobilePhone().equals("") || newCompany.getCity().equals(" ") || newCompany.getCity().equals("") || (newCompany.getCountryRegion() != null && (newCompany.getCountryRegion().equals(" ") || newCompany.getCountryRegion().equals("") ) ) || newCompany.getCountry().equals(" ") || newCompany.getCountry().equals("") || newCompany.getIso2Code().equals(" ") || newCompany.getIso2Code().equals("") || newCompany.getUsername().equals(" ") || newCompany.getUsername().equals("") || newCompany.getPassword().equals(" ") || newCompany.getPassword().equals("") || newCompany.getConfirmedPassword().equals(" ") || newCompany.getConfirmedPassword().equals("") ) {
 			logger.info("---------------- Some or all atributes are blanks.");
 			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}

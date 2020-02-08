@@ -926,6 +926,8 @@ public class ApplyContactController {
 	}
 
 	// ************* GET MY APPLICATIONS WITH FILTER************
+	
+	//not using this one, use the pagable
 	@Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/myApplies")
@@ -936,8 +938,8 @@ public class ApplyContactController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Integer loggedInUserId = userAccountRepository.getByUsername(principal.getName()).getUser().getId();
-			Iterable<ApplyContactEntity> applications = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,1,
-					rejected, connected, expired, commentable);
+			Iterable<ApplyContactEntity> applications = applyContactDao.findByQueryAndUser(loggedInUserId,1,
+					rejected, connected, expired, commentable,null,null,null,null);
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -955,7 +957,7 @@ public class ApplyContactController {
 
 
 	// @Secured("ROLE_ADMIN")
-	@JsonView(Views.Admin.class)
+	//@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/allPaginated") // get all comments
 	public ResponseEntity<?> getAllPaginated(
 			@RequestParam Optional<Integer> page,
@@ -1883,40 +1885,8 @@ public class ApplyContactController {
 						HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
-/*	TREBA LI PAGINACIJA?	
-		// @Secured("ROLE_ADMIN")
-		//@JsonView(Views.Admin.class)
-		@RequestMapping(method = RequestMethod.GET, value = "/myAppliesPaginated")
-		public ResponseEntity<?> getMyAppliesQueryPaginated( 
-				@RequestParam Optional<Integer> page,
-				@RequestParam Optional<Integer> pageSize,
-				@RequestParam Optional<Sort.Direction> direction, 
-				@RequestParam Optional<String> sortBy,
-				Principal principal, 
-				@RequestParam(required = false) Boolean commentable,
-				@RequestParam(required = false) Boolean rejected,
-				@RequestParam(required = false) Boolean connected,
-				@RequestParam(required = false) Boolean expired) {
-			logger.info("################ /jobster/apply/myApplies/getMyAppliesQueryPagianted started.");
-			logger.info("Logged username: " + principal.getName());
-			try {
-				Integer loggedInUserId = userAccountRepository.getByUsername(principal.getName()).getUser().getId();
-				Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
-				Page<ApplyContactEntity> applicationsPage = applyContactDao.findByQueryForLoggedInUser(loggedInUserId,rejected,connected,expired,commentable, pageable);
-				Iterable <ApplyContactEntity> applications =  applicationsPage.getContent();
-				if (Iterables.isEmpty(applications)) {
-					logger.info("++++++++++++++++ Applications not found");
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-				logger.info("---------------- Found applications - OK.");
-				return new ResponseEntity<Iterable<ApplyContactEntity>>(applications, HttpStatus.OK);
-			} catch (Exception e) {
-				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-						HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
-*/
+
+		
 		@Secured("ROLE_ADMIN")
 		//@JsonView(Views.Admin.class)
 		@RequestMapping(method = RequestMethod.GET, value = "/myAppliesPaginated")
@@ -1973,7 +1943,10 @@ public class ApplyContactController {
 	@Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/applications")
-	public ResponseEntity<?> getApplicationsByQuery(Principal principal, @RequestParam(required = false) Integer status,
+	public ResponseEntity<?> getApplicationsByQuery(@RequestParam Optional<Integer> page,
+			@RequestParam Optional<Integer> pageSize,
+			@RequestParam Optional<Sort.Direction> direction, 
+			@RequestParam Optional<String> sortBy,Principal principal, @RequestParam(required = false) Integer status,
 			@RequestParam(required = false) Boolean commentable, @RequestParam(required = false) Boolean rejected,
 			@RequestParam(required = false) Boolean connected, @RequestParam(required = false) Boolean expired,
 			@RequestParam(required = false) String connectionDateBottom,@RequestParam(required = false) String connectionDateTop,
@@ -1992,10 +1965,16 @@ public class ApplyContactController {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
-			Iterable<ApplyContactEntity> applications = applyContactDao.findByQuery(status, rejected, connected,
-					expired, commentable,connectionDateBottom,connectionDateTop,contactDateBottom,contactDateTop);
+			Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
+			PagedListHolder<ApplyContactEntity> applicationsPage = applyContactDao.findByQuery(status, rejected, connected, expired,
+					commentable, connectionDateBottom, connectionDateTop, contactDateBottom, contactDateTop, pageable);
+			Iterable<ApplyContactEntity> applications = applicationsPage.getPageList();
 			if (Iterables.isEmpty(applications)) {
 				logger.info("++++++++++++++++ Applications not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			if(applicationsPage.getPageCount() < pageable.getPageNumber()) {
+				logger.info("++++++++++++++++ Selected page out of bound");
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 			logger.info("---------------- Found applications - OK.");
@@ -2083,84 +2062,90 @@ public class ApplyContactController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}*/
+	
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}") 
+	public ResponseEntity<?> deactivateApplication(@PathVariable Integer id, Principal principal) {
+		try {
+			logger.info("################ /jobster/comment/deactivateApplication started.");
+			logger.info("Logged username: " + principal.getName());
+			ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, 1);
+			if (application == null) {
+				logger.error("++++++++++++++++ Active application not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			if (user == null) {
+				logger.error("++++++++++++++++ User attempting to delete was not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- User and comment found OK");
+			applyContactDao.deleteApplication(user.getId(), application);
+			logger.info("---------------- Application deactivated and updated by updated!!!");
+						
+			return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}") 
+	public ResponseEntity<?> activateApplication(@PathVariable Integer id, Principal principal) {
+		try {
+			logger.info("################ /jobster/comment/activateApplication started.");
+			logger.info("Logged username: " + principal.getName());
+			ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, 0);
+			if (application == null) {
+				logger.error("++++++++++++++++ Inactive application not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			if (user == null) {
+				logger.error("++++++++++++++++ User attempting to undelete was not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- User and comment found OK");
+			applyContactDao.undeleteApplication(user.getId(), application);
+			logger.info("---------------- Application activated and updated by updated!!!");
+			return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}") 
+	public ResponseEntity<?> archiveApplication(@PathVariable Integer id, Principal principal) {
+		try {
+			logger.info("################ /jobster/comment/archiveApplication started.");
+			logger.info("Logged username: " + principal.getName());
+			ApplyContactEntity application = applyContactRepository.findById(id).orElse(null);
+			if (application == null || application.getStatus() == -1) {
+				logger.error("++++++++++++++++ Application not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			if (user == null) {
+				logger.error("++++++++++++++++ User attempting to archive was not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- User and comment found OK");
+			applyContactDao.archiveApplication(user.getId(), application);
+			logger.info("---------------- Application archived and updated by updated!!!");
+			return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-		@RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}") 
-		public ResponseEntity<?> deactivateApplication(@PathVariable Integer id, Principal principal) {
-			try {
-				logger.info("################ /jobster/comment/deactivateApplication started.");
-				logger.info("Logged username: " + principal.getName());
-				ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, 1);
-				if (application == null) {
-					logger.error("++++++++++++++++ Active application not found");
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-				UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
-				if (user == null) {
-					logger.error("++++++++++++++++ User attempting to delete was not found");
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-				logger.info("---------------- User and comment found OK");
-				applyContactDao.deleteApplication(user.getId(), application);
-				logger.info("---------------- Application deactivated and updated by updated!!!");
-							
-				return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
-			} catch (Exception e) {
-				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-						HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
+
 		
-		@RequestMapping(method = RequestMethod.PUT, value = "/undelete/{id}") 
-		public ResponseEntity<?> activateApplication(@PathVariable Integer id, Principal principal) {
-			try {
-				logger.info("################ /jobster/comment/activateApplication started.");
-				logger.info("Logged username: " + principal.getName());
-				ApplyContactEntity application = applyContactRepository.findByIdAndStatusLike(id, 0);
-				if (application == null) {
-					logger.error("++++++++++++++++ Inactive application not found");
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-				UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
-				if (user == null) {
-					logger.error("++++++++++++++++ User attempting to undelete was not found");
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-				logger.info("---------------- User and comment found OK");
-				applyContactDao.undeleteApplication(user.getId(), application);
-				logger.info("---------------- Application activated and updated by updated!!!");
-				return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
-			} catch (Exception e) {
-				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-						HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
+
 		
-		@RequestMapping(method = RequestMethod.PUT, value = "/archive/{id}") 
-		public ResponseEntity<?> archiveApplication(@PathVariable Integer id, Principal principal) {
-			try {
-				logger.info("################ /jobster/comment/archiveApplication started.");
-				logger.info("Logged username: " + principal.getName());
-				ApplyContactEntity application = applyContactRepository.findById(id).orElse(null);
-				if (application == null || application.getStatus() == -1) {
-					logger.error("++++++++++++++++ Application not found");
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-				UserEntity user = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
-				if (user == null) {
-					logger.error("++++++++++++++++ User attempting to archive was not found");
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-				logger.info("---------------- User and comment found OK");
-				applyContactDao.archiveApplication(user.getId(), application);
-				logger.info("---------------- Application archived and updated by updated!!!");
-				return new ResponseEntity<ApplyContactEntity>(application, HttpStatus.OK);
-			} catch (Exception e) {
-				logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
-				return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
-						HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
 
 }
