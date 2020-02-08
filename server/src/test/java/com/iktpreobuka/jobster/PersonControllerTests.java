@@ -50,6 +50,7 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 
+//@Ignore
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration 
