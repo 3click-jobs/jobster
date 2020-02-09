@@ -55,7 +55,6 @@ import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 @SpringBootTest 
 @WebAppConfiguration 
 //@WithMockUser(username = "Test1234", roles = { "EUserRole.ROLE_USER" })
-
 public class PersonControllerTests {
  
 
