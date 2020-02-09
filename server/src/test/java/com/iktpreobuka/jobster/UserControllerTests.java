@@ -45,7 +45,6 @@ import com.iktpreobuka.jobster.repositories.UserRepository;
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration 
-
 public class UserControllerTests {
  
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(), 

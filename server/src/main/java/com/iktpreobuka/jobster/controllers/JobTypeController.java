@@ -137,7 +137,7 @@ public class JobTypeController {
 			logger.info("---------------- Validation has errors - " + createErrorMessage(result));
 			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST); 
 			}
-		if (newJobType.equals(null)) {
+		if (newJobType == null) {
 			logger.info("---------------- New Job type is null.");
 	        return new ResponseEntity<>("New newJob type is null.", HttpStatus.BAD_REQUEST);
 	      }
@@ -145,13 +145,17 @@ public class JobTypeController {
 			logger.info("---------------- Some or all atributes are null.");
 			return new ResponseEntity<>("Some or all atributes are null", HttpStatus.BAD_REQUEST);
 		}
-		if (newJobType.getJobTypeName().equals(" ") || newJobType.getJobTypeName().equals("") ) {
+		if (newJobType.getJobTypeName().equals(" ") ) {
+			logger.info("---------------- Some or all atributes are white spaces.");
+			return new ResponseEntity<>("Some or all atributes are white spaces", HttpStatus.BAD_REQUEST);
+		}
+		if (newJobType.getJobTypeName().equals("") ) {
 			logger.info("---------------- Some or all atributes are blanks.");
 			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		JobTypeEntity jobType = new JobTypeEntity();
 		try {
-			if (newJobType.getJobTypeName() != null && jobTypeRepository.getByJobTypeName(newJobType.getJobTypeName()) != null) {
+			if (jobTypeRepository.getByJobTypeName(newJobType.getJobTypeName()) != null) {
 				logger.info("---------------- Job type name already exists.");
 		        return new ResponseEntity<>("Job type name already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
@@ -240,13 +244,17 @@ public class JobTypeController {
 			logger.info("---------------- All atributes are null.");
 			return new ResponseEntity<>("All atributes are null", HttpStatus.BAD_REQUEST);
 		}
-		if (updateJobType.getJobTypeName() != null && (updateJobType.getJobTypeName().equals(" ") || updateJobType.getJobTypeName().equals("") ) ) {
+		if ( updateJobType.getJobTypeName().equals(" ") ) {
+			logger.info("---------------- Some or all atributes are white spaces.");
+			return new ResponseEntity<>("Some or all atributes are white spaces", HttpStatus.BAD_REQUEST);
+		}
+		if ( updateJobType.getJobTypeName().equals("") ) {
 			logger.info("---------------- Some or all atributes are blanks.");
 			return new ResponseEntity<>("Some or all atributes are blanks", HttpStatus.BAD_REQUEST);
 		}
 		JobTypeEntity jobType = new JobTypeEntity();
 		try {
-			if (updateJobType.getJobTypeName() != null && jobTypeRepository.getByJobTypeName(updateJobType.getJobTypeName()) != null) {
+			if (jobTypeRepository.getByJobTypeName(updateJobType.getJobTypeName()) != null) {
 				logger.info("---------------- Job type name already exists.");
 		        return new ResponseEntity<>("Job type name already exists.", HttpStatus.NOT_ACCEPTABLE);
 			}
@@ -258,10 +266,8 @@ public class JobTypeController {
 			logger.info("Job type identified.");
 			UserEntity loggedUser = userAccountRepository.findUserByUsernameAndStatusLike(principal.getName(), 1);
 			logger.info("Logged user identified.");
-			if (updateJobType.getJobTypeName() != null ) {
-				jobTypeDao.modifyJobType(loggedUser, jobType, updateJobType);
-				logger.info("Job type modified.");
-			}
+			jobTypeDao.modifyJobType(loggedUser, jobType, updateJobType);
+			logger.info("Job type modified.");
 			logger.info("---------------- Finished OK.");
 			return new ResponseEntity<>(jobType, HttpStatus.OK);
 		} catch (NumberFormatException e) {
