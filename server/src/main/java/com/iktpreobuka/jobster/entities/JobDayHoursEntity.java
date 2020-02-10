@@ -98,6 +98,23 @@ public class JobDayHoursEntity {
 		this.status = getStatusActive();;
 	}
 	
+	public JobDayHoursEntity(@NotNull(message = "Job seek must be provided.") JobSeekEntity seek,
+			@NotNull(message = "Day must be provided.") EDay day,
+			@NotNull(message = "From/minimum hour/s must be provided.") @Min(value = 0, message = "From/minimum hour/s must be {value} or higher!") @Max(value = 24, message = "From/minimum hour/s must be {value} or lower!") Integer fromHour,
+			@NotNull(message = "To/maximum hour/s must be provided.") @Min(value = 0, message = "To/maximum hour/s must be {value} or higher!") @Max(value = 24, message = "To/maximum hour/s must be {value} or lower!") Integer toHour,
+			Boolean isMinMax, Boolean isFlexibile) {
+		super();
+		this.seek = seek;
+		this.day = day;
+		this.fromHour = fromHour;
+		this.toHour = toHour;
+		this.isMinMax = isMinMax;
+		this.flexibileHours = isFlexibile;
+		this.status = getStatusActive();;
+	}
+	
+	
+	
 	
 	
 	public JobSeekEntity getSeek() {

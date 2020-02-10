@@ -872,7 +872,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 		logger.info("JobSeek that you asked for doesn't exist.");
-		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.NOT_FOUND);//po drakulicevoj preporuci svugde prepraviti da bi min i test bio bolji user frendly
 	}
 
 ///////////////////////////////////////GET BY EMPLOYEE /////////////////////////////////////
