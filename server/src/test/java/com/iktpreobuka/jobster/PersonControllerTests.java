@@ -50,11 +50,11 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.PersonRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 
+//@Ignore
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration 
 //@WithMockUser(username = "Test1234", roles = { "EUserRole.ROLE_USER" })
-
 public class PersonControllerTests {
  
 

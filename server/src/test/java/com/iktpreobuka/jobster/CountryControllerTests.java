@@ -47,11 +47,10 @@ import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
 
-
+//@Ignore
 @RunWith(SpringRunner.class) 
 @SpringBootTest 
 @WebAppConfiguration
-
 public class CountryControllerTests {
 	
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),

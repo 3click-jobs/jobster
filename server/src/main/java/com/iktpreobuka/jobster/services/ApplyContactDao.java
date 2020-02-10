@@ -1,5 +1,6 @@
 package com.iktpreobuka.jobster.services;
 
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -36,14 +37,24 @@ public interface ApplyContactDao {
 //pagination:
 	public Page<ApplyContactEntity> findAll(int page, int pageSize, Direction direction, String sortBy);
 	
-	public Page<ApplyContactEntity> findByQueryAndUser(Integer loggedInUserId,Integer status, Boolean rejected, Boolean connected,
+	public PagedListHolder<ApplyContactEntity> findByQueryAndUser(Integer loggedInUserId,Integer status, Boolean rejected, Boolean connected,
 			Boolean expired, Boolean commentable, String connectionDateBottom, String connectionDateTop,
 			String contactDateBottom, String contactDateTop, Pageable pageable);
 
 
-	public Page<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected, Boolean expired,
-			Boolean commentable, String connectionDateBottom, String connectionDateTop, String contactDateBottom,
-			String contactDateTop, Pageable pageable);
+
+	public PagedListHolder<ApplyContactEntity> findByQuery(Integer status, Boolean rejected, Boolean connected,
+			Boolean expired, Boolean commentable, String connectionDateBottom, String connectionDateTop,
+			String contactDateBottom, String contactDateTop, Pageable pageable);
+
+
+	void deleteApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception;
+
+
+	void undeleteApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception;
+
+
+	void archiveApplication(Integer loggedUserId, ApplyContactEntity application) throws Exception;
 
 
 }

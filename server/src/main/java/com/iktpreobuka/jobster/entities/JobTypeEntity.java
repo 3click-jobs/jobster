@@ -76,6 +76,15 @@ public class JobTypeEntity {
 			@Max(1) @Min(-1) Integer status, Integer createdById) {
 		super();
 		this.jobTypeName = jobTypeName;
+		this.status = status;
+		this.createdById = createdById;
+	}
+	
+	public JobTypeEntity(
+			@Pattern(regexp = "^[A-Za-z-, \\.\\/\\(\\)]{2,}$", message = "Job type name is not valid.") @NotNull(message = "Job type name must be provided.") String jobTypeName,
+			Integer createdById) {
+		super();
+		this.jobTypeName = jobTypeName;
 		this.status = getStatusActive();
 		this.createdById = createdById;
 	}
