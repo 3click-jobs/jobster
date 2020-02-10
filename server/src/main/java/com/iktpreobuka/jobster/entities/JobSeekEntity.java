@@ -193,6 +193,33 @@ public class JobSeekEntity {
 		this.elapse = getStatusActive();
 		this.createdById = createdById;
 	}
+	
+	public JobSeekEntity(@NotNull(message = "Employee must be provided.") UserEntity employee,
+			@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Job type must be provided.") JobTypeEntity type,
+			@NotNull(message = "Distance to job must be provided.") /*@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")*/ @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
+			@NotNull(message = "Beginning date must be provided.") Date beginningDate,
+			@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
+			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
+			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
+			Integer createdById) {
+		super();
+		this.employee = employee;
+		this.city = city;
+		this.type = type;
+		this.distanceToJob = distanceToJob;
+		this.beginningDate = beginningDate;
+		this.endDate = endDate;
+		this.flexibileDates = flexibileDates;
+		this.price = price;
+		this.detailsLink = detailsLink;
+		this.flexibileDays = flexibileDays;
+		this.status = getStatusActive();
+		this.elapse = getStatusActive();
+		this.createdById = createdById;
+	}
+	
+	
 
 	
 	public List<ApplyContactEntity> getContacts() {
