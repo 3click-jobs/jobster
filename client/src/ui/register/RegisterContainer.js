@@ -6,6 +6,7 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import RegisterPerson from '../persons/register/RegisterPerson';
 import RegisterCompany from '../companies/register/RegisterCompany';
+import { useTranslation } from 'react-i18next'
 
 
 const useStyles = makeStyles(theme => ({
@@ -52,6 +53,7 @@ export const RegisterContainer = (props) => {
   const [activeTab, setActiveTab] = React.useState((props.profile && Object.keys(props.profile).includes("companyName")) ? 1 : 0)
 
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const handleTabChange = (event, newActiveTab) => {
     setActiveTab(newActiveTab)
@@ -102,8 +104,14 @@ export const RegisterContainer = (props) => {
             textColor='primary'
             variant='fullWidth'
         >
-              <Tab label='Person' />
-              <Tab label='Company' />
+              <Tab 
+                label={t('registration.person')}
+                // label='Person' 
+              />
+              <Tab 
+                label={t('registration.company')}
+                // label='Company' 
+              />
           {/* { (props.profile && Object.keys(props.profile).includes("companyName")) ? <Tab label='Company' /> : null}
           { (props.profile && Object.keys(props.profile).includes("firstName")) ? <Tab label='Person' /> : null} */}
         </Tabs>

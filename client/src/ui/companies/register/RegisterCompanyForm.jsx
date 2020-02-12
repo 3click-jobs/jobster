@@ -14,6 +14,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { useTranslation } from 'react-i18next'
 
 
 const useStyles = makeStyles(() => ({
@@ -47,6 +48,7 @@ export const RegisterCompanyForm = ({
   const { setFieldValue } = useFormikContext()
 
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <div className={classes.container}>
@@ -54,7 +56,8 @@ export const RegisterCompanyForm = ({
         <Card className={classes.card}>
           <CardContent>
             <TextField
-              label="Company name"
+              label={t('profile.labelCompanyName')}
+              // label="Company name"
               name="companyName"
               value={values.companyName}
               onChange={handleChange}
@@ -89,7 +92,8 @@ export const RegisterCompanyForm = ({
             />
 
             <TextField
-              label="Company registration number"
+              label={t('profile.labelCompanyRegistrationNumber')}
+              // label="Company registration number"
               name="companyRegistrationNumber"
               value={values.companyRegistrationNumber}
               onChange={handleChange}
@@ -124,7 +128,8 @@ export const RegisterCompanyForm = ({
             />
 
             <TextField
-              label="Mobile phone"
+              label={t('profile.labelContactPhone')}
+              // label="Mobile phone"
               name="mobilePhone"
               value={values.mobilePhone}
               onChange={handleChange}
@@ -159,7 +164,8 @@ export const RegisterCompanyForm = ({
             />
 
             <TextField
-              label="Email"
+              label={t('profile.labelEMail')}
+              // label="Email"
               name="email"
               value={values.email}
               onChange={handleChange}
@@ -428,7 +434,8 @@ export const RegisterCompanyForm = ({
             /> */}
 
             <TextField
-              label="About"
+              label={t('profile.labelAbout')}
+              // label="About"
               name="about"
               value={values.about}
               onChange={handleChange}
@@ -465,7 +472,8 @@ export const RegisterCompanyForm = ({
             />
 
             <TextField
-              label="User name"
+              label={t('profile.labelUsername')}
+              // label="User name"
               name="username"
               value={values.username}
               onChange={handleChange}
@@ -500,7 +508,8 @@ export const RegisterCompanyForm = ({
             />
 
             <TextField
-              label="Password"
+              label={t('profile.labelPassword')}
+              // label="Password"
               name="password"
               type={values.showPassword ? 'text' : 'password'}
               value={values.password}
@@ -538,7 +547,8 @@ export const RegisterCompanyForm = ({
             />
 
             <TextField
-              label="Confirm password"
+              label={t('profile.labelConfirmPassword')}
+              // label="Confirm password"
               name="confirmedPassword"
               type={values.showConfirmedPassword ? 'text' : 'password'}
               value={values.confirmedPassword}
@@ -578,10 +588,12 @@ export const RegisterCompanyForm = ({
           </CardContent>
           <CardActions className={classes.actions}>
             <Button color='primary' type='submit' disabled={isSubmitting}>
-              SUBMIT
+              {t('registration.buttonSubmit')}
+              {/* SUBMIT */}
             </Button>
             <Button color='secondary' onClick={handleReset}>
-              CLEAR
+              {t('registration.buttonClear')}
+              {/* CLEAR */}
           </Button>
 
           </CardActions>

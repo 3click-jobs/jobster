@@ -5,6 +5,7 @@ import { jobTypesSelectors } from '../../redux/selectors/jobTypes'
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
+import { useTranslation } from 'react-i18next'
 
 
 const useStyles = makeStyles(theme => ({
@@ -33,7 +34,8 @@ export const JobTypesContainer = ({
     const [jobType, setJobType] = React.useState(null)
     const [initJobType, setInitJobType] = React.useState(false)
     const classes = useStyles();
-  
+    const { t } = useTranslation();
+
     React.useEffect(() => {
             setInitJobType(true)
     }, [selectedJobType])
@@ -75,7 +77,8 @@ export const JobTypesContainer = ({
                             }}
                             renderInput={params => (
                             <TextField {...params} 
-                                label="Job type" 
+                                label={t('applyOrEmploy.labelJobType')}
+                                // label="Job type" 
                                 variant="outlined" 
                                 required 
                                 fullWidth 

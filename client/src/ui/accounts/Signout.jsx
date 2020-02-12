@@ -5,6 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { useTranslation } from 'react-i18next'
 
 // import { unassignCredentials } from '../../redux/actions/user'
 
@@ -16,6 +17,8 @@ export const Signout = ({
   setOpen
 }) => {
   
+  const { t } = useTranslation();
+
   // const [open, setOpen] = useState(false);
 
   // const handleClose = () => {
@@ -37,18 +40,22 @@ export const Signout = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Sign out"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{t('signout.title')}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-          Are you sure you want to sign out as {username}?
+            {t('signout.text')}
+            {/* Are you sure you want to sign out as  */}
+            {username}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false) } color="primary">
-            Cancel
+            {t('signout.buttonNo')}
+            {/* Cancel */}
           </Button>
           <Button onClick={() => { unassignCredentials(); history.push('/'); setOpen(false) }} color="primary" autoFocus>
-            Ok
+            {t('signout.buttonYes')}
+            {/* Ok */}
           </Button>
         </DialogActions>
       </Dialog>

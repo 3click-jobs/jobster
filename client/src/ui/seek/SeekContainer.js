@@ -13,6 +13,7 @@ import CityAPIContainer from '../cities/CityAPIContainer';
 import PostSeek from '../seeks/post/PostSeek';
 import JobTypesContainer from '../jobTypes/JobTypesContainer';
 import TextField from '@material-ui/core/TextField'
+import { useTranslation } from 'react-i18next'
 
 
 const useStyles = makeStyles(theme => ({
@@ -67,6 +68,7 @@ export const SeekContainer = ({
   const [jobType, setJobType] = React.useState(null)
   const [activeTab, setActiveTab] = React.useState(0)
   const classes = useStyles();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (jobTypesAll.length === 0)
@@ -91,16 +93,36 @@ export const SeekContainer = ({
             textColor='primary'
             variant='fullWidth'
           >
-            <Tab label='Where' />
-            {city ? <Tab label='What'/> : <Tab label='What' disabled/>}
-            {city && jobType ? <Tab label='Seek'/> : <Tab label='Seek' disabled/>}
+            <Tab 
+              label={t('applyOrEmploy.labelWhere')}
+              // label='Where' 
+            />
+            {city ? 
+              <Tab 
+                label={t('applyOrEmploy.labelWhat')}
+                // label='What'
+              /> : <Tab 
+                label={t('applyOrEmploy.labelWhat')}
+                // label='What' 
+                disabled
+              />}
+            {city && jobType ? 
+              <Tab 
+                label={t('applyOrEmploy.labelSeek')}
+                // label='Seek'
+              /> : <Tab 
+                label={t('applyOrEmploy.labelSeek')}
+                // label='Seek' 
+                disabled
+              />}
           </Tabs>
           <TabPanel value={activeTab} index={0}>
             <div className={classes.tabContainer}>
               <div className={classes.tabPaper}>
                 <CityAPIContainer city={city} setCity = {setCity} />
                 <TextField
-                  label="Acceptable distance from selected city"
+                  label={t('applyOrEmploy.acceptableDistance')}
+                  // label="Acceptable distance from selected city"
                   name="distanceToJob"
                   type="number"
                   value={distance}
@@ -124,7 +146,8 @@ export const SeekContainer = ({
                     endIcon={<Icon>arrow_forward_ios</Icon>} 
                     onClick={() => { setActiveTab(1); }}
                   >
-                    Next
+                    {t('applyOrEmploy.buttonNext')}
+                    {/* Next */}
                   </Button>
                 </div>
               </div>
@@ -142,7 +165,8 @@ export const SeekContainer = ({
                     startIcon={<Icon>arrow_back_ios</Icon>} 
                     onClick={() => { setActiveTab(0); }}
                   >
-                    Back
+                    {t('applyOrEmploy.buttonBack')}
+                    {/* Back */}
                   </Button>
                   <Button
                     disabled={ !jobType }
@@ -152,7 +176,8 @@ export const SeekContainer = ({
                     endIcon={<Icon>arrow_forward_ios</Icon>} 
                     onClick={() => { setActiveTab(2); }}
                   >
-                    Next
+                    {t('applyOrEmploy.buttonNext')}
+                    {/* Next */}
                   </Button>
                 </div>
               </div>
@@ -170,7 +195,8 @@ export const SeekContainer = ({
                     startIcon={<Icon>arrow_back_ios</Icon>} 
                     onClick={() => { setActiveTab(1); }}
                   >
-                    Back
+                    {t('applyOrEmploy.buttonBack')}
+                    {/* Back */}
                   </Button>
                 </div>
               </div>
@@ -181,11 +207,17 @@ export const SeekContainer = ({
       }
       {
         (!jobTypesIsLoading && jobTypesIsError) &&
-        <p>Error at loading resources.</p>
+        <p>
+          {t('applyOrEmploy.errorAtLoading')}
+          {/* Error at loading resources. */}
+        </p>
       }
       {
         jobTypesIsLoading &&
-        <p>Resources are loading ... </p>
+        <p>
+          {t('applyOrEmploy.resourcesAreLoading')}
+          {/* Resources are loading ...  */}
+        </p>
       }
     </React.Fragment>      
   )

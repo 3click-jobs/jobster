@@ -15,6 +15,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import BusinessIcon from '@material-ui/icons/Business';
 import RecentActors from '@material-ui/icons/RecentActors';
 import Build from '@material-ui/icons/Build';
+import { useTranslation } from 'react-i18next'
 
 const ConnectedLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} {...props} />);
 
@@ -27,6 +28,8 @@ export const NavbarDrawer = ({
   }) => {
 
   const [drawer, setDrawer] = React.useState(false)
+
+  const { t } = useTranslation();
 
   const toggleDrawer = state => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -79,13 +82,19 @@ export const NavbarDrawer = ({
                 <ListItemIcon>
                   <FaceIcon />
                 </ListItemIcon>
-                <ListItemText primary="Browse persons" />
+                <ListItemText 
+                  primary={t('navbarDrawer.browsePersons')}
+                  // primary="Browse persons" 
+                />
               </ListItemLink>
               <ListItemLink to='/companies'>
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>
-                <ListItemText primary="Browse companies" />
+                <ListItemText 
+                  primary={t('navbarDrawer.browseCompanies')}
+                  // primary="Browse companies" 
+                />
               </ListItemLink>
             </List>
             <Divider />
@@ -94,13 +103,19 @@ export const NavbarDrawer = ({
                 <ListItemIcon>
                   <RecentActors />
                 </ListItemIcon>
-                <ListItemText primary="Browse job seeks" />
+                <ListItemText 
+                  primary={t('navbarDrawer.browseJobSeeks')}
+                  // primary="Browse job seeks" 
+                />
               </ListItemLink>
               <ListItemLink to='/offers'>
                 <ListItemIcon>
                   <Build />
                 </ListItemIcon>
-                <ListItemText primary="Browse job offers" />
+                <ListItemText 
+                  primary={t('navbarDrawer.browseJobOffers')}
+                  // primary="Browse job offers" 
+                />
               </ListItemLink>
             </List>
           </React.Fragment>
@@ -112,13 +127,19 @@ export const NavbarDrawer = ({
                 <ListItemIcon>
                   <FaceIcon />
                 </ListItemIcon>
-                <ListItemText primary="Get a job" />
+                <ListItemText 
+                  primary={t('navbarDrawer.getAJob')}
+                  // primary="Get a job" 
+                />
               </ListItemLink>
               <ListItemLink to='/seek'>
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>
-                <ListItemText primary="Seek for a job" />
+                <ListItemText 
+                  primary={t('navbarDrawer.seekForAJob')}
+                  // primary="Seek for a job" 
+                />
               </ListItemLink>
             </List>
             <Divider />
@@ -127,13 +148,19 @@ export const NavbarDrawer = ({
                 <ListItemIcon>
                   <RecentActors />
                 </ListItemIcon>
-                <ListItemText primary="Find a employee" />
+                <ListItemText 
+                  primary={t('navbarDrawer.findAEmployee')}
+                  // primary="Find a employee" 
+                />
               </ListItemLink>
               <ListItemLink to='/offer'>
                 <ListItemIcon>
                   <Build />
                 </ListItemIcon>
-                <ListItemText primary="Offer a job" />
+                <ListItemText 
+                  primary={t('navbarDrawer.offerAJob')}
+                  // primary="Offer a job" 
+                />
               </ListItemLink>
             </List>
           </React.Fragment>

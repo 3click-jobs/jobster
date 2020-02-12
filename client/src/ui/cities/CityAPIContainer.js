@@ -3,11 +3,15 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Geonames from 'geonames.js';
+import { useTranslation } from 'react-i18next'
 
 
 export default function CityAPIContainer(props) {
     // const [city, setCity] = React.useState(null)
     const [queryAPI, setQueryAPI] = React.useState([])
+
+    const { t } = useTranslation();
+
     let loading = false
 
     const geonames = new Geonames({
@@ -66,7 +70,8 @@ export default function CityAPIContainer(props) {
                     return (
                     <TextField 
                         {...params} 
-                        label= "City"
+                        label= {t('profile.labelCity')}
+                        // label= "City"
                         variant="outlined" 
                         required
                         fullWidth 

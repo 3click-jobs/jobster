@@ -16,6 +16,7 @@ import ShareIcon from '@material-ui/icons/Share';
 // import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 // import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -47,6 +48,8 @@ const useStyles = makeStyles(theme => ({
 
 export const LookingForAJobCard = () => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
   // const [expanded, setExpanded] = React.useState(false);
 
   // const handleExpandClick = () => {
@@ -58,7 +61,10 @@ export const LookingForAJobCard = () => {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            <Link to='/apply'>GO</Link>
+            <Link to='/apply'>
+              {t('card.avatarGo')}
+              {/* GO */}
+            </Link>
           </Avatar>
         }
         // action={
@@ -66,24 +72,34 @@ export const LookingForAJobCard = () => {
         //     <MoreVertIcon />
         //   </IconButton>
         // }
-        title="Get a job in three clicks"
-        subheader="Follow the signs"
+        title={t('lookingForAJobCard.headerTitle')}
+        subheader={t('lookingForAJobCard.subheader')}
+        // title="Get a job in three clicks"
+        // subheader="Follow the signs"
       />
       <CardMedia
         className={classes.media}
         image="/img/carousel-1.jpg"
-        title="Apply for job"
+        title={t('lookingForAJobCard.mediaTitle')}
+        // title="Apply for job"
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          Select a location close to you. Browse the available job types. Choose the jobs you like and apply. As easy as that.
+          {t('lookingForAJobCard.content')}
+          {/* Select a location close to you. Browse the available job types. Choose the jobs you like and apply. As easy as that. */}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
+        <IconButton 
+          aria-label={t('card.actionFavorites')}
+          // aria-label="add to favorites"
+        >
           <FavoriteIcon />
         </IconButton>
-        <IconButton aria-label="share">
+        <IconButton 
+          aria-label={t('card.actionShare')}
+          // aria-label="share"
+        >
           <ShareIcon />
         </IconButton>
         {/* <IconButton

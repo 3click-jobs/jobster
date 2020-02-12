@@ -15,6 +15,8 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import PropTypes from 'prop-types'
+import { useTranslation } from 'react-i18next'
+
 
 // !!! IMPORTANT
 // YOU HAVE WORKING EXAMPLES IN PROJECTS/DESIGN/FORMS etc
@@ -49,6 +51,7 @@ export const LoginForm = ({
 
   const classes = useStyles();
 
+  const { t } = useTranslation();
 
   return (
     <div className={classes.container}>
@@ -56,7 +59,8 @@ export const LoginForm = ({
         <Card className={classes.card}>
           <CardContent>
             <TextField
-              label="User name"
+              label={t('profile.labelUsername')}
+              // label="User name"
               name="username"
               value={values.username}
               onChange={handleChange}
@@ -91,7 +95,8 @@ export const LoginForm = ({
             />
 
             <TextField
-              label="Password"
+              label={t('profile.labelPassword')}
+              // label="Password"
               name="password"
               type={values.showPassword ? 'text' : 'password'}
               value={values.password}
@@ -131,7 +136,8 @@ export const LoginForm = ({
           </CardContent>
           <CardActions className={classes.actions}>
             <Button color='primary' type='submit' disabled={isSubmitting}>
-              Log In
+              {t('login.button')}
+              {/* Log In */}
             </Button>
             {/* <Button color='secondary'>
               CLEAR

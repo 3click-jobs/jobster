@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import { makeStyles } from '@material-ui/core/styles';
+import { useTranslation } from 'react-i18next'
+
 
 // !!! IMPORTANT
 // YOU HAVE WORKING EXAMPLES IN PROJECTS/DESIGN/FORMS etc
@@ -37,13 +39,16 @@ export const RegisterAccountForm = ({
 
   const classes = useStyles();
 
+  const { t } = useTranslation();
+
   return (
     <div className={classes.container}>
       <Form>
         <Card className={classes.card}>
           <CardContent>
             <TextField
-              label="User name"
+              label={t('profile.labelUsername')}
+              // label="User name"
               name="username"
               value={values.username}
               onChange={handleChange}
@@ -76,7 +81,8 @@ export const RegisterAccountForm = ({
             />
 
             <TextField
-              label="Password"
+              label={t('profile.labelPassword')}
+              // label="Password"
               name="password"
               value={values.password}
               onChange={handleChange}
@@ -109,7 +115,8 @@ export const RegisterAccountForm = ({
             />
 
             <TextField
-              label="Confirm password"
+              label={t('profile.labelConfirmPassword')}
+              // label="Confirm password"
               name="confirmedPassword"
               value={values.confirmedPassword}
               onChange={handleChange}
@@ -144,10 +151,12 @@ export const RegisterAccountForm = ({
           </CardContent>
           <CardActions className={classes.actions}>
             <Button color='primary' type='submit' disabled={isSubmitting}>
-              SUBMIT
+              {t('registration.buttonSubmit')}
+              {/* SUBMIT */}
             </Button>
             <Button color='secondary'>
-              CLEAR
+              {t('registration.buttonClear')}
+              {/* CLEAR */}
           </Button>
 
           </CardActions>

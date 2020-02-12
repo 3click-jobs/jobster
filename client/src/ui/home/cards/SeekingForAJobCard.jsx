@@ -12,6 +12,7 @@ import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -42,34 +43,47 @@ const useStyles = makeStyles(theme => ({
 
 export const SeekingForAJobCard = () => {
   const classes = useStyles();
-
+  const { t } = useTranslation();
   
   return (
     <Card className={classes.card}>
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            <Link to='/seek'>GO</Link>
+            <Link to='/seek'>
+              {t('card.avatarGo')}
+              {/* GO */}
+            </Link>
           </Avatar>
         }
-        title="Seek for a job in three clicks"
-        subheader="Find the way"
+        title={t('seekingForAJobCard.headerTitle')}
+        subheader={t('seekingForAJobCard.subheader')}
+        // title="Seek for a job in three clicks"
+        // subheader="Find the way"
       />
       <CardMedia
         className={classes.media}
         image="/img/carousel-3.jpg"
-        title="Seek for job"
+        title={t('seekingForAJobCard.mediaTitle')}
+        // title="Seek for job"
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          Set the location. Set the job type and the job description. Check if everything is all right and post the job seek. As easy as that.
+          {t('seekingForAJobCard.content')}
+          {/* Set the location. Set the job type and the job description. Check if everything is all right and post the job seek. As easy as that. */}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
+        <IconButton 
+          aria-label={t('card.actionFavorites')}
+          // aria-label="add to favorites"
+        >
           <FavoriteIcon />
         </IconButton>
-        <IconButton aria-label="share">
+        <IconButton 
+          aria-label={t('card.actionShare')}
+          // aria-label="share"
+        >
           <ShareIcon />
         </IconButton>
       </CardActions>

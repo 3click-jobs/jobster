@@ -19,6 +19,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { useTranslation } from 'react-i18next'
 
 
 // !!! IMPORTANT
@@ -53,6 +54,7 @@ export const RegisterPersonForm = ({
   const { setFieldValue } = useFormikContext()
 
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <div className={classes.container}>
@@ -60,7 +62,8 @@ export const RegisterPersonForm = ({
         <Card className={classes.card}>
           <CardContent>
             <TextField
-              label="First name"
+              label={t('profile.labelFirstName')}
+              // label="First name"
               name="firstName"
               value={values.firstName}
               onChange={handleChange}
@@ -95,7 +98,8 @@ export const RegisterPersonForm = ({
             />
 
             <TextField
-              label="Last name"
+              label={t('profile.labelLastName')}
+              // label="Last name"
               name="lastName"
               value={values.lastName}
               onChange={handleChange}
@@ -130,16 +134,39 @@ export const RegisterPersonForm = ({
             />
 
             <FormControl component="fieldset" >
-              <FormLabel component="legend">Gender</FormLabel>
-              <RadioGroup aria-label="gender" name="gender" value={values.gender} onChange={handleChange} row >
-                <FormControlLabel value="GENDER_FEMALE" control={<Radio />} label="Female" labelPlacement="bottom" />
-                <FormControlLabel value="GENDER_MALE" control={<Radio />} label="Male" labelPlacement="bottom" />
+              <FormLabel component="legend">
+                {t('profile.labelGender')}
+                {/* Gender */}
+              </FormLabel>
+              <RadioGroup 
+                // aria-label={t('profile.labelGender')}
+                aria-label="gender" 
+                name="gender" 
+                value={values.gender} 
+                onChange={handleChange} 
+                row 
+              >
+                <FormControlLabel 
+                  value="GENDER_FEMALE" 
+                  control={<Radio />} 
+                  label={t('profile.labelFemale')} 
+                  // label="Female" 
+                  labelPlacement="bottom" 
+                />
+                <FormControlLabel 
+                  value="GENDER_MALE" 
+                  control={<Radio />} 
+                  label={t('profile.labelMale')}
+                  // label="Male" 
+                  labelPlacement="bottom" 
+                />
               </RadioGroup>
             </FormControl>
 
             {/* TRY PICKERS */}
             <TextField
-              label="Date of birth"
+              label={t('profile.labelDateOfBirth')}
+              // label="Date of birth"
               name="birthDate"
               type="date"
               value={values.birthDate}
@@ -175,7 +202,8 @@ export const RegisterPersonForm = ({
             />
 
             <TextField
-              label="Mobile phone"
+              label={t('profile.labelContactPhone')}
+              // label="Mobile phone"
               name="mobilePhone"
               value={values.mobilePhone}
               onChange={handleChange}
@@ -210,7 +238,8 @@ export const RegisterPersonForm = ({
             />
 
             <TextField
-              label="Email"
+              label={t('profile.labelEMail')}
+              // label="Email"
               name="email"
               value={values.email}
               onChange={handleChange}
@@ -479,7 +508,8 @@ export const RegisterPersonForm = ({
             /> */}
 
             <TextField
-              label="About"
+              label={t('profile.labelAbout')}
+              // label="About"
               name="about"
               value={values.about}
               onChange={handleChange}
@@ -516,7 +546,8 @@ export const RegisterPersonForm = ({
             />
 
             <TextField
-              label="User name"
+              label={t('profile.labelUsername')}
+              // label="User name"
               name="username"
               value={values.username}
               onChange={handleChange}
@@ -551,7 +582,8 @@ export const RegisterPersonForm = ({
             />
 
             <TextField
-              label="Password"
+              label={t('profile.labelPassword')}
+              // label="Password"
               name="password"
               type={values.showPassword ? 'text' : 'password'}
               value={values.password}
@@ -589,7 +621,8 @@ export const RegisterPersonForm = ({
             />
 
             <TextField
-              label="Confirm password"
+              label={t('profile.labelConfirmPassword')}
+              // label="Confirm password"
               name="confirmedPassword"
               type={values.showConfirmedPassword ? 'text' : 'password'}
               value={values.confirmedPassword}
@@ -629,10 +662,12 @@ export const RegisterPersonForm = ({
           </CardContent>
           <CardActions className={classes.actions}>
             <Button color='primary' type='submit' disabled={isSubmitting}>
-              SUBMIT
+              {t('registration.buttonSubmit')}
+              {/* SUBMIT */}
             </Button>
             <Button color='secondary' onClick={handleReset}>
-              CLEAR
+              {t('registration.buttonClear')}
+              {/* CLEAR */}
           </Button>
 
           </CardActions>

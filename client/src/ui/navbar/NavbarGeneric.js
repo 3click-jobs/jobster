@@ -19,6 +19,7 @@ import NavbarProfileAdmin from './NavbarProfileAdmin';
 import { Link } from 'react-router-dom'
 import Signout from '../accounts/Signout'
 import Login from '../accounts/Login'
+import LanguageSelector from '../languageSelector/LanguageSelector'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -88,6 +89,8 @@ export const NavbarGeneric = ({
           </Typography> */}
             <Link to='/'><img alt="3 Click Jobs" src='/img/triklikjobslogo.png' /></Link>
           </div>
+          
+          <LanguageSelector />
 
           {
             (role === 'ROLE_GUEST') &&
