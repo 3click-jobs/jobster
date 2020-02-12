@@ -23,6 +23,7 @@ import CityAPIContainer from '../cities/CityAPIContainer';
 import OffersContainer from '../offers/browse/OffersContainer';
 import JobTypesContainer from '../jobTypes/JobTypesContainer';
 import TextField from '@material-ui/core/TextField'
+import { useTranslation } from 'react-i18next'
 
 
 const useStyles = makeStyles(theme => ({
@@ -107,6 +108,7 @@ export const ApplyContainer = ({
   // const [queryAPI, setQueryAPI] = React.useState([])
   const classes = useStyles();
   // let loading = false
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (jobTypesAll.length === 0)
@@ -227,9 +229,28 @@ export const ApplyContainer = ({
               textColor='primary'
               variant='fullWidth'
             >
-              <Tab label='Where' />
-              {city ? <Tab label='What'/> : <Tab label='What' disabled/>}
-              {city && jobType ? <Tab label='Apply'/> : <Tab label='Apply' disabled/>}
+              <Tab 
+                label={t('applyOrEmploy.labelWhere')}
+                // label='Where' 
+              />
+              {city ? 
+                <Tab 
+                  label={t('applyOrEmploy.labelWhat')}
+                  // label='What'
+                /> : <Tab 
+                  label={t('applyOrEmploy.labelWhat')}
+                  // label='What' 
+                  disabled
+                />}
+              {city && jobType ? 
+                <Tab 
+                  label={t('applyOrEmploy.labelApply')}
+                  // label='Apply'
+                /> : <Tab 
+                  label={t('applyOrEmploy.labelApply')}
+                  // label='Apply' 
+                  disabled
+                />}
             </Tabs>
               <TabPanel value={activeTab} index={0}>
                 {/* Item One -> Render City selection component. */}
@@ -308,7 +329,8 @@ export const ApplyContainer = ({
                   <div className={classes.tabPaper}>
                     <CityAPIContainer city={city} setCity = {setCity} />
                     <TextField
-                      label="Acceptable distance from selected city"
+                      label={t('applyOrEmploy.acceptableDistance')}
+                      // label="Acceptable distance from selected city"
                       name="distanceToJob"
                       type="number"
                       value={distance}
@@ -332,7 +354,8 @@ export const ApplyContainer = ({
                         endIcon={<Icon>arrow_forward_ios</Icon>} 
                         onClick={() => { setActiveTab(1); }}
                       >
-                        Next
+                        {t('applyOrEmploy.buttonNext')}
+                        {/* Next */}
                       </Button>
                     </div>
                   </div>
@@ -376,7 +399,8 @@ export const ApplyContainer = ({
                         startIcon={<Icon>arrow_back_ios</Icon>} 
                         onClick={() => { setActiveTab(0); }}
                       >
-                        Back
+                        {t('applyOrEmploy.buttonBack')}
+                        {/* Back */}
                       </Button>
                       <Button
                         disabled={ !jobType }
@@ -386,7 +410,8 @@ export const ApplyContainer = ({
                         endIcon={<Icon>arrow_forward_ios</Icon>} 
                         onClick={() => { setActiveTab(2); }}
                       >
-                        Next
+                        {t('applyOrEmploy.buttonNext')}
+                        {/* Next */}
                       </Button>
                     </div>
                   </div>
@@ -405,7 +430,8 @@ export const ApplyContainer = ({
                         startIcon={<Icon>arrow_back_ios</Icon>} 
                         onClick={() => { setActiveTab(1); }}
                       >
-                        Back
+                        {t('applyOrEmploy.buttonBack')}
+                        {/* Back */}
                       </Button>
                       {/* <Button
                         variant="contained"
@@ -426,11 +452,17 @@ export const ApplyContainer = ({
       }
       {
         (!jobTypesIsLoading && jobTypesIsError) &&
-        <p>Error at loading resources.</p>
+        <p>
+          {t('applyOrEmploy.errorAtLoading')}
+          {/* Error at loading resources. */}
+        </p>
       }
       {
         jobTypesIsLoading &&
-        <p>Resources are loading ... </p>
+        <p>
+          {t('applyOrEmploy.resourcesAreLoading')}
+          {/* Resources are loading ...  */}
+        </p>
       }
     </React.Fragment>
   )

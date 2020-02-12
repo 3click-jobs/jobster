@@ -17,6 +17,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CityAPIContainer from '../cities/CityAPIContainer';
 import PostOffer from '../offers/post/PostOffer';
 import JobTypesContainer from '../jobTypes/JobTypesContainer';
+import { useTranslation } from 'react-i18next'
 
 
 const useStyles = makeStyles(theme => ({
@@ -80,6 +81,7 @@ export const OfferContainer = ({
   // const [queryAPI, setQueryAPI] = React.useState([])
   const classes = useStyles();
   // let loading = false
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (jobTypesAll.length === 0)
@@ -159,9 +161,28 @@ export const OfferContainer = ({
             textColor='primary'
             variant='fullWidth'
           >
-            <Tab label='Where' />
-            {city ? <Tab label='What'/> : <Tab label='What' disabled/>}
-            {city && jobType ? <Tab label='Offer'/> : <Tab label='Offer' disabled/>}
+            <Tab 
+              label={t('applyOrEmploy.labelWhere')}
+              // label='Where' 
+            />
+            {city ? 
+              <Tab 
+                label={t('applyOrEmploy.labelWhat')}
+                // label='What'
+              /> : <Tab 
+                label={t('applyOrEmploy.labelWhat')}
+                // label='What' 
+                disabled
+              />}
+            {city && jobType ? 
+              <Tab 
+                label={t('applyOrEmploy.labelOffer')}
+                // label='Offer'
+              /> : <Tab 
+                label={t('applyOrEmploy.labelOffer')}
+                // label='Offer' 
+                disabled
+              />}
           </Tabs>
           <TabPanel value={activeTab} index={0}>
           {/* <Autocomplete
@@ -214,7 +235,8 @@ export const OfferContainer = ({
                     endIcon={<Icon>arrow_forward_ios</Icon>} 
                     onClick={() => { setActiveTab(1); }}
                   >
-                    Next
+                    {t('applyOrEmploy.buttonNext')}
+                    {/* Next */}
                   </Button>
                 </div>
               </div>
@@ -258,7 +280,8 @@ export const OfferContainer = ({
                     startIcon={<Icon>arrow_back_ios</Icon>} 
                     onClick={() => { setActiveTab(0); }}
                   >
-                    Back
+                    {t('applyOrEmploy.buttonBack')}
+                    {/* Back */}
                   </Button>
                   <Button
                     disabled={ !jobType }
@@ -268,7 +291,8 @@ export const OfferContainer = ({
                     endIcon={<Icon>arrow_forward_ios</Icon>} 
                     onClick={() => { setActiveTab(2); }}
                   >
-                    Next
+                    {t('applyOrEmploy.buttonNext')}
+                    {/* Next */}
                   </Button>
                 </div>
               </div>
@@ -287,7 +311,8 @@ export const OfferContainer = ({
                     startIcon={<Icon>arrow_back_ios</Icon>} 
                     onClick={() => { setActiveTab(1); }}
                   >
-                    Back
+                    {t('applyOrEmploy.buttonBack')}
+                    {/* Back */}
                   </Button>
                   {/* <Button
                     variant="contained"
@@ -307,11 +332,17 @@ export const OfferContainer = ({
       }
       {
         (!jobTypesIsLoading && jobTypesIsError) &&
-        <p>Error at loading resources.</p>
+        <p>
+          {t('applyOrEmploy.errorAtLoading')}
+          {/* Error at loading resources. */}
+        </p>
       }
       {
         jobTypesIsLoading &&
-        <p>Resources are loading ... </p>
+        <p>
+          {t('applyOrEmploy.resourcesAreLoading')}
+          {/* Resources are loading ...  */}
+        </p>
       }
     </React.Fragment>      
   )

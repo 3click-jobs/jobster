@@ -5,6 +5,8 @@ import ResponsiveTable from 'material-ui-next-responsive-table'
 import { actions as personsActions } from '../../../redux/actions/persons'
 import { personsSelectors } from '../../../redux/selectors/persons'
 import PersonsTable from './PersonsTable'
+import { useTranslation } from 'react-i18next'
+
 
 export const PersonsContainer = ({
   personsAll,
@@ -12,6 +14,8 @@ export const PersonsContainer = ({
   personsIsError,
   loadPersonsAll
 }) => {
+
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     loadPersonsAll()
@@ -22,57 +26,70 @@ export const PersonsContainer = ({
   const columns = [
     {
       key: 'firstName',
-      label: 'Name',
+      label: `${t('profile.labelFirstName')}`,
+      // label: 'Name',
       primary: true,
     },
     {
       key: 'lastName',
-      label: 'Surname',
+      label: `${t('profile.labelLastName')}`,
+      // label: 'Surname',
       primary: true,
     },
     {
       key: 'gender',
-      label: 'Gender',
+      label: `${t('profile.labelGender')}`,
+      // label: 'Gender',
     },
     {
       key: 'birthDate',
-      label: 'Birth date',
+      label: `${t('profile.labelDateOfBirth')}`,
+      // label: 'Birth date',
     },
     {
       key: 'email',
-      label: 'E-mail',
+      label: `${t('profile.labelEMail')}`,
+      // label: 'E-mail',
     },
     {
       key: 'mobilePhone',
-      label: 'Contact phone',
+      label: `${t('profile.labelContactPhone')}`,
+      // label: 'Contact phone',
     },
     {
       key: 'about',
-      label: 'About',
+      label: `${t('profile.labelAbout')}`,
+      // label: 'About',
     },
     {
       key: 'accessRole',
-      label: 'Access role',
+      label: `${t('profile.labelAccessRole')}`,
+      // label: 'Access role',
     },
     {
       key: 'city',
-      label: 'City',
+      label: `${t('profile.labelCity')}`,
+      // label: 'City',
     },
     {
       key: 'countryRegion',
-      label: 'Country region',
+      label: `${t('profile.labelCountryRegion')}`,
+      // label: 'Country region',
     },
     {
       key: 'country',
-      label: 'Country',
+      label: `${t('profile.labelCountry')}`,
+      // label: 'Country',
     },
     {
       key: 'iso2Code',
-      label: 'Country code',
+      label: `${t('profile.labelCountryCode')}`,
+      // label: 'Country code',
     },
     {
       key: 'username',
-      label: 'Username',
+      label: `${t('profile.labelUsername')}`,
+      // label: 'Username',
     }
   ]
   
@@ -84,7 +101,11 @@ export const PersonsContainer = ({
       {
         (!personsIsLoading && personsAll) &&
         <React.Fragment>
-          <p>Number of persons in the database: {personsAll.length}</p>
+          <p>
+            {t('personsContainer.numberOfCompanies')}
+            {/* Number of persons in the database:  */}
+            {personsAll.length}
+          </p>
           <ResponsiveTable columns={columns} data={data} />
           <PersonsTable />
         </React.Fragment>
@@ -92,11 +113,17 @@ export const PersonsContainer = ({
       }
       {
         (!personsIsLoading && personsIsError) &&
-        <p>Error at loading persons.</p>
+        <p>
+          {t('personsContainer.errorAtLoading')}
+          {/* Error at loading persons. */}
+        </p>
       }
       {
         personsIsLoading &&
-        <p>Persons is loading ... </p>
+        <p>
+          {t('personsContainer.resourcesAreLoading')}
+          {/* Persons is loading ... */}
+        </p>
       }
     </React.Fragment>
 

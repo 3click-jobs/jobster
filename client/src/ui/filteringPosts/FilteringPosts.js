@@ -22,6 +22,7 @@ import TextField from '@material-ui/core/TextField'
 import { Formik, Form } from 'formik'
 import { offers as offersSchema } from '../../common/utils/schemas/offers'
 import JobDayHoursContainer from '../jobDayHours/JobDayHoursContainer';
+import { useTranslation } from 'react-i18next'
 
 
 const drawerWidth = 310;
@@ -100,6 +101,7 @@ export const FilteringPosts = ({
   const [openDaysHours, setOpenDaysHours] = React.useState(false);
 
   const classes = useStyles()
+  const { t } = useTranslation();
 
   const toggleDrawer = state => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -164,14 +166,15 @@ export const FilteringPosts = ({
                 <List component="nav" aria-label="Users">
 
                     <ListItem button onClick={handleClickPrice}>
-                        <ListItemText primary= {`${priceType} price`} />
+                        <ListItemText primary= {`${priceType} ${t('filter.itemTextPrice')}`} />
                         {openPrice ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={openPrice} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             <ListItem button className={classes.nested}>
                                 <TextField
-                                    label="Price per hour"
+                                    label={t('filter.labelPricePerHour')}
+                                    // label="Price per hour"
                                     name="price"
                                     type="number"
                                     value={price}
@@ -194,14 +197,18 @@ export const FilteringPosts = ({
                     </Collapse>
 
                     <ListItem button onClick={handleClickDates}>
-                        <ListItemText primary="Acceptable dates" />
+                        <ListItemText 
+                            primary={t('filter.itemTextAcceptableDates')} 
+                            // primary="Acceptable dates" 
+                        />
                         {openDates ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={openDates} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             <ListItem button className={classes.nested}>
                                 <TextField
-                                    label="Beginning date"
+                                    label={t('filter.labelBeginningDate')}
+                                    // label="Beginning date"
                                     name="beginningDate"
                                     type="date"
                                     value={beginningDate ? beginningDate : new Date().toISOString().slice(0,10)}
@@ -220,7 +227,8 @@ export const FilteringPosts = ({
                             </ListItem>
                             <ListItem button className={classes.nested}>
                                 <TextField
-                                    label="End date"
+                                    label={t('filter.labelEndDate')}
+                                    // label="End date"
                                     name="endDate"
                                     type="date"
                                     value={endDate ? endDate : new Date().toISOString().slice(0,10)}
@@ -243,7 +251,8 @@ export const FilteringPosts = ({
                                         value={flexibileDates}
                                         checked={flexibileDates}
                                         control={<Checkbox color="primary" />}
-                                        label="Flexibile dates"
+                                        label={t('filter.labelFlexibileDates')}
+                                        // label="Flexibile dates"
                                         labelPlacement="bottom"
                                         // onChange={handleChange}
                                         onChange={(event) => {
@@ -259,7 +268,10 @@ export const FilteringPosts = ({
                     </Collapse>
 
                     <ListItem button onClick={handleClickDaysHours}>
-                        <ListItemText primary="Acceptable days and hours" />
+                        <ListItemText 
+                            primary={t('filter.itemTextAcceptableDaysAndHours')}
+                            // primary="Acceptable days and hours" 
+                        />
                         {openDaysHours ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={openDaysHours} timeout="auto" unmountOnExit>
@@ -332,7 +344,8 @@ export const FilteringPosts = ({
                                         value={flexibileDays}
                                         checked={flexibileDays}
                                         control={<Checkbox color="primary" />}
-                                        label="Flexibile days"
+                                        label={t('filter.labelFlexibileDays')}
+                                        // label="Flexibile days"
                                         labelPlacement="bottom"
                                         // onChange={handleChange}
                                         onChange={(event) => {

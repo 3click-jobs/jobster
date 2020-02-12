@@ -13,6 +13,7 @@ import { actions as jobTypesActions } from '../../redux/actions/jobTypes'
 import { jobTypesSelectors } from '../../redux/selectors/jobTypes'
 import CityAPIContainer from '../cities/CityAPIContainer';
 import SeeksContainer from '../seeks/browse/SeeksContainer';
+import { useTranslation } from 'react-i18next'
 
 
 const useStyles = makeStyles(theme => ({
@@ -64,6 +65,7 @@ export const EmployContainer = ({
   const [jobType, setJobType] = React.useState(null)
   const [activeTab, setActiveTab] = React.useState(0)
   const classes = useStyles();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (jobTypesAll.length === 0)
@@ -89,9 +91,28 @@ export const EmployContainer = ({
               textColor='primary'
               variant='fullWidth'
             >
-              <Tab label='Where' />
-              {city ? <Tab label='What'/> : <Tab label='What' disabled/>}
-              {city && jobType ? <Tab label='Connect'/> : <Tab label='Connect' disabled/>}
+              <Tab 
+                label={t('applyOrEmploy.labelWhere')}
+                // label='Where' 
+              />
+              {city ? 
+                <Tab 
+                  label={t('applyOrEmploy.labelWhat')}
+                  // label='What'
+                /> : <Tab 
+                  label={t('applyOrEmploy.labelWhat')}
+                  // label='What' 
+                  disabled
+                />}
+              {city && jobType ? 
+                <Tab 
+                  label={t('applyOrEmploy.labelConnect')}
+                  // label='Connect'
+                /> : <Tab 
+                  label={t('applyOrEmploy.labelConnect')}
+                  // label='Connect' 
+                  disabled
+                />}
             </Tabs>
               <TabPanel value={activeTab} index={0}>
                 <div className={classes.tabContainer}>
@@ -106,7 +127,8 @@ export const EmployContainer = ({
                         endIcon={<Icon>arrow_forward_ios</Icon>} 
                         onClick={() => { setActiveTab(1); }}
                       >
-                        Next
+                        {t('applyOrEmploy.buttonNext')}
+                        {/* Next */}
                       </Button>
                     </div>
                   </div>
@@ -129,7 +151,8 @@ export const EmployContainer = ({
                       }}
                       renderInput={params => (
                         <TextField {...params} 
-                          label="Job type" 
+                          label={t('applyOrEmploy.labelJobType')}
+                          // label="Job type" 
                           variant="outlined" 
                           required 
                           fullWidth 
@@ -148,7 +171,8 @@ export const EmployContainer = ({
                         startIcon={<Icon>arrow_back_ios</Icon>} 
                         onClick={() => { setActiveTab(0); }}
                       >
-                        Back
+                        {t('applyOrEmploy.buttonBack')}
+                        {/* Back */}
                       </Button>
                       <Button
                         disabled={ !jobType }
@@ -158,7 +182,8 @@ export const EmployContainer = ({
                         endIcon={<Icon>arrow_forward_ios</Icon>} 
                         onClick={() => { setActiveTab(2); }}
                       >
-                        Next
+                        {t('applyOrEmploy.buttonNext')}
+                        {/* Next */}
                       </Button>
                     </div>
                   </div>
@@ -176,7 +201,8 @@ export const EmployContainer = ({
                         startIcon={<Icon>arrow_back_ios</Icon>} 
                         onClick={() => { setActiveTab(1); }}
                       >
-                        Back
+                        {t('applyOrEmploy.buttonBack')}
+                        {/* Back */}
                       </Button>
                     </div>
                   </div>

@@ -5,6 +5,7 @@ import ResponsiveTable from 'material-ui-next-responsive-table'
 import { actions as companiesActions } from '../../../redux/actions/companies'
 import { companiesSelectors } from '../../../redux/selectors/companies'
 import CompaniesTable from './CompaniesTable'
+import { useTranslation } from 'react-i18next'
 
 
 export const CompaniesContainer = ({
@@ -14,6 +15,8 @@ export const CompaniesContainer = ({
   loadCompaniesAll
 }) => {
 
+  const { t } = useTranslation();
+
   React.useEffect(() => {
     loadCompaniesAll()
   }, [loadCompaniesAll])
@@ -22,49 +25,60 @@ export const CompaniesContainer = ({
   const columns = [
   {
     key: 'companyName',
-    label: 'Name',
+    label: `${t('profile.labelName')}`,
+    // label: 'Name',
     primary: true,
   },
   {
     key: 'companyRegistrationNumber',
-    label: 'Registration number',
+    label: `${t('profile.labelRegistrationNumber')}`,
+    // label: 'Registration number',
   },
   {
     key: 'email',
-    label: 'E-mail',
+    label: `${t('profile.labelEMail')}`,
+    // label: 'E-mail',
   },
   {
     key: 'mobilePhone',
-    label: 'Contact phone',
+    label: `${t('profile.labelContactPhone')}`,
+    // label: 'Contact phone',
   },
   {
     key: 'about',
-    label: 'About',
+    label: `${t('profile.labelAbout')}`,
+    // label: 'About',
   },
   {
     key: 'accessRole',
-    label: 'Access role',
+    label: `${t('profile.labelAccessRole')}`,
+    // label: 'Access role',
   },
   {
     key: 'city',
-    label: 'City',
+    label: `${t('profile.labelCity')}`,
+    // label: 'City',
     primary: true,
   },
   {
     key: 'countryRegion',
-    label: 'Country region',
+    label: `${t('profile.labelCountryRegion')}`,
+    // label: 'Country region',
   },
   {
     key: 'country',
-    label: 'Country',
+    label: `${t('profile.labelCountry')}`,
+    // label: 'Country',
   },
   {
     key: 'iso2Code',
-    label: 'Country code',
+    label: `${t('profile.labelCountryCode')}`,
+    // label: 'Country code',
   },
   {
     key: 'username',
-    label: 'Username',
+    label: `${t('profile.labelUsername')}`,
+    // label: 'Username',
   }
 ]
 
@@ -76,7 +90,11 @@ const data = companiesAll
       {
         (!companiesIsLoading && companiesAll) &&
         <React.Fragment>
-          <p>Number of companies in the database: {companiesAll.length}</p>
+          <p>
+            {t('companiesContainer.numberOfCompanies')}
+            {/* Number of companies in the database:  */}
+            {companiesAll.length}
+          </p>
           <ResponsiveTable columns={columns} data={data} />
           <CompaniesTable />
         </React.Fragment>
@@ -84,11 +102,17 @@ const data = companiesAll
       }
       {
         (!companiesIsLoading && companiesIsError) &&
-        <p>Error at loading companies.</p>
+        <p>
+          {t('companiesContainer.errorAtLoading')}
+          {/* Error at loading companies. */}
+        </p>
       }
       {
         companiesIsLoading &&
-        <p>Companies are loading ... </p>
+        <p>
+          {t('companiesContainer.resourcesAreLoading')}
+          {/* Companies are loading ...  */}
+        </p>
       }
     </React.Fragment>
 

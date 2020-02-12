@@ -4,6 +4,7 @@ import JobDayHoursForm from './JobDayHoursForm'
 import Card from '@material-ui/core/Card'
 import FormLabel from '@material-ui/core/FormLabel'
 import CardContent from '@material-ui/core/CardContent'
+import { useTranslation } from 'react-i18next'
 
 
 const days = [
@@ -91,6 +92,7 @@ export const JobDayHoursContainer = (props) => {
 
   const [inputListJobDayHours, setInputListJobDayHours] = React.useState([])
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const { touched, errors, handleChange, handleBlur } = props;
 
@@ -165,7 +167,10 @@ export const JobDayHoursContainer = (props) => {
     // <div className={classes.container}>
     <Card className={classes.card}>
         <CardContent>
-            <FormLabel component="legend">Chose day/s and details</FormLabel>
+            <FormLabel component="legend">
+              {t('jobDayHoursContainer.choseDaysAndDetails')}
+              {/* Chose day/s and details */}
+            </FormLabel>
             {inputListJobDayHours.map(jobDayHours => {
                 return <JobDayHoursForm key={jobDayHours.day} handleJobDayHoursChange={handleJobDayHoursChange} jobDayHours={jobDayHours} handleChange={handleChange} handleBlur={handleBlur} touched={touched} errors={errors} />
             })}

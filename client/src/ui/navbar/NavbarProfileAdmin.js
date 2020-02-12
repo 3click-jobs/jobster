@@ -4,9 +4,12 @@ import IconButton from '@material-ui/core/IconButton'
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import { useTranslation } from 'react-i18next'
 
 export const NavbarProfileAdmin = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null)
+
+  const { t } = useTranslation();
 
   const isMenuOpen = Boolean(anchorEl)
 
@@ -31,29 +34,31 @@ export const NavbarProfileAdmin = (props) => {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose} component={Link} to='/profile'>
-        Profile
+        {t('navbarProfile.profile')}
+        {/* Profile */}
       </MenuItem>
       {/* <MenuItem onClick={handleMenuClose}>
         <Link to='/account'>My Account</Link>
       </MenuItem> */}
       <MenuItem onClick={ () => { handleMenuClose(); props.setOpen();} }>
-        Sign-out
+        {t('signout.title')}
+        {/* Sign-out */}
       </MenuItem>
     </Menu>
   )
 
   return (
     <React.Fragment>
-      <IconButton
-        aria-label="account of current user"
-        aria-controls={menuId}
-        aria-haspopup="true"
-        onClick={handleProfileMenuOpen}
-        color="inherit"
-      >
-        <AccountCircle />
-      </IconButton>
-      {renderMenu}
+        <IconButton
+          aria-label="account of current user"
+          aria-controls={menuId}
+          aria-haspopup="true"
+          onClick={handleProfileMenuOpen}
+          color="inherit"
+        >
+          <AccountCircle />
+        </IconButton>
+        {renderMenu}
     </React.Fragment>
   )
 }

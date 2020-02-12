@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { HomePage } from './ui/home/HomePage'
 import NavbarGeneric from './ui/navbar/NavbarGeneric';
@@ -21,6 +21,7 @@ import EmployContainer from './ui/employ/EmployContainer';
 import SeekContainer from './ui/seek/SeekContainer';
 import RegisterContainer from './ui/register/RegisterContainer';
 
+import './i18n';
 
 const defaultTheme = createMuiTheme({
   palette: {
@@ -58,62 +59,64 @@ export const App = ({
       }
       {
         authReady &&
-        <Router>
-          <NavbarGeneric role={role} />
-          <Switch>
-            <Route exact path='/'>
-              <HomePage role={role} />
-            </Route>
-            <Route exact path='/register-account'>
-              <RegisterAccount />
-            </Route>
-            <Route exact path='/register-person'>
-              <RegisterPerson />
-            </Route>
-            <Route exact path='/register-company'>
-              <RegisterCompany />
-            </Route>
-            <Route exact path='/accounts'>
+        <Suspense fallback={null}>
+          <Router>
+            <NavbarGeneric role={role} />
+            <Switch>
+              <Route exact path='/'>
+                <HomePage role={role} />
+              </Route>
+              <Route exact path='/register-account'>
+                <RegisterAccount />
+              </Route>
+              <Route exact path='/register-person'>
+                <RegisterPerson />
+              </Route>
+              <Route exact path='/register-company'>
+                <RegisterCompany />
+              </Route>
+              <Route exact path='/accounts'>
 
-            </Route>
-            <Route exact path='/persons'>
-              <PersonsContainer />
-            </Route>
-            <Route exact path='/companies'>
-              <CompaniesContainer />
-            </Route>
-            <Route exact path='/seeks'>
-              <SeeksContainer />
-            </Route>
-            <Route exact path='/offers'>
-              <OffersContainer />
-            </Route>
-            {/* <Route exact path='/login'>
-                <Login />
-            </Route>
-            <Route exact path='/signout'>
-              <Signout />
-            </Route> */}
-            <Route exact path='/apply'>
-              <ApplyContainer />
-            </Route>
-            <Route exact path='/offer'>
-              <OfferContainer profile={loggedUser} />
-            </Route>
-            <Route exact path='/employ'>
-              <EmployContainer />
-            </Route>
-            <Route exact path='/seek'>
-              <SeekContainer profile={loggedUser} />
-            </Route>
-            <Route exact path='/register'>
-              <RegisterContainer />
-            </Route>
-            <Route exact path='/profile'>
-              <RegisterContainer profile={loggedUser} />
-            </Route>
-          </Switch>
-        </Router>
+              </Route>
+              <Route exact path='/persons'>
+                <PersonsContainer />
+              </Route>
+              <Route exact path='/companies'>
+                <CompaniesContainer />
+              </Route>
+              <Route exact path='/seeks'>
+                <SeeksContainer />
+              </Route>
+              <Route exact path='/offers'>
+                <OffersContainer />
+              </Route>
+              {/* <Route exact path='/login'>
+                  <Login />
+              </Route>
+              <Route exact path='/signout'>
+                <Signout />
+              </Route> */}
+              <Route exact path='/apply'>
+                <ApplyContainer />
+              </Route>
+              <Route exact path='/offer'>
+                <OfferContainer profile={loggedUser} />
+              </Route>
+              <Route exact path='/employ'>
+                <EmployContainer />
+              </Route>
+              <Route exact path='/seek'>
+                <SeekContainer profile={loggedUser} />
+              </Route>
+              <Route exact path='/register'>
+                <RegisterContainer />
+              </Route>
+              <Route exact path='/profile'>
+                <RegisterContainer profile={loggedUser} />
+              </Route>
+            </Switch>
+          </Router>
+        </Suspense>
       }
     </ThemeProvider>
   );

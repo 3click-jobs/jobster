@@ -11,6 +11,7 @@ import { RadioGroup, Radio } from '@material-ui/core'
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import { green, red } from '@material-ui/core/colors';
+import { useTranslation } from 'react-i18next'
 
 
 const theme = createMuiTheme({
@@ -56,6 +57,7 @@ export const JobDayHoursForm = ({
 
   const classes = useStyles();
 
+  const { t } = useTranslation();
 
   return (
     <ThemeProvider theme={theme}>
@@ -84,26 +86,44 @@ export const JobDayHoursForm = ({
 
             <FormControl component="fieldset" >
               {/* <FormLabel component="legend">Chose one:</FormLabel> */}
-              <RadioGroup aria-label="isMinMax" 
-                          name="isMinMax"
-                          value={jobDayHours.isMinMax} 
-                          // checked={Boolean(jobDayHours.isMinMax)}
-                          // onChange={handleChange} 
-                          onChange={(event) => {
-                            event.persist()
-                            handleJobDayHoursChange(event, jobDayHours.day);
-                          }}
-                          style = {{ marginLeft: 30, marginRight: 20 }}
-                          >
-                <FormControlLabel value={false} control={<Radio checked={jobDayHours.isMinMax === false} />} label="From-to o'clock" labelPlacement="end" />
-                <FormControlLabel value={true} control={<Radio checked={jobDayHours.isMinMax === true} />} label="Min-max hours" labelPlacement="end" />
+              <RadioGroup 
+                aria-label="isMinMax" 
+                name="isMinMax"
+                value={jobDayHours.isMinMax} 
+                // checked={Boolean(jobDayHours.isMinMax)}
+                // onChange={handleChange} 
+                onChange={(event) => {
+                  event.persist()
+                  handleJobDayHoursChange(event, jobDayHours.day);
+                }}
+                style = {{ marginLeft: 30, marginRight: 20 }}
+              >
+                <FormControlLabel 
+                  value={false} 
+                  control={<Radio 
+                  checked={jobDayHours.isMinMax === false} />} 
+                  label={t('jobDayHoursForm.fromToOClock')}
+                  // label="From-to o'clock" 
+                  labelPlacement="end" 
+                />
+                <FormControlLabel 
+                  value={true} 
+                  control={<Radio 
+                  checked={jobDayHours.isMinMax === true} />} 
+                  label={t('jobDayHoursForm.minMaxHours')}
+                  // label="Min-max hours" 
+                  labelPlacement="end"
+                />
               </RadioGroup>
             </FormControl>
 
             {/* <div style = {{display: "inline"}} > */}
             <FormControl component="fieldset" style = {{display: "inline"}} >
               <TextField
-                label={jobDayHours.isMinMax ? "Min a day" : "From" }
+                label={jobDayHours.isMinMax ? 
+                  `${t('jobDayHoursForm.minADay')}` : `${t('jobDayHoursForm.from')}`
+                  // "Min a day" : "From" 
+                  }
                 name="fromHour"
                 type="number"
                 value={jobDayHours.fromHour}
@@ -146,7 +166,10 @@ export const JobDayHoursForm = ({
               />
 
               <TextField
-                label={jobDayHours.isMinMax ? "Max a day" : "To" }
+                label={jobDayHours.isMinMax ? 
+                  `${t('jobDayHoursForm.maxADay')}` : `${t('jobDayHoursForm.to')}`
+                  // "Max a day" : "To" 
+                  }
                 name="toHour"
                 type="number"
                 value={jobDayHours.toHour}
@@ -200,7 +223,8 @@ export const JobDayHoursForm = ({
                                         event.persist()
                                         handleJobDayHoursChange(event, jobDayHours.day);
                                       }} />}
-                    label="Flexibile hours"
+                    label={t('jobDayHoursForm.flexibileHours')}
+                    // label="Flexibile hours"
                     labelPlacement="bottom"
                     onChange={handleChange('flexibileHours')}
                   />
