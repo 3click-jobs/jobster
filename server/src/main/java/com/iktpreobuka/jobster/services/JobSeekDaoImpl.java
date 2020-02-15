@@ -845,7 +845,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			logger.info("Checking database for JobSeek.");
 			if (((jobSeekRepository.count() == 0))) {
 				logger.info("Database empty.");
-				return new ResponseEntity<String>("Database empty.", HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<String>("Database empty.", HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			logger.info("Error occurred during 'Checking database'.");
