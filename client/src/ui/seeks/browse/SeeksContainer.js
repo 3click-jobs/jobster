@@ -7,6 +7,7 @@ import { seeksSelectors } from '../../../redux/selectors/seeks'
 import SeekCard from './SeekCard'
 import ToTopButton from '../../toTopButton/ToTopButton';
 import FilteringPosts from '../../filteringPosts/FilteringPosts'
+import { useTranslation } from 'react-i18next'
 
 
 const toRadians = (angle) => {
@@ -109,6 +110,7 @@ export const SeeksContainer = ({
   const [flexibileDays, setFlexibileDays] = React.useState(false)
   const [listJobDayHours, setListJobDayHours] = React.useState([])
 
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (seeksAll.length === 0)
@@ -348,7 +350,8 @@ export const SeeksContainer = ({
   return (
     <React.Fragment>
       <FilteringPosts price={price}
-                priceType = "Minimum"
+                priceType = {t('seeksContainer.priceType')}
+                // priceType = "Minimum"
                 beginningDate={beginningDate}
                 endDate={endDate}
                 flexibileDates={flexibileDates}
@@ -364,7 +367,11 @@ export const SeeksContainer = ({
       {
         (!seeksIsLoading && (acceptableSeeks || acceptableSeeksBasic)) &&
         <React.Fragment>
-            <p>Number of job seeks in the database: { (acceptableSeeks && acceptableSeeks.length < acceptableSeeksBasic.length ) ? acceptableSeeks.length : acceptableSeeksBasic.length}</p>
+            <p>
+              {t('seeksContainer.numberOfJobSeeksInDatabase')}
+              {/* Number of job seeks in the database:  */}
+              { (acceptableSeeks && acceptableSeeks.length < acceptableSeeksBasic.length ) ? acceptableSeeks.length : acceptableSeeksBasic.length}
+            </p>
             <div style={{ padding: '16px' }}>
                 <Grid container spacing={2} direction="row" justify="space-evenly" alignItems="flex-start" >
                     {( acceptableSeeks && acceptableSeeks.length < acceptableSeeksBasic.length ) ? acceptableSeeks.map(seek => {
@@ -386,11 +393,17 @@ export const SeeksContainer = ({
       }
       {
         (!seeksIsLoading && seeksIsError) &&
-        <p>Error at loading job seeks.</p>
+        <p>
+          {t('seeksContainer.errorAtLoadingJobSeeks')}
+          {/* Error at loading job seeks. */}
+        </p>
       }
       {
         seeksIsLoading &&
-        <p>Job seeks are loading ... </p>
+        <p>
+          {t('seeksContainer.jobSeeksAreLoading')}
+          {/* Job seeks are loading ...  */}
+        </p>
       }
     </React.Fragment>
 

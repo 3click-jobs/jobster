@@ -7,6 +7,7 @@ import { offersSelectors } from '../../../redux/selectors/offers'
 import OfferCard from './OfferCard'
 import ToTopButton from '../../toTopButton/ToTopButton';
 import FilteringPosts from '../../filteringPosts/FilteringPosts'
+import { useTranslation } from 'react-i18next'
 
 
 const toRadians = (angle) => {
@@ -110,7 +111,7 @@ export const OffersContainer = ({
   const [flexibileDays, setFlexibileDays] = React.useState(false)
   const [listJobDayHours, setListJobDayHours] = React.useState([])
 
-
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (offersAll.length === 0)
@@ -479,7 +480,8 @@ export const OffersContainer = ({
   return (
     <React.Fragment>
       <FilteringPosts price={price}
-                      priceType = "Minimum"
+                      priceType = {t('offersContainer.priceType')}
+                      // priceType = "Minimum"
                       beginningDate={beginningDate}
                       endDate={endDate}
                       flexibileDates={flexibileDates}
@@ -495,7 +497,11 @@ export const OffersContainer = ({
       {
         (!offersIsLoading && (acceptableOffers || acceptableOffersBasic)) &&
         <React.Fragment>
-            <p>Total number of job offers in the database: { (acceptableOffers && acceptableOffers.length < acceptableOffersBasic.length ) ? acceptableOffers.length : acceptableOffersBasic.length}</p>
+            <p>
+              {t('offersContainer.totalNumberOfJobOffersInDatabase')}
+              {/* Total number of job offers in the database:  */}
+              { (acceptableOffers && acceptableOffers.length < acceptableOffersBasic.length ) ? acceptableOffers.length : acceptableOffersBasic.length}
+            </p>
             <div style={{ padding: '16px' }}>
               <Grid container spacing={2} direction="row" justify="space-evenly" alignItems="flex-start" >
                     {( acceptableOffers && acceptableOffers.length < acceptableOffersBasic.length ) ? acceptableOffers.map(offer => {
@@ -517,11 +523,17 @@ export const OffersContainer = ({
       }
       {
         (!offersIsLoading && offersIsError) &&
-        <p>Error at loading job offers.</p>
+        <p>
+          {t('offersContainer.errorAtLoadingJobOffers')}
+          {/* Error at loading job offers. */}
+        </p>
       }
       {
         offersIsLoading &&
-        <p>Job offers are loading ... </p>
+        <p>
+          {t('offersContainer.jobOffersAreLoading')}
+          Job offers are loading ... 
+        </p>
       }
     </React.Fragment>
 
