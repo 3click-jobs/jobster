@@ -14,12 +14,16 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.util.JacksonJsonParser;
 import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -46,6 +50,9 @@ import com.iktpreobuka.jobster.repositories.JobTypeRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.repositories.UserRepository;
 
+@RunWith(SpringRunner.class) 
+@SpringBootTest 
+@WebAppConfiguration 
 public class JobSeekControllerTest {
 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(), 
@@ -192,6 +199,14 @@ public class JobSeekControllerTest {
 				jobTypeRepository.delete(jobType);
 			}
 			jobTypes.clear();
+			for (JobSeekEntity jobSeek : jobSeeks) {
+				jobSeekRepository.delete(jobSeek);
+			}
+			jobSeeks.clear();
+			for (JobDayHoursEntity jobDayHours : jobDayHours) {
+				jobDayHoursRepository.delete(jobDayHours);
+			}
+			jobDayHours.clear();
 			// dovde sam odradio jedan primer sa drakulicem dalje odraditi sve sto treba
 			
 			dbInit = false;
@@ -214,6 +229,14 @@ public class JobSeekControllerTest {
 		mockMvc.perform(get("/jobster/seek/" + (jobSeeks.get(0)/*ovde ince po drakulicevoj preporuci stavljem poslednjeg iz liste sto sam gore ubacio*/.getId()+1/*plus jedan je jer mi treba id koji nepostoji u bazi*/))
 			.header("Authorization", "Bearer " + token))//ovo uvek
 			.andExpect(status().isNotFound()); //ovo se ocekuje da bude ako kontroler dobro radi
+	}
+	
+	@Test
+	public void readSingleSeekWhichExists() throws Exception {
+		logger.info("readSingleSeekWhichNotExists");
+		mockMvc.perform(get("/jobster/seek/" + (jobSeeks.get(0).getId()))
+			.header("Authorization", "Bearer " + token))
+			.andExpect(status().isOk());
 	}
 
 
