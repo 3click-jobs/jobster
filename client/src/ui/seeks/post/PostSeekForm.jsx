@@ -17,6 +17,7 @@ import JobDayHoursContainer from '../../jobDayHours/JobDayHoursContainer';
 import { green, red } from '@material-ui/core/colors';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
+import { useTranslation } from 'react-i18next'
 
 
 const theme = createMuiTheme({
@@ -58,6 +59,7 @@ export const PostSeekForm = ({
   const { setFieldValue } = useFormikContext()
 
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <ThemeProvider theme={theme}>
@@ -82,7 +84,8 @@ export const PostSeekForm = ({
             />
 
             <TextField
-              label="Details about job"
+              label={t('postSeekForm.detailsAndOrSkillsForAJob')}
+              // label="Details about job"
               name="detailsLink"
               value={values.detailsLink}
               onChange={handleChange}
@@ -161,7 +164,8 @@ export const PostSeekForm = ({
               } } } />
 
             <TextField
-              label="Distance to job"
+              label={t('postSeekForm.distanceToJob')}
+              // label="Distance to job"
               name="distanceToJob"
               value={values.distanceToJob}
               onChange={handleChange}
@@ -197,7 +201,8 @@ export const PostSeekForm = ({
             />
 
             <TextField
-              label="Price per hour"
+              label={t('offerAndSeekCard.pricePerHour')}
+              // label="Price per hour"
               name="price"
               value={values.price}
               onChange={handleChange}
@@ -233,7 +238,8 @@ export const PostSeekForm = ({
             />
 
             <TextField
-              label="Beginning date"
+              label={t('filter.labelBeginningDate')}
+              // label="Beginning date"
               name="beginningDate"
               type="date"
               value={values.beginningDate}
@@ -270,7 +276,8 @@ export const PostSeekForm = ({
             />
 
             <TextField
-              label="End date"
+              label={t('filter.labelEndDate')}
+              // label="End date"
               name="endDate"
               type="date"
               value={values.endDate}
@@ -311,7 +318,8 @@ export const PostSeekForm = ({
                   value={values.flexibileDates}
                   checked={values.flexibileDates}
                   control={<Checkbox color="primary" />}
-                  label="Flexibile dates"
+                  label={t('filter.labelFlexibileDates')}
+                  // label="Flexibile dates"
                   labelPlacement="bottom"
                   onChange={handleChange('flexibileDates')}
                 />
@@ -333,7 +341,8 @@ export const PostSeekForm = ({
                   value={values.flexibileDays}
                   checked={values.flexibileDays}
                   control={<Checkbox color="primary" />}
-                  label="Flexibile days"
+                  label={t('filter.labelFlexibileDays')}
+                  // label="Flexibile days"
                   labelPlacement="bottom"
                   onChange={handleChange('flexibileDays')}
                 />
@@ -342,10 +351,12 @@ export const PostSeekForm = ({
           </CardContent>
           <CardActions className={classes.actions}>
             <Button color='primary' type='submit' disabled={isSubmitting}>
-              SUBMIT
+              {t('registration.buttonSubmit')}
+              {/* SUBMIT */}
             </Button>
             <Button color='secondary' onClick={handleReset}>
-              CLEAR
+              {t('registration.buttonClear')}
+              {/* CLEAR */}
           </Button>
 
           </CardActions>

@@ -25,6 +25,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import DoneSharpIcon from '@material-ui/icons/DoneSharp';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Tooltip from '@material-ui/core/Tooltip';
+import { useTranslation } from 'react-i18next'
 
 
 const theme = createMuiTheme({
@@ -103,6 +104,8 @@ export const SeekCard = (props) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
+  const { t } = useTranslation();
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -125,14 +128,22 @@ export const SeekCard = (props) => {
             }
             action={
               <React.Fragment>
-                <Tooltip title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Contact" } aria-label="contact">
+                <Tooltip 
+                  title={ props.role==="ROLE_GUEST" ? `${t('offerAndSeekCard.mustBeSignIn')}` : `${t('applyOrEmploy.labelConnect')}` } 
+                  // title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Contact" } 
+                  aria-label="contact"
+                >
                   <span>
                     <IconButton aria-label="accept" onClick={ () => props.handleAcceptSeek(props.seek) } disabled={props.role==="ROLE_GUEST" ? true : false} >
                       <DoneSharpIcon style={{ color: green[900], fontSize: 30 }} />
                     </IconButton>
                   </span>
                 </Tooltip>
-                <Tooltip title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Remove" } aria-label="remove">
+                <Tooltip 
+                  title={ props.role==="ROLE_GUEST" ? `${t('offerAndSeekCard.mustBeSignIn')}` : `${t('offerAndSeekCard.remove')}` } 
+                  // title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Remove" } 
+                  aria-label="remove"
+                >
                   <span>
                     <IconButton aria-label="decline" onClick={ () => props.handleDeclineSeek(props.seek) } disabled={props.role==="ROLE_GUEST" ? true : false} >
                       <ClearIcon style={{ color: red[900], fontSize: 30 }} />
@@ -145,23 +156,35 @@ export const SeekCard = (props) => {
               </React.Fragment>
             }
             title={props.seek.jobType.jobTypeName}
-            subheader={"Price per hour: " + props.seek.price + "€"}
+            subheader={`${t('offerAndSeekCard.labelPricePerHour')}` + props.seek.price + `${t('offerAndSeekCard.priceUnit')}`}
+            // subheader={"Price per hour: " + props.seek.price + "€"}
           />
           <CardContent>
-            <Typography gutterBottom variant="subtitle1">Details and/or skills for a job:</Typography>
+            <Typography gutterBottom variant="subtitle1">
+              {t('seekCard.detailsAndOrSkillsForAJob')}
+              {/* Details and/or skills for a job: */}
+            </Typography>
             <Typography variant="body2" gutterBottom color="textSecondary">
                 {props.seek.detailsLink}
             </Typography>
           </CardContent>
           <CardActions disableSpacing>
-          <Tooltip title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Rate" } aria-label="rate">
+          <Tooltip 
+            title={ props.role==="ROLE_GUEST" ? `${t('offerAndSeekCard.mustBeSignIn')}` : `${t('offerAndSeekCard.rate')}` } 
+            // title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Rate" } 
+            aria-label="rate"
+          >
               <span>
                 <IconButton aria-label="add to favorites" disabled={props.role==="ROLE_GUEST" ? true : false} >
                   <StarRate />
                 </IconButton>
               </span>
             </Tooltip>
-            <Tooltip title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Comment" } aria-label="comment">
+            <Tooltip 
+              title={ props.role==="ROLE_GUEST" ? `${t('offerAndSeekCard.mustBeSignIn')}` : `${t('offerAndSeekCard.comment')}` }
+              // title={ props.role==="ROLE_GUEST" ? "Must be sign in!" : "Comment" } 
+              aria-label="comment"
+            >
               <span>
                 <IconButton aria-label="share" disabled={props.role==="ROLE_GUEST" ? true : false} >
                   <AddComment />
@@ -182,41 +205,67 @@ export const SeekCard = (props) => {
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <Typography gutterBottom variant="subtitle1">Acceptable location/s for jobs:</Typography>
+              <Typography gutterBottom variant="subtitle1">
+                {t('seekCard.acceptableLocationsForJobs')}
+                {/* Acceptable location/s for jobs: */}
+              </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                {props.seek.distanceToJob>0 ? 
-                    "Up to " + props.seek.distanceToJob + " km from " + props.seek.city + ", " + props.seek.country
-                    : "In " + props.seek.city + ", " + props.seek.country}
+                {props.seek.distanceToJob>0 ? `${t('seekCard.upTo')}` + props.seek.distanceToJob + `${t('seekCard.kmFrom')}` + props.seek.city + ", " + props.seek.country
+                    // "Up to " + props.seek.distanceToJob + " km from " + props.seek.city + ", " + props.seek.country
+                  : `${t('seekCard.in')}` + props.seek.city + ", " + props.seek.country}
+                    {/* "In " + props.seek.city + ", " + props.seek.country} */}
               </Typography>
-              <Typography gutterBottom variant="subtitle1"> {props.seek.flexibileDates ? "Acceptable period (FLEXIBLE) for jobs: " : "Acceptable period (NOT FLEXIBLE) for jobs: "}</Typography>
+              <Typography gutterBottom variant="subtitle1"> 
+                {props.seek.flexibileDates ? `${t('seekCard.acceptablePeriodFlexibleForJobs')}` : `${t('seekCard.acceptablePeriodNotFlexibleForJobs')}`}
+                {/* {props.seek.flexibileDates ? "Acceptable period (FLEXIBLE) for jobs: " : "Acceptable period (NOT FLEXIBLE) for jobs: "} */}
+              </Typography>
                 <Typography variant="body2" gutterBottom color="textSecondary">
-                  {props.seek.endDate ? "From " + props.seek.beginningDate + " to " + props.seek.endDate : "From " + props.seek.beginningDate}
+                  {props.seek.endDate ? `${t('offerAndSeekCard.from')}` + props.seek.beginningDate + `${t('offerAndSeekCard.to')}` + props.seek.endDate : `${t('offerAndSeekCard.from')}` + props.seek.beginningDate}
+                  {/* {props.seek.endDate ? "From " + props.seek.beginningDate + " to " + props.seek.endDate : "From " + props.seek.beginningDate} */}
               </Typography>
-              <Typography gutterBottom variant="subtitle1"> {props.seek.listJobDayHoursPostDto ? props.seek.flexibileDays ? "Acceptable day/s (FLEXIBLE) and day period/s for jobs:" : "Acceptable day/s (NOT FLEXIBLE) and day period/s for jobs:" : null} </Typography>
+              <Typography gutterBottom variant="subtitle1"> 
+                {props.seek.listJobDayHoursPostDto ? props.seek.flexibileDays ? `${t('seekCard.acceptableDaysFlexibleAndDayPeriodsForJobs')}` : `${t('seekCard.acceptableDaysNotFlexibleAndDayPeriodsForJobs')}` : null} 
+                {/* {props.seek.listJobDayHoursPostDto ? props.seek.flexibileDays ? "Acceptable day/s (FLEXIBLE) and day period/s for jobs:" : "Acceptable day/s (NOT FLEXIBLE) and day period/s for jobs:" : null}  */}
+              </Typography>
                 { props.seek.listJobDayHoursPostDto 
                   ? props.seek.listJobDayHoursPostDto.map(day => {
                     return <Typography key={day.id} variant="body2" gutterBottom color="textSecondary">
-                      {day.isMinMax ? day.day.substr(4) + ": min " + day.fromHour + " and max " + day.toHour + " hours in a day" : day.day.substr(4) + ": from " + day.fromHour + " to " + day.toHour + " o'clock" } 
-                      {day.flexibileHours ? " (FLEXIBLE)" : " (NOT FLEXIBLE)"}
+                      {day.isMinMax ? day.day.substr(4) + `${t('offerAndSeekCard.min')}` + day.fromHour + `${t('offerAndSeekCard.max')}` + day.toHour + `${t('offerAndSeekCard.hoursInADay')}` : day.day.substr(4) + `${t('offerAndSeekCard.fromAfterDots')}` + day.fromHour + `${t('offerAndSeekCard.to')}` + day.toHour + `${t('offerAndSeekCard.oClock')}` } 
+                      {/* {day.isMinMax ? day.day.substr(4) + ": min " + day.fromHour + " and max " + day.toHour + " hours in a day" : day.day.substr(4) + ": from " + day.fromHour + " to " + day.toHour + " o'clock" }  */}
+                      {day.flexibileHours ? `${t('offerAndSeekCard.flexible')}` : `${t('offerAndSeekCard.notFlexible')}`}
+                      {/* {day.flexibileHours ? " (FLEXIBLE)" : " (NOT FLEXIBLE)"} */}
                     </Typography>
                   }) 
                   : null             
                 }
-              <Typography gutterBottom variant="subtitle1">Employee:</Typography>
-              <Typography variant="body2" gutterBottom color="textSecondary">
-                Name: {props.seek.employee.firstName ? props.seek.employee.firstName + " " + props.seek.employee.lastName : props.seek.employee.companyName }
+              <Typography gutterBottom variant="subtitle1">
+                {t('seekCard.employee')} 
+                {/* Employee: */}
               </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                Place of residence: {props.seek.employee.city + ", " + props.seek.employee.country}
+                {t('offerAndSeekCard.name')}
+                {/* Name:  */}
+                {props.seek.employee.firstName ? props.seek.employee.firstName + " " + props.seek.employee.lastName : props.seek.employee.companyName }
               </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                About: {props.seek.employee.about}
+                {t('offerAndSeekCard.placeOfResidence')}
+                {/* Place of residence:  */}
+                {props.seek.employee.city + ", " + props.seek.employee.country}
               </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                E-mail: {props.seek.employee.email}
+                {t('offerAndSeekCard.about')}
+                {/* About:  */}
+                {props.seek.employee.about}
               </Typography>
               <Typography variant="body2" gutterBottom color="textSecondary">
-                Phone: {props.seek.employee.mobilePhone}
+                {t('offerAndSeekCard.eMail')}
+                {/* E-mail:  */}
+                {props.seek.employee.email}
+              </Typography>
+              <Typography variant="body2" gutterBottom color="textSecondary">
+                {t('offerAndSeekCard.contactPhone')} 
+                {/* Phone:  */}
+                {props.seek.employee.mobilePhone}
               </Typography>
             </CardContent>
           </Collapse>
