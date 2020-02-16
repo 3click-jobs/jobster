@@ -92,7 +92,6 @@
   "navbarDrawer.offerAJob": "Offer a job",
   "navbarProfile.profile": "Profile",
   "navbarProfile.register": "Register",
-
   "offerAndSeekCard.mustBeSignIn": "Must be sign in!",
   "offerAndSeekCard.remove": "Remove",
   "offerAndSeekCard.pricePerHour": "Price per hour: ",
@@ -142,5 +141,12 @@
   "postOfferForm.detailsAboutJob": "Details about job",
   "postOfferForm.numberOfEmployees": "Needed number of employees",
   "postSeekForm.distanceToJob": "Acceptable distance to job",
-  "postSeekForm.detailsAndOrSkillsForAJob": "Details and/or skills for a job"
+  "postSeekForm.detailsAndOrSkillsForAJob": "Details and/or skills for a job",
+  "day.monday": "Monday",
+  "day.tuesday": "Tuesday",
+  "day.wednesday": "Wednesday",
+  "day.thursday": "Thursday",
+  "day.friday": "Friday",
+  "day.saturday": "Saturday",
+  "day.sunday": "Sunday"
 }

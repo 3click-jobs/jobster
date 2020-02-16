@@ -17,6 +17,19 @@ const useStyles = makeStyles(theme => ({
   // },
   langButton: {
     color: 'white',
+    '& img': {
+      // top: '1px',
+      height: '25px'
+    }
+  },
+  langMenu: {
+    '& a': {
+      textDecoration: 'none',
+    },
+    '& img': {
+      // top: '1px',
+      height: '25px'
+    }
   },
 }));
 
@@ -50,14 +63,15 @@ const LanguageSelector = () => {
 
     const renderMenu = ( 
       <Menu
+        className={classes.langMenu} 
         id={langMenuId}
         anchorEl={anchorEl}
         keepMounted
         open={isLangMenuOpen}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => handleLang('en')}>EN</MenuItem>
-        <MenuItem onClick={() => handleLang('sr')}>SR</MenuItem>
+        <MenuItem onClick={() => handleLang('en')}><img alt="3 Click Jobs" src='/img/en.png' /></MenuItem>
+        <MenuItem onClick={() => handleLang('sr')}><img alt="3 Click Jobs" src='/img/sr.png' /></MenuItem>
       </Menu>
     )
 
@@ -70,7 +84,8 @@ const LanguageSelector = () => {
           aria-haspopup="true" 
           onClick={handleClick}
         >
-          {i18n.language}
+          <img alt="3 Click Jobs" src={`/img/${i18n.language}.png`} />
+          {/* {i18n.language} */}
         </Button>
         {renderMenu}
       </React.Fragment>

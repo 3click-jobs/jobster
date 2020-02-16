@@ -187,7 +187,7 @@ export const PostOfferForm = ({
             />
 
             <TextField
-              label={t('offerAndSeekCard.pricePerHour')}
+              label={t('filter.labelPricePerHour')}
               // label="Price per hour"
               name="price"
               value={values.price}

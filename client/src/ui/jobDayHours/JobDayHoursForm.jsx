@@ -74,7 +74,24 @@ export const JobDayHoursForm = ({
                                   event.persist()
                                   handleJobDayHoursChange(event, jobDayHours.day);
                                 }} />}
-              label={jobDayHours.day ? jobDayHours.day.substr(4) : null}
+              label={jobDayHours.day ? 
+                jobDayHours.day.substr(4) === "MONDAY" ? 
+                  `${t('day.monday')}` 
+                  : jobDayHours.day.substr(4) === "TUESDAY" ?
+                    `${t('day.tuesday')}`
+                    : jobDayHours.day.substr(4) === "WEDNESDAY" ?
+                      `${t('day.wednesday')}`
+                      : jobDayHours.day.substr(4) === "THURSDAY" ?
+                        `${t('day.thursday')}`
+                        : jobDayHours.day.substr(4) === "FRIDAY" ?
+                          `${t('day.friday')}`
+                          : jobDayHours.day.substr(4) === "SATURDAY" ?
+                            `${t('day.saturday')}`
+                            : jobDayHours.day.substr(4) === "SUNDAY" ?
+                              `${t('day.sunday')}`
+                              : null
+                : null}
+              // label={jobDayHours.day ? jobDayHours.day.substr(4) : null}
               labelPlacement="end"
               // onChange={handleChange('day')}
               style = {{width: 100}}
