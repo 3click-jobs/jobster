@@ -170,7 +170,7 @@ export const OfferCard = (props) => {
               </React.Fragment>
             }
             title={props.offer.jobType.jobTypeName}
-            subheader={`${t('offerAndSeekCard.labelPricePerHour')}` + props.offer.price + `${t('offerAndSeekCard.priceUnit')}`}
+            subheader={`${t('offerAndSeekCard.pricePerHour')}` + props.offer.price + `${t('offerAndSeekCard.priceUnit')}`}
             // subheader={"Price per hour: " + props.offer.price + "€"}
           />
           <CardContent>
@@ -246,7 +246,21 @@ export const OfferCard = (props) => {
                 { props.offer.listJobDayHoursPostDto 
                   ? props.offer.listJobDayHoursPostDto.map(day => {
                     return <Typography key={day.id} variant="body2" gutterBottom color="textSecondary">
-                      {day.isMinMax ? day.day.substr(4) + `${t('offerAndSeekCard.min')}` + day.fromHour + `${t('offerAndSeekCard.max')}` + day.toHour + `${t('offerAndSeekCard.hoursInADay')}` : day.day.substr(4) + `${t('offerAndSeekCard.fromAfterDots')}` + day.fromHour + `${t('offerAndSeekCard.to')}` + day.toHour + `${t('offerAndSeekCard.oClock')}` } 
+                      {day.isMinMax ? 
+                        (day.day.substr(4) === "MONDAY" ? `${t('day.monday')}` 
+                          : day.day.substr(4) === "TUESDAY" ? `${t('day.tuesday')}`
+                            : day.day.substr(4) === "WEDNESDAY" ? `${t('day.wednesday')}`
+                              : day.day.substr(4) === "THURSDAY" ? `${t('day.thursday')}`
+                                : day.day.substr(4) === "FRIDAY" ? `${t('day.friday')}`
+                                  : day.day.substr(4) === "SATURDAY" ? `${t('day.saturday')}`
+                                    : day.day.substr(4) === "SUNDAY" ? `${t('day.sunday')}` : "") + `${t('offerAndSeekCard.min')}` + day.fromHour + `${t('offerAndSeekCard.max')}` + day.toHour + `${t('offerAndSeekCard.hoursInADay')}` 
+                        : (day.day.substr(4) === "MONDAY" ? `${t('day.monday')}` 
+                          : day.day.substr(4) === "TUESDAY" ? `${t('day.tuesday')}`
+                            : day.day.substr(4) === "WEDNESDAY" ? `${t('day.wednesday')}`
+                              : day.day.substr(4) === "THURSDAY" ? `${t('day.thursday')}`
+                                : day.day.substr(4) === "FRIDAY" ? `${t('day.friday')}`
+                                  : day.day.substr(4) === "SATURDAY" ? `${t('day.saturday')}`
+                                    : day.day.substr(4) === "SUNDAY" ? `${t('day.sunday')}` : "") + `${t('offerAndSeekCard.fromAfterDots')}` + day.fromHour + `${t('offerAndSeekCard.to')}` + day.toHour + `${t('offerAndSeekCard.oClock')}` } 
                       {/* {day.isMinMax ? day.day.substr(4) + ": min " + day.fromHour + " and max " + day.toHour + " hours in a day" : day.day.substr(4) + ": from " + day.fromHour + " to " + day.toHour + " o'clock" }  */}
                       {day.flexibileHours ? `${t('offerAndSeekCard.flexible')}` : `${t('offerAndSeekCard.notFlexible')}`}
                       {/* {day.flexibileHours ? " (FLEXIBLE)" : " (NOT FLEXIBLE)"} */}

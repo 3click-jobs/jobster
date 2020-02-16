@@ -75,7 +75,7 @@
   "seekingForAJobCard.mediaTitle": "Tražite posao",
   "seekingForAJobCard.content": "Unesite lokaciju. Unesite tip i opis posla. Proverite da li su svi podaci ispravni i objavite da tražite posao. Tako jednostavno.",
   "jobDayHoursContainer.choseDaysAndDetails": "Odaberite dan/e i detalje",
-  "jobDayHoursForm.fromToOClock": "Od-do sati",
+  "jobDayHoursForm.fromToOClock": "Od-do časova",
   "jobDayHoursForm.minMaxHours": "Min-max sati dnevno",
   "jobDayHoursForm.minADay": "Min",
   "jobDayHoursForm.from": "Od",
@@ -94,7 +94,6 @@
   "navbarProfile.register": "Registracija",
   "offerAndSeekCard.mustBeSignIn": "Morate biti prijavljeni!",
   "offerAndSeekCard.remove": "Ukloni",
-  "offerAndSeekCard.labelPricePerHour": "Cena po satu: ",
   "offerAndSeekCard.pricePerHour": "Cena po satu: ",
   "offerAndSeekCard.priceUnit": " DIN",
   "offerAndSeekCard.rate": "Oceni",
@@ -142,5 +141,12 @@
   "postOfferForm.detailsAboutJob": "Detalji o poslu",
   "postOfferForm.numberOfEmployees": "Potreban broj radnika",
   "postSeekForm.distanceToJob": "Prihvatljiva udaljenost do posla",
-  "postSeekForm.detailsAndOrSkillsForAJob": "Detalji i/ili veštine za posao koji se traži"
+  "postSeekForm.detailsAndOrSkillsForAJob": "Detalji i/ili veštine za posao koji se traži",
+  "day.monday": "Ponedeljak",
+  "day.tuesday": "Utorak",
+  "day.wednesday": "Sreda",
+  "day.thursday": "Četvrtak",
+  "day.friday": "Petak",
+  "day.saturday": "Subota",
+  "day.sunday": "Nedelja"
 }
