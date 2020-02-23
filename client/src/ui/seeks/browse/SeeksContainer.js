@@ -143,7 +143,7 @@ export const SeeksContainer = ({
     if (acceptableSeeksBasic) {
       let filteredOffers = acceptableSeeksBasic
       if (price && price > 0 ) {
-        filteredOffers = filteredOffers.filter(o => o.price >= price)
+        filteredOffers = filteredOffers.filter(o => o.price <= price)
       }
       if (dateStart && dateStart !== "" && dateEnd && dateEnd !== "" ) {
         if (flexDates) {
@@ -351,7 +351,7 @@ export const SeeksContainer = ({
     <React.Fragment>
       <FilteringPosts price={price}
                 priceType = {t('seeksContainer.priceType')}
-                // priceType = "Minimum"
+                // priceType = "Maximum"
                 beginningDate={beginningDate}
                 endDate={endDate}
                 flexibileDates={flexibileDates}
