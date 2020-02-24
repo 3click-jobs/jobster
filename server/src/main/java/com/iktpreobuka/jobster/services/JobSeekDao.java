@@ -88,7 +88,7 @@ public interface JobSeekDao {
 	public ResponseEntity<?> getAllWherePriceIsAndMore(@RequestParam Double price, Pageable pageable);
 	public ResponseEntity<?> getAllWithFlexibileDays(@RequestParam boolean flexDays, Pageable pageable);
 
-	Iterable<ApplyContactEntity> findByQuery(@RequestParam Boolean flexibileHours, @RequestParam Integer fromHour, @RequestParam Integer toHour, @RequestParam Boolean IsMinMax,
+	public Iterable<ApplyContactEntity> findByQuery(@RequestParam Boolean flexibileHours, @RequestParam Integer fromHour, @RequestParam Integer toHour, @RequestParam Boolean IsMinMax,
 			@RequestParam UserEntity employee, @RequestParam CityEntity city, @RequestParam JobTypeEntity type, @RequestParam Date beginningDate, @RequestParam Date endDate,
 			@RequestParam Boolean flexibileDates, @RequestParam Double price, @RequestParam Boolean flexibileDays);
 

@@ -2143,7 +2143,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			@RequestParam Date beginningDate, @RequestParam Date endDate, @RequestParam Boolean flexibileDates,
 			@RequestParam Double price, @RequestParam Boolean flexibileDays) {
 		logger.info("++++++++++++++++ Service for finding JobSeeks");
-		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances tc join c.fromDistances fd where js.status =1 and js.elapsed = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1";
+		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances tc join c.fromDistances fd where js.status =1 and js.elapsed = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and (c = \" + city + \" or ((tc.fromCity = \" + city + \" and tc.kmDistance < \" + js.distanceToJob + \") or (fd.toCity = \" + city + \" and fd.kmDistance < \" + js.distanceToJob + ))";
 		logger.info("++++++++++++++++ Basic query created");
 		
 		if (flexibileHours != null) {
