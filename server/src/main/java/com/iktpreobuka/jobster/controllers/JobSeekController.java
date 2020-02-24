@@ -27,7 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.jobster.controllers.util.RESTError;
+import com.iktpreobuka.jobster.entities.ApplyContactEntity;
+import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
+import com.iktpreobuka.jobster.entities.JobTypeEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
 import com.iktpreobuka.jobster.entities.dto.PersonDTO;
@@ -94,6 +98,15 @@ public class JobSeekController {
 	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId,
 			Principal principal, BindingResult result) {
 		return jobSeekService.modifySeek(seek, seekId, principal, result);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/search")
+	public Iterable<ApplyContactEntity> findByQuery(@RequestParam Boolean flexibileHours,
+			@RequestParam Integer fromHour, @RequestParam Integer toHour, @RequestParam Boolean IsMinMax,
+			@RequestParam UserEntity employee, @RequestParam CityEntity city, @RequestParam JobTypeEntity type,
+			@RequestParam Date beginningDate, @RequestParam Date endDate, @RequestParam Boolean flexibileDates,
+			@RequestParam Double price, @RequestParam Boolean flexibileDays) {
+		return jobSeekService.findByQuery(flexibileHours, fromHour, toHour, IsMinMax, employee, city, type, beginningDate, endDate, flexibileDates, price, flexibileDays);
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -195,7 +208,7 @@ public class JobSeekController {
 	public ResponseEntity<?> unArchiveById(@PathVariable Integer id) {
 		return jobSeekService.unArchiveById(id);
 	}
-
+	
 //pagination:
 	
 	
