@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -24,9 +27,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.JobDayHoursEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
+import com.iktpreobuka.jobster.entities.JobTypeEntity;
 import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
@@ -43,6 +48,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 //	@Autowired
 //	private ApplyContactDaoImp applyContactDaoImp;
+
+	@PersistenceContext
+	EntityManager em;
 
 	@Autowired
 	private CityRepository cityRepository;
@@ -221,7 +229,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 					return new ResponseEntity<String>("JobType doesn't exist.", HttpStatus.BAD_REQUEST);
 				}
 			}
-			
+
 			// checking size of list of checked days, and are there duplicate days, and
 
 			List<JobDayHoursDTO> listJobDayHoursPostDto = new ArrayList<JobDayHoursDTO>();
@@ -718,8 +726,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				// --------------------- STARA LISTA ------------------------------
 				// provera da li je doslo do izmene sati ili drugih atributa za neki dan
 				// ako jeste na stari entitet mapirati nove atribute
-				// takodje provera i da li treba vec neki postojeci dan staviti da bude neaktivan
-				
+				// takodje provera i da li treba vec neki postojeci dan staviti da bude
+				// neaktivan
+
 				List<JobDayHoursEntity> oldListJobDayHours = new ArrayList<JobDayHoursEntity>();
 				oldListJobDayHours = seekForModify.getDaysAndHours();
 
@@ -752,7 +761,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				// --------------------- NOVA LISTA ------------------------------
 				// provera da li ima neki novi dan koji treba napraviti
 				// i ako ima pravljenje novog dana
-				
+
 				Integer difrenDayCount;
 				Integer allDaysCount;
 				for (JobDayHoursDTO z : listJobDayHoursDto) {
@@ -787,7 +796,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			logger.info("Error occurred and data that has been previously added needs to be removed from database.");
 			if (dayAndHoursSaved == true) {
 				logger.info("Correcting change JobDaysAndHours.");
-				// ovaj array bi mozda mogao praviti problem 
+				// ovaj array bi mozda mogao praviti problem
 				Integer[] ids = new Integer[6];
 				Integer position = 0;
 				if (!(seekForModify.getDaysAndHours().isEmpty())) {
@@ -872,7 +881,18 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			return new ResponseEntity<String>("Error occurred during 'Checking database'.", HttpStatus.BAD_REQUEST);
 		}
 		logger.info("JobSeek that you asked for doesn't exist.");
-		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.NOT_FOUND);//po drakulicevoj preporuci svugde prepraviti da bi min i test bio bolji user frendly
+		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.NOT_FOUND);// po
+																												// drakulicevoj
+																												// preporuci
+																												// svugde
+																												// prepraviti
+																												// da bi
+																												// min i
+																												// test
+																												// bio
+																												// bolji
+																												// user
+																												// frendly
 	}
 
 ///////////////////////////////////////GET BY EMPLOYEE /////////////////////////////////////
@@ -1578,19 +1598,19 @@ public class JobSeekDaoImpl implements JobSeekDao {
 	}
 
 //pagination:
-	
 
-	
 	@Override
-	public Page<JobSeekEntity> getAll(Pageable pageable) {	
+	public Page<JobSeekEntity> getAll(Pageable pageable) {
 		List<JobSeekEntity> resultList = (List<JobSeekEntity>) jobSeekRepository.findAll();
-		Page<JobSeekEntity> resultPage = new PageImpl<>(resultList, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), resultList.size() );
+		Page<JobSeekEntity> resultPage = new PageImpl<>(resultList,
+				PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+				resultList.size());
 		logger.info("Returning result.");
 		return resultPage;
 	}
 
 	/////////////////////////////////////// GET BY EMPLOYEE Pageable
-	
+
 	@Override
 	public ResponseEntity<?> getAllLikeEmployee(@PathVariable Integer id, Pageable pageable) {
 		try {
@@ -1608,7 +1628,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			logger.info("Looking for jobs with selected employee");
 			List<JobSeekEntity> wantedJobSeeks = jobSeekRepository.getAllByEmployeeId(id);
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
@@ -1622,7 +1644,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 
 	}
-	
+
 //////////////////////////////////////////GET BY JOBTYPE ////////////////////////////////////////
 
 	@Override
@@ -1643,7 +1665,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			List<JobSeekEntity> wantedJobSeeks = jobSeekRepository.getAllByTypeId(id);
 
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -1677,7 +1701,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			List<JobSeekEntity> wantedJobSeeks = jobSeekRepository.getAllByCityId(id);
 
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -1690,7 +1716,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 
 	}
-	
+
 ///////////////////////////////////////GET BY DISTANCE TO JOB /////////////////////////////////////
 
 	@Override
@@ -1716,7 +1742,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			}
 
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -1728,7 +1756,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 	///////////////////// GET BY BEGINNING DATE /////////////////////////
 
 	@Override
@@ -1753,7 +1781,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			}
 			if (!wantedJobSeeks.isEmpty()) {
 				logger.info("Returning JobSeeks.");
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
 		} catch (Exception e) {
@@ -1764,7 +1794,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 ///////////////////// GET BY END DATE /////////////////////////
 
 	@Override
@@ -1788,7 +1818,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				}
 			}
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -1800,7 +1832,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 ///////////////////// GET BY FLEXIBILE DATES /////////////////////////
 
 	@Override
@@ -1824,7 +1856,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				}
 			}
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -1836,7 +1870,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 ///////////////////// GET BY FLEXIBILE DAYS /////////////////////////
 
 	@Override
@@ -1861,7 +1895,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			}
 			if (!wantedJobSeeks.isEmpty()) {
 				logger.info("Returning JobSeeks.");
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
 		} catch (Exception e) {
@@ -1872,7 +1908,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 ///////////////////// GET BY PRICE /////////////////////////
 
 	@Override
@@ -1896,7 +1932,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				}
 			}
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -1908,7 +1946,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 ///////////////////// GET BY STATUS /////////////////////////
 
 	@Override
@@ -1932,7 +1970,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				}
 			}
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -1944,7 +1984,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 ///////////////////// GET BY ELAPSE /////////////////////////
 
 	@Override
@@ -1968,7 +2008,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				}
 			}
 			if (!wantedJobSeeks.isEmpty()) {
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 				logger.info("Returning JobSeeks.");
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -1980,7 +2022,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 ///////////////////// GET BY CREATED BY /////////////////////////
 
 	@Override
@@ -2005,8 +2047,12 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			}
 			if (!wantedJobSeeks.isEmpty()) {
 				logger.info("Returning JobSeeks.");
-			//	Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				// Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks, new
+				// PageRequest(pageable.getPageNumber(), pageable.getPageSize(),
+				// pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -2018,7 +2064,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 ///////////////////// GET BY UPDATED BY /////////////////////////
 
 	@Override
@@ -2043,7 +2089,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			}
 			if (!wantedJobSeeks.isEmpty()) {
 				logger.info("Returning JobSeeks.");
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -2055,7 +2103,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
 	}
-	
+
 	///////////////////// GET BY VERSION /////////////////////////
 
 	@Override
@@ -2080,7 +2128,9 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			}
 			if (!wantedJobSeeks.isEmpty()) {
 				logger.info("Returning JobSeeks.");
-				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), wantedJobSeeks.size() );
+				Page<JobSeekEntity> wantedJobSeeksPage = new PageImpl<>(wantedJobSeeks,
+						PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()),
+						wantedJobSeeks.size());
 
 				return new ResponseEntity<Page<JobSeekEntity>>(wantedJobSeeksPage, HttpStatus.OK);
 			}
@@ -2091,5 +2141,117 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 		logger.info("JobSeek that you asked for doesn't exist.");
 		return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.", HttpStatus.BAD_REQUEST);
+	}
+
+	// MOCNI SEARCH
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterable<ApplyContactEntity> findByQuery(@RequestParam Boolean flexibileHours,
+			@RequestParam Integer fromHour, @RequestParam Integer toHour, @RequestParam Boolean IsMinMax,
+			@RequestParam UserEntity employee, @RequestParam CityEntity city, @RequestParam JobTypeEntity type,
+			@RequestParam Date beginningDate, @RequestParam Date endDate, @RequestParam Boolean flexibileDates,
+			@RequestParam Double price, @RequestParam Boolean flexibileDays) {
+		logger.info("++++++++++++++++ Service for finding JobSeeks");
+		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances tc join c.fromDistances fd where js.status =1 and js.elapsed = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1";
+		logger.info("++++++++++++++++ Basic query created");
+		
+		if (flexibileHours != null) {
+			sql = sql + " and dh.flexibileHours = " + flexibileHours;
+			logger.info("++++++++++++++++ Added condition for flexibileHours applications");
+		}
+		
+		if (fromHour != null) {
+			sql = sql + " and dh.fromHour = " + fromHour;
+			logger.info("++++++++++++++++ Added condition for fromHour applications");
+		}
+		
+//		if (connected != null) {
+//			sql = sql + " and a.areConnected = " + connected;
+//			if (connected) {
+//				logger.info("++++++++++++++++ Added condition for connected applications");
+//			} else {
+//				logger.info("++++++++++++++++ Added condition for pending applications");
+//			}
+//		}
+		if (toHour != null) {
+			sql = sql + " and dh.toHour = " + toHour;
+			logger.info("++++++++++++++++ Added condition for toHour applications");
+		}
+
+		if (IsMinMax != null) {
+			sql = sql + " and dh.IsMinMax = " + IsMinMax;
+			logger.info("++++++++++++++++ Added condition for IsMinMax applications");
+		}
+		
+		if (employee != null) {
+			sql = sql + " and js.employee = " + employee;
+			logger.info("++++++++++++++++ Added condition for employee applications");
+		}
+		
+		if (city != null) {
+			sql = sql + " and js.city = " + city;
+			logger.info("++++++++++++++++ Added condition for city applications");
+		}
+		
+		if (type != null) {
+			sql = sql + " and js.type = " + type;
+			logger.info("++++++++++++++++ Added condition for type applications");
+		}
+		
+		if (beginningDate != null) {
+			sql = sql + " and js.beginningDate = " + beginningDate;
+			logger.info("++++++++++++++++ Added condition for beginningDate applications");
+		}
+		
+		if (endDate != null) {
+			sql = sql + " and js.endDate = " + endDate;
+			logger.info("++++++++++++++++ Added condition for endDate applications");
+		}
+		
+		if (flexibileDates != null) {
+			sql = sql + " and js.flexibileDates = " + flexibileDates;
+			logger.info("++++++++++++++++ Added condition for flexibileDates applications");
+		}
+		if (price != null) {
+			sql = sql + " and js.price = " + price;
+			logger.info("++++++++++++++++ Added condition for price applications");
+		}
+		
+		if (flexibileDays != null) {
+			sql = sql + " and js.flexibileDays = " + flexibileDays;
+			logger.info("++++++++++++++++ Added condition for flexibileDays applications");
+		}
+
+//		if (connectionDateBottom != null) {
+//			sql = sql + " and a.connectionDate >= '" + connectionDateBottom + "'";
+//			logger.info("++++++++++++++++ Added condition for applications where connection is younger than"
+//					+ connectionDateBottom);
+//		}
+//
+//		if (connectionDateTop != null) {
+//			sql = sql + " and a.connectionDate <= '" + connectionDateTop + "'";
+//			logger.info("++++++++++++++++ Added condition for applications where conncetion is older than"
+//					+ connectionDateTop);
+//		}
+
+//		if (contactDateTop != null) {
+//			sql = sql + " and a.contactDate <= '" + contactDateTop + "'";
+//			logger.info("++++++++++++++++ Added condition for all applications where contact is older than "
+//					+ contactDateTop);
+//		}
+//
+//		if (contactDateBottom != null) {
+//			sql = sql + " and a.contactDate >= '" + contactDateBottom + "'";
+//			logger.info("++++++++++++++++ Added condition for all applications where contact is younger than "
+//					+ contactDateBottom);
+//		}
+
+		Query query = em.createQuery(sql);
+		logger.info("++++++++++++++++ Query created");
+		Iterable<ApplyContactEntity> result = query.getResultList();
+		logger.info("++++++++++++++++ Result of the query returned ok");
+		return result;
+
 	}
 }
