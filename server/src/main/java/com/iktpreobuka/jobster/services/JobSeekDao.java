@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.iktpreobuka.jobster.entities.ApplyContactEntity;
+import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
+import com.iktpreobuka.jobster.entities.JobTypeEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
@@ -83,6 +87,10 @@ public interface JobSeekDao {
 	public ResponseEntity<?> getAllByVersion(@RequestParam Integer version, Pageable pageable);
 	public ResponseEntity<?> getAllWherePriceIsAndMore(@RequestParam Double price, Pageable pageable);
 	public ResponseEntity<?> getAllWithFlexibileDays(@RequestParam boolean flexDays, Pageable pageable);
+
+	Iterable<ApplyContactEntity> findByQuery(Boolean flexibileHours, Integer fromHour, Integer toHour, Boolean IsMinMax,
+			UserEntity employee, CityEntity city, JobTypeEntity type, Date beginningDate, Date endDate,
+			Boolean flexibileDates, Double price, Boolean flexibileDays);
 
 
 
