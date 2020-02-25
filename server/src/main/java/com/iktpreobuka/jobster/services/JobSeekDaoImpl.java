@@ -2143,7 +2143,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			@RequestParam Date beginningDate, @RequestParam Date endDate, @RequestParam Boolean flexibileDates,
 			@RequestParam Double price, @RequestParam Boolean flexibileDays) {
 		logger.info("++++++++++++++++ Service for finding JobSeeks");
-		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances tc join c.fromDistances fd where js.status =1 and js.elapsed = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1";
+		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances tc join c.fromDistances fd where js.status =1 and js.elapsed = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and tc.kmDistance <= js.distanceToJob and fd.kmDistance <= js.distanceToJob";
 		logger.info("++++++++++++++++ Basic query created");
 		
 		if (flexibileHours != null) {
@@ -2164,6 +2164,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 //				logger.info("++++++++++++++++ Added condition for pending applications");
 //			}
 //		}
+		
 		if (toHour != null) {
 			sql = sql + " and dh.toHour = " + toHour;
 			logger.info("++++++++++++++++ Added condition for toHour applications");
@@ -2180,9 +2181,14 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		}
 		
 		if (city != null) {
-			sql = sql + " and js.city = " + city;
+			sql = sql + " and (js.city = " + city + " or js.city IN(tc.fromCity) or js.city IN(fd.toCity))";
 			logger.info("++++++++++++++++ Added condition for city applications");
 		}
+		
+//		if (city != null) {
+//			sql = sql + " and js.city = " + city;
+//			logger.info("++++++++++++++++ Added condition for city applications");
+//		}
 		
 		if (type != null) {
 			sql = sql + " and js.type = " + type;
