@@ -2139,7 +2139,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 	@Override
 	public Iterable<ApplyContactEntity> findByQuery(@RequestParam Boolean flexibileHours,
 			@RequestParam Integer fromHour, @RequestParam Integer toHour, @RequestParam Boolean IsMinMax,
-			@RequestParam UserEntity employee, @RequestParam CityEntity city, @RequestParam JobTypeEntity type,
+			@RequestParam /*UserEntity*/ String employee, @RequestParam /*CityEntity*/ String city, @RequestParam /*JobTypeEntity*/ String type,
 			@RequestParam Date beginningDate, @RequestParam Date endDate, @RequestParam Boolean flexibileDates,
 			@RequestParam Double price, @RequestParam Boolean flexibileDays) {
 		logger.info("++++++++++++++++ Service for finding JobSeeks");

@@ -103,7 +103,7 @@ public class JobSeekController {
 	@RequestMapping(method = RequestMethod.GET, value = "/search")
 	public Iterable<ApplyContactEntity> findByQuery(@RequestParam Boolean flexibileHours,
 			@RequestParam Integer fromHour, @RequestParam Integer toHour, @RequestParam Boolean IsMinMax,
-			@RequestParam UserEntity employee, @RequestParam CityEntity city, @RequestParam JobTypeEntity type,
+			@RequestParam String employee, @RequestParam String city, @RequestParam String type,
 			@RequestParam Date beginningDate, @RequestParam Date endDate, @RequestParam Boolean flexibileDates,
 			@RequestParam Double price, @RequestParam Boolean flexibileDays) {
 		return jobSeekService.findByQuery(flexibileHours, fromHour, toHour, IsMinMax, employee, city, type, beginningDate, endDate, flexibileDates, price, flexibileDays);
