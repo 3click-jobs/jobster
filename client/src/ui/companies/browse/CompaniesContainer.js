@@ -7,7 +7,11 @@ import { companiesSelectors } from '../../../redux/selectors/companies'
 import CompaniesTable from './CompaniesTable'
 import { useTranslation } from 'react-i18next'
 
+import PropTypes from 'prop-types'
 
+/**
+ * Container component for browsing companies. Using ResponsiveTable for table rendering.
+ */
 export const CompaniesContainer = ({
   companiesAll,
   companiesIsLoading,
@@ -131,6 +135,25 @@ const mapDispatchToProps = (dispatch) => {
   return {
     loadCompaniesAll: () => dispatch(companiesActions.fetchAll())
   }
+}
+
+CompaniesContainer.propTypes = {
+  /**
+   * An array containing the list of all companies.
+   */
+  companiesAll: PropTypes.array,
+  /**
+   * Flag indicating if companies data is being loaded.
+   */
+  companiesIsLoading: PropTypes.bool,
+  /**
+   * Flag indicating if there was an error loading the data.
+   */
+  companiesIsError: PropTypes.bool,
+  /**
+   * Callback function to initiate the loading of companies data.
+   */
+  loadCompaniesAll: PropTypes.func
 }
 
 export default connect(

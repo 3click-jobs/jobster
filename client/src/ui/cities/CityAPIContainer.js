@@ -5,7 +5,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Geonames from 'geonames.js';
 import { useTranslation } from 'react-i18next'
 
+import PropTypes from 'prop-types'
 
+/** 
+ *  Container for the cities API interaction. Calling an Autocomplete inside.
+ */
 export default function CityAPIContainer(props) {
     // const [city, setCity] = React.useState(null)
     const [queryAPI, setQueryAPI] = React.useState([])
@@ -94,4 +98,11 @@ export default function CityAPIContainer(props) {
             />
         </div>
     )
+}
+
+CityAPIContainer.propTypes = {
+    /**
+     * Callback function for setting the current city.
+     */
+    setCity: PropTypes.func
 }

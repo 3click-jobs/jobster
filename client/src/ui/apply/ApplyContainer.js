@@ -25,6 +25,7 @@ import JobTypesContainer from '../jobTypes/JobTypesContainer';
 import TextField from '@material-ui/core/TextField'
 import { useTranslation } from 'react-i18next'
 
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -93,6 +94,10 @@ function TabPanel(props) {
 //   };
 // }
 
+/**
+ * Main container component for all kinds of application.
+ * Using the TabPanel and calling CityAPIContainer, JobTypesContainer and OffersContainer inside the panels.
+ */
 export const ApplyContainer = ({
   jobTypesAll,
   jobTypesIsLoading,
@@ -480,6 +485,25 @@ const mapDispatchToProps = (dispatch) => {
   return {
     loadJobTypesAll: () => dispatch(jobTypesActions.fetchAll())
   }
+}
+
+ApplyContainer.propTypes = {
+  /**
+   * An array containing the job types.
+   */
+  jobTypesAll: PropTypes.array,
+  /**
+   * If the job types is loading the flag is true.
+   */
+  jobTypesIsLoading: PropTypes.bool,
+  /**
+   * If there was an error loading the job types the flag will be true.
+   */
+  jobTypesIsError: PropTypes.bool,
+  /**
+   * Callback to load the job types.
+   */
+  loadJobTypesAll: PropTypes.func
 }
 
 export default connect(

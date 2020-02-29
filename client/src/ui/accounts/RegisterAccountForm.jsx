@@ -9,6 +9,7 @@ import CardContent from '@material-ui/core/CardContent'
 import { makeStyles } from '@material-ui/core/styles';
 import { useTranslation } from 'react-i18next'
 
+import PropTypes from 'prop-types'
 
 // !!! IMPORTANT
 // YOU HAVE WORKING EXAMPLES IN PROJECTS/DESIGN/FORMS etc
@@ -26,7 +27,9 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-
+/**
+ *  Account registration component. Used by the container component RegisterAccount.
+ */
 export const RegisterAccountForm = ({
   handleSubmit,
   handleChange,
@@ -164,4 +167,35 @@ export const RegisterAccountForm = ({
       </Form>
     </div>
   )
+}
+
+RegisterAccountForm.propTypes = {
+  /**
+   * Submit handler callback, provided by Formik.
+   */
+  handleSubmit: PropTypes.func,
+  /**
+   * Input value change handler callback, provided by Formik.
+   */
+  handleChange: PropTypes.func,
+  /**
+   * Blur (element has lost focus) handler, provided by Formik.
+   */
+  handleBlur: PropTypes.func,
+  /**
+  * Container object holding values managed by Formik.
+  */
+  values: PropTypes.object,
+  /**
+   * Container object holding data about what inputs are touched.
+  */
+  touched: PropTypes.object,
+  /**
+   * Callback function for account creation.
+  */
+  errors: PropTypes.object,
+  /**
+   * If the form is being submitted the flag will be true.
+  */
+  isSubmitting: PropTypes.bool
 }

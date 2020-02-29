@@ -9,7 +9,7 @@ import { accounts as accountsSchema } from '../../common/utils/schemas/accounts'
 import PropTypes from 'prop-types'
 
 /**
- * Component for account registration. Servers as a container component with meat in the RegisterAccountForm component.
+ * Component for account registration. Server as a container component with meat in the RegisterAccountForm component.
  * Will get data from redux and feed it into the inner component.
  */
 export const RegisterAccount = ({
@@ -71,6 +71,7 @@ RegisterAccount.propTypes = {
    */
   createAccount: PropTypes.func
 }
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
