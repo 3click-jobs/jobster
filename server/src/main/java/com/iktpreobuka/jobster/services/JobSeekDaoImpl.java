@@ -2146,24 +2146,304 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ResponseEntity<?> findByQuery(Boolean flexibileHours, Integer fromHour, Integer toHour, 
-			Boolean IsMinMax, Integer employeeId, String cityName, String countryRegionName, String countryName, 
+	public ResponseEntity<?> findByQuery(/*Boolean flexibileHours, Integer fromHour, Integer toHour, 
+			Boolean IsMinMax, */List<JobDayHoursDTO> jobDayHours, Integer employeeId, String cityName, String countryRegionName, String countryName, 
 			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays) throws Exception {
 		logger.info("++++++++++++++++ Service for finding JobSeeks");
 		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances td join c.fromDistances fd where js.status =1 and js.elapse = 0 and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and td.kmDistance <= js.distanceToJob and fd.kmDistance <= js.distanceToJob";
 		logger.info("++++++++++++++++ Basic query created");
 		
-		if (flexibileHours != null) {
-			sql = sql + " and dh.flexibileHours = " + flexibileHours;
-			logger.info("++++++++++++++++ Added condition for flexibileHours applications");
+		if (flexibileDays != null && flexibileDays == true) {
+			Integer counter = 0;
+			if (jobDayHours != null && !jobDayHours.isEmpty()) {
+//				sql = sql + " and (js.flexibileDays = true" +
+//						" and (dh.day IN (" + jobDayHours.stream()
+//														.map(JobDayHoursDTO::getDay)
+//														.collect(Collectors.toList()) + ") and ";
+				sql = sql + " and (js.flexibileDays = true and (";
+				counter = jobDayHours.size();
+				for (JobDayHoursDTO jdh : jobDayHours) {
+					sql = sql + "(dh.day = '" + jdh.getDay() + "' and ((dh.isMinMax = " + jdh.getIsMinMax() + " and ";
+					if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == true) {
+						sql = sql + "((dh.flexibileHours = true AND ((" +
+								jdh.getFromHour() + " <= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " >= dh.toHour) OR (" +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour) OR (" +
+								jdh.getFromHour() + " < dh.fromHour AND " +
+								jdh.getToHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " >= dh.fromHour) OR (" +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " > dh.toHour))) OR " +
+								"(dh.flexibileHours = false AND " +
+								jdh.getFromHour() + " <= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " >= dh.toHour)))";
+					} else {
+						sql = sql + "((dh.flexibileHours = true AND " +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " <= dh.toHour) OR " +
+								"(dh.flexibileHours = false AND " +
+								jdh.getFromHour() + " = dh.fromHour AND " +
+								jdh.getToHour() + " = dh.toHour)))";
+					}
+					if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == true && jdh.getFromHour() != null && jdh.getToHour() != null) {
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = false";
+						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
+							sql = sql + " and " +
+								jdh.getFromHour() + " <= (dh.toHour - dh.fromHour) AND " +
+								jdh.getToHour() + " >= (dh.toHour - dh.fromHour)";
+						}
+						sql = sql + ")";
+					} else if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == false && jdh.getFromHour() != null && jdh.getToHour() != null) {
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true";
+						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
+							sql = sql + " and " +
+								"dh.fromHour <= " + (jdh.getToHour() - jdh.getFromHour()) + " AND " +
+								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour());
+						}
+						sql = sql + ")";
+					}	
+					counter--;
+					if (counter >= 1) {
+						sql = sql + ")) OR ";
+					} else {
+						sql = sql + "))))";
+					}
+				}
+				logger.info("++++++++++++++++ Added condition for TRUE flexibileDays, jobDayHours and TRUE js.flexibileDays applications");
+
+//				logger.info(sql);
+				
+				sql = sql + " and (js.flexibileDays = false and (";
+				counter = jobDayHours.size();
+				for (JobDayHoursDTO jdh : jobDayHours) {
+					sql = sql + "(dh.day = '" + jdh.getDay() + "' and ((dh.isMinMax = " + jdh.getIsMinMax() + " and ";
+					if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == true) {
+						sql = sql + "((dh.flexibileHours = true AND ((" +
+								jdh.getFromHour() + " <= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " >= dh.toHour) OR (" +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour) OR (" +
+								jdh.getFromHour() + " < dh.fromHour AND " +
+								jdh.getToHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " >= dh.fromHour) OR (" +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " > dh.toHour))) OR " +
+								"(dh.flexibileHours = false AND " +
+								jdh.getFromHour() + " <= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " >= dh.toHour)))";
+					} else {
+						sql = sql + "((dh.flexibileHours = true AND " +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " <= dh.toHour) OR " +
+								"(dh.flexibileHours = false AND " +
+								jdh.getFromHour() + " = dh.fromHour AND " +
+								jdh.getToHour() + " = dh.toHour)))";
+					}
+					if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == true && jdh.getFromHour() != null && jdh.getToHour() != null) {
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = false";
+						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
+							sql = sql + " and " +
+								jdh.getFromHour() + " <= (dh.toHour - dh.fromHour) AND " +
+								jdh.getToHour() + " >= (dh.toHour - dh.fromHour)";
+						}
+						sql = sql + ")";
+					} else if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == false && jdh.getFromHour() != null && jdh.getToHour() != null) {
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true";
+						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
+							sql = sql + " and " +
+								"dh.fromHour <= " + (jdh.getToHour() - jdh.getFromHour()) + " AND " +
+								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour());
+						}
+						sql = sql + ")";
+					}	
+					counter--;
+					if (counter >= 1) {
+						sql = sql + ")) AND ";
+					} else {
+						sql = sql + "))))";
+					}
+				}
+				logger.info("++++++++++++++++ Added condition for TRUE flexibileDays, jobDayHours and FALSE js.flexibileDays applications");
+				
+//				logger.info(sql);
+			}
+
+			logger.info("++++++++++++++++ Added condition for TRUE flexibileDays applications");
+				
+		} else {
+			Integer counter = 0;
+			if (jobDayHours != null && !jobDayHours.isEmpty()) {
+				sql = sql + " and (js.flexibileDays = true and (";
+				counter = jobDayHours.size();
+				for (JobDayHoursDTO jdh : jobDayHours) {
+					sql = sql + "(dh.day = '" + jdh.getDay() + "' and ((dh.isMinMax = " + jdh.getIsMinMax() + " and ";
+					if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == true) {
+						sql = sql + "((dh.flexibileHours = true AND ((" +
+								jdh.getFromHour() + " <= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " >= dh.toHour) OR (" + 
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour) OR (" + 
+								jdh.getFromHour() + " < dh.fromHour AND " +
+								jdh.getToHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " >= dh.fromHour) OR (" + 
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " > dh.toHour))) OR " +
+								"(dh.flexibileHours = false AND " +
+								jdh.getFromHour() + " <= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " >= dh.toHour)))";
+					} else {
+						sql = sql + "((dh.flexibileHours = true AND " +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " <= dh.toHour) OR " +
+								"(dh.flexibileHours = false AND " +
+								jdh.getFromHour() + " = dh.fromHour AND " +
+								jdh.getToHour() + " = dh.toHour)))";
+					}
+					if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == true && jdh.getFromHour() != null && jdh.getToHour() != null) {
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = false";
+						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
+							sql = sql + " and " +
+								jdh.getFromHour() + " <= (dh.toHour - dh.fromHour) AND " +
+								jdh.getToHour() + " >= (dh.toHour - dh.fromHour)";
+						}
+						sql = sql + ")";
+					} else if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == false && jdh.getFromHour() != null && jdh.getToHour() != null) {
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true";
+						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
+							sql = sql + " and " +
+								"dh.fromHour <= " + (jdh.getToHour() - jdh.getFromHour()) + " AND " +
+								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour());
+						}
+						sql = sql + ")";
+					}	
+					counter--;
+					if (counter >= 1) {
+						sql = sql + ")) AND ";
+					} else {
+						sql = sql + "))))";
+					}
+				}
+				logger.info("++++++++++++++++ Added condition for FALSE flexibileDays, jobDayHours and TRUE js.flexibileDays applications");
+
+//				logger.info(sql);
+				
+				sql = sql + " and (js.flexibileDays = false and (";
+				counter = jobDayHours.size();
+				for (JobDayHoursDTO jdh : jobDayHours) {
+					sql = sql + "(dh.day = '" + jdh.getDay() + "' and ((dh.isMinMax = " + jdh.getIsMinMax() + " and ";
+					if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == true) {
+						sql = sql + "((dh.flexibileHours = true AND ((" +
+								jdh.getFromHour() + " <= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " >= dh.toHour) OR (" +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour) OR (" +
+								jdh.getFromHour() + " < dh.fromHour AND " +
+								jdh.getToHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " >= dh.fromHour) OR (" +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " <= dh.toHour AND " +
+								jdh.getToHour() + " > dh.toHour))) OR " +
+								"(dh.flexibileHours = false AND " +
+								jdh.getFromHour() + " <= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " >= dh.toHour)))";
+					} else {
+						sql = sql + "((dh.flexibileHours = true AND " +
+								jdh.getFromHour() + " >= dh.fromHour AND " +
+								jdh.getFromHour() + " < dh.toHour AND " +
+								jdh.getToHour() + " > dh.fromHour AND " +
+								jdh.getToHour() + " <= dh.toHour) OR " +
+								"(dh.flexibileHours = false AND " +
+								jdh.getFromHour() + " = dh.fromHour AND " +
+								jdh.getToHour() + " = dh.toHour)))";
+					}
+					if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == true && jdh.getFromHour() != null && jdh.getToHour() != null) {
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = false";
+						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
+							sql = sql + " and " +
+								jdh.getFromHour() + " <= (dh.toHour - dh.fromHour) AND " +
+								jdh.getToHour() + " >= (dh.toHour - dh.fromHour)";
+						}
+						sql = sql + ")";
+					} else if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == false && jdh.getFromHour() != null && jdh.getToHour() != null) {
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true";
+						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
+							sql = sql + " and " +
+								"dh.fromHour <= " + (jdh.getToHour() - jdh.getFromHour()) + " AND " +
+								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour());
+						}
+						sql = sql + ")";
+					}	
+					counter--;
+					if (counter >= 1) {
+						sql = sql + ")) AND ";
+					} else {
+						sql = sql + "))))";
+					}
+				}
+				logger.info("++++++++++++++++ Added condition for FALSE flexibileDays, jobDayHours and FALSE js.flexibileDays applications");
+				
+//				logger.info(sql);
+			}
+
+			logger.info("++++++++++++++++ Added condition for FALSE flexibileDays applications");
+			
 		}
-		
-		if (fromHour != null) {
-			sql = sql + " and dh.fromHour = " + fromHour;
-			logger.info("++++++++++++++++ Added condition for fromHour applications");
-		}
-		
+
+//		if (flexibileHours != null) {
+//			sql = sql + " and dh.flexibileHours = " + flexibileHours;
+//			logger.info("++++++++++++++++ Added condition for flexibileHours applications");
+//		}
+//		
+//		if (fromHour != null) {
+//			sql = sql + " and dh.fromHour = " + fromHour;
+//			logger.info("++++++++++++++++ Added condition for fromHour applications");
+//		}
+//		
+//		if (toHour != null) {
+//			sql = sql + " and dh.toHour = " + toHour;
+//			logger.info("++++++++++++++++ Added condition for toHour applications");
+//		}
+//
+//		if (IsMinMax != null) {
+//			sql = sql + " and dh.isMinMax = " + IsMinMax;
+//			logger.info("++++++++++++++++ Added condition for IsMinMax applications");
+//		}
+
 //		if (connected != null) {
 //			sql = sql + " and a.areConnected = " + connected;
 //			if (connected) {
@@ -2172,17 +2452,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 //				logger.info("++++++++++++++++ Added condition for pending applications");
 //			}
 //		}
-		
-		if (toHour != null) {
-			sql = sql + " and dh.toHour = " + toHour;
-			logger.info("++++++++++++++++ Added condition for toHour applications");
-		}
-
-		if (IsMinMax != null) {
-			sql = sql + " and dh.isMinMax = " + IsMinMax;
-			logger.info("++++++++++++++++ Added condition for IsMinMax applications");
-		}
-		
+				
 		if (employeeId != null) {
 			sql = sql + " and js.employee.id = " + employeeId;
 			logger.info("++++++++++++++++ Added condition for employee applications");
@@ -2234,30 +2504,77 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			logger.info("++++++++++++++++ Added condition for type applications");
 		}
 		
-		if (beginningDate != null) {
-			sql = sql + " and js.beginningDate = " + beginningDate;
-			logger.info("++++++++++++++++ Added condition for beginningDate applications");
+//		if (beginningDate != null) {
+//			sql = sql + " and js.beginningDate = " + beginningDate;
+//			logger.info("++++++++++++++++ Added condition for beginningDate applications");
+//		}
+//		
+//		if (endDate != null) {
+//			sql = sql + " and js.endDate = " + endDate;
+//			logger.info("++++++++++++++++ Added condition for endDate applications");
+//		}
+//		
+//		if (flexibileDates != null) {
+//			sql = sql + " and js.flexibileDates = " + flexibileDates;
+//			logger.info("++++++++++++++++ Added condition for flexibileDates applications");
+//		}
+		
+		if (flexibileDates != null && flexibileDates == true) {
+			if (beginningDate != null && endDate != null) {
+				sql = sql + " and (js.flexibileDates = true" +
+						" and ((" + beginningDate + " BETWEEN js.beginningDate and js.endDate and " + endDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						"(" + beginningDate + " < js.beginningDate and " + endDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						"(" + endDate + " > js.endDate and " + beginningDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						"(js.beginningDate BETWEEN " + beginningDate + " and " + endDate + " and js.endDate BETWEEN " + beginningDate + " and " + endDate + "))) or " +
+						"(js.flexibileDates = false" +
+						" and js.beginningDate BETWEEN " + beginningDate + " and " + endDate + " and js.endDate BETWEEN " + beginningDate + " and " + endDate + ")";
+				logger.info("++++++++++++++++ Added condition for beginningDate and endDate applications");
+			} else if (beginningDate != null) {
+				sql = sql + " and (js.flexibileDates = true" +
+						" and " + beginningDate + " < js.endDate) or " +
+						"(js.flexibileDates = false" +
+						" and js.beginningDate >= " + beginningDate + ")";
+				logger.info("++++++++++++++++ Added condition for beginningDate applications");
+			} else if (endDate != null) {
+				sql = sql + " and (js.flexibileDates = true" +
+						" and " + endDate + " > js.beginningDate) or " +
+						"(js.flexibileDates = false" +
+						" and js.endDate <= " + endDate + ")";
+				logger.info("++++++++++++++++ Added condition for endDate applications");
+			} else {
+				sql = sql + " and js.flexibileDates = true";
+			}
+			logger.info("++++++++++++++++ Added condition for TRUE flexibileDates applications");
+		} else {
+			if (beginningDate != null && endDate != null) {
+				sql = sql + " and (js.flexibileDates = true" +
+						" and " + beginningDate + " BETWEEN js.beginningDate and js.endDate and " + endDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						"(js.flexibileDates = false" +
+						" and js.beginningDate = " + beginningDate + " and js.endDate = " + endDate + ")";
+				logger.info("++++++++++++++++ Added condition for beginningDate and endDate applications");
+			} else if (beginningDate != null) {
+				sql = sql + " and (js.flexibileDates = true" +
+						" and " + beginningDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						"(js.flexibileDates = false" +
+						" and js.beginningDate = " + beginningDate + ")";
+				logger.info("++++++++++++++++ Added condition for beginningDate applications");
+			} else if (endDate != null) {
+				sql = sql + " and (js.flexibileDates = true" +
+						" and " + endDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						"(js.flexibileDates = false" +
+						" and js.endDate = " + endDate + ")";
+				logger.info("++++++++++++++++ Added condition for endDate applications");
+			} else {
+				sql = sql + " and js.flexibileDates = false";
+			}
+			logger.info("++++++++++++++++ Added condition for FALSE flexibileDates applications");
 		}
 		
-		if (endDate != null) {
-			sql = sql + " and js.endDate = " + endDate;
-			logger.info("++++++++++++++++ Added condition for endDate applications");
-		}
-		
-		if (flexibileDates != null) {
-			sql = sql + " and js.flexibileDates = " + flexibileDates;
-			logger.info("++++++++++++++++ Added condition for flexibileDates applications");
-		}
 		if (price != null) {
 			sql = sql + " and js.price = " + price;
 			logger.info("++++++++++++++++ Added condition for price applications");
 		}
 		
-		if (flexibileDays != null) {
-			sql = sql + " and js.flexibileDays = " + flexibileDays;
-			logger.info("++++++++++++++++ Added condition for flexibileDays applications");
-		}
-
 //		if (connectionDateBottom != null) {
 //			sql = sql + " and a.connectionDate >= '" + connectionDateBottom + "'";
 //			logger.info("++++++++++++++++ Added condition for applications where connection is younger than"

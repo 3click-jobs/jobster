@@ -97,9 +97,10 @@ public class JobSeekController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/search")
-	public ResponseEntity<?> findByQuery(@RequestParam(required = false) Boolean flexibileHours,
+	public ResponseEntity<?> findByQuery(/*@RequestParam(required = false) Boolean flexibileHours,
 			@RequestParam(required = false) Integer fromHour, @RequestParam(required = false) Integer toHour, 
-			@RequestParam(required = false) Boolean IsMinMax, @RequestParam(required = false) Integer employeeId, 
+			@RequestParam(required = false) Boolean IsMinMax, */
+			@Valid @RequestBody(required = false) List<JobDayHoursDTO> jobDayHours, @RequestParam(required = false) Integer employeeId, 
 			@RequestParam(required = false) String cityName, @RequestParam(required = false) String countryRegionName, 
 			@RequestParam(required = false) String countryName, @RequestParam(required = false) Integer typeId, 
 			@RequestParam(required = false) Date beginningDate, @RequestParam(required = false) Date endDate, 
@@ -107,7 +108,8 @@ public class JobSeekController {
 			@RequestParam(required = false) Boolean flexibileDays, Principal principal) {
 		logger.info("Logged username: " + principal.getName());
 		try {
-			return jobSeekService.findByQuery(flexibileHours, fromHour, toHour, IsMinMax, employeeId, cityName, countryRegionName, countryName, typeId, beginningDate, endDate, flexibileDates, price, flexibileDays);
+//			return jobSeekService.findByQuery(flexibileHours, fromHour, toHour, IsMinMax, employeeId, cityName, countryRegionName, countryName, typeId, beginningDate, endDate, flexibileDates, price, flexibileDays);
+			return jobSeekService.findByQuery(jobDayHours, employeeId, cityName, countryRegionName, countryName, typeId, beginningDate, endDate, flexibileDates, price, flexibileDays);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
