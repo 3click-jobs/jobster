@@ -170,7 +170,7 @@ LoginForm.propTypes = {
   /**
    * Container object holding data about what inputs are touched.
    */
-  touched: PropTypes.bool,
+  touched: PropTypes.object,
   /**
    * Container object holding data about validation etc. errors.
    */

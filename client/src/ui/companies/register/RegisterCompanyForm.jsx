@@ -16,6 +16,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { useTranslation } from 'react-i18next'
 
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -32,7 +33,9 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-
+/**
+ * Company registration form component used by the RegisterCompany container.
+ */
 export const RegisterCompanyForm = ({
   handleSubmit,
   handleChange,
@@ -601,6 +604,45 @@ export const RegisterCompanyForm = ({
       </Form>
     </div>
   )
+}
+
+RegisterCompanyForm.propTypes = {
+  /**
+   * Callback function handling the submit action.
+   */
+  handleSubmit: PropTypes.func,
+  /**
+   * Callback function handling changes in inputs.
+   */
+  handleChange: PropTypes.func,
+  /**
+   * Callback function handling input visits.
+   */
+  handleBlur: PropTypes.func,
+  /**
+   * Object containing values for named fields.
+   */
+  values: PropTypes.object,
+  /**
+   * Object containing flags for whether named fields were changed.
+   */
+  touched: PropTypes.object,
+  /**
+   * Object containing information about validation errors for named fields.
+   */
+  errors: PropTypes.object,
+  /**
+   * Flag indicating whether data is being submitted.
+   */
+  isSubmitting: PropTypes.bool,
+  /**
+   * Callback function to reset named fields to their default state.
+   */ 
+  handleReset: PropTypes.func,
+  /**
+   * Citi reference for the company being registered.
+   */
+  city: PropTypes.object
 }
 
 export default RegisterCompanyForm

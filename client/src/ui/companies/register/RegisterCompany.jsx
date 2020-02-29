@@ -7,6 +7,8 @@ import { RegisterCompanyForm } from './RegisterCompanyForm'
 import { companies as companiesSchema } from '../../../common/utils/schemas/companies'
 import ToTopButton from '../../toTopButton/ToTopButton'
 
+import PropTypes from 'prop-types'
+
 // const initialDummyValues = {
 //   companyName: 'PeraLTD',
 //   companyRegistrationNumber: '12349978912345',
@@ -43,6 +45,9 @@ const initialDummyValues = {
   confirmedPassword: "",
 }
 
+/**
+ * Register new company (entity offering jobs) container component.
+ */
 export const RegisterCompany = ({
   isFetching,
   isError,
@@ -115,6 +120,25 @@ const mapDispatchToProps = (dispatch) => {
   return {
     createCompany: (payload) => dispatch(companiesActions.create(payload))
   }
+}
+
+RegisterCompany.propTypes = {
+  /**
+   * Flag indicating if data is being fetched.
+   */
+  isFetching: PropTypes.bool,
+  /**
+   * Flag indicating if there was an error fetching the data.
+   */
+  isError: PropTypes.bool,
+  /**
+   * Callback function handling the creation of a new entity based on form input.
+   */
+  createCompany: PropTypes.func,
+  /**
+   * Profile object with company data.
+   */
+  profile: PropTypes.object
 }
 
 export default connect(

@@ -7,8 +7,12 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useTranslation } from 'react-i18next'
 
+import PropTypes from 'prop-types'
 // import { unassignCredentials } from '../../redux/actions/user'
 
+/**
+ * Component for user sign-out.
+ */
 export const Signout = ({
   username,
   unassignCredentials,
@@ -62,5 +66,27 @@ export const Signout = ({
   )
 }
 
+Signout.propTypes = {
+  /**
+   * The currently logged in users username
+   */
+  username: PropTypes.string,
+  /**
+   * Callback function that will remove the credentials.
+   */
+  unassignCredentials: PropTypes.func,
+  /**
+   * Browsing history, from the react-router HOC.
+   */
+  history: PropTypes.object,
+  /**
+   * Dialog flag.
+   */
+  open: PropTypes.bool,
+  /**
+   * Callback function to set the open flag to false, called on Dialog close.
+   */
+  setOpen: PropTypes.func
+}
 
 export default Signout
