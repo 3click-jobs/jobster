@@ -2151,7 +2151,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays) throws Exception {
 		logger.info("++++++++++++++++ Service for finding JobSeeks");
-		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances td join c.fromDistances fd where js.status =1 and js.elapse = 0 and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and td.kmDistance <= js.distanceToJob and fd.kmDistance <= js.distanceToJob";
+//		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances td join c.fromDistances fd where js.status =1 and js.elapse = 1 and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and td.kmDistance <= js.distanceToJob and fd.kmDistance <= js.distanceToJob";
+		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e where js.status =1 and js.elapse = 1 and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1";
 		logger.info("++++++++++++++++ Basic query created");
 		
 		if (flexibileDays != null && flexibileDays == true) {
@@ -2490,7 +2491,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				return new ResponseEntity<String>("City doesn't exist in database.", HttpStatus.NOT_FOUND);
 			}
 			logger.info("City founded.");
-			sql = sql + " and (js.city.id = " + city.getId() + " or js.city IN(td.fromCity) or js.city IN(fd.toCity))";
+			sql = sql + " and (js.city.id = " + city.getId() + " or " + city.getId() + " IN(select cd.fromCity.id from CityDistanceEntity cd where cd.kmDistance <= js.distanceToJob) or " + city.getId() + " IN(select cd.toCity.id from CityDistanceEntity cd where cd.kmDistance <= js.distanceToJob))";
 			logger.info("++++++++++++++++ Added condition for city applications");
 		}
 		
@@ -2522,56 +2523,56 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		if (flexibileDates != null && flexibileDates == true) {
 			if (beginningDate != null && endDate != null) {
 				sql = sql + " and (js.flexibileDates = true" +
-						" and ((" + beginningDate + " BETWEEN js.beginningDate and js.endDate and " + endDate + " BETWEEN js.beginningDate and js.endDate) or " +
-						"(" + beginningDate + " < js.beginningDate and " + endDate + " BETWEEN js.beginningDate and js.endDate) or " +
-						"(" + endDate + " > js.endDate and " + beginningDate + " BETWEEN js.beginningDate and js.endDate) or " +
-						"(js.beginningDate BETWEEN " + beginningDate + " and " + endDate + " and js.endDate BETWEEN " + beginningDate + " and " + endDate + "))) or " +
+						" and (('" + beginningDate + "' BETWEEN js.beginningDate and js.endDate and '" + endDate + "' BETWEEN js.beginningDate and js.endDate) or " +
+						"('" + beginningDate + "' < js.beginningDate and '" + endDate + "' BETWEEN js.beginningDate and js.endDate) or " +
+						"('" + endDate + "' > js.endDate and '" + beginningDate + "' BETWEEN js.beginningDate and js.endDate) or " +
+						"(js.beginningDate BETWEEN '" + beginningDate + "' and '" + endDate + "' and js.endDate BETWEEN '" + beginningDate + "' and '" + endDate + "'))) or " +
 						"(js.flexibileDates = false" +
-						" and js.beginningDate BETWEEN " + beginningDate + " and " + endDate + " and js.endDate BETWEEN " + beginningDate + " and " + endDate + ")";
+						" and js.beginningDate BETWEEN '" + beginningDate + "' and '" + endDate + "' and js.endDate BETWEEN '" + beginningDate + "' and '" + endDate + "')";
 				logger.info("++++++++++++++++ Added condition for beginningDate and endDate applications");
 			} else if (beginningDate != null) {
 				sql = sql + " and (js.flexibileDates = true" +
-						" and " + beginningDate + " < js.endDate) or " +
+						" and '" + beginningDate + "' < js.endDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.beginningDate >= " + beginningDate + ")";
+						" and js.beginningDate >= '" + beginningDate + "')";
 				logger.info("++++++++++++++++ Added condition for beginningDate applications");
 			} else if (endDate != null) {
 				sql = sql + " and (js.flexibileDates = true" +
-						" and " + endDate + " > js.beginningDate) or " +
+						" and '" + endDate + "' > js.beginningDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.endDate <= " + endDate + ")";
+						" and js.endDate <= '" + endDate + "')";
 				logger.info("++++++++++++++++ Added condition for endDate applications");
-			} else {
+			} /*else {
 				sql = sql + " and js.flexibileDates = true";
-			}
+			}*/
 			logger.info("++++++++++++++++ Added condition for TRUE flexibileDates applications");
 		} else {
 			if (beginningDate != null && endDate != null) {
 				sql = sql + " and (js.flexibileDates = true" +
-						" and " + beginningDate + " BETWEEN js.beginningDate and js.endDate and " + endDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						" and '" + beginningDate + "' BETWEEN js.beginningDate and js.endDate and '" + endDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.beginningDate = " + beginningDate + " and js.endDate = " + endDate + ")";
+						" and js.beginningDate = '" + beginningDate + "' and js.endDate = '" + endDate + "')";
 				logger.info("++++++++++++++++ Added condition for beginningDate and endDate applications");
 			} else if (beginningDate != null) {
 				sql = sql + " and (js.flexibileDates = true" +
-						" and " + beginningDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						" and '" + beginningDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.beginningDate = " + beginningDate + ")";
+						" and js.beginningDate = '" + beginningDate + "')";
 				logger.info("++++++++++++++++ Added condition for beginningDate applications");
 			} else if (endDate != null) {
 				sql = sql + " and (js.flexibileDates = true" +
-						" and " + endDate + " BETWEEN js.beginningDate and js.endDate) or " +
+						" and '" + endDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.endDate = " + endDate + ")";
+						" and js.endDate = '" + endDate + "')";
 				logger.info("++++++++++++++++ Added condition for endDate applications");
-			} else {
+			} /*else {
 				sql = sql + " and js.flexibileDates = false";
-			}
+			}*/
 			logger.info("++++++++++++++++ Added condition for FALSE flexibileDates applications");
 		}
 		
 		if (price != null) {
-			sql = sql + " and js.price = " + price;
+			sql = sql + " and js.price <= " + price;
 			logger.info("++++++++++++++++ Added condition for price applications");
 		}
 		
@@ -2601,6 +2602,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 		Query query = em.createQuery(sql);
 		logger.info("++++++++++++++++ Query created");
+		logger.info(sql);
 		Iterable<ApplyContactEntity> result = query.getResultList();
 		logger.info("++++++++++++++++ Result of the query returned ok");
 		return new ResponseEntity<Iterable<ApplyContactEntity>>(result, HttpStatus.OK);
