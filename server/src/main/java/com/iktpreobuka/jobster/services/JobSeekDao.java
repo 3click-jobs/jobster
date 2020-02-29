@@ -13,11 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.iktpreobuka.jobster.entities.ApplyContactEntity;
-import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.JobTypeEntity;
-import com.iktpreobuka.jobster.entities.UserEntity;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
@@ -92,10 +88,10 @@ public interface JobSeekDao {
 //			@RequestParam UserEntity employee, @RequestParam CityEntity city, @RequestParam JobTypeEntity type, @RequestParam Date beginningDate, @RequestParam Date endDate,
 //			@RequestParam Boolean flexibileDates, @RequestParam Double price, @RequestParam Boolean flexibileDays);
 
-	public Iterable<ApplyContactEntity> findByQuery(Boolean flexibileHours, Integer fromHour, Integer toHour, Boolean IsMinMax,
-			String employee, String city, String type, Date beginningDate, Date endDate, Boolean flexibileDates,
-			Double price, Boolean flexibileDays);
-
+	public ResponseEntity<?> findByQuery(Boolean flexibileHours, Integer fromHour, Integer toHour, 
+			Boolean IsMinMax, Integer employeeId, String cityName, String countryRegionName, String countryName, 
+			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
+			Boolean flexibileDays) throws Exception;
 
 
 

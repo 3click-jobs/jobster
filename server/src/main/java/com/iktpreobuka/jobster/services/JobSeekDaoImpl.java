@@ -29,15 +29,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.iktpreobuka.jobster.entities.ApplyContactEntity;
 import com.iktpreobuka.jobster.entities.CityEntity;
+import com.iktpreobuka.jobster.entities.CountryEntity;
+import com.iktpreobuka.jobster.entities.CountryRegionEntity;
 import com.iktpreobuka.jobster.entities.JobDayHoursEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.JobTypeEntity;
 import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
 import com.iktpreobuka.jobster.enumerations.EDay;
 import com.iktpreobuka.jobster.repositories.CityRepository;
+import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
+import com.iktpreobuka.jobster.repositories.CountryRepository;
 import com.iktpreobuka.jobster.repositories.JobDayHoursRepository;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
 import com.iktpreobuka.jobster.repositories.JobTypeRepository;
@@ -54,6 +57,12 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 	@Autowired
 	private CityRepository cityRepository;
+	
+	@Autowired
+	private CountryRepository countryRepository;
+	
+	@Autowired
+	private CountryRegionRepository countryRegionRepository;
 
 	@Autowired
 	private CityDao cityDao;
@@ -2137,13 +2146,12 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<ApplyContactEntity> findByQuery(@RequestParam Boolean flexibileHours,
-			@RequestParam Integer fromHour, @RequestParam Integer toHour, @RequestParam Boolean IsMinMax,
-			@RequestParam /*UserEntity*/ String employee, @RequestParam /*CityEntity*/ String city, @RequestParam /*JobTypeEntity*/ String type,
-			@RequestParam Date beginningDate, @RequestParam Date endDate, @RequestParam Boolean flexibileDates,
-			@RequestParam Double price, @RequestParam Boolean flexibileDays) {
+	public ResponseEntity<?> findByQuery(Boolean flexibileHours, Integer fromHour, Integer toHour, 
+			Boolean IsMinMax, Integer employeeId, String cityName, String countryRegionName, String countryName, 
+			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
+			Boolean flexibileDays) throws Exception {
 		logger.info("++++++++++++++++ Service for finding JobSeeks");
-		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances tc join c.fromDistances fd where js.status =1 and js.elapsed = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and tc.kmDistance <= js.distanceToJob and fd.kmDistance <= js.distanceToJob";
+		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances td join c.fromDistances fd where js.status =1 and js.elapse = 0 and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and td.kmDistance <= js.distanceToJob and fd.kmDistance <= js.distanceToJob";
 		logger.info("++++++++++++++++ Basic query created");
 		
 		if (flexibileHours != null) {
@@ -2171,17 +2179,48 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		}
 
 		if (IsMinMax != null) {
-			sql = sql + " and dh.IsMinMax = " + IsMinMax;
+			sql = sql + " and dh.isMinMax = " + IsMinMax;
 			logger.info("++++++++++++++++ Added condition for IsMinMax applications");
 		}
 		
-		if (employee != null) {
-			sql = sql + " and js.employee = " + employee;
+		if (employeeId != null) {
+			sql = sql + " and js.employee.id = " + employeeId;
 			logger.info("++++++++++++++++ Added condition for employee applications");
 		}
 		
-		if (city != null) {
-			sql = sql + " and (js.city = " + city + " or js.city IN(tc.fromCity) or js.city IN(fd.toCity))";
+		if (cityName != null && countryName != null) {
+			CityEntity city = new CityEntity();
+			CountryEntity country = new CountryEntity();
+			CountryRegionEntity countryRegion = new CountryRegionEntity();
+			try {
+				country = countryRepository.findByCountryNameIgnoreCase(countryName);
+			} catch (Exception e) {
+				throw new Exception("CountryRepository failed.");
+			}
+			if (country == null) {
+				logger.info("Country doesn't exist in database.");
+				return new ResponseEntity<String>("Country doesn't exist in database.", HttpStatus.NOT_FOUND);
+			}
+			try {
+				countryRegion = countryRegionRepository.findByCountryRegionNameAndCountry(countryRegionName, country);
+			} catch (Exception e) {
+				throw new Exception("CountryRegionRepository failed.");
+			}
+			if (countryRegion == null) {
+				logger.info("Country region doesn't exist in database.");
+				return new ResponseEntity<String>("Country region doesn't exist in database.", HttpStatus.NOT_FOUND);
+			}
+			try {
+				city = cityRepository.findByCityNameAndRegion(cityName, countryRegion);
+			} catch (Exception e) {
+				throw new Exception("CityRepository failed.");
+			}
+			if (city == null) {
+				logger.info("City doesn't exist in database.");
+				return new ResponseEntity<String>("City doesn't exist in database.", HttpStatus.NOT_FOUND);
+			}
+			logger.info("City founded.");
+			sql = sql + " and (js.city.id = " + city.getId() + " or js.city IN(td.fromCity) or js.city IN(fd.toCity))";
 			logger.info("++++++++++++++++ Added condition for city applications");
 		}
 		
@@ -2190,8 +2229,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 //			logger.info("++++++++++++++++ Added condition for city applications");
 //		}
 		
-		if (type != null) {
-			sql = sql + " and js.type = " + type;
+		if (typeId != null) {
+			sql = sql + " and js.type.id = " + typeId;
 			logger.info("++++++++++++++++ Added condition for type applications");
 		}
 		
@@ -2247,7 +2286,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("++++++++++++++++ Query created");
 		Iterable<ApplyContactEntity> result = query.getResultList();
 		logger.info("++++++++++++++++ Result of the query returned ok");
-		return result;
+		return new ResponseEntity<Iterable<ApplyContactEntity>>(result, HttpStatus.OK);
 
 	}
 }
