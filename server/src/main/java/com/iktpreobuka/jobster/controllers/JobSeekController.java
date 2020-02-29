@@ -27,11 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.jobster.controllers.util.RESTError;
-import com.iktpreobuka.jobster.entities.ApplyContactEntity;
-import com.iktpreobuka.jobster.entities.CityEntity;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
-import com.iktpreobuka.jobster.entities.JobTypeEntity;
-import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
 import com.iktpreobuka.jobster.entities.dto.PersonDTO;
@@ -101,12 +97,21 @@ public class JobSeekController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/search")
-	public Iterable<ApplyContactEntity> findByQuery(@RequestParam Boolean flexibileHours,
-			@RequestParam Integer fromHour, @RequestParam Integer toHour, @RequestParam Boolean IsMinMax,
-			@RequestParam String employee, @RequestParam String city, @RequestParam String type,
-			@RequestParam Date beginningDate, @RequestParam Date endDate, @RequestParam Boolean flexibileDates,
-			@RequestParam Double price, @RequestParam Boolean flexibileDays) {
-		return jobSeekService.findByQuery(flexibileHours, fromHour, toHour, IsMinMax, employee, city, type, beginningDate, endDate, flexibileDates, price, flexibileDays);
+	public ResponseEntity<?> findByQuery(@RequestParam(required = false) Boolean flexibileHours,
+			@RequestParam(required = false) Integer fromHour, @RequestParam(required = false) Integer toHour, 
+			@RequestParam(required = false) Boolean IsMinMax, @RequestParam(required = false) Integer employeeId, 
+			@RequestParam(required = false) String cityName, @RequestParam(required = false) String countryRegionName, 
+			@RequestParam(required = false) String countryName, @RequestParam(required = false) Integer typeId, 
+			@RequestParam(required = false) Date beginningDate, @RequestParam(required = false) Date endDate, 
+			@RequestParam(required = false) Boolean flexibileDates, @RequestParam(required = false) Double price, 
+			@RequestParam(required = false) Boolean flexibileDays, Principal principal) {
+		logger.info("Logged username: " + principal.getName());
+		try {
+			return jobSeekService.findByQuery(flexibileHours, fromHour, toHour, IsMinMax, employeeId, cityName, countryRegionName, countryName, typeId, beginningDate, endDate, flexibileDates, price, flexibileDays);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
