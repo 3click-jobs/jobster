@@ -2,6 +2,7 @@ package com.iktpreobuka.jobster.services;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
+import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
@@ -88,8 +90,8 @@ public interface JobSeekDao {
 //			@RequestParam UserEntity employee, @RequestParam CityEntity city, @RequestParam JobTypeEntity type, @RequestParam Date beginningDate, @RequestParam Date endDate,
 //			@RequestParam Boolean flexibileDates, @RequestParam Double price, @RequestParam Boolean flexibileDays);
 
-	public ResponseEntity<?> findByQuery(Boolean flexibileHours, Integer fromHour, Integer toHour, 
-			Boolean IsMinMax, Integer employeeId, String cityName, String countryRegionName, String countryName, 
+	public ResponseEntity<?> findByQuery(/*Boolean flexibileHours, Integer fromHour, Integer toHour, 
+			Boolean IsMinMax, */List<JobDayHoursDTO> jobDayHours, Integer employeeId, String cityName, String countryRegionName, String countryName, 
 			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays) throws Exception;
 
