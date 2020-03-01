@@ -2537,7 +2537,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 //				logger.info(sql);
 				
-				sql = sql + " OR (js.flexibileDays = false and (";
+				sql = sql + " OR (js.flexibileDays = false and " + jobDayHours.size() + " = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = js.id) and (";
 				counter = jobDayHours.size();
 				for (JobDayHoursDTO jdh : jobDayHours) {
 					sql = sql + "(dh.day = '" + jdh.getDay() + "' and ((dh.isMinMax = " + jdh.getIsMinMax() + " and ";
@@ -2601,7 +2601,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 //				logger.info(sql);
 			}
 
-			sql = sql + " GROUP BY js.id HAVING COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = js.id)";
+			sql = sql + " GROUP BY js.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = js.id) AND COUNT(*) = " + jobDayHours.size() + " AND js.flexibileDays = false) OR (COUNT(*) = " + jobDayHours.size() + " AND js.flexibileDays = true)";
 
 			logger.info("++++++++++++++++ Added condition for FALSE flexibileDays applications");
 			
@@ -2609,7 +2609,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		
 		Query query = em.createQuery(sql);
 		logger.info("++++++++++++++++ Query created");
-		logger.info(sql);
+//		logger.info(sql);
 		Iterable<ApplyContactEntity> result = query.getResultList();
 		logger.info("++++++++++++++++ Result of the query returned ok");
 		return new ResponseEntity<Iterable<ApplyContactEntity>>(result, HttpStatus.OK);
