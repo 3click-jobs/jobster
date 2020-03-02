@@ -244,14 +244,14 @@ public class JobOfferDaoImpl implements JobOfferDao {
 				Integer sunday = 0;
 
 				for (JobDayHoursDTO i : listJobDayHoursPostDto) {
-					if (i.getFlexibileHours() == true && i.getIsMinMax() == true) {
-						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
-								HttpStatus.BAD_REQUEST);
-					}
-					if (i.getFlexibileHours() == false && i.getIsMinMax() == false) {
-						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
-								HttpStatus.BAD_REQUEST);
-					}
+//					if (i.getFlexibileHours() == true && i.getIsMinMax() == true) {
+//						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
+//								HttpStatus.BAD_REQUEST);
+//					}
+//					if (i.getFlexibileHours() == false && i.getIsMinMax() == false) {
+//						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
+//								HttpStatus.BAD_REQUEST);
+//					}
 					if (i.getDay().equals(EDay.DAY_MONDAY)) {
 						monday++;
 					}
@@ -686,18 +686,18 @@ public class JobOfferDaoImpl implements JobOfferDao {
 						logger.info("Missing data. You need to put 'to hour'.");
 						return new ResponseEntity<String>("You need to put 'to hour'.", HttpStatus.BAD_REQUEST);
 					}
-					if (i.getFlexibileHours() == null && i.getIsMinMax() == null) {
-						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
-								HttpStatus.BAD_REQUEST);
-					}
-					if (i.getFlexibileHours() == true && i.getIsMinMax() == true) {
-						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
-								HttpStatus.BAD_REQUEST);
-					}
-					if (i.getFlexibileHours() == false && i.getIsMinMax() == false) {
-						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
-								HttpStatus.BAD_REQUEST);
-					}
+//					if (i.getFlexibileHours() == null && i.getIsMinMax() == null) {
+//						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
+//								HttpStatus.BAD_REQUEST);
+//					}
+//					if (i.getFlexibileHours() == true && i.getIsMinMax() == true) {
+//						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
+//								HttpStatus.BAD_REQUEST);
+//					}
+//					if (i.getFlexibileHours() == false && i.getIsMinMax() == false) {
+//						return new ResponseEntity<String>("You need to decide between 'flexibile hours' and 'MinMax'.",
+//								HttpStatus.BAD_REQUEST);
+//					}
 					if (i.getDay().equals(EDay.DAY_MONDAY)) {
 						monday++;
 					}
