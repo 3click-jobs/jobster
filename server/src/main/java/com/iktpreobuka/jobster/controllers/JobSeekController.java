@@ -109,7 +109,7 @@ public class JobSeekController {
 		logger.info("Logged username: " + principal.getName());
 		try {
 //			return jobSeekService.findByQuery(flexibileHours, fromHour, toHour, IsMinMax, employeeId, cityName, countryRegionName, countryName, typeId, beginningDate, endDate, flexibileDates, price, flexibileDays);
-			return jobSeekService.findByQuery(jobDayHours, employeeId, cityName, countryRegionName, countryName, typeId, beginningDate, endDate, flexibileDates, price, flexibileDays);
+			return jobSeekService.findByQuery(/*SeekSearhDTO.jobDayHours, SeekSearchDTO.employeeID...*/ jobDayHours, employeeId, cityName, countryRegionName, countryName, typeId, beginningDate, endDate, flexibileDates, price, flexibileDays);
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -51,7 +51,6 @@ public class JobSeekEntity {
 	@NotNull (message = "Job type must be provided.")
 	private JobTypeEntity type;
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "seek", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
 	private List<JobDayHoursEntity> daysAndHours = new ArrayList<>();
 	
