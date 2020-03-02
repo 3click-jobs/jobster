@@ -35,6 +35,7 @@ public class JobDayHoursEntity {
 	//@NotNull (message = "Job offer must be provided.")
 	private JobOfferEntity offer;	
 	
+	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "seek")
 	//@NotNull (message = "Job seek must be provided.")
