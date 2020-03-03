@@ -79,6 +79,18 @@ public class JobSeekController {
 		emptyWith.setListJobDayHoursDto(list);
 		return emptyWith;
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/emptySearchWith")
+	public JobSeekSearchDTO emptyJobSeekSearchDTOWithEmptyDayHours() {
+		JobSeekSearchDTO emptyWith = new JobSeekSearchDTO();
+		JobDayHoursDTO empty1 = new JobDayHoursDTO();
+		JobDayHoursDTO empty2 = new JobDayHoursDTO();
+		List<JobDayHoursDTO> list = new ArrayList<JobDayHoursDTO>();
+		list.add(empty1);
+		list.add(empty2);
+		emptyWith.setJobDayHours(list);
+		return emptyWith;
+	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/emptyPersonDto")
 	public PersonDTO emptyPersonDto() {
