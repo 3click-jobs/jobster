@@ -2252,25 +2252,25 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		
 		if (flexibileDates != null && flexibileDates == true) {
 			if (beginningDate != null && endDate != null) {
-				sql = sql + " and (js.flexibileDates = true" +
+				sql = sql + " and ((js.flexibileDates = true" +
 						" and (('" + beginningDate + "' BETWEEN js.beginningDate and js.endDate and '" + endDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"('" + beginningDate + "' < js.beginningDate and '" + endDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"('" + endDate + "' > js.endDate and '" + beginningDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"(js.beginningDate BETWEEN '" + beginningDate + "' and '" + endDate + "' and js.endDate BETWEEN '" + beginningDate + "' and '" + endDate + "'))) or " +
 						"(js.flexibileDates = false" +
-						" and js.beginningDate BETWEEN '" + beginningDate + "' and '" + endDate + "' and js.endDate BETWEEN '" + beginningDate + "' and '" + endDate + "')";
+						" and js.beginningDate BETWEEN '" + beginningDate + "' and '" + endDate + "' and js.endDate BETWEEN '" + beginningDate + "' and '" + endDate + "'))";
 				logger.info("++++++++++++++++ Added condition for beginningDate and endDate applications");
 			} else if (beginningDate != null) {
-				sql = sql + " and (js.flexibileDates = true" +
+				sql = sql + " and ((js.flexibileDates = true" +
 						" and '" + beginningDate + "' < js.endDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.beginningDate >= '" + beginningDate + "')";
+						" and js.beginningDate >= '" + beginningDate + "'))";
 				logger.info("++++++++++++++++ Added condition for beginningDate applications");
 			} else if (endDate != null) {
-				sql = sql + " and (js.flexibileDates = true" +
+				sql = sql + " and ((js.flexibileDates = true" +
 						" and '" + endDate + "' > js.beginningDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.endDate <= '" + endDate + "')";
+						" and js.endDate <= '" + endDate + "'))";
 				logger.info("++++++++++++++++ Added condition for endDate applications");
 			} /*else {
 				sql = sql + " and js.flexibileDates = true";
@@ -2278,22 +2278,22 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			logger.info("++++++++++++++++ Added condition for TRUE flexibileDates applications");
 		} else {
 			if (beginningDate != null && endDate != null) {
-				sql = sql + " and (js.flexibileDates = true" +
+				sql = sql + " and ((js.flexibileDates = true" +
 						" and '" + beginningDate + "' BETWEEN js.beginningDate and js.endDate and '" + endDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.beginningDate = '" + beginningDate + "' and js.endDate = '" + endDate + "')";
+						" and js.beginningDate = '" + beginningDate + "' and js.endDate = '" + endDate + "'))";
 				logger.info("++++++++++++++++ Added condition for beginningDate and endDate applications");
 			} else if (beginningDate != null) {
-				sql = sql + " and (js.flexibileDates = true" +
+				sql = sql + " and ((js.flexibileDates = true" +
 						" and '" + beginningDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.beginningDate = '" + beginningDate + "')";
+						" and js.beginningDate = '" + beginningDate + "'))";
 				logger.info("++++++++++++++++ Added condition for beginningDate applications");
 			} else if (endDate != null) {
-				sql = sql + " and (js.flexibileDates = true" +
+				sql = sql + " and ((js.flexibileDates = true" +
 						" and '" + endDate + "' BETWEEN js.beginningDate and js.endDate) or " +
 						"(js.flexibileDates = false" +
-						" and js.endDate = '" + endDate + "')";
+						" and js.endDate = '" + endDate + "'))";
 				logger.info("++++++++++++++++ Added condition for endDate applications");
 			} /*else {
 				sql = sql + " and js.flexibileDates = false";
@@ -2340,7 +2340,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 //														.map(JobDayHoursDTO::getDay)
 //														.collect(Collectors.toList()) + ") and ";
 				
-				sql = sql + " AND (js.flexibileDays = true and (";
+				sql = sql + " AND ((js.flexibileDays = true and (";
 				counter = jobDayHours.size();
 				for (JobDayHoursDTO jdh : jobDayHours) {
 					sql = sql + "(dh.day = '" + jdh.getDay() + "' and ((dh.isMinMax = " + jdh.getIsMinMax() + " and ";
@@ -2384,13 +2384,10 @@ public class JobSeekDaoImpl implements JobSeekDao {
 						}
 						sql = sql + ")";
 					} else if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == false && jdh.getFromHour() != null && jdh.getToHour() != null) {
-						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true";
-						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
-							sql = sql + " and " +
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true" +
+								" and ((dh.flexibileHours = true) or (dh.flexibileHours = false and " +
 								"dh.fromHour <= " + (jdh.getToHour() - jdh.getFromHour()) + " AND " +
-								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour());
-						}
-						sql = sql + ")";
+								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour()) + ")))";
 					}	
 					counter--;
 					if (counter >= 1) {
@@ -2447,19 +2444,16 @@ public class JobSeekDaoImpl implements JobSeekDao {
 						}
 						sql = sql + ")";
 					} else if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == false && jdh.getFromHour() != null && jdh.getToHour() != null) {
-						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true";
-						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
-							sql = sql + " and " +
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true" +
+								" and ((dh.flexibileHours = true) or (dh.flexibileHours = false and " +
 								"dh.fromHour <= " + (jdh.getToHour() - jdh.getFromHour()) + " AND " +
-								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour());
-						}
-						sql = sql + ")";
+								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour()) + ")))";
 					}	
 					counter--;
 					if (counter >= 1) {
 						sql = sql + ")) OR ";
 					} else {
-						sql = sql + "))))";
+						sql = sql + ")))))";
 					}
 				}
 				logger.info("++++++++++++++++ Added condition for TRUE flexibileDays, jobDayHours and FALSE js.flexibileDays applications");
@@ -2474,7 +2468,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		} else {
 			Integer counter = 0;
 			if (jobDayHours != null && !jobDayHours.isEmpty()) {
-				sql = sql + " AND (js.flexibileDays = true and (";
+				sql = sql + " AND ((js.flexibileDays = true and (";
 				counter = jobDayHours.size();
 				for (JobDayHoursDTO jdh : jobDayHours) {
 					sql = sql + "(dh.day = '" + jdh.getDay() + "' and ((dh.isMinMax = " + jdh.getIsMinMax() + " and ";
@@ -2518,13 +2512,10 @@ public class JobSeekDaoImpl implements JobSeekDao {
 						}
 						sql = sql + ")";
 					} else if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == false && jdh.getFromHour() != null && jdh.getToHour() != null) {
-						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true";
-						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
-							sql = sql + " and " +
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true" +
+								" and ((dh.flexibileHours = true) or (dh.flexibileHours = false and " +
 								"dh.fromHour <= " + (jdh.getToHour() - jdh.getFromHour()) + " AND " +
-								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour());
-						}
-						sql = sql + ")";
+								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour()) + ")))";
 					}	
 					counter--;
 					if (counter >= 1) {
@@ -2581,30 +2572,32 @@ public class JobSeekDaoImpl implements JobSeekDao {
 						}
 						sql = sql + ")";
 					} else if (jdh.getIsMinMax() != null && jdh.getIsMinMax() == false && jdh.getFromHour() != null && jdh.getToHour() != null) {
-						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true";
-						if (jdh.getFlexibileHours() != null && jdh.getFlexibileHours() == false) {
-							sql = sql + " and " +
+						sql = sql + " OR (dh.isMinMax <> " + jdh.getIsMinMax() + " and dh.isMinMax = true" +
+								" and ((dh.flexibileHours = true) or (dh.flexibileHours = false and " +
 								"dh.fromHour <= " + (jdh.getToHour() - jdh.getFromHour()) + " AND " +
-								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour());
-						}
-						sql = sql + ")";
+								"dh.toHour >= " + (jdh.getToHour() - jdh.getFromHour()) + ")))";
 					}	
 					counter--;
 					if (counter >= 1) {
 						sql = sql + ")) OR ";
 					} else {
-						sql = sql + "))))";
+						sql = sql + ")))))";
 					}
 				}
 				logger.info("++++++++++++++++ Added condition for FALSE flexibileDays, jobDayHours and FALSE js.flexibileDays applications");
 				
+				sql = sql + " GROUP BY js.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = js.id) AND COUNT(*) = " + jobDayHours.size() + " AND js.flexibileDays = false) OR (COUNT(*) = " + jobDayHours.size() + " AND js.flexibileDays = true)";
+
 //				logger.info(sql);
+			} else {
+				
+			sql = sql + " GROUP BY js.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = js.id) AND js.flexibileDays = false) OR (js.flexibileDays = true)";
+
 			}
-
-			sql = sql + " GROUP BY js.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = js.id) AND COUNT(*) = " + jobDayHours.size() + " AND js.flexibileDays = false) OR (COUNT(*) = " + jobDayHours.size() + " AND js.flexibileDays = true)";
-
+			
 			logger.info("++++++++++++++++ Added condition for FALSE flexibileDays applications");
 			
+						
 		}
 		
 		Query query = em.createQuery(sql);
