@@ -1,6 +1,6 @@
 package com.iktpreobuka.jobster.entities.dto;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import javax.validation.constraints.Min;
