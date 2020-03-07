@@ -58,6 +58,10 @@ public class JobOfferEntity {
 	@OneToMany(mappedBy = "offer", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
 	private List<ApplyContactEntity> applies = new ArrayList<>();
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "rejectedOffer", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<RejectOfferEntity> rejections = new ArrayList<>();
+
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -101,6 +105,11 @@ public class JobOfferEntity {
 	@Column(name="flexibile_days")
 	//@JsonView(Views.Admin.class)
 	private Boolean flexibileDays;
+	
+	@Column(name="counter_offer")
+	//@JsonView(Views.Admin.class)
+	@NotNull (message = "Counter offer must be provided.")
+	private Boolean counterOffer;
 	
 	//@JsonView(Views.Admin.class)
 	@Max(1)
@@ -152,11 +161,48 @@ public class JobOfferEntity {
 		this.price = price;
 		this.detailsLink = detailsLink;
 		this.flexibileDays = flexibileDays;
+		this.counterOffer = false;
 		this.status = getStatusActive();
 		this.elapse = getStatusActive();
 		this.createdById = createdById;
 	}
 
+	public JobOfferEntity(@NotNull(message = "Employer must be provided.") UserEntity employer,
+			@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Job type must be provided.") JobTypeEntity type, List<JobDayHoursEntity> daysAndHours,
+			@NotNull(message = "Beginning date must be provided.") Date beginningDate,
+			@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
+			@NotNull(message = "Number of employees must be provided.") @Min(value = 1, message = "Number of employees must be {value} or higher!") Integer numberOfEmployees,
+			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
+			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
+			@NotNull (message = "Counter offer must be provided.") Boolean counterOffer,
+			Integer createdById) {
+		super();
+		this.employer = employer;
+		this.city = city;
+		this.type = type;
+		this.daysAndHours = daysAndHours;
+		this.beginningDate = beginningDate;
+		this.endDate = endDate;
+		this.flexibileDates = flexibileDates;
+		this.numberOfEmployees = numberOfEmployees;
+		this.price = price;
+		this.detailsLink = detailsLink;
+		this.flexibileDays = flexibileDays;
+		this.counterOffer = counterOffer;
+		this.status = getStatusActive();
+		this.elapse = getStatusActive();
+		this.createdById = createdById;
+	}
+
+
+	public Boolean getCounterOffer() {
+		return counterOffer;
+	}
+
+	public void setCounterOffer(Boolean counterOffer) {
+		this.counterOffer = counterOffer;
+	}
 
 	public List<ApplyContactEntity> getApplies() {
 		return applies;
@@ -324,6 +370,14 @@ public class JobOfferEntity {
 
 	public static Integer getStatusArchived() {
 		return STATUS_ARCHIVED;
+	}
+
+	public List<RejectOfferEntity> getRejections() {
+		return rejections;
+	}
+
+	public void setRejections(List<RejectOfferEntity> rejections) {
+		this.rejections = rejections;
 	}
 
 }

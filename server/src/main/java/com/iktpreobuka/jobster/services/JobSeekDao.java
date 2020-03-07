@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
@@ -91,7 +92,7 @@ public interface JobSeekDao {
 //			@RequestParam Boolean flexibileDates, @RequestParam Double price, @RequestParam Boolean flexibileDays);
 
 	public ResponseEntity<?> findByQuery(/*Boolean flexibileHours, Integer fromHour, Integer toHour, 
-			Boolean IsMinMax, */List<JobDayHoursDTO> jobDayHours, Integer employeeId, String cityName, String countryRegionName, String countryName, 
+			Boolean IsMinMax, */UserEntity loggedUser, List<JobDayHoursDTO> jobDayHours, Integer employeeId, String cityName, String countryRegionName, String countryName, 
 			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays) throws Exception;
 
