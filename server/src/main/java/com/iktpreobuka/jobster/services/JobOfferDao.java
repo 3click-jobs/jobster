@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 import com.iktpreobuka.jobster.entities.dto.JobOfferDTO;
 
@@ -35,8 +36,8 @@ public interface JobOfferDao {
 
 	public ResponseEntity<?> unArchiveById(@PathVariable Integer id);
 	
-	public ResponseEntity<?> findByQuery(List<JobDayHoursDTO> jobDayHours, Integer employerId, 
-			String cityName, String countryRegionName, String countryName, Integer distance,
+	public ResponseEntity<?> findByQuery(UserEntity loggedUser, List<JobDayHoursDTO> jobDayHours, 
+			Integer employerId, String cityName, String countryRegionName, String countryName, Integer distance,
 			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays) throws Exception;
 

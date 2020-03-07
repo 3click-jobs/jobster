@@ -58,6 +58,9 @@ public class JobSeekEntity {
 	@OneToMany(mappedBy = "seek", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
 	private List<ApplyContactEntity> contacts = new ArrayList<>();
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "rejectedSeek", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<RejectSeekEntity> rejections = new ArrayList<>();
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -101,6 +104,11 @@ public class JobSeekEntity {
 	@Column(name="flexibile_days")
 	//@JsonView(Views.Admin.class)
 	private Boolean flexibileDays;
+	
+	@Column(name="counter_seek")
+	//@JsonView(Views.Admin.class)
+	@NotNull (message = "Counter seek must be provided.")
+	private Boolean counterSeek;
 	
 	//@JsonView(Views.Admin.class)
 	@Max(1)
@@ -158,6 +166,7 @@ public class JobSeekEntity {
 		this.price = price;
 		this.detailsLink = detailsLink;
 		this.flexibileDays = flexibileDays;
+		this.counterSeek = false;
 		this.status = status;
 		this.elapse = elapse;
 		this.createdById = createdById;
@@ -188,6 +197,7 @@ public class JobSeekEntity {
 		this.price = price;
 		this.detailsLink = detailsLink;
 		this.flexibileDays = flexibileDays;
+		this.counterSeek = false;
 		this.status = getStatusActive();
 		this.elapse = getStatusActive();
 		this.createdById = createdById;
@@ -213,14 +223,110 @@ public class JobSeekEntity {
 		this.price = price;
 		this.detailsLink = detailsLink;
 		this.flexibileDays = flexibileDays;
+		this.counterSeek = false;
+		this.status = getStatusActive();
+		this.elapse = getStatusActive();
+		this.createdById = createdById;
+	}
+	
+	public JobSeekEntity(@NotNull(message = "Employee must be provided.") UserEntity employee,
+			@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Job type must be provided.") JobTypeEntity type, List<JobDayHoursEntity> daysAndHours,
+			List<ApplyContactEntity> contacts, Integer id,
+			@NotNull(message = "Distance to job must be provided.") @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
+			@NotNull(message = "Beginning date must be provided.") Date beginningDate,
+			@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
+			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
+			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
+			@NotNull (message = "Counter seek must be provided.") Boolean counterSeek,
+			@Max(1) @Min(-1) Integer status, @Max(1) @Min(0) Integer elapse, Integer createdById, Integer updatedById,
+			Integer version) {
+		super();
+		this.employee = employee;
+		this.city = city;
+		this.type = type;
+		this.daysAndHours = daysAndHours;
+		this.contacts = contacts;
+		this.id = id;
+		this.distanceToJob = distanceToJob;
+		this.beginningDate = beginningDate;
+		this.endDate = endDate;
+		this.flexibileDates = flexibileDates;
+		this.price = price;
+		this.detailsLink = detailsLink;
+		this.flexibileDays = flexibileDays;
+		this.counterSeek = counterSeek;
+		this.status = status;
+		this.elapse = elapse;
+		this.createdById = createdById;
+		this.updatedById = updatedById;
+		this.version = version;
+	}
+
+	public JobSeekEntity(@NotNull(message = "Employee must be provided.") UserEntity employee,
+			@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Job type must be provided.") JobTypeEntity type, List<JobDayHoursEntity> daysAndHours,
+			@NotNull(message = "Distance to job must be provided.") /*@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")*/ @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
+			@NotNull(message = "Beginning date must be provided.") Date beginningDate,
+			@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
+			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
+			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
+			@NotNull (message = "Counter seek must be provided.") Boolean counterSeek,
+			Integer createdById) {
+		super();
+		this.employee = employee;
+		this.city = city;
+		this.type = type;
+		this.daysAndHours = daysAndHours;
+		this.distanceToJob = distanceToJob;
+		this.beginningDate = beginningDate;
+		this.endDate = endDate;
+		this.flexibileDates = flexibileDates;
+		this.price = price;
+		this.detailsLink = detailsLink;
+		this.flexibileDays = flexibileDays;
+		this.counterSeek = counterSeek;
+		this.status = getStatusActive();
+		this.elapse = getStatusActive();
+		this.createdById = createdById;
+	}
+	
+	public JobSeekEntity(@NotNull(message = "Employee must be provided.") UserEntity employee,
+			@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Job type must be provided.") JobTypeEntity type,
+			@NotNull(message = "Distance to job must be provided.") /*@Pattern(regexp = "^[0-9]{1,5}$", message = "Only numbers are allowed.")*/ @Min(value = 0, message = "Distance to job must be {value} or higher!") Integer distanceToJob,
+			@NotNull(message = "Beginning date must be provided.") Date beginningDate,
+			@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
+			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
+			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
+			@NotNull (message = "Counter seek must be provided.") Boolean counterSeek,
+			Integer createdById) {
+		super();
+		this.employee = employee;
+		this.city = city;
+		this.type = type;
+		this.distanceToJob = distanceToJob;
+		this.beginningDate = beginningDate;
+		this.endDate = endDate;
+		this.flexibileDates = flexibileDates;
+		this.price = price;
+		this.detailsLink = detailsLink;
+		this.flexibileDays = flexibileDays;
+		this.counterSeek = counterSeek;
 		this.status = getStatusActive();
 		this.elapse = getStatusActive();
 		this.createdById = createdById;
 	}
 	
 	
+	public Boolean getCounterSeek() {
+		return counterSeek;
+	}
 
-	
+	public void setCounterSeek(Boolean counterSeek) {
+		this.counterSeek = counterSeek;
+	}
+
 	public List<ApplyContactEntity> getContacts() {
 		return contacts;
 	}
@@ -389,4 +495,12 @@ public class JobSeekEntity {
 		return STATUS_ARCHIVED;
 	}
 
+	public List<RejectSeekEntity> getRejections() {
+		return rejections;
+	}
+
+	public void setRejections(List<RejectSeekEntity> rejections) {
+		this.rejections = rejections;
+	}
+	
 }

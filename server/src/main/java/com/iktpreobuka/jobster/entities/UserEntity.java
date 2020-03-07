@@ -67,6 +67,10 @@ public class UserEntity {
 	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
 	private List<JobSeekEntity> jobSeeks = new ArrayList<>(); 
 
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH})
+	private List<RejectEntity> rejections = new ArrayList<>(); 
+
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobOfferDTO;
 import com.iktpreobuka.jobster.entities.dto.JobOfferSearchDTO;
 import com.iktpreobuka.jobster.repositories.JobOfferRepository;
+import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.services.JobOfferDao;
 
 @Controller
@@ -35,6 +37,9 @@ public class JobOfferController {
 	
 	@Autowired
 	public JobOfferDao jobOfferService;
+	
+	@Autowired
+	public UserAccountRepository userAccountRepository;
 	
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
@@ -55,7 +60,9 @@ public class JobOfferController {
 	public ResponseEntity<?> findByQuery(@Valid @RequestBody(required = false) JobOfferSearchDTO jobOfferSearchDTO, Principal principal) {
 		logger.info("Logged username: " + principal.getName());
 		try {
-			return jobOfferService.findByQuery(jobOfferSearchDTO.getJobDayHours(), jobOfferSearchDTO.getEmployerId(), 
+			UserEntity loggedUser = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			logger.info("---------------- Logged user found");
+			return jobOfferService.findByQuery(loggedUser, jobOfferSearchDTO.getJobDayHours(), jobOfferSearchDTO.getEmployerId(), 
 					jobOfferSearchDTO.getCityName(), jobOfferSearchDTO.getCountryRegionName(), jobOfferSearchDTO.getCountryName(), 
 					jobOfferSearchDTO.getDistance(), jobOfferSearchDTO.getTypeId(), jobOfferSearchDTO.getBeginningDate(), 
 					jobOfferSearchDTO.getEndDate(), jobOfferSearchDTO.getFlexibileDates(), jobOfferSearchDTO.getPrice(), 

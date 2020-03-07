@@ -28,11 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.JobSeekEntity;
+import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
 import com.iktpreobuka.jobster.entities.dto.JobSeekSearchDTO;
 import com.iktpreobuka.jobster.entities.dto.PersonDTO;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
+import com.iktpreobuka.jobster.repositories.UserAccountRepository;
 import com.iktpreobuka.jobster.services.JobSeekDao;
 
 @Controller
@@ -45,6 +47,9 @@ public class JobSeekController {
 
 	@Autowired
 	public JobSeekDao jobSeekService;
+	
+	@Autowired
+	public UserAccountRepository userAccountRepository;
 
 //	@Autowired
 //	private UserCustomValidator userValidator;
@@ -113,7 +118,9 @@ public class JobSeekController {
 	public ResponseEntity<?> findByQuery(@Valid @RequestBody(required = false) JobSeekSearchDTO jobSeekSearch, Principal principal) {
 		logger.info("Logged username: " + principal.getName());
 		try {
-			return jobSeekService.findByQuery(jobSeekSearch.getJobDayHours(), jobSeekSearch.getEmployeeId(), jobSeekSearch.getCityName(), jobSeekSearch.getCountryRegionName(), jobSeekSearch.getCountryName(), jobSeekSearch.getTypeId(), jobSeekSearch.getBeginningDate(), jobSeekSearch.getEndDate(), jobSeekSearch.getFlexibileDates(), jobSeekSearch.getPrice(), jobSeekSearch.getFlexibileDays());
+			UserEntity loggedUser = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			logger.info("---------------- Logged user found");
+			return jobSeekService.findByQuery(loggedUser, jobSeekSearch.getJobDayHours(), jobSeekSearch.getEmployeeId(), jobSeekSearch.getCityName(), jobSeekSearch.getCountryRegionName(), jobSeekSearch.getCountryName(), jobSeekSearch.getTypeId(), jobSeekSearch.getBeginningDate(), jobSeekSearch.getEndDate(), jobSeekSearch.getFlexibileDates(), jobSeekSearch.getPrice(), jobSeekSearch.getFlexibileDays());
 		} catch (Exception e) {
 			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: "+ e.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
