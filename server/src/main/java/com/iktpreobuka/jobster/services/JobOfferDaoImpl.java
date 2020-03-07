@@ -1358,7 +1358,7 @@ public class JobOfferDaoImpl implements JobOfferDao {
 				
 			}
 
-			sql = sql + " GROUP BY jo.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = jo.id) AND jo.flexibileDays = false) OR (COUNT(*) > 0 AND jo.flexibileDays = true)";
+			sql = sql + " GROUP BY jo.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.offer.id = jo.id) AND jo.flexibileDays = false) OR (COUNT(*) > 0 AND jo.flexibileDays = true)";
 
 			logger.info("++++++++++++++++ Added condition for TRUE flexibileDays applications");
 				
@@ -1425,7 +1425,7 @@ public class JobOfferDaoImpl implements JobOfferDao {
 				}
 				logger.info("++++++++++++++++ Added condition for FALSE flexibileDays, jobDayHours and TRUE jo.flexibileDays applications");
 
-				sql = sql + " OR (jo.flexibileDays = false and " + jobDayHours.size() + " = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = jo.id) and (";
+				sql = sql + " OR (jo.flexibileDays = false and " + jobDayHours.size() + " = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.offer.id = jo.id) and (";
 				counter = jobDayHours.size();
 				for (JobDayHoursDTO jdh : jobDayHours) {
 					sql = sql + "(dh.day = '" + jdh.getDay() + "' and ((dh.isMinMax = " + jdh.getIsMinMax() + " and ";
@@ -1483,11 +1483,11 @@ public class JobOfferDaoImpl implements JobOfferDao {
 				}
 				logger.info("++++++++++++++++ Added condition for FALSE flexibileDays, jobDayHours and FALSE jo.flexibileDays applications");
 
-				sql = sql + " GROUP BY jo.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = jo.id) AND COUNT(*) = " + jobDayHours.size() + " AND jo.flexibileDays = false) OR (COUNT(*) >= " + jobDayHours.size() + " AND jo.flexibileDays = true)";
+				sql = sql + " GROUP BY jo.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.offer.id = jo.id) AND COUNT(*) = " + jobDayHours.size() + " AND jo.flexibileDays = false) OR (COUNT(*) >= " + jobDayHours.size() + " AND jo.flexibileDays = true)";
 
 			} else {
 				
-				sql = sql + " GROUP BY jo.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.seek.id = jo.id) AND jo.flexibileDays = false) OR (jo.flexibileDays = true)";
+				sql = sql + " GROUP BY jo.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where jdh.status = 1 and jdh.offer.id = jo.id) AND jo.flexibileDays = false) OR (jo.flexibileDays = true)";
 				
 			}
 
@@ -1504,4 +1504,124 @@ public class JobOfferDaoImpl implements JobOfferDao {
 	
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public ResponseEntity<?> findCounterOffer(UserEntity loggedUser, List<JobDayHoursDTO> jobDayHours, String cityName, String countryRegionName, String countryName, 
+			Integer typeId, Integer numberOfEmployees, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
+			Boolean flexibileDays, String detailsLink) throws Exception {
+		logger.info("++++++++++++++++ Service for finding Counter JobOffer");
+		String sql = "select DISTINCT jo from JobOfferEntity jo join jo.daysAndHours dh join jo.type t join jo.city c "
+				+ "join jo.employee e where jo.status =1 and jo.elapse = 1 and dh.status = 1 and t.status = 1 and"
+				+ " c.status = 1 and e.status = 1 and jo.counterOffer = true";
+		logger.info("++++++++++++++++ Basic query created");
+
+		if (loggedUser != null) {
+			sql = sql + " and jo.employee.id = " + loggedUser.getId();
+			logger.info("++++++++++++++++ Added condition for employee applications");
+		}
+		
+		if (cityName != null && countryName != null) {
+			CityEntity city = new CityEntity();
+			CountryEntity country = new CountryEntity();
+			CountryRegionEntity countryRegion = new CountryRegionEntity();
+			try {
+				country = countryRepository.findByCountryNameIgnoreCase(countryName);
+			} catch (Exception e) {
+				throw new Exception("CountryRepository failed.");
+			}
+			if (country == null) {
+				logger.info("Country doesn't exist in database.");
+				return new ResponseEntity<String>("Country doesn't exist in database.", HttpStatus.NOT_FOUND);
+			}
+			try {
+				countryRegion = countryRegionRepository.findByCountryRegionNameAndCountry(countryRegionName, country);
+			} catch (Exception e) {
+				throw new Exception("CountryRegionRepository failed.");
+			}
+			if (countryRegion == null) {
+				logger.info("Country region doesn't exist in database.");
+				return new ResponseEntity<String>("Country region doesn't exist in database.", HttpStatus.NOT_FOUND);
+			}
+			try {
+				city = cityRepository.findByCityNameAndRegion(cityName, countryRegion);
+			} catch (Exception e) {
+				throw new Exception("CityRepository failed.");
+			}
+			if (city == null) {
+				logger.info("City doesn't exist in database.");
+				return new ResponseEntity<String>("City doesn't exist in database.", HttpStatus.NOT_FOUND);
+			}
+			logger.info("City founded.");
+			sql = sql + " and jo.city.id = " + city.getId();
+			logger.info("++++++++++++++++ Added condition for city applications");
+		}
+			
+		if (numberOfEmployees != null) {
+			sql = sql + " and jo.numberOfEmployees = " + numberOfEmployees;
+			logger.info("++++++++++++++++ Added condition for distanceToJob applications");
+		}
+
+		if (typeId != null) {
+			sql = sql + " and jo.type.id = " + typeId;
+			logger.info("++++++++++++++++ Added condition for type applications");
+		}
+		
+		if (beginningDate != null) {
+			sql = sql + " and jo.beginningDate = " + beginningDate;
+			logger.info("++++++++++++++++ Added condition for beginningDate applications");
+		}
+		
+		if (endDate != null) {
+			sql = sql + " and jo.endDate = " + endDate;
+			logger.info("++++++++++++++++ Added condition for endDate applications");
+		}
+		
+		if (flexibileDates != null) {
+			sql = sql + " and jo.flexibileDates = " + flexibileDates;
+			logger.info("++++++++++++++++ Added condition for flexibileDates applications");
+		}
+		
+		if (price != null) {
+			sql = sql + " and jo.price = " + price;
+			logger.info("++++++++++++++++ Added condition for price applications");
+		}
+		
+		if (detailsLink != null) {
+			sql = sql + " and jo.detailsLink = " + detailsLink;
+			logger.info("++++++++++++++++ Added condition for detailsLink applications");
+		}
+		
+		if (flexibileDays != null) {
+			sql = sql + " and jo.flexibileDays = " + flexibileDays;
+			logger.info("++++++++++++++++ Added condition for flexibileDays applications");
+		}
+		
+		if (jobDayHours != null && !jobDayHours.isEmpty()) {
+			Integer counter = jobDayHours.size();
+			sql = sql + " and (";
+			for (JobDayHoursDTO jdh : jobDayHours) {
+				sql = sql + "(dh.day = '" + jdh.getDay() + "' and dh.isMinMax = " + jdh.getIsMinMax() + 
+						" and dh.fromHour = " + jdh.getFromHour() + " and dh.toHour = " + jdh.getToHour()+ 
+						" and dh.flexibileHours = " + jdh.getFlexibileHours();
+				counter--;
+				if (counter >= 1) {
+					sql = sql + ") OR ";
+				} else {
+					sql = sql + "))";
+				}
+			}
+			sql = sql + " GROUP BY jo.id HAVING (COUNT(*) = (select COUNT(*) from JobDayHoursEntity jdh where "
+					+ "jdh.status = 1 and jdh.offer.id = jo.id) AND COUNT(*) = " + jobDayHours.size() + ")";
+			logger.info("++++++++++++++++ Added condition for jobDayHours applications");
+		}
+		
+		Query query = em.createQuery(sql);
+		logger.info("++++++++++++++++ Query created");
+//		logger.info(sql);
+		Iterable<ApplyContactEntity> result = query.getResultList();
+		logger.info("++++++++++++++++ Result of the query returned ok");
+		return new ResponseEntity<Iterable<ApplyContactEntity>>(result, HttpStatus.OK);
+
+	}
+
 }
