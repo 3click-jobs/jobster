@@ -41,4 +41,8 @@ public interface JobOfferDao {
 			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays) throws Exception;
 
+	public ResponseEntity<?> findCounterOffer(UserEntity loggedUser, List<JobDayHoursDTO> jobDayHours, String cityName, String countryRegionName, String countryName, 
+			Integer typeId, Integer numberOfEmployees, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
+			Boolean flexibileDays, String detailsLink) throws Exception;
+
 }

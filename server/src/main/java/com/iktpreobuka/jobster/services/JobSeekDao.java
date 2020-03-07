@@ -96,20 +96,8 @@ public interface JobSeekDao {
 			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays) throws Exception;
 
-
-
-
-
-
-
-
-
-	
-
-	
-
-
-
-
+	public ResponseEntity<?> findCounterSeek(UserEntity loggedUser, List<JobDayHoursDTO> jobDayHours, String cityName, String countryRegionName, String countryName, 
+			Integer typeId, Integer distanceToJob, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
+			Boolean flexibileDays, String detailsLink) throws Exception;
 
 }

@@ -91,9 +91,9 @@ public class RejectOfferController {
 	// ************* get all active rejections ************
 	@Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<?> getAllActive(Principal principal) {
-		logger.info("################ /jobster/reject/offer/getAllActive started.");
+	@RequestMapping(method = RequestMethod.GET, value = "/admin")
+	public ResponseEntity<?> getAllActiveByAdmin(Principal principal) {
+		logger.info("################ /jobster/reject/offer/admin/getAllActive started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<RejectOfferEntity> rejections = rejectOfferRepository.findByStatusLike(1);
@@ -109,13 +109,41 @@ public class RejectOfferController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Secured({"ROLE_ADMIN", "ROLE_USER"})
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<?> getAllActive(Principal principal) {
+		logger.info("################ /jobster/reject/offer/getAllActive started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			UserEntity loggedUser = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			if (loggedUser == null) {
+				logger.error("++++++++++++++++ User attempting to reject offer was not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			Iterable<RejectOfferEntity> rejections = rejectOfferRepository.findByUserAndStatusLike(loggedUser, 1);
+			if (Iterables.isEmpty(rejections)) {
+				logger.info("++++++++++++++++ No active rejections found");
+				return new ResponseEntity<>("No active rejections found.", HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found active rejections - OK.");
+			return new ResponseEntity<Iterable<RejectOfferEntity>>(rejections, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
 
 	// ************* get all inactive rejections ************
 	@Secured("ROLE_ADMIN")
 	// @JsonView(Views.Admin.class)
-	@RequestMapping(method = RequestMethod.GET, value = "/inactive")
-	public ResponseEntity<?> getAllInactive(Principal principal) {
-		logger.info("################ /jobster/reject/offer/getAllInactive started.");
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive/admin")
+	public ResponseEntity<?> getAllInactiveByAdmin(Principal principal) {
+		logger.info("################ /jobster/reject/offer/admin/getAllInactive started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
 			Iterable<RejectOfferEntity> rejections = rejectOfferRepository.findByStatusLike(0);
@@ -131,16 +159,69 @@ public class RejectOfferController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Secured({"ROLE_ADMIN", "ROLE_USER"})
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/inactive")
+	public ResponseEntity<?> getAllInactive(Principal principal) {
+		logger.info("################ /jobster/reject/offer/getAllInactive started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			UserEntity loggedUser = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			if (loggedUser == null) {
+				logger.error("++++++++++++++++ User attempting to reject offer was not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			Iterable<RejectOfferEntity> rejections = rejectOfferRepository.findByUserAndStatusLike(loggedUser, 0);
+			if (Iterables.isEmpty(rejections)) {
+				logger.info("++++++++++++++++ No inactive rejections found");
+				return new ResponseEntity<>("No inactive rejections found.", HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found inactive rejections - OK.");
+			return new ResponseEntity<Iterable<RejectOfferEntity>>(rejections, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 
 	// ************* get all archived rejections ************
 	@Secured("ROLE_ADMIN")
+	// @JsonView(Views.Admin.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/archived/admin")
+	public ResponseEntity<?> getAllArchivedByAdmin(Principal principal) {
+		logger.info("################ /jobster/reject/offer/admin/getAllArchived started.");
+		logger.info("Logged username: " + principal.getName());
+		try {
+			Iterable<RejectOfferEntity> rejections = rejectOfferRepository.findByStatusLike(-1);
+			if (Iterables.isEmpty(rejections)) {
+				logger.info("++++++++++++++++ No archived rejections found");
+				return new ResponseEntity<>("No archived rejections found.", HttpStatus.NOT_FOUND);
+			}
+			logger.info("---------------- Found archived rejections - OK.");
+			return new ResponseEntity<Iterable<RejectOfferEntity>>(rejections, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("++++++++++++++++ Exception occurred: " + e.getMessage());
+			return new ResponseEntity<RESTError>(new RESTError(1, "Exception occurred: " + e.getLocalizedMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Secured({"ROLE_ADMIN", "ROLE_USER"})
 	// @JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.GET, value = "/archived")
 	public ResponseEntity<?> getAllArchived(Principal principal) {
 		logger.info("################ /jobster/reject/offer/getAllArchived started.");
 		logger.info("Logged username: " + principal.getName());
 		try {
-			Iterable<RejectOfferEntity> rejections = rejectOfferRepository.findByStatusLike(-1);
+			UserEntity loggedUser = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			if (loggedUser == null) {
+				logger.error("++++++++++++++++ User attempting to reject offer was not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			Iterable<RejectOfferEntity> rejections = rejectOfferRepository.findByUserAndStatusLike(loggedUser, -1);
 			if (Iterables.isEmpty(rejections)) {
 				logger.info("++++++++++++++++ No archived rejections found");
 				return new ResponseEntity<>("No archived rejections found.", HttpStatus.NOT_FOUND);
@@ -1092,6 +1173,10 @@ public class RejectOfferController {
 			logger.info("---------------- Job offer Found");
 
 			UserEntity loggedUser = userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser();
+			if (loggedUser == null) {
+				logger.error("++++++++++++++++ User attempting to reject offer was not found");
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 			if (loggedUser.getId() == offer.getEmployer().getId()) {
 				logger.error("---------------- " + principal.getName() + " cannot reject own job offer.");
 				return new ResponseEntity<>(principal.getName() + " cannot reject own job offer.",
