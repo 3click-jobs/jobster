@@ -1134,7 +1134,7 @@ public class JobOfferDaoImpl implements JobOfferDao {
 			Boolean flexibileDays) throws Exception {
 		
 		logger.info("++++++++++++++++ Service for finding JobSeeks");
-		String sql = "select DISTINCT jo from JobOfferEntity jo join jo.daysAndHours dh join jo.type t join jo.city c join jo.employer e where jo.status =1 and jo.elapse = 1 and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1" + 
+		String sql = "select DISTINCT jo from JobOfferEntity jo join jo.daysAndHours dh join jo.type t join jo.city c join jo.employer e where jo.status =1 and jo.expired = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1" + 
 					" AND jo.id  NOT IN (select ro.rejectedOffer.id from RejectOfferEntity ro where ro.user.id = " + loggedUser.getId() + ")" + 
 					" AND jo.id  NOT IN (select ac.offer.id from ApplyContactEntity ac where ac.seek.employee.id = " + loggedUser.getId() + " AND ac.seek.counterSeek = true AND ac.offer.counterOffer = false)";
 		logger.info("++++++++++++++++ Basic query created");
@@ -1511,7 +1511,7 @@ public class JobOfferDaoImpl implements JobOfferDao {
 			Boolean flexibileDays, String detailsLink) throws Exception {
 		logger.info("++++++++++++++++ Service for finding Counter JobOffer");
 		String sql = "select DISTINCT jo from JobOfferEntity jo join jo.daysAndHours dh join jo.type t join jo.city c "
-				+ "join jo.employee e where jo.status =1 and jo.elapse = 1 and dh.status = 1 and t.status = 1 and"
+				+ "join jo.employee e where jo.status =1 and jo.expired = false and dh.status = 1 and t.status = 1 and"
 				+ " c.status = 1 and e.status = 1 and jo.counterOffer = true";
 		logger.info("++++++++++++++++ Basic query created");
 
