@@ -1,8 +1,11 @@
 package com.iktpreobuka.jobster.services;
 
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,7 +86,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 
 	///////////////////////// POST ///////////////////////////////////////
 
-	@SuppressWarnings("unlikely-arg-type")
+	@SuppressWarnings({ "unlikely-arg-type", "deprecation" })
 	@Override
 	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekDTO seek, Principal principal,
 			BindingResult result) {
@@ -297,7 +300,32 @@ public class JobSeekDaoImpl implements JobSeekDao {
 				}
 			}
 			logger.info("OK");
-
+			
+			// Checking does dates match
+			
+	        Date begining = seek.getBeginningDate();
+	        Date end = seek.getEndDate();
+	        Date created = Calendar.getInstance().getTime();
+	        
+	        Calendar c = new GregorianCalendar();
+	        c.setTime(created);
+	        c.set(Calendar.HOUR_OF_DAY, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
+            c.set(Calendar.MILLISECOND, 0);
+            created = c.getTime();
+			
+			logger.info("Checking does dates match.");
+			if(begining.compareTo(end) >= 0) {
+				logger.info("Beginning date must be younger than end date.");
+				return new ResponseEntity<String>("Beginning date must be younger than end date.", HttpStatus.BAD_REQUEST);
+			}
+			if(begining.compareTo(created) < 0) {
+				logger.info("Beginning date must be todays or future date.");
+				return new ResponseEntity<String>("Beginning date must be todays or future date.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			
 			// Mapping atributs
 
 			logger.info("Mapping atributs for JobSeek.");
@@ -307,10 +335,12 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			newSeek.setDistanceToJob(seek.getDistanceToJob());
 			newSeek.setBeginningDate(seek.getBeginningDate());
 			newSeek.setEndDate(seek.getEndDate());
+			newSeek.setDateCreated(Calendar.getInstance().getTime());
 			newSeek.setFlexibileDates(seek.getFlexibileDates());
 			newSeek.setPrice(seek.getPrice());
 			newSeek.setDetailsLink(seek.getDetailsLink());
 			newSeek.setFlexibileDays(seek.getFlexibileDays());
+			newSeek.setCounterSeek(false);
 			newSeek.setStatusActive();
 			newSeek.setExpired(false);
 			newSeek.setVersion(1);

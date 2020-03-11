@@ -1,6 +1,7 @@
 package com.iktpreobuka.jobster.entities;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -80,6 +81,11 @@ public class JobOfferEntity {
 	@NotNull (message = "End date must be provided.")
 	@Column(name="end_date")
 	private Date endDate;
+	
+	//@JsonView(Views.Student.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@Column(name="date_Created")
+	private Date dateCreated;
 	
 	@Column(name="flexibile_dates")
 	//@JsonView(Views.Admin.class)
@@ -192,7 +198,53 @@ public class JobOfferEntity {
 		this.expired = false;
 		this.createdById = createdById;
 	}
+	
+	public JobOfferEntity(@NotNull(message = "Employer must be provided.") UserEntity employer,
+			@NotNull(message = "City must be provided.") CityEntity city,
+			@NotNull(message = "Job type must be provided.") JobTypeEntity type, List<JobDayHoursEntity> daysAndHours,
+			List<ApplyContactEntity> applies, List<RejectOfferEntity> rejections, Integer id,
+			@NotNull(message = "Beginning date must be provided.") Date beginningDate,
+			@NotNull(message = "End date must be provided.") Date endDate, Date dateCreated, Boolean flexibileDates,
+			@NotNull(message = "Number of employees must be provided.") @Min(value = 1, message = "Number of employees must be {value} or higher!") Integer numberOfEmployees,
+			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
+			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
+			@NotNull(message = "Counter offer must be provided.") Boolean counterOffer, @Max(1) @Min(-1) Integer status,
+			Boolean expired, Integer createdById, Integer updatedById, Integer version) {
+		super();
+		this.employer = employer;
+		this.city = city;
+		this.type = type;
+		this.daysAndHours = daysAndHours;
+		this.applies = applies;
+		this.rejections = rejections;
+		this.id = id;
+		this.beginningDate = beginningDate;
+		this.endDate = endDate;
+		this.dateCreated = Calendar.getInstance().getTime();
+		this.flexibileDates = flexibileDates;
+		this.numberOfEmployees = numberOfEmployees;
+		this.price = price;
+		this.detailsLink = detailsLink;
+		this.flexibileDays = flexibileDays;
+		this.counterOffer = false;
+		this.status = getStatusActive();
+		this.expired = false;
+		this.createdById = createdById;
+		this.updatedById = updatedById;
+		this.version = version;
+	}
+	
+	public Date getDateCreated() {
+		return dateCreated;
+	}
 
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	public Boolean getCounterOffer() {
 		return counterOffer;
