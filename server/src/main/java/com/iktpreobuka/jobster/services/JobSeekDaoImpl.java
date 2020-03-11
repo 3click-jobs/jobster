@@ -1251,7 +1251,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
-			logger.info("Looking for jobs defined with 'elapse'.");
+			logger.info("Looking for jobs defined with 'expired'.");
 			for (JobSeekEntity i : jobSeekRepository.findAll()) {
 				if (i.getExpired() == expired) {
 					wantedJobSeeks.add(i);
@@ -2000,7 +2000,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		}
 		try {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
-			logger.info("Looking for jobs defined with 'elapse'.");
+			logger.info("Looking for jobs defined with 'expired'.");
 			for (JobSeekEntity i : jobSeekRepository.findAll()) {
 				if (i.getExpired() == expired) {
 					wantedJobSeeks.add(i);
@@ -2151,8 +2151,8 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			Integer typeId, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays) throws Exception {
 		logger.info("++++++++++++++++ Service for finding JobSeeks");
-//		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances td join c.fromDistances fd where js.status =1 and js.elapse = 1 and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and td.kmDistance <= js.distanceToJob and fd.kmDistance <= js.distanceToJob";
-		String sql = "select DISTINCT js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e where js.status =1 and js.elapse = 1 and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1" +
+//		String sql = "select js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e join c.toDistances td join c.fromDistances fd where js.status =1 and js.expired = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1 and td.kmDistance <= js.distanceToJob and fd.kmDistance <= js.distanceToJob";
+		String sql = "select DISTINCT js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c join js.employee e where js.status =1 and js.expired = false and dh.status = 1 and t.status = 1 and c.status = 1 and e.status = 1" +
 					" AND js.id  NOT IN (select rs.rejectedSeek.id from RejectSeekEntity rs where rs.user.id = " + loggedUser.getId() + ")" + 
 					" AND js.id  NOT IN (select ac.seek.id from ApplyContactEntity ac where ac.offer.employer.id = " + loggedUser.getId() + " AND ac.offer.counterOffer = true AND ac.seek.counterSeek = false)";
 		logger.info("++++++++++++++++ Basic query created");
@@ -2618,7 +2618,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			Boolean flexibileDays, String detailsLink) throws Exception {
 		logger.info("++++++++++++++++ Service for finding Counter JobSeek");
 		String sql = "select DISTINCT js from JobSeekEntity js join js.daysAndHours dh join js.type t join js.city c "
-				+ "join js.employee e where js.status =1 and js.elapse = 1 and dh.status = 1 and t.status = 1 and"
+				+ "join js.employee e where js.status =1 and js.expired = false and dh.status = 1 and t.status = 1 and"
 				+ " c.status = 1 and e.status = 1 and js.counterSeek = true";
 		logger.info("++++++++++++++++ Basic query created");
 
