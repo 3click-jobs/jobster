@@ -117,10 +117,8 @@ public class JobSeekEntity {
 	private Integer status;
 	
 	//@JsonView(Views.Admin.class)
-	@Max(1)
-    @Min(0)
-    @Column(name = "elapse", nullable = false)
-	private Integer elapse;
+    @Column(name = "expired", nullable = false)
+	private Boolean expired;
 	
 	//@JsonView(Views.Admin.class)
     @Column(name = "created_by", nullable = false, updatable = false)
@@ -150,7 +148,7 @@ public class JobSeekEntity {
 			@NotNull(message = "End date must be provided.") Date endDate, Boolean flexibileDates,
 			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
 			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
-			@Max(1) @Min(-1) Integer status, @Max(1) @Min(0) Integer elapse, Integer createdById, Integer updatedById,
+			@Max(1) @Min(-1) Integer status, @Max(1) @Min(0) Integer expired, Integer createdById, Integer updatedById,
 			Integer version) {
 		super();
 		this.employee = employee;
@@ -168,7 +166,7 @@ public class JobSeekEntity {
 		this.flexibileDays = flexibileDays;
 		this.counterSeek = false;
 		this.status = status;
-		this.elapse = elapse;
+		this.expired = false;
 		this.createdById = createdById;
 		this.updatedById = updatedById;
 		this.version = version;
@@ -199,7 +197,7 @@ public class JobSeekEntity {
 		this.flexibileDays = flexibileDays;
 		this.counterSeek = false;
 		this.status = getStatusActive();
-		this.elapse = getStatusActive();
+		this.expired = false;
 		this.createdById = createdById;
 	}
 	
@@ -225,7 +223,7 @@ public class JobSeekEntity {
 		this.flexibileDays = flexibileDays;
 		this.counterSeek = false;
 		this.status = getStatusActive();
-		this.elapse = getStatusActive();
+		this.expired = false;
 		this.createdById = createdById;
 	}
 	
@@ -239,7 +237,7 @@ public class JobSeekEntity {
 			@NotNull(message = "Price must be provided.") @Min(value = 0, message = "Price must be {value} or higher!") Double price,
 			@NotNull(message = "Details must be provided.") String detailsLink, Boolean flexibileDays,
 			@NotNull (message = "Counter seek must be provided.") Boolean counterSeek,
-			@Max(1) @Min(-1) Integer status, @Max(1) @Min(0) Integer elapse, Integer createdById, Integer updatedById,
+			@Max(1) @Min(-1) Integer status, @Max(1) @Min(0) Integer expired, Integer createdById, Integer updatedById,
 			Integer version) {
 		super();
 		this.employee = employee;
@@ -257,7 +255,7 @@ public class JobSeekEntity {
 		this.flexibileDays = flexibileDays;
 		this.counterSeek = counterSeek;
 		this.status = status;
-		this.elapse = elapse;
+		this.expired = false;
 		this.createdById = createdById;
 		this.updatedById = updatedById;
 		this.version = version;
@@ -287,7 +285,7 @@ public class JobSeekEntity {
 		this.flexibileDays = flexibileDays;
 		this.counterSeek = counterSeek;
 		this.status = getStatusActive();
-		this.elapse = getStatusActive();
+		this.expired = false;
 		this.createdById = createdById;
 	}
 	
@@ -314,7 +312,7 @@ public class JobSeekEntity {
 		this.flexibileDays = flexibileDays;
 		this.counterSeek = counterSeek;
 		this.status = getStatusActive();
-		this.elapse = getStatusActive();
+		this.expired = false;
 		this.createdById = createdById;
 	}
 	
@@ -455,16 +453,12 @@ public class JobSeekEntity {
 		this.version = version;
 	}
 
-	public Integer getElapse() {
-		return elapse;
-	}
-
-	public void setElapseInactive() {
-		this.elapse = getStatusInactive();
+	public Boolean getExpired() {
+		return expired;
 	}
 	
-	public void setElapseActive() {
-		this.elapse = getStatusActive();
+	public void setExpired(Boolean expired) {
+		this.expired = expired;
 	}
 
 	public Integer getStatus() {
@@ -501,6 +495,13 @@ public class JobSeekEntity {
 
 	public void setRejections(List<RejectSeekEntity> rejections) {
 		this.rejections = rejections;
+	}
+
+
+
+	public void setExpired(boolean expired) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

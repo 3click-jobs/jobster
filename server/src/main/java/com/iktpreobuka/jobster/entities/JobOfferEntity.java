@@ -118,10 +118,8 @@ public class JobOfferEntity {
 	private Integer status;
 	
 	//@JsonView(Views.Admin.class)
-	@Max(1)
-    @Min(0)
-    @Column(name = "elapse", nullable = false)
-	private Integer elapse;
+    @Column(name = "expired", nullable = false)
+	private Boolean expired;
 	
 	//@JsonView(Views.Admin.class)
     @Column(name = "created_by", nullable = false, updatable = false)
@@ -163,7 +161,7 @@ public class JobOfferEntity {
 		this.flexibileDays = flexibileDays;
 		this.counterOffer = false;
 		this.status = getStatusActive();
-		this.elapse = getStatusActive();
+		this.expired = false;
 		this.createdById = createdById;
 	}
 
@@ -191,7 +189,7 @@ public class JobOfferEntity {
 		this.flexibileDays = flexibileDays;
 		this.counterOffer = counterOffer;
 		this.status = getStatusActive();
-		this.elapse = getStatusActive();
+		this.expired = false;
 		this.createdById = createdById;
 	}
 
@@ -332,16 +330,12 @@ public class JobOfferEntity {
 		this.version = version;
 	}
 
-	public Integer getElapse() {
-		return elapse;
+	public Boolean getExpired() {
+		return expired;
 	}
 
-	public void setElapseInactive() {
-		this.elapse = getStatusInactive();
-	}
-	
-	public void setElapseActive() {
-		this.elapse = getStatusActive();
+	public void setExpired(Boolean expired) {
+		this.expired = expired;
 	}
 
 	public Integer getStatus() {

@@ -62,7 +62,7 @@ public interface JobSeekDao {
 
 	public ResponseEntity<?> getAllWithStatus(@RequestParam Integer status);
 
-	public ResponseEntity<?> getAllWithElapse(@RequestParam Integer elapse);
+	//public ResponseEntity<?> getAllWithElapse(@RequestParam Integer elapse);
 
 	public ResponseEntity<?> getAllByCreatedBy(@RequestParam Integer createdBy);
 
@@ -80,7 +80,7 @@ public interface JobSeekDao {
 	public ResponseEntity<?> getAllWithEndDate(@RequestParam Date endDate, Pageable pageable);
 	public ResponseEntity<?> getAllWithFlexibileDates(@RequestParam boolean flexDates, Pageable pageable);
 	public ResponseEntity<?> getAllWithStatus(@RequestParam Integer status, Pageable pageable);
-	public ResponseEntity<?> getAllWithElapse(@RequestParam Integer elapse, Pageable pageable);
+	public ResponseEntity<?> getAllWithExpired(@RequestParam Boolean expired, Pageable pageable);
 	public ResponseEntity<?> getAllByCreatedBy(@RequestParam Integer createdBy, Pageable pageable);
 	public ResponseEntity<?> getAllByUpdatedBy(@RequestParam Integer updatedBy, Pageable pageable);
 	public ResponseEntity<?> getAllByVersion(@RequestParam Integer version, Pageable pageable);
@@ -99,5 +99,7 @@ public interface JobSeekDao {
 	public ResponseEntity<?> findCounterSeek(UserEntity loggedUser, List<JobDayHoursDTO> jobDayHours, String cityName, String countryRegionName, String countryName, 
 			Integer typeId, Integer distanceToJob, Date beginningDate, Date endDate, Boolean flexibileDates, Double price, 
 			Boolean flexibileDays, String detailsLink) throws Exception;
+
+	ResponseEntity<?> getAllWithExpired(Boolean expired);
 
 }
