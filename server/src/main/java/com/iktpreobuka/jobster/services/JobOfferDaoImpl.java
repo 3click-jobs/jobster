@@ -691,6 +691,7 @@ public class JobOfferDaoImpl implements JobOfferDao {
 			}
 			logger.info("Setting update details.");
 			offerForModify.setUpdatedById(loggedUser.getId());
+			offerForModify.setDateCreated(Calendar.getInstance().getTime());
 			logger.info("Update details set.");
 
 ///////////// Checking NEW list for jobDayHours

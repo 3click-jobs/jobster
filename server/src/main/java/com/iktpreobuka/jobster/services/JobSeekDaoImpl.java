@@ -680,6 +680,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			}
 			logger.info("Setting update details.");
 			seekForModify.setUpdatedById(loggedUser.getId());
+			seekForModify.setDateCreated(Calendar.getInstance().getTime());
 			logger.info("Update details set.");
 
 			///////////// Checking NEW list for jobDayHours
