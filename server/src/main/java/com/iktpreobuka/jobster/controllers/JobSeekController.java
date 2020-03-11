@@ -210,8 +210,8 @@ public class JobSeekController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/elapse")
-	public ResponseEntity<?> getAllWithElapse(@RequestParam Integer elapse) {
-		return jobSeekService.getAllWithElapse(elapse);
+	public ResponseEntity<?> getAllWithElapse(@RequestParam Boolean expired) {
+		return jobSeekService.getAllWithExpired(expired);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/createdBy")
@@ -396,15 +396,15 @@ public class JobSeekController {
 		return jobSeekService.getAllWithStatus(status, pageable);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/elapsePaginated")
+	@RequestMapping(method = RequestMethod.GET, value = "/expiredPaginated")
 	public ResponseEntity<?> getAllWithElapsePaginated(
 			@RequestParam Optional<Integer> page,
 			@RequestParam Optional<Integer> pageSize,
 			@RequestParam Optional<Sort.Direction> direction, 
 			@RequestParam Optional<String> sortBy,
-			@RequestParam Integer elapse) {
+			@RequestParam Boolean expired) {
 		Pageable pageable = PageRequest.of(page.orElse(0), pageSize.orElse(5), direction.orElse(Sort.Direction.ASC), sortBy.orElse("id"));
-		return jobSeekService.getAllWithElapse(elapse, pageable);
+		return jobSeekService.getAllWithExpired(expired, pageable);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/createdByPaginated")

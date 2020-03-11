@@ -312,7 +312,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			newSeek.setDetailsLink(seek.getDetailsLink());
 			newSeek.setFlexibileDays(seek.getFlexibileDays());
 			newSeek.setStatusActive();
-			newSeek.setElapseActive();
+			newSeek.setExpired(false);
 			newSeek.setVersion(1);
 			newSeek.setCreatedById(loggedUser.getId());
 			logger.info("Saveing JobSeek to database.");
@@ -1238,7 +1238,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 ///////////////////// GET BY ELAPSE /////////////////////////
 
 	@Override
-	public ResponseEntity<?> getAllWithElapse(@RequestParam Integer elapse) {
+	public ResponseEntity<?> getAllWithExpired(@RequestParam Boolean expired) {
 		try {
 			logger.info("Checking database.");
 			if (((jobSeekRepository.count() == 0))) {
@@ -1253,7 +1253,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
 			logger.info("Looking for jobs defined with 'elapse'.");
 			for (JobSeekEntity i : jobSeekRepository.findAll()) {
-				if (i.getElapse() == elapse) {
+				if (i.getExpired() == expired) {
 					wantedJobSeeks.add(i);
 				}
 			}
@@ -1987,7 +1987,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 ///////////////////// GET BY ELAPSE /////////////////////////
 
 	@Override
-	public ResponseEntity<?> getAllWithElapse(@RequestParam Integer elapse, Pageable pageable) {
+	public ResponseEntity<?> getAllWithExpired(@RequestParam Boolean expired, Pageable pageable) {
 		try {
 			logger.info("Checking database.");
 			if (((jobSeekRepository.count() == 0))) {
@@ -2002,7 +2002,7 @@ public class JobSeekDaoImpl implements JobSeekDao {
 			List<JobSeekEntity> wantedJobSeeks = new ArrayList<JobSeekEntity>();
 			logger.info("Looking for jobs defined with 'elapse'.");
 			for (JobSeekEntity i : jobSeekRepository.findAll()) {
-				if (i.getElapse() == elapse) {
+				if (i.getExpired() == expired) {
 					wantedJobSeeks.add(i);
 				}
 			}

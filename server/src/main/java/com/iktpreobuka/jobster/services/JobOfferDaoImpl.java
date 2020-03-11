@@ -314,7 +314,7 @@ public class JobOfferDaoImpl implements JobOfferDao {
 			newOffer.setDetailsLink(offer.getDetailsLink());
 			newOffer.setFlexibileDays(offer.getFlexibileDays());
 			newOffer.setStatusActive();
-			newOffer.setElapseActive();
+			newOffer.setExpired(false);
 			newOffer.setVersion(1);
 			newOffer.setCreatedById(loggedUser.getId());
 			logger.info("Saveing JobOffer to database.");
