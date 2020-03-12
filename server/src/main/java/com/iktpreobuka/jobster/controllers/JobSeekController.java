@@ -31,6 +31,7 @@ import com.iktpreobuka.jobster.entities.JobSeekEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
+import com.iktpreobuka.jobster.entities.dto.JobSeekPutDTO;
 import com.iktpreobuka.jobster.entities.dto.JobSeekSearchDTO;
 import com.iktpreobuka.jobster.entities.dto.PersonDTO;
 import com.iktpreobuka.jobster.repositories.JobSeekRepository;
@@ -108,8 +109,14 @@ public class JobSeekController {
 		return jobSeekService.addNewSeek(seek, principal, result);
 	}
 
+	@RequestMapping(method = RequestMethod.PUT, value = "/modifySeek/{seekId}/staraMetoda")
+	public ResponseEntity<?> modifySeekStaraMetoda(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId,
+			Principal principal, BindingResult result) {
+		return jobSeekService.modifySeekStaraMetoda(seek, seekId, principal, result);
+	}
+	
 	@RequestMapping(method = RequestMethod.PUT, value = "/modifySeek/{seekId}")
-	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId,
+	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekPutDTO seek, @PathVariable Integer seekId,
 			Principal principal, BindingResult result) {
 		return jobSeekService.modifySeek(seek, seekId, principal, result);
 	}
