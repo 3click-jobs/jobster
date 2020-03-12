@@ -20,6 +20,7 @@ import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPostDto;
 //import com.iktpreobuka.jobster.entities.dto.JobSeekPutDto;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
+import com.iktpreobuka.jobster.entities.dto.JobSeekPutDTO;
 
 
 
@@ -27,7 +28,10 @@ public interface JobSeekDao {
 	
 	public ResponseEntity<?> addNewSeek(@Valid @RequestBody JobSeekDTO seek, Principal principal, BindingResult result);
 
-	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId, Principal principal,
+	public ResponseEntity<?> modifySeekStaraMetoda(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId, Principal principal,
+			BindingResult result);
+	
+	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekPutDTO seek, @PathVariable Integer seekId, Principal principal,
 			BindingResult result);
 	
 	public ResponseEntity<?> deleteById(@PathVariable Integer id);

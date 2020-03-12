@@ -40,6 +40,7 @@ import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 import com.iktpreobuka.jobster.entities.dto.JobSeekDTO;
+import com.iktpreobuka.jobster.entities.dto.JobSeekPutDTO;
 import com.iktpreobuka.jobster.enumerations.EDay;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
@@ -399,12 +400,202 @@ public class JobSeekDaoImpl implements JobSeekDao {
 		logger.info("Returning new jobSeek.---------------");
 		return new ResponseEntity<JobSeekEntity>(newSeek, HttpStatus.OK);
 	}
-
+	
 ///////////////////////////// PUT /////////////////////////////
+	
+	@Override
+	public ResponseEntity<?> modifySeek(@Valid JobSeekPutDTO seek, Integer seekId, Principal principal,
+			BindingResult result) {
+		
+		logger.info("Starting modifySeek().---------------------");
+
+		JobSeekEntity seekForModify = new JobSeekEntity();
+
+		JobSeekEntity copyOfOriginalJobSeekEntity = new JobSeekEntity();
+
+		boolean seekSaved = false;
+
+		try {
+
+			if (principal.getName() == null) {
+				logger.info("Error in geting userName.");
+				return new ResponseEntity<String>("Error in geting userName.", HttpStatus.UNAUTHORIZED);
+			}
+
+// Checking does entry data exist
+
+			logger.info("Checking does entry data exist.'");
+			if (seek == null) {
+				logger.info("Entry data missing.");
+				return new ResponseEntity<String>("Entry data missing.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+
+// validating entry
+
+			logger.info("Checking errors.'");
+			if (result.hasErrors()) {
+				logger.info("Errors exist.");
+				return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+
+// Checking entered data
+
+			if (seek.getDetailsLink() == null) {
+				logger.info("DetailsLink are null.");
+				return new ResponseEntity<String>("DetailsLink are null.", HttpStatus.BAD_REQUEST);
+			}
+			if (seek.getDetailsLink().equals(" ") || seek.getDetailsLink().equals("")) {
+				logger.info("DetailsLink are blanks.");
+				return new ResponseEntity<String>("Some atributes are blanks", HttpStatus.BAD_REQUEST);
+			}
+
+// Checking logged account
+
+			UserAccountEntity loggedAccount = new UserAccountEntity();
+
+			logger.info("Checking userAccount database.");
+			if (userAccountRepository.count() == 0) {
+				logger.info("UserAccount database empty.");
+				return new ResponseEntity<String>("UserAccount database empty.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking does userAccount exist.");
+			if (userAccountRepository.findByUsername(principal.getName()) == null) {
+				logger.info("UserAccount doesn't exist.");
+				return new ResponseEntity<String>("UserAccount doesn't exist.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is userAccount deleted.");
+			if (!(userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 0) == null)) {
+				logger.info("UserAccount is deleted.");
+				return new ResponseEntity<String>("UserAccount is deleted.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is userAccount archived.");
+			if (!(userAccountRepository.findByUsernameAndStatusLike(principal.getName(), -1) == null)) {
+				logger.info("UserAccount is archived.");
+				return new ResponseEntity<String>("UserAccount is archived.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking does userAccount have user.");
+			if (userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser() == null) {
+				logger.info("UserAccout doesn't have user.");
+				return new ResponseEntity<String>("UserAccout doesn't have user.", HttpStatus.BAD_REQUEST);
+			} else {
+				logger.info("OK");
+				logger.info("UserAccount found.");
+				loggedAccount = userAccountRepository.getByUsername(principal.getName());
+				logger.info("OK");
+			}
+
+// checking loggedUser
+
+			UserEntity loggedUser = new UserEntity();
+			loggedUser = loggedAccount.getUser();
+
+			logger.info("Checking does user have status.");
+			if (loggedUser.getStatus() == null) {
+				logger.info("User doesn't have status.");
+				return new ResponseEntity<String>("User doesn't have status.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is user deleted.");
+			if (loggedUser.getStatus() == 0) {
+				logger.info("User is deleted.");
+				return new ResponseEntity<String>("User is deleted.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is user archived.");
+			if (loggedUser.getStatus() == -1) {
+				logger.info("User is archived.");
+				return new ResponseEntity<String>("User is archived.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+
+// checking seekForModify
+
+			logger.info("Looking for jobSeek you want to change.");
+
+			logger.info("Checking jobSeek database.");
+			if (jobSeekRepository.count() == 0) {
+				logger.info("JobSeek database empty.");
+				return new ResponseEntity<String>("JobSeek database empty.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking does jobSeek exist.");
+			if (jobSeekRepository.findById(seekId) == null) {
+				logger.info("JobSeek doesn't exist.");
+				return new ResponseEntity<String>("JobSeek doesn't exist.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is jobSeek deleted.");
+			if (!(jobSeekRepository.findByIdAndStatusLike(seekId, 0) == null)) {
+				logger.info("JobSeek is deleted.");
+				return new ResponseEntity<String>("JobSeek is deleted.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is jobSeek archived.");
+			if (!(jobSeekRepository.findByIdAndStatusLike(seekId, -1) == null)) {
+				logger.info("JobSeek is archived.");
+				return new ResponseEntity<String>("JobSeek is archived.", HttpStatus.BAD_REQUEST);
+			} else {
+				logger.info("OK");
+				seekForModify = jobSeekRepository.findById(seekId).orElse(null);
+				if (seekForModify == null) {
+					logger.info("JobSeek that you asked for doesn't exist.");
+					return new ResponseEntity<String>("JobSeek that you asked for doesn't exist.",
+							HttpStatus.BAD_REQUEST);
+				}
+			}
+
+// Making copy of seekForModify
+
+			copyOfOriginalJobSeekEntity = seekForModify;
+
+// Mapping atributs
+
+			logger.info("Checking are details changed.");
+			if (!(seek.getDetailsLink().equals(seekForModify.getDetailsLink()))) {
+				logger.info("Mapping atributs.");
+				seekForModify.setDetailsLink(seek.getDetailsLink());
+				logger.info("Setting update details.");
+				seekForModify.setUpdatedById(loggedUser.getId());
+				seekForModify.setDateUpdated(Calendar.getInstance().getTime());
+				logger.info("Update details set.");
+				logger.info("Details changed");
+				logger.info("Saveing JobSeek.");
+				jobSeekRepository.save(seekForModify);
+				seekSaved = true;
+				logger.info("Atributs mapped.");
+			}
+			
+		} catch (Exception e) {
+			logger.info("Error occurred and data that has been previously added needs to be removed from database.");
+			if (seekSaved == true) {
+				if (jobSeekRepository.findById(seekForModify.getId()) != null) {
+					seekForModify = copyOfOriginalJobSeekEntity;
+					jobSeekRepository.save(seekForModify);
+					logger.info("Job Seek that has been previously modified has been returned to previus state.");
+				}
+			}
+			return new ResponseEntity<String>("Error occurrred.------------------- " + e.getMessage() + " " + e,
+					HttpStatus.BAD_REQUEST);
+
+		}
+		logger.info("Returning new jobSeek.");
+		return new ResponseEntity<JobSeekEntity>(seekForModify, HttpStatus.OK);
+	}
+		
+
+	
+
+///////////////////////////// PUT STARA METODA/////////////////////////////
 
 	@SuppressWarnings("unlikely-arg-type")
 	@Override
-	public ResponseEntity<?> modifySeek(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId,
+	public ResponseEntity<?> modifySeekStaraMetoda(@Valid @RequestBody JobSeekDTO seek, @PathVariable Integer seekId,
 			Principal principal, BindingResult result) {
 
 		logger.info("Starting modifySeek().---------------------");
