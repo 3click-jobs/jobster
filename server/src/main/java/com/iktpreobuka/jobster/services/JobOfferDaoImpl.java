@@ -34,6 +34,7 @@ import com.iktpreobuka.jobster.entities.UserAccountEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobDayHoursDTO;
 import com.iktpreobuka.jobster.entities.dto.JobOfferDTO;
+import com.iktpreobuka.jobster.entities.dto.JobOfferPutDTO;
 import com.iktpreobuka.jobster.enumerations.EDay;
 import com.iktpreobuka.jobster.repositories.CityRepository;
 import com.iktpreobuka.jobster.repositories.CountryRegionRepository;
@@ -400,12 +401,200 @@ public class JobOfferDaoImpl implements JobOfferDao {
 		logger.info("Returning new jobOffer.---------------");
 		return new ResponseEntity<JobOfferEntity>(newOffer, HttpStatus.OK);
 	}
+	
+	
+///////////////////////////// PUT ////////////////////////////
+	
+	@Override
+	public ResponseEntity<?> modifyOffer(@Valid JobOfferPutDTO offer, Integer offerId, Principal principal,
+			BindingResult result) {
+		
+		logger.info("Starting modifyOffer().---------------------");
 
-///////////////////////////// PUT /////////////////////////////
+		JobOfferEntity offerForModify = new JobOfferEntity();
+
+		JobOfferEntity copyOfOriginalJobOfferEntity = new JobOfferEntity();
+
+		boolean offerSaved = false;
+
+		try {
+
+			if (principal.getName() == null) {
+				logger.info("Error in geting userName.");
+				return new ResponseEntity<String>("Error in geting userName.", HttpStatus.UNAUTHORIZED);
+			}
+
+// Checking does entry data exist
+
+			logger.info("Checking does entry data exist.'");
+			if (offer == null) {
+				logger.info("Entry data missing.");
+				return new ResponseEntity<String>("Entry data missing.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+
+// validating entry
+
+			logger.info("Checking errors.'");
+			if (result.hasErrors()) {
+				logger.info("Errors exist.");
+				return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+
+// Checking entered data
+
+			if (offer.getDetailsLink() == null) {
+				logger.info("DetailsLink are null.");
+				return new ResponseEntity<String>("DetailsLink are null.", HttpStatus.BAD_REQUEST);
+			}
+			if (offer.getDetailsLink().equals(" ") || offer.getDetailsLink().equals("")) {
+				logger.info("DetailsLink are blanks.");
+				return new ResponseEntity<String>("Some atributes are blanks", HttpStatus.BAD_REQUEST);
+			}
+
+// Checking logged account
+
+			UserAccountEntity loggedAccount = new UserAccountEntity();
+
+			logger.info("Checking userAccount database.");
+			if (userAccountRepository.count() == 0) {
+				logger.info("UserAccount database empty.");
+				return new ResponseEntity<String>("UserAccount database empty.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking does userAccount exist.");
+			if (userAccountRepository.findByUsername(principal.getName()) == null) {
+				logger.info("UserAccount doesn't exist.");
+				return new ResponseEntity<String>("UserAccount doesn't exist.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is userAccount deleted.");
+			if (!(userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 0) == null)) {
+				logger.info("UserAccount is deleted.");
+				return new ResponseEntity<String>("UserAccount is deleted.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is userAccount archived.");
+			if (!(userAccountRepository.findByUsernameAndStatusLike(principal.getName(), -1) == null)) {
+				logger.info("UserAccount is archived.");
+				return new ResponseEntity<String>("UserAccount is archived.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking does userAccount have user.");
+			if (userAccountRepository.findByUsernameAndStatusLike(principal.getName(), 1).getUser() == null) {
+				logger.info("UserAccout doesn't have user.");
+				return new ResponseEntity<String>("UserAccout doesn't have user.", HttpStatus.BAD_REQUEST);
+			} else {
+				logger.info("OK");
+				logger.info("UserAccount found.");
+				loggedAccount = userAccountRepository.getByUsername(principal.getName());
+				logger.info("OK");
+			}
+
+// checking loggedUser
+
+			UserEntity loggedUser = new UserEntity();
+			loggedUser = loggedAccount.getUser();
+
+			logger.info("Checking does user have status.");
+			if (loggedUser.getStatus() == null) {
+				logger.info("User doesn't have status.");
+				return new ResponseEntity<String>("User doesn't have status.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is user deleted.");
+			if (loggedUser.getStatus() == 0) {
+				logger.info("User is deleted.");
+				return new ResponseEntity<String>("User is deleted.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is user archived.");
+			if (loggedUser.getStatus() == -1) {
+				logger.info("User is archived.");
+				return new ResponseEntity<String>("User is archived.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+
+// checking offerForModify
+
+			logger.info("Looking for jobOffer you want to change.");
+
+			logger.info("Checking jobOffer database.");
+			if (jobOfferRepository.count() == 0) {
+				logger.info("JobOffer database empty.");
+				return new ResponseEntity<String>("JobOffer database empty.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking does jobOffer exist.");
+			if (jobOfferRepository.findById(offerId) == null) {
+				logger.info("JobOffer doesn't exist.");
+				return new ResponseEntity<String>("JobOffer doesn't exist.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is jobOffer deleted.");
+			if (!(jobOfferRepository.findByIdAndStatusLike(offerId, 0) == null)) {
+				logger.info("JobOffer is deleted.");
+				return new ResponseEntity<String>("JobOffer is deleted.", HttpStatus.BAD_REQUEST);
+			}
+			logger.info("OK");
+			logger.info("Checking is jobOffer archived.");
+			if (!(jobOfferRepository.findByIdAndStatusLike(offerId, -1) == null)) {
+				logger.info("JobOffer is archived.");
+				return new ResponseEntity<String>("JobOffer is archived.", HttpStatus.BAD_REQUEST);
+			} else {
+				logger.info("OK");
+				offerForModify = jobOfferRepository.findById(offerId).orElse(null);
+				if (offerForModify == null) {
+					logger.info("JobOffer that you asked for doesn't exist.");
+					return new ResponseEntity<String>("JobOffer that you asked for doesn't exist.",
+							HttpStatus.BAD_REQUEST);
+				}
+			}
+
+// Making copy of offerForModify
+
+			copyOfOriginalJobOfferEntity = offerForModify;
+
+// Mapping atributs
+
+			logger.info("Checking are details changed.");
+			if (!(offer.getDetailsLink().equals(offerForModify.getDetailsLink()))) {
+				logger.info("Mapping atributs.");
+				offerForModify.setDetailsLink(offer.getDetailsLink());
+				logger.info("Setting update details.");
+				offerForModify.setUpdatedById(loggedUser.getId());
+				offerForModify.setDateUpdated(Calendar.getInstance().getTime());
+				logger.info("Update details set.");
+				logger.info("Details changed");
+				logger.info("Saveing JobOffer.");
+				jobOfferRepository.save(offerForModify);
+				offerSaved = true;
+				logger.info("Atributs mapped.");
+			}
+			
+		} catch (Exception e) {
+			logger.info("Error occurred and data that has been previously added needs to be removed from database.");
+			if (offerSaved == true) {
+				if (jobOfferRepository.findById(offerForModify.getId()) != null) {
+					offerForModify = copyOfOriginalJobOfferEntity;
+					jobOfferRepository.save(offerForModify);
+					logger.info("Job Offer that has been previously modified has been returned to previus state.");
+				}
+			}
+			return new ResponseEntity<String>("Error occurrred.------------------- " + e.getMessage() + " " + e,
+					HttpStatus.BAD_REQUEST);
+
+		}
+		logger.info("Returning new jobOffer.");
+		return new ResponseEntity<JobOfferEntity>(offerForModify, HttpStatus.OK);
+	}
+
+///////////////////////////// PUT STARA METODA/////////////////////////////
 
 	@SuppressWarnings("unlikely-arg-type")
 	@Override
-	public ResponseEntity<?> modifyOffer(@Valid @RequestBody JobOfferDTO offer, @PathVariable Integer offerId,
+	public ResponseEntity<?> modifyOfferStaraMetoda(@Valid @RequestBody JobOfferDTO offer, @PathVariable Integer offerId,
 			Principal principal, BindingResult result) {
 
 		logger.info("Starting modifyOffer().-------------------");

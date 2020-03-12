@@ -22,6 +22,7 @@ import com.iktpreobuka.jobster.controllers.util.RESTError;
 import com.iktpreobuka.jobster.entities.JobOfferEntity;
 import com.iktpreobuka.jobster.entities.UserEntity;
 import com.iktpreobuka.jobster.entities.dto.JobOfferDTO;
+import com.iktpreobuka.jobster.entities.dto.JobOfferPutDTO;
 import com.iktpreobuka.jobster.entities.dto.JobOfferSearchDTO;
 import com.iktpreobuka.jobster.repositories.JobOfferRepository;
 import com.iktpreobuka.jobster.repositories.UserAccountRepository;
@@ -50,8 +51,14 @@ public class JobOfferController {
 		return jobOfferService.addNewOffer(offer, principal, result);
 	}
 	
+	@RequestMapping(method = RequestMethod.PUT, value = "/modifyOffer/{offerId}/staraMetoda")
+	public ResponseEntity<?> modifyOfferStaraMetoda(@Valid @RequestBody JobOfferDTO offer, @PathVariable Integer offerId,
+			Principal principal, BindingResult result) {
+		return jobOfferService.modifyOfferStaraMetoda(offer, offerId, principal, result);
+	}
+	
 	@RequestMapping(method = RequestMethod.PUT, value = "/modifyOffer/{offerId}")
-	public ResponseEntity<?> modifyOffer(@Valid @RequestBody JobOfferDTO offer, @PathVariable Integer offerId,
+	public ResponseEntity<?> modifyOffer(@Valid @RequestBody JobOfferPutDTO offer, @PathVariable Integer offerId,
 			Principal principal, BindingResult result) {
 		return jobOfferService.modifyOffer(offer, offerId, principal, result);
 	}
